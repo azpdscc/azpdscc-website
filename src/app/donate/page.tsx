@@ -10,13 +10,13 @@ export default function DonatePage() {
   return (
     <div className="bg-background">
       {/* Hero Section */}
-      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-white bg-primary">
-        <div className="absolute inset-0 bg-gradient-to-t from-red-600/30 to-orange-500/20" />
+      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground bg-primary">
+        <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20" />
         <div className="relative z-10 p-4">
-          <h1 className="font-headline text-4xl md:text-6xl font-bold !text-white drop-shadow-lg">
+          <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">
             Support Our Mission
           </h1>
-          <p className="mt-4 max-w-2xl text-lg md:text-xl !text-white/90 drop-shadow-md">
+          <p className="mt-4 max-w-2xl text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
             Your contribution empowers us to preserve culture, celebrate heritage, and strengthen our community.
           </p>
         </div>
@@ -105,7 +105,7 @@ export default function DonatePage() {
       </main>
 
       {/* Impact Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-background">
         <div className="container mx-auto px-4 text-center">
             <h2 className="font-headline text-3xl md:text-4xl font-bold">Where Your Donation Goes</h2>
             <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
