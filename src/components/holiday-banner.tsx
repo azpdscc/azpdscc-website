@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -42,7 +43,7 @@ export function HolidayBanner() {
             }
           >
             <CardContent className="p-4 flex items-center justify-center gap-4 text-center">
-              <currentHoliday.icon className="h-8 w-8 text-primary-foreground flex-shrink-0" />
+              <currentHoliday.icon className="h-8 w-8 text-primary-foreground flex-shrink-0" strokeWidth={1.5} />
               <p className="text-xl md:text-2xl font-bold text-primary-foreground">
                 {currentHoliday.message}
               </p>

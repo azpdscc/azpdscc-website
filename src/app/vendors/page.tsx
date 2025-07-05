@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -24,7 +25,7 @@ export default function VendorsPage() {
           <CardHeader>
             <div className="flex justify-center mb-4">
               <div className="bg-primary/10 rounded-full p-4">
-                <CalendarPlus className="h-10 w-10 text-primary" />
+                <CalendarPlus className="h-10 w-10 text-primary" strokeWidth={1.5} />
               </div>
             </div>
             <CardTitle className="font-headline text-2xl text-center">Apply for Event Vendor Booths</CardTitle>
@@ -34,7 +35,7 @@ export default function VendorsPage() {
           </CardHeader>
           <CardContent className="flex-grow flex items-end justify-center">
             <Button asChild size="lg" className="w-full">
-              <Link href="/vendors/apply">View Upcoming Events & Apply <ArrowRight className="ml-2 h-4 w-4" /></Link>
+              <Link href="/vendors/apply">View Upcoming Events & Apply <ArrowRight className="ml-2 h-4 w-4" strokeWidth={1.5} /></Link>
             </Button>
           </CardContent>
         </Card>
@@ -43,7 +44,7 @@ export default function VendorsPage() {
           <CardHeader>
              <div className="flex justify-center mb-4">
               <div className="bg-primary/10 rounded-full p-4">
-                <Users className="h-10 w-10 text-primary" />
+                <Users className="h-10 w-10 text-primary" strokeWidth={1.5} />
               </div>
             </div>
             <CardTitle className="font-headline text-2xl text-center">Join Our Arizona Vendor Network</CardTitle>
@@ -53,7 +54,7 @@ export default function VendorsPage() {
           </CardHeader>
           <CardContent className="flex-grow flex items-end justify-center">
             <Button asChild size="lg" className="w-full">
-              <Link href="/vendors/join">Register Your Business <ArrowRight className="ml-2 h-4 w-4" /></Link>
+              <Link href="/vendors/join">Register Your Business <ArrowRight className="ml-2 h-4 w-4" strokeWidth={1.5} /></Link>
             </Button>
           </CardContent>
         </Card>
@@ -61,7 +62,7 @@ export default function VendorsPage() {
       
       <div className="max-w-4xl mx-auto mt-12">
         <div className="flex items-center justify-center gap-4 p-4 rounded-lg bg-primary/10 border border-primary/20">
-            <Users className="h-10 w-10 text-primary" />
+            <Users className="h-10 w-10 text-primary" strokeWidth={1.5} />
             <p className="text-lg font-semibold text-foreground text-center">
                 Our community has over <span className="font-bold text-primary">1,000+</span> vendors who have successfully partnered with us!
             </p>

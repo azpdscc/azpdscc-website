@@ -15,13 +15,13 @@ export function Footer() {
             </p>
             <div className="mt-4 flex space-x-4">
               <Link href="#" className="text-muted-foreground hover:text-primary">
-                <Twitter className="h-5 w-5" />
+                <Twitter className="h-5 w-5" strokeWidth={1.5} />
               </Link>
               <Link href="#" className="text-muted-foreground hover:text-primary">
-                <Facebook className="h-5 w-5" />
+                <Facebook className="h-5 w-5" strokeWidth={1.5} />
               </Link>
               <Link href="#" className="text-muted-foreground hover:text-primary">
-                <Github className="h-5 w-5" />
+                <Github className="h-5 w-5" strokeWidth={1.5} />
               </Link>
             </div>
           </div>

@@ -94,7 +94,7 @@ export default function DonatePage() {
               <CardHeader>
                 <div className="flex justify-center mb-4">
                     <div className="bg-primary/10 rounded-full p-4">
-                        <HandHeart className="h-10 w-10 text-primary" />
+                        <HandHeart className="h-10 w-10 text-primary" strokeWidth={1.5} />
                     </div>
                 </div>
                 <CardTitle className="font-headline text-center text-3xl">Give the Gift of Time</CardTitle>
@@ -122,7 +122,7 @@ export default function DonatePage() {
             <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div className="flex flex-col items-center">
                     <div className="bg-primary/10 rounded-full p-4 mb-4">
-                        <Award className="h-10 w-10 text-primary" />
+                        <Award className="h-10 w-10 text-primary" strokeWidth={1.5} />
                     </div>
                     <h3 className="font-headline text-xl font-semibold">
                       <Link href="/events" className="hover:underline">Vibrant Festivals</Link>
@@ -131,21 +131,21 @@ export default function DonatePage() {
                 </div>
                 <div className="flex flex-col items-center">
                     <div className="bg-primary/10 rounded-full p-4 mb-4">
-                        <Paintbrush className="h-10 w-10 text-primary" />
+                        <Paintbrush className="h-10 w-10 text-primary" strokeWidth={1.5} />
                     </div>
                     <h3 className="font-headline text-xl font-semibold">Arts & Culture</h3>
                     <p className="mt-2 text-muted-foreground">Supporting local artists and cultural workshops.</p>
                 </div>
                 <div className="flex flex-col items-center">
                     <div className="bg-primary/10 rounded-full p-4 mb-4">
-                        <Users className="h-10 w-10 text-primary" />
+                        <Users className="h-10 w-10 text-primary" strokeWidth={1.5} />
                     </div>
                     <h3 className="font-headline text-xl font-semibold">Community Support</h3>
                     <p className="mt-2 text-muted-foreground">Providing resources and outreach programs.</p>
                 </div>
                 <div className="flex flex-col items-center">
                     <div className="bg-primary/10 rounded-full p-4 mb-4">
-                        <Heart className="h-10 w-10 text-primary" />
+                        <Heart className="h-10 w-10 text-primary" strokeWidth={1.5} />
                     </div>
                     <h3 className="font-headline text-xl font-semibold">Future Generations</h3>
                     <p className="mt-2 text-muted-foreground">Ensuring our heritage thrives for years to come.</p>

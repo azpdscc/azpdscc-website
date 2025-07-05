@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Event } from '@/lib/types';
@@ -31,11 +32,11 @@ export function EventCard({ event }: EventCardProps) {
         <p className="text-sm text-muted-foreground line-clamp-2">{event.description}</p>
         <div className="mt-4 space-y-2 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-primary" />
+            <Calendar className="h-4 w-4 text-primary" strokeWidth={1.5} />
             <span>{event.date}</span>
           </div>
           <div className="flex items-center gap-2">
-            <MapPin className="h-4 w-4 text-primary" />
+            <MapPin className="h-4 w-4 text-primary" strokeWidth={1.5} />
             <span>{event.location}</span>
           </div>
         </div>

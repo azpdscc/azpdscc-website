@@ -1,3 +1,4 @@
+
 import type { Metadata, ResolvingMetadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
@@ -124,21 +125,21 @@ export default function EventDetailPage({ params }: { params: { slug: string } }
               <h3 className="font-headline text-2xl font-bold mb-4">Details</h3>
               <div className="space-y-4 text-muted-foreground">
                  <div className="flex items-start gap-3">
-                    <Calendar className="h-5 w-5 mt-1 text-primary shrink-0" />
+                    <Calendar className="h-5 w-5 mt-1 text-primary shrink-0" strokeWidth={1.5} />
                     <div>
                         <p className="font-semibold text-foreground">Date</p>
                         <p>{event.date}</p>
                     </div>
                 </div>
                  <div className="flex items-start gap-3">
-                    <Clock className="h-5 w-5 mt-1 text-primary shrink-0" />
+                    <Clock className="h-5 w-5 mt-1 text-primary shrink-0" strokeWidth={1.5} />
                     <div>
                         <p className="font-semibold text-foreground">Time</p>
                         <p>{event.time}</p>
                     </div>
                 </div>
                  <div className="flex items-start gap-3">
-                    <MapPin className="h-5 w-5 mt-1 text-primary shrink-0" />
+                    <MapPin className="h-5 w-5 mt-1 text-primary shrink-0" strokeWidth={1.5} />
                     <div>
                         <p className="font-semibold text-foreground">Location</p>
                         <p>{event.location}</p>

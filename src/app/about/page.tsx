@@ -40,28 +40,28 @@ export default function AboutPage() {
           <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="flex flex-col items-center">
               <div className="bg-primary/10 rounded-full p-4 mb-4">
-                <Users className="h-10 w-10 text-primary" />
+                <Users className="h-10 w-10 text-primary" strokeWidth={1.5} />
               </div>
               <h3 className="font-headline text-xl font-semibold">Community</h3>
               <p className="mt-2 text-muted-foreground">Fostering a sense of unity and belonging.</p>
             </div>
             <div className="flex flex-col items-center">
               <div className="bg-primary/10 rounded-full p-4 mb-4">
-                <BookOpen className="h-10 w-10 text-primary" />
+                <BookOpen className="h-10 w-10 text-primary" strokeWidth={1.5} />
               </div>
               <h3 className="font-headline text-xl font-semibold">Culture</h3>
               <p className="mt-2 text-muted-foreground">Preserving and promoting our rich heritage.</p>
             </div>
             <div className="flex flex-col items-center">
               <div className="bg-primary/10 rounded-full p-4 mb-4">
-                <HeartHandshake className="h-10 w-10 text-primary" />
+                <HeartHandshake className="h-10 w-10 text-primary" strokeWidth={1.5} />
               </div>
               <h3 className="font-headline text-xl font-semibold">Inclusivity</h3>
               <p className="mt-2 text-muted-foreground">Welcoming everyone to celebrate with us.</p>
             </div>
             <div className="flex flex-col items-center">
               <div className="bg-primary/10 rounded-full p-4 mb-4">
-                <Target className="h-10 w-10 text-primary" />
+                <Target className="h-10 w-10 text-primary" strokeWidth={1.5} />
               </div>
               <h3 className="font-headline text-xl font-semibold">Impact</h3>
               <p className="mt-2 text-muted-foreground">Making a positive difference in Arizona.</p>

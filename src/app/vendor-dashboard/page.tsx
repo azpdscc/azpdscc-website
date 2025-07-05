@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -43,7 +44,7 @@ export default function VendorDashboardPage() {
                   <p className="text-sm text-muted-foreground">Submitted on: October 1, 2024</p>
                 </div>
                 <Badge className="mt-4 sm:mt-0 bg-green-100 text-green-800 hover:bg-green-100 border border-green-200">
-                  <CheckCircle2 className="h-4 w-4 mr-1" />
+                  <CheckCircle2 className="h-4 w-4 mr-1" strokeWidth={1.5} />
                   Confirmed
                 </Badge>
               </div>

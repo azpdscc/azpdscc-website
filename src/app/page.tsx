@@ -62,7 +62,7 @@ export default function Home() {
             <Card className="text-center shadow-lg">
               <CardHeader>
                 <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit">
-                  <Handshake className="h-8 w-8 text-primary" />
+                  <Handshake className="h-8 w-8 text-primary" strokeWidth={1.5} />
                 </div>
                 <CardTitle className="font-headline mt-4">
                   <Link href="/events" className="hover:underline">Festivals</Link>
@@ -77,7 +77,7 @@ export default function Home() {
             <Card className="text-center shadow-lg">
               <CardHeader>
                 <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit">
-                  <Sprout className="h-8 w-8 text-primary" />
+                  <Sprout className="h-8 w-8 text-primary" strokeWidth={1.5} />
                 </div>
                 <CardTitle className="font-headline mt-4">
                   <Link href="/about" className="hover:underline">Community Outreach</Link>
@@ -92,7 +92,7 @@ export default function Home() {
             <Card className="text-center shadow-lg">
               <CardHeader>
                 <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit">
-                  <CircleDollarSign className="h-8 w-8 text-primary" />
+                  <CircleDollarSign className="h-8 w-8 text-primary" strokeWidth={1.5} />
                 </div>
                 <CardTitle className="font-headline mt-4">
                   <Link href="/about" className="hover:underline">Cultural Preservation</Link>
@@ -113,7 +113,7 @@ export default function Home() {
           <div className="flex justify-between items-center mb-12">
             <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">Upcoming Arizona Indian Festivals</h2>
             <Button asChild variant="link" className="text-primary">
-              <Link href="/events">View All <ArrowRight className="ml-2 h-4 w-4" /></Link>
+              <Link href="/events">View All <ArrowRight className="ml-2 h-4 w-4" strokeWidth={1.5} /></Link>
             </Button>
           </div>
           <Carousel
@@ -148,7 +148,7 @@ export default function Home() {
               </p>
               <div className="mt-6">
                 <Button asChild>
-                  <Link href="/about">Learn More About Our Mission <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                  <Link href="/about">Learn More About Our Mission <ArrowRight className="ml-2 h-4 w-4" strokeWidth={1.5} /></Link>
                 </Button>
               </div>
               <div className="mt-8 grid grid-cols-2 gap-8">
