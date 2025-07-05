@@ -26,7 +26,7 @@ export type VendorApplication = {
   organization?: string;
   email: string;
   phone: string;
-  boothType: '10x10' | '10x20' | 'Food Stall' | 'Merchandise';
+  boothType: '10x10-own' | '10x10-our' | '10x20-own' | '10x20-our';
   productDescription: string;
   zelleSenderName: string;
   zelleTransactionId?: string;

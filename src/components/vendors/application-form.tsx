@@ -6,7 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { cn } from '@/lib/utils';
 
-import { suggestBoothPlacement } from '@/ai/flows/booth-placement-suggestion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -15,9 +14,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
-import { CalendarIcon, Loader2, Sparkles, AlertTriangle } from 'lucide-react';
+import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 
 const formSchema = z.object({
@@ -25,7 +23,9 @@ const formSchema = z.object({
   organization: z.string().optional(),
   email: z.string().email(),
   phone: z.string().min(10, "Please enter a valid phone number."),
-  boothType: z.enum(['10x10', '10x20', 'Food Stall', 'Merchandise']),
+  boothType: z.enum(['10x10-own', '10x10-our', '10x20-own', '10x20-our'], {
+    required_error: "You need to select a booth type.",
+  }),
   productDescription: z.string().min(20, "Description must be at least 20 characters.").max(500),
   zelleSenderName: z.string().min(2, "Zelle sender name is required."),
   zelleTransactionId: z.string().optional(),
@@ -35,19 +35,22 @@ const formSchema = z.object({
 
 type VendorApplicationFormValues = z.infer<typeof formSchema>;
 
-const boothPrices = {
-  '10x10': 150,
-  '10x20': 250,
-  'Food Stall': 350,
-  'Merchandise': 120,
+const boothOptions: { [key: string]: string } = {
+  '10x10-own': '10x10 Booth (Own Canopy) - $250',
+  '10x10-our': '10x10 Booth (Our Canopy) - $350',
+  '10x20-own': '10x20 Booth (Own Canopy) - $500',
+  '10x20-our': '10x20 Booth (Our Canopy) - $650',
+};
+
+const boothPrices: { [key: string]: number } = {
+  '10x10-own': 250,
+  '10x10-our': 350,
+  '10x20-own': 500,
+  '10x20-our': 650,
 };
 
 export function ApplicationForm() {
   const [step, setStep] = useState(1);
-  const [aiSuggestion, setAiSuggestion] = useState<{ suggestedLocation: string; reasoning: string } | null>(null);
-  const [isAiLoading, setIsAiLoading] = useState(false);
-  const [aiError, setAiError] = useState<string | null>(null);
-
   const { toast } = useToast();
   const form = useForm<VendorApplicationFormValues>({
     resolver: zodResolver(formSchema),
@@ -69,29 +72,6 @@ export function ApplicationForm() {
     }
   };
 
-  const handleAiSuggestion = async () => {
-    const boothType = form.getValues('boothType');
-    const productDescription = form.getValues('productDescription');
-    if (!boothType || !productDescription) return;
-
-    setIsAiLoading(true);
-    setAiError(null);
-    setAiSuggestion(null);
-    try {
-      const suggestion = await suggestBoothPlacement({
-        boothType,
-        productDescription,
-        event: 'Annual Diwali Festival', // Example event
-      });
-      setAiSuggestion(suggestion);
-    } catch (error) {
-      console.error("AI suggestion failed:", error);
-      setAiError("Could not get an AI suggestion at this time.");
-    } finally {
-      setIsAiLoading(false);
-    }
-  };
-
   const onSubmit: SubmitHandler<VendorApplicationFormValues> = (data) => {
     console.log(data);
     toast({
@@ -100,7 +80,6 @@ export function ApplicationForm() {
     });
     form.reset();
     setStep(1);
-    setAiSuggestion(null);
   };
 
   const selectedBoothType = form.watch('boothType');
@@ -110,15 +89,15 @@ export function ApplicationForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="flex items-center space-x-4 mb-8">
-          {[1, 2, 3, 4].map(s => (
+          {[1, 2, 3].map(s => (
             <div key={s} className="flex items-center">
               <div className={cn(
                 "w-8 h-8 rounded-full flex items-center justify-center font-bold",
                 s < step && "bg-green-500 text-white",
-                s === step && "bg-primary text-white",
+                s === step && "bg-primary text-primary-foreground",
                 s > step && "bg-secondary text-secondary-foreground"
               )}>{s}</div>
-              {s < 4 && <div className={cn("w-16 h-1", s < step ? 'bg-green-500' : 'bg-secondary')} />}
+              {s < 3 && <div className={cn("w-16 h-1", s < step ? 'bg-green-500' : 'bg-secondary')} />}
             </div>
           ))}
         </div>
@@ -151,10 +130,9 @@ export function ApplicationForm() {
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl><SelectTrigger><SelectValue placeholder="Select a booth type" /></SelectTrigger></FormControl>
                   <SelectContent>
-                    <SelectItem value="10x10">10x10 Booth - $150</SelectItem>
-                    <SelectItem value="10x20">10x20 Booth - $250</SelectItem>
-                    <SelectItem value="Food Stall">Food Stall - $350</SelectItem>
-                    <SelectItem value="Merchandise">Merchandise Stall - $120</SelectItem>
+                    {Object.entries(boothOptions).map(([value, label]) => (
+                      <SelectItem key={value} value={value}>{label}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -169,44 +147,17 @@ export function ApplicationForm() {
             )} />
             <div className="flex gap-4">
               <Button type="button" variant="outline" onClick={() => setStep(1)}>Back</Button>
-              <Button type="button" onClick={() => { triggerValidation(['boothType', 'productDescription']); handleAiSuggestion(); }}>Next</Button>
+              <Button type="button" onClick={() => triggerValidation(['boothType', 'productDescription'])}>Proceed to Payment</Button>
             </div>
           </section>
         )}
 
         {step === 3 && (
-          <section className="space-y-4">
-            <h2 className="font-headline text-2xl">Step 3: AI Booth Suggestion</h2>
-            {isAiLoading && (
-              <Alert><Loader2 className="h-4 w-4 animate-spin" /><AlertTitle>Analyzing...</AlertTitle><AlertDescription>Our AI is finding the perfect spot for you...</AlertDescription></Alert>
-            )}
-            {aiError && (
-              <Alert variant="destructive"><AlertTriangle className="h-4 w-4" /><AlertTitle>Oops!</AlertTitle><AlertDescription>{aiError}</AlertDescription></Alert>
-            )}
-            {aiSuggestion && (
-              <Alert className="bg-green-50 border-green-200">
-                <Sparkles className="h-4 w-4 text-green-700" />
-                <AlertTitle className="text-green-800 font-headline">Smart Booth Placement Suggestion</AlertTitle>
-                <AlertDescription className="text-green-700">
-                  <p className="font-bold">{aiSuggestion.suggestedLocation}</p>
-                  <p className="mt-2">{aiSuggestion.reasoning}</p>
-                </AlertDescription>
-              </Alert>
-            )}
-            <p className="text-muted-foreground">Based on your selections, we've provided a smart suggestion for your booth placement to maximize visibility and foot traffic.</p>
-            <div className="flex gap-4">
-              <Button type="button" variant="outline" onClick={() => setStep(2)}>Back</Button>
-              <Button type="button" onClick={() => setStep(4)}>Proceed to Payment</Button>
-            </div>
-          </section>
-        )}
-
-        {step === 4 && (
           <section className="space-y-6">
-            <h2 className="font-headline text-2xl">Step 4: Payment & Confirmation</h2>
+            <h2 className="font-headline text-2xl">Step 3: Payment & Confirmation</h2>
             <div className="p-6 border rounded-lg bg-secondary">
               <h3 className="font-headline font-bold text-lg">Application Summary</h3>
-              <p><strong>Booth Type:</strong> {selectedBoothType}</p>
+              <p><strong>Booth Type:</strong> {selectedBoothType ? boothOptions[selectedBoothType] : 'N/A'}</p>
               <p className="font-bold text-xl mt-2">Total Amount Due: <span className="text-primary">${totalPrice}</span></p>
             </div>
             
@@ -250,7 +201,7 @@ export function ApplicationForm() {
             )} />
             
             <div className="flex gap-4">
-              <Button type="button" variant="outline" onClick={() => setStep(3)}>Back</Button>
+              <Button type="button" variant="outline" onClick={() => setStep(2)}>Back</Button>
               <Button type="submit">Submit Application</Button>
             </div>
           </section>
