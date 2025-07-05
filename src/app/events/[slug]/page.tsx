@@ -30,9 +30,9 @@ export default function EventDetailPage({ params }: { params: { slug: string } }
           className="z-0"
         />
         <div className="absolute inset-0 bg-black/50" />
-        <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white p-4">
+        <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4">
           <Badge className="mb-4 bg-accent text-accent-foreground">{event.category}</Badge>
-          <h1 className="font-headline text-4xl md:text-6xl font-bold !text-white drop-shadow-lg">
+          <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">
             {event.name}
           </h1>
         </div>

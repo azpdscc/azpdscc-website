@@ -39,7 +39,7 @@ export function EventCard({ event }: EventCardProps) {
           </div>
         </div>
       </CardContent>
-      <CardFooter className="p-4 bg-gray-50 dark:bg-gray-800/20">
+      <CardFooter className="p-4 bg-secondary">
         <Button asChild className="w-full">
           <Link href={`/events/${event.slug}`}>Learn More</Link>
         </Button>
