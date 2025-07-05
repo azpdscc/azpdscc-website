@@ -42,7 +42,7 @@ export default function RootLayout({
     url: 'https://www.azpdscc.org',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: '123 Community Lane',
+      streetAddress: 'AZPDSCC Community Lane',
       addressLocality: 'Buckeye',
       addressRegion: 'AZ',
       postalCode: '85326',

@@ -44,7 +44,7 @@ export function Footer() {
           <div>
             <h3 className="font-headline font-semibold text-foreground">Contact</h3>
             <address className="mt-4 text-muted-foreground text-sm not-italic">
-              123 Community Lane<br />
+              AZPDSCC Community Lane<br />
               Buckeye, AZ 85326<br />
               Email: <a href="mailto:admin@azpdscc.org" className="text-primary hover:underline">admin@azpdscc.org</a><br/>
               Phone: <a href="tel:6023172239" className="text-primary hover:underline">(602) 317-2239</a>
