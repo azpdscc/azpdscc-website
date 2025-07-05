@@ -1,12 +1,14 @@
+
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, Mountain } from 'lucide-react';
+import { Menu } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Logo } from '@/components/logo';
+import { TopBar } from '@/components/layout/top-bar';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -19,8 +21,9 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
+    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+      <TopBar />
+      <div className="container flex h-16 items-center justify-between border-t">
         <div className="flex items-center gap-6">
           <Logo />
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium">

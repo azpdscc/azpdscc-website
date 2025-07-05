@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
 import { Header } from '@/components/layout/header';
@@ -42,14 +43,15 @@ export default function RootLayout({
     address: {
       '@type': 'PostalAddress',
       streetAddress: '123 Community Lane',
-      addressLocality: 'Phoenix',
+      addressLocality: 'Buckeye',
       addressRegion: 'AZ',
-      postalCode: '85001',
+      postalCode: '85326',
       addressCountry: 'US',
     },
     contactPoint: {
       '@type': 'ContactPoint',
-      email: 'admin@pdscc.org',
+      email: 'admin@azpdscc.org',
+      telephone: '+1-602-317-2239',
       contactType: 'customer support',
     },
     sameAs: [

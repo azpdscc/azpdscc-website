@@ -74,6 +74,8 @@ export function ApplicationForm() {
   };
 
   const onSubmit: SubmitHandler<VendorApplicationFormValues> = (data) => {
+    // In a real application, you would send this data to a serverless function
+    // or backend endpoint to process the data and send a confirmation email.
     console.log(data);
     toast({
       title: "Application Submitted!",
@@ -165,7 +167,7 @@ export function ApplicationForm() {
             <div className="p-6 border-2 border-primary/50 rounded-lg bg-primary/5">
                 <h3 className="font-headline font-bold text-lg text-primary">Complete Your Booth Payment via Zelle</h3>
                 <p className="mt-2 text-muted-foreground">Please send the total amount of <strong>${totalPrice}</strong> via Zelle to:</p>
-                <p className="text-2xl font-mono bg-background p-2 rounded-md text-center my-4">admin@pdscc.org</p>
+                <p className="text-2xl font-mono bg-background p-2 rounded-md text-center my-4">admin@azpdscc.org</p>
                 <p className="font-bold text-destructive">Important: You must include your name or organization name in the Zelle memo for us to identify your payment.</p>
                 <p className="mt-2 text-sm text-muted-foreground">Your booth registration will be confirmed only after payment is received and verified by our team.</p>
             </div>

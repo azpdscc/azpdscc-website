@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import { Github, Twitter, Facebook } from 'lucide-react';
@@ -42,11 +43,12 @@ export function Footer() {
           </div>
           <div>
             <h3 className="font-headline font-semibold text-foreground">Contact</h3>
-            <p className="mt-4 text-muted-foreground text-sm">
+            <address className="mt-4 text-muted-foreground text-sm not-italic">
               123 Community Lane<br />
-              Phoenix, AZ 85001<br />
-              Email: <a href="mailto:admin@pdscc.org" className="text-primary hover:underline">admin@pdscc.org</a>
-            </p>
+              Buckeye, AZ 85326<br />
+              Email: <a href="mailto:admin@azpdscc.org" className="text-primary hover:underline">admin@azpdscc.org</a><br/>
+              Phone: <a href="tel:6023172239" className="text-primary hover:underline">(602) 317-2239</a>
+            </address>
           </div>
         </div>
         <div className="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">
