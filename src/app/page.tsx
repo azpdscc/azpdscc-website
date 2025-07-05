@@ -37,7 +37,7 @@ export default function Home() {
               <Link href="/vendors">Become a Vendor</Link>
             </Button>
             <Button asChild size="lg" variant="ghost" className="!text-white border border-white hover:bg-white/10">
-              <Link href="/about">Donate/Volunteer</Link>
+              <Link href="/donate">Donate/Volunteer</Link>
             </Button>
           </div>
         </div>

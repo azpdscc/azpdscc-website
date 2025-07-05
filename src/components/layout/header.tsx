@@ -40,7 +40,9 @@ export function Header() {
         </div>
 
         <div className="hidden md:flex items-center gap-4">
-          <Button>Donate</Button>
+          <Button asChild>
+            <Link href="/donate">Donate</Link>
+          </Button>
         </div>
 
         <div className="md:hidden">
@@ -68,7 +70,9 @@ export function Header() {
                     </Link>
                   ))}
                 </nav>
-                <Button>Donate</Button>
+                <Button asChild>
+                  <Link href="/donate">Donate</Link>
+                </Button>
               </div>
             </SheetContent>
           </Sheet>
