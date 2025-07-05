@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -5,6 +6,11 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Heart, Users, HandHeart, Award, Paintbrush } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Donate or Volunteer | Support the Phoenix Indian Community',
+  description: 'Support AZPDSCC by making a donation or volunteering your time. Your contribution helps us host Arizona Indian festivals and support the AZ India community.',
+};
 
 export default function DonatePage() {
   return (

@@ -1,7 +1,13 @@
+import type { Metadata } from 'next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle2 } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Vendor Dashboard | Manage Your Applications',
+  description: 'Manage your vendor applications for AZPDSCC events. Check the status of your booth for Arizona Indian festivals.',
+};
 
 export default function VendorDashboardPage() {
   return (

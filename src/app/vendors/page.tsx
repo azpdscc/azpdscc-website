@@ -1,7 +1,13 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, CalendarPlus, Users } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Vendor Opportunities for AZ India Events',
+  description: 'Become a vendor at Arizona Indian festivals. Find information on event-specific booths and join our vendor network for the Phoenix Indian community.',
+};
 
 export default function VendorsPage() {
   return (

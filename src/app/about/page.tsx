@@ -1,7 +1,13 @@
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { teamMembers } from '@/lib/data';
 import { HeartHandshake, Target, Users, BookOpen } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'About AZPDSCC: Our Story & Mission for the Phoenix Indian Community',
+  description: 'Learn about the story, values, and team behind AZPDSCC, a non-profit organization dedicated to serving the AZ India community and AZ Desis in Phoenix.',
+};
 
 export default function AboutPage() {
   return (

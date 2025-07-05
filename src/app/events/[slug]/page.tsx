@@ -1,9 +1,33 @@
+import type { Metadata, ResolvingMetadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { events } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, MapPin } from 'lucide-react';
+
+type Props = {
+  params: { slug: string }
+}
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const event = events.find((e) => e.slug === params.slug);
+ 
+  if (!event) {
+    return {
+        title: 'Event Not Found',
+    }
+  }
+
+  return {
+    title: `${event.name}`,
+    description: `Join us for ${event.name}, a premier event for the Phoenix Indian Community. Get details on date, time, and location.`,
+  }
+}
+
 
 export async function generateStaticParams() {
   return events.map((event) => ({

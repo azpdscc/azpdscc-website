@@ -1,5 +1,11 @@
+import type { Metadata } from 'next';
 import { ApplicationForm } from '@/components/vendors/application-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
+export const metadata: Metadata = {
+  title: 'Apply for Vendor Booths at Arizona Indian Festivals',
+  description: 'Complete your application to become a vendor at our upcoming events. Secure your vendor booth for major festivals in Arizona.',
+};
 
 export default function VendorApplyPage() {
   return (

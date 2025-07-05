@@ -5,7 +5,10 @@ import { Footer } from '@/components/layout/footer';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'AZPDSCC | Arizona Indian Community & Festivals Hub',
+  title: {
+    template: '%s | AZPDSCC Hub',
+    default: 'AZPDSCC | Arizona Indian Community & Festivals Hub',
+  },
   description: "Your hub for Arizona Indian festivals, community events, and culture. Connect with the Phoenix Indian community, AZ Desis, and find vendor booths in Arizona.",
 };
 

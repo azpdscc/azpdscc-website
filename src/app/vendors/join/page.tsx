@@ -1,5 +1,11 @@
+import type { Metadata } from 'next';
 import { GeneralRegistrationForm } from '@/components/vendors/general-registration-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
+export const metadata: Metadata = {
+  title: 'Join Our AZ India Vendor Network',
+  description: 'Register your business with AZPDSCC to join our network of vendors for AZ India events. Get priority notifications for vendor booths in Arizona.',
+};
 
 export default function VendorJoinPage() {
   return (
