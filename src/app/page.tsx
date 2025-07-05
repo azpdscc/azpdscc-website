@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { EventCard } from '@/components/events/event-card';
+import { HolidayBanner } from '@/components/holiday-banner';
 import { events } from '@/lib/data';
 import { ArrowRight, CircleDollarSign, Handshake, Sprout } from 'lucide-react';
 
@@ -36,12 +37,14 @@ export default function Home() {
             <Button asChild size="lg" variant="secondary">
               <Link href="/vendors">Become a Vendor</Link>
             </Button>
-            <Button asChild size="lg" variant="ghost" className="!text-white border border-white hover:bg-white/10">
+            <Button asChild size="lg" variant="outline" className="!text-white border border-white hover:bg-white/10">
               <Link href="/donate">Donate/Volunteer</Link>
             </Button>
           </div>
         </div>
       </section>
+
+      <HolidayBanner />
 
       <section id="about" className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4">
