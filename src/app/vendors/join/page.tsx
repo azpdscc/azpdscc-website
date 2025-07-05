@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 
 export const metadata: Metadata = {
   title: 'Join Our AZ India Vendor Network',
-  description: 'Register your business with AZPDSCC to join our network of vendors for AZ India events. Get priority notifications for vendor booths in Arizona.',
+  description: 'Join our AZ India vendor network by registering your business. Get priority access to vendor booths at Arizona festivals and connect with AZ Desis.',
 };
 
 export default function VendorJoinPage() {

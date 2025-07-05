@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 
 export const metadata: Metadata = {
   title: 'Apply for Vendor Booths at Arizona Indian Festivals',
-  description: 'Complete your application to become a vendor at our upcoming events. Secure your vendor booth for major festivals in Arizona.',
+  description: 'Apply for a vendor booth at upcoming Arizona Indian festivals. Showcase your products to the Phoenix Indian community by completing our simple application.',
 };
 
 export default function VendorApplyPage() {
