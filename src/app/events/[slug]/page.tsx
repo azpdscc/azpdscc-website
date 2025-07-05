@@ -5,6 +5,7 @@ import { events } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, MapPin } from 'lucide-react';
+import type { Event } from '@/lib/types';
 
 type Props = {
   params: { slug: string }
@@ -36,6 +37,41 @@ export async function generateStaticParams() {
   }));
 }
 
+const createEventSchema = (event: Event) => {
+  const [startTime, endTime] = event.time.split(' - ');
+  const startDate = new Date(`${event.date} ${startTime || '12:00 AM'}`);
+  const endDate = new Date(`${event.date} ${endTime || '11:59 PM'}`);
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: event.name,
+    startDate: startDate.toISOString(),
+    endDate: endDate.toISOString(),
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    eventStatus: 'https://schema.org/EventScheduled',
+    location: {
+      '@type': 'Place',
+      name: event.location,
+      address: event.location,
+    },
+    image: [event.image],
+    description: event.fullDescription,
+    offers: {
+      '@type': 'Offer',
+      url: `https://www.azpdscc.org/events/${event.slug}`,
+      price: '0',
+      priceCurrency: 'USD',
+      availability: 'https://schema.org/InStock',
+    },
+    organizer: {
+      '@type': 'Organization',
+      name: 'AZPDSCC',
+      url: 'https://www.azpdscc.org',
+    },
+  };
+};
+
 export default function EventDetailPage({ params }: { params: { slug: string } }) {
   const event = events.find((e) => e.slug === params.slug);
 
@@ -43,8 +79,14 @@ export default function EventDetailPage({ params }: { params: { slug: string } }
     notFound();
   }
 
+  const eventSchema = createEventSchema(event);
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventSchema) }}
+      />
       <section className="relative h-[50vh] min-h-[300px] w-full">
         <Image
           src={event.image}
