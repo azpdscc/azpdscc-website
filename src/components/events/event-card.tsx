@@ -19,8 +19,9 @@ export function EventCard({ event }: EventCardProps) {
             src={event.image}
             alt={event.name}
             data-ai-hint={`${event.category.toLowerCase()} event`}
-            layout="fill"
-            objectFit="cover"
+            fill
+            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+            className="object-cover"
           />
            <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground">{event.category}</Badge>
         </div>

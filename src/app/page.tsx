@@ -19,9 +19,10 @@ export default function Home() {
           src="https://placehold.co/1920x1080.png"
           alt="Indian festival celebration"
           data-ai-hint="festival celebration"
-          layout="fill"
-          objectFit="cover"
-          className="z-0"
+          fill
+          sizes="100vw"
+          priority
+          className="z-0 object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4">

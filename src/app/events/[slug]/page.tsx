@@ -92,9 +92,10 @@ export default function EventDetailPage({ params }: { params: { slug: string } }
           src={event.image}
           alt={event.name}
           data-ai-hint={`${event.category.toLowerCase()} event`}
-          layout="fill"
-          objectFit="cover"
-          className="z-0"
+          fill
+          sizes="100vw"
+          priority
+          className="z-0 object-cover"
         />
         <div className="absolute inset-0 bg-black/50" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4">
