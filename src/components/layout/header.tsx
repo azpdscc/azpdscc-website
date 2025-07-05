@@ -21,18 +21,18 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <TopBar />
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
           <Logo />
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+          <nav className="hidden md:flex items-center gap-6 text-sm">
             {navLinks.map(({ href, label }) => (
               <Link
                 key={href}
                 href={href}
                 className={cn(
-                  'transition-colors hover:text-primary',
+                  'font-medium transition-colors hover:text-primary',
                   pathname === href ? 'text-primary' : 'text-muted-foreground'
                 )}
               >
