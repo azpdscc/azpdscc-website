@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -21,7 +20,7 @@ export function TopBar() {
 
   return (
     <div className="bg-secondary/50 text-secondary-foreground">
-      <div className="container mx-auto px-4 flex items-center justify-between text-xs h-8">
+      <div className="container flex items-center justify-between text-xs h-8">
         <div className="font-medium">
           {dateTime || 'Loading date and time...'}
         </div>
