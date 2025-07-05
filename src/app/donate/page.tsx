@@ -1,4 +1,6 @@
+
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -99,7 +101,7 @@ export default function DonatePage() {
               </CardHeader>
               <CardContent className="flex-grow">
                 <p className="text-center text-muted-foreground">
-                    Volunteers are the heart of our organization. If you'd like to help with events, outreach, or administrative tasks, we'd love to have you.
+                    Volunteers are the heart of our organization. If you'd like to help with events, outreach, or administrative tasks, we'd love to have you. <Link href="/about" className="text-primary hover:underline">Learn more about our mission</Link>.
                 </p>
               </CardContent>
               <CardFooter>
@@ -122,7 +124,9 @@ export default function DonatePage() {
                     <div className="bg-primary/10 rounded-full p-4 mb-4">
                         <Award className="h-10 w-10 text-primary" />
                     </div>
-                    <h3 className="font-headline text-xl font-semibold">Vibrant Festivals</h3>
+                    <h3 className="font-headline text-xl font-semibold">
+                      <Link href="/events" className="hover:underline">Vibrant Festivals</Link>
+                    </h3>
                     <p className="mt-2 text-muted-foreground">Funding cultural events like Diwali and Holi.</p>
                 </div>
                 <div className="flex flex-col items-center">

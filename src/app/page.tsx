@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -53,7 +54,7 @@ export default function Home() {
               Welcome to the Hub for AZ Indians
             </h2>
             <p className="mt-4 max-w-3xl mx-auto text-muted-foreground">
-              We are a non-profit organization dedicated to preserving and promoting Indian culture for the Phoenix Indian community. We bring AZ Indians together through vibrant festivals and events across Arizona.
+              We are a <Link href="/about" className="text-primary hover:underline">non-profit organization</Link> dedicated to preserving and promoting Indian culture for the Phoenix Indian community. We bring AZ Indians together through vibrant festivals and events across Arizona.
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -62,7 +63,9 @@ export default function Home() {
                 <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit">
                   <Handshake className="h-8 w-8 text-primary" />
                 </div>
-                <CardTitle className="font-headline mt-4">Festivals</CardTitle>
+                <CardTitle className="font-headline mt-4">
+                  <Link href="/events" className="hover:underline">Festivals</Link>
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
@@ -75,7 +78,9 @@ export default function Home() {
                 <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit">
                   <Sprout className="h-8 w-8 text-primary" />
                 </div>
-                <CardTitle className="font-headline mt-4">Community Outreach</CardTitle>
+                <CardTitle className="font-headline mt-4">
+                  <Link href="/about" className="hover:underline">Community Outreach</Link>
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
@@ -88,7 +93,9 @@ export default function Home() {
                 <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit">
                   <CircleDollarSign className="h-8 w-8 text-primary" />
                 </div>
-                <CardTitle className="font-headline mt-4">Cultural Preservation</CardTitle>
+                <CardTitle className="font-headline mt-4">
+                  <Link href="/about" className="hover:underline">Cultural Preservation</Link>
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
@@ -138,6 +145,11 @@ export default function Home() {
               <p className="mt-4 text-muted-foreground">
                 We are proud of the Phoenix Indian community we've built and the positive impact we've made. Our events bring the AZ India community together, support local artisans, and create lasting memories.
               </p>
+              <div className="mt-6">
+                <Button asChild>
+                  <Link href="/about">Learn More About Our Mission <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                </Button>
+              </div>
               <div className="mt-8 grid grid-cols-2 gap-8">
                 <div className="text-center md:text-left">
                   <p className="font-headline text-4xl font-bold text-primary">10+</p>

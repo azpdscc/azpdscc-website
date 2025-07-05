@@ -1,8 +1,11 @@
+
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { teamMembers } from '@/lib/data';
 import { HeartHandshake, Target, Users, BookOpen } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export const metadata: Metadata = {
   title: 'About AZPDSCC: Our Story & Mission for the Phoenix Indian Community',
@@ -21,7 +24,7 @@ export default function AboutPage() {
                 AZPDSCC was founded in 2010 by a group of passionate individuals who wanted to create a home away from home for the Phoenix Indian community and AZ Desis.
               </p>
               <p className="mt-4 text-muted-foreground">
-                What started as small gatherings has grown into a vibrant non-profit organization that hosts some of the largest Arizona Indian festivals in the state. Our mission is to celebrate our rich heritage, foster a sense of belonging, and build a strong, supportive community for generations to come.
+                What started as small gatherings has grown into a vibrant non-profit organization that hosts some of the largest <Link href="/events" className="text-primary hover:underline">Arizona Indian festivals</Link> in the state. Our mission is to celebrate our rich heritage, foster a sense of belonging, and build a strong, supportive community for generations to come.
               </p>
             </div>
             <div className="w-full h-full">
@@ -86,6 +89,23 @@ export default function AboutPage() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 md:py-24 text-center">
+        <div className="container mx-auto px-4">
+          <h2 className="font-headline text-3xl md:text-4xl font-bold">Get Involved</h2>
+          <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
+            Inspired by our story? There are many ways to support our mission and the Phoenix Indian community. Explore our upcoming events or consider making a donation.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-4 justify-center">
+            <Button asChild size="lg">
+              <Link href="/events">Explore Events</Link>
+            </Button>
+            <Button asChild size="lg" variant="secondary">
+              <Link href="/donate">Donate or Volunteer</Link>
+            </Button>
           </div>
         </div>
       </section>
