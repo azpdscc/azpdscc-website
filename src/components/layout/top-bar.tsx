@@ -2,8 +2,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { Twitter, Facebook, Github } from 'lucide-react';
 import { format } from 'date-fns';
 
 export function TopBar() {
@@ -27,17 +25,7 @@ export function TopBar() {
         <div className="font-medium">
           {dateTime || 'Loading date and time...'}
         </div>
-        <div className="flex items-center space-x-4">
-          <Link href="#" className="text-muted-foreground hover:text-primary">
-            <Twitter className="h-4 w-4" />
-          </Link>
-          <Link href="#" className="text-muted-foreground hover:text-primary">
-            <Facebook className="h-4 w-4" />
-          </Link>
-          <Link href="#" className="text-muted-foreground hover:text-primary">
-            <Github className="h-4 w-4" />
-          </Link>
-        </div>
+        <div />
       </div>
     </div>
   );

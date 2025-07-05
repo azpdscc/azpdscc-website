@@ -2,7 +2,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu } from 'lucide-react';
+import { Menu, Twitter, Facebook, Github } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -23,7 +23,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
       <TopBar />
-      <div className="container flex h-16 items-center justify-between border-t">
+      <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-6">
           <Logo />
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
@@ -46,6 +46,17 @@ export function Header() {
           <Button asChild>
             <Link href="/donate">Donate</Link>
           </Button>
+          <div className="flex items-center space-x-4">
+              <Link href="#" className="text-muted-foreground hover:text-primary">
+                <Twitter className="h-5 w-5" />
+              </Link>
+              <Link href="#" className="text-muted-foreground hover:text-primary">
+                <Facebook className="h-5 w-5" />
+              </Link>
+              <Link href="#" className="text-muted-foreground hover:text-primary">
+                <Github className="h-5 w-5" />
+              </Link>
+            </div>
         </div>
 
         <div className="md:hidden">
@@ -56,26 +67,37 @@ export function Header() {
                 <span className="sr-only">Toggle navigation menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left">
-              <div className="flex flex-col gap-6 p-6">
-                <Logo />
-                <nav className="grid gap-4">
-                  {navLinks.map(({ href, label }) => (
-                    <Link
-                      key={href}
-                      href={href}
-                      className={cn(
-                        'text-lg font-medium transition-colors hover:text-primary',
-                        pathname === href ? 'text-primary' : 'text-muted-foreground'
-                      )}
-                    >
-                      {label}
-                    </Link>
-                  ))}
-                </nav>
-                <Button asChild>
+            <SheetContent side="left" className="flex flex-col">
+              <Logo />
+              <nav className="grid gap-4 mt-6">
+                {navLinks.map(({ href, label }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={cn(
+                      'text-lg font-medium transition-colors hover:text-primary',
+                      pathname === href ? 'text-primary' : 'text-muted-foreground'
+                    )}
+                  >
+                    {label}
+                  </Link>
+                ))}
+              </nav>
+              <div className="mt-auto space-y-4">
+                <Button asChild className="w-full">
                   <Link href="/donate">Donate</Link>
                 </Button>
+                <div className="flex items-center justify-center space-x-4 pt-4 border-t">
+                  <Link href="#" className="text-muted-foreground hover:text-primary">
+                      <Twitter className="h-5 w-5" />
+                  </Link>
+                  <Link href="#" className="text-muted-foreground hover:text-primary">
+                      <Facebook className="h-5 w-5" />
+                  </Link>
+                  <Link href="#" className="text-muted-foreground hover:text-primary">
+                      <Github className="h-5 w-5" />
+                  </Link>
+                </div>
               </div>
             </SheetContent>
           </Sheet>
