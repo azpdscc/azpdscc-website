@@ -1,0 +1,29 @@
+import { GeneralRegistrationForm } from '@/components/vendors/general-registration-form';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
+export default function VendorJoinPage() {
+  return (
+    <div className="container mx-auto px-4 py-12">
+      <section className="text-center mb-12">
+        <h1 className="font-headline text-4xl md:text-5xl font-bold">Join Our Vendor Network</h1>
+        <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
+          Register your business with us to get priority notifications about future event opportunities, and become part of our growing community of talented vendors.
+        </p>
+      </section>
+
+      <div className="max-w-4xl mx-auto">
+        <Card className="shadow-xl">
+          <CardHeader>
+            <CardTitle className="font-headline text-3xl">General Vendor Registration</CardTitle>
+            <CardDescription>
+              Tell us a bit about your business. This information will help us match you with the right events.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <GeneralRegistrationForm />
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
