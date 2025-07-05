@@ -100,7 +100,7 @@ export default function Home() {
         </div>
       </section>
       
-      <section id="events" className="py-16 md:py-24 bg-white">
+      <section id="events" className="py-16 md:py-24 bg-card">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-12">
             <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">Upcoming Events</h2>

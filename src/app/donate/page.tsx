@@ -105,7 +105,7 @@ export default function DonatePage() {
       </main>
 
       {/* Impact Section */}
-      <section className="py-16 bg-white dark:bg-background">
+      <section className="py-16 bg-card">
         <div className="container mx-auto px-4 text-center">
             <h2 className="font-headline text-3xl md:text-4xl font-bold">Where Your Donation Goes</h2>
             <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">

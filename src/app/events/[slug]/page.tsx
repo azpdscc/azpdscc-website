@@ -52,7 +52,7 @@ export default function EventDetailPage({ params }: { params: { slug: string } }
              </ul>
           </div>
           <div className="md:col-span-1">
-            <div className="p-6 border rounded-lg bg-white shadow-md sticky top-24">
+            <div className="p-6 border rounded-lg bg-card shadow-md sticky top-24">
               <h3 className="font-headline text-2xl font-bold mb-4">Details</h3>
               <div className="space-y-4 text-muted-foreground">
                  <div className="flex items-start gap-3">

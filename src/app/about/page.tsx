@@ -6,7 +6,7 @@ import { HeartHandshake, Target, Users, BookOpen } from 'lucide-react';
 export default function AboutPage() {
   return (
     <div className="bg-background">
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-card">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
@@ -61,7 +61,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-card">
         <div className="container mx-auto px-4">
           <h2 className="text-center font-headline text-3xl md:text-4xl font-bold">Meet Our Team</h2>
           <p className="text-center mt-4 max-w-2xl mx-auto text-muted-foreground">
