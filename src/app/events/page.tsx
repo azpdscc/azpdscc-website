@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from 'react';
 import { EventCard } from '@/components/events/event-card';
-import { AiRecommendations } from '@/components/events/ai-recommendations';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { events } from '@/lib/data';
@@ -67,10 +66,6 @@ export default function EventsPage() {
             <p className="md:col-span-3 text-center text-muted-foreground">No events found. Try adjusting your search or filters.</p>
           )}
         </div>
-      </section>
-
-      <section>
-        <AiRecommendations />
       </section>
     </div>
   );
