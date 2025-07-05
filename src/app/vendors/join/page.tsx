@@ -5,9 +5,9 @@ export default function VendorJoinPage() {
   return (
     <div className="container mx-auto px-4 py-12">
       <section className="text-center mb-12">
-        <h1 className="font-headline text-4xl md:text-5xl font-bold">Join Our Vendor Network</h1>
+        <h1 className="font-headline text-4xl md:text-5xl font-bold">Join Our AZ India Vendor Network</h1>
         <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-          Register your business with us to get priority notifications about future event opportunities, and become part of our growing community of talented vendors.
+          Register your business to get priority notifications for vendor booths at Arizona events. Become part of our growing community of talented vendors serving AZ Desis.
         </p>
       </section>
 

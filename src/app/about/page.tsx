@@ -10,12 +10,12 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h1 className="font-headline text-4xl md:text-5xl font-bold text-foreground">Our Story</h1>
+              <h1 className="font-headline text-4xl md:text-5xl font-bold text-foreground">Our Story: Building the Phoenix Indian Community</h1>
               <p className="mt-4 text-lg text-muted-foreground">
-                AZPDSCC was founded in 2010 by a group of passionate individuals who wanted to create a home away from home for the Indian community in Arizona.
+                AZPDSCC was founded in 2010 by a group of passionate individuals who wanted to create a home away from home for the Phoenix Indian community and AZ Desis.
               </p>
               <p className="mt-4 text-muted-foreground">
-                What started as small gatherings has grown into a vibrant non-profit organization that hosts some of the largest cultural festivals in the state. Our mission is to celebrate our rich heritage, foster a sense of belonging, and build a strong, supportive community for generations to come.
+                What started as small gatherings has grown into a vibrant non-profit organization that hosts some of the largest Arizona Indian festivals in the state. Our mission is to celebrate our rich heritage, foster a sense of belonging, and build a strong, supportive community for generations to come.
               </p>
             </div>
             <div className="w-full h-full">
@@ -65,7 +65,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <h2 className="text-center font-headline text-3xl md:text-4xl font-bold">Meet Our Team</h2>
           <p className="text-center mt-4 max-w-2xl mx-auto text-muted-foreground">
-            We are a group of dedicated volunteers committed to serving our community.
+            We are a group of dedicated volunteers committed to serving the AZ India community.
           </p>
           <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {teamMembers.map((member) => (

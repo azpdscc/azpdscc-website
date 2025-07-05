@@ -25,10 +25,10 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4">
           <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold !text-primary-foreground drop-shadow-lg">
-            Connecting Arizona&apos;s Indian Community
+            Connecting the Arizona Indian Community &amp; AZ Desis
           </h1>
           <p className="mt-4 max-w-2xl text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
-            Through Culture, Celebration, and Community Outreach.
+            Your home for vibrant Arizona Indian festivals, culture, and community outreach in Phoenix.
           </p>
           <div className="mt-8 flex flex-wrap gap-4 justify-center">
             <Button asChild size="lg">
@@ -50,10 +50,10 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="text-center">
             <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">
-              Welcome to AZPDSCC
+              Welcome to the Hub for AZ Indians
             </h2>
             <p className="mt-4 max-w-3xl mx-auto text-muted-foreground">
-              We are a non-profit organization dedicated to preserving and promoting Indian culture, fostering community bonds, and celebrating our rich heritage through vibrant festivals and events across Arizona.
+              We are a non-profit organization dedicated to preserving and promoting Indian culture for the Phoenix Indian community. We bring AZ Indians together through vibrant festivals and events across Arizona.
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -103,7 +103,7 @@ export default function Home() {
       <section id="events" className="py-16 md:py-24 bg-card">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-12">
-            <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">Upcoming Events</h2>
+            <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">Upcoming Arizona Indian Festivals</h2>
             <Button asChild variant="link" className="text-primary">
               <Link href="/events">View All <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
@@ -134,9 +134,9 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">Our Impact, By the Numbers</h2>
+              <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">Our Impact in the Phoenix Indian Community</h2>
               <p className="mt-4 text-muted-foreground">
-                We are proud of the community we've built and the positive impact we've made. Our events bring people together, support local artisans, and create lasting memories.
+                We are proud of the Phoenix Indian community we've built and the positive impact we've made. Our events bring the AZ India community together, support local artisans, and create lasting memories.
               </p>
               <div className="mt-8 grid grid-cols-2 gap-8">
                 <div className="text-center md:text-left">

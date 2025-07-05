@@ -14,10 +14,10 @@ export default function DonatePage() {
         <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20" />
         <div className="relative z-10 p-4">
           <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">
-            Support Our Mission
+            Support the Phoenix Indian Community
           </h1>
           <p className="mt-4 max-w-2xl text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
-            Your contribution empowers us to preserve culture, celebrate heritage, and strengthen our community.
+            Your contribution empowers us to preserve culture, celebrate heritage, and strengthen the Phoenix Indian community and AZ India connections.
           </p>
         </div>
       </section>

@@ -7,9 +7,9 @@ export default function VendorsPage() {
   return (
     <div className="container mx-auto px-4 py-12">
       <section className="text-center mb-12">
-        <h1 className="font-headline text-4xl md:text-5xl font-bold">Partner With Us</h1>
+        <h1 className="font-headline text-4xl md:text-5xl font-bold">Vendor Booths for Arizona Indian Festivals</h1>
         <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-          Showcase your business to a large and engaged audience. We offer opportunities for event-specific booths and a general vendor network for future events.
+          Showcase your business to the large and engaged Phoenix Indian community. We offer opportunities for event-specific vendor booths in Arizona and a general network for future AZ India events.
         </p>
       </section>
       
@@ -21,7 +21,7 @@ export default function VendorsPage() {
                 <CalendarPlus className="h-10 w-10 text-primary" />
               </div>
             </div>
-            <CardTitle className="font-headline text-2xl text-center">Apply for an Event Booth</CardTitle>
+            <CardTitle className="font-headline text-2xl text-center">Apply for Event Vendor Booths</CardTitle>
             <CardDescription className="text-center">
               Have a specific upcoming event in mind? Apply for a booth to sell your products and services.
             </CardDescription>
@@ -40,7 +40,7 @@ export default function VendorsPage() {
                 <Users className="h-10 w-10 text-primary" />
               </div>
             </div>
-            <CardTitle className="font-headline text-2xl text-center">Join Our Vendor Network</CardTitle>
+            <CardTitle className="font-headline text-2xl text-center">Join Our Arizona Vendor Network</CardTitle>
             <CardDescription className="text-center">
               Not ready for a specific event? Join our network to be notified of future vendor opportunities.
             </CardDescription>

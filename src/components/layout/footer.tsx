@@ -10,7 +10,7 @@ export function Footer() {
           <div className="md:col-span-1">
             <Logo />
             <p className="mt-4 text-muted-foreground text-sm">
-              Connecting Arizona&apos;s Indian Community Through Culture & Celebration.
+              Connecting Arizona&apos;s Indian Community, AZ Desis, and the greater Phoenix Indian community through culture & celebration.
             </p>
             <div className="mt-4 flex space-x-4">
               <Link href="#" className="text-muted-foreground hover:text-primary">

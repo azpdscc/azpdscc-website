@@ -25,9 +25,9 @@ export default function EventsPage() {
   return (
     <div className="container mx-auto px-4 py-12">
       <section className="text-center mb-12">
-        <h1 className="font-headline text-4xl md:text-5xl font-bold">Events & Festivals</h1>
+        <h1 className="font-headline text-4xl md:text-5xl font-bold">Arizona Indian Festivals & Events</h1>
         <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-          Discover vibrant cultural celebrations, food fairs, music nights, and more.
+          Discover vibrant Arizona Indian festivals, cultural celebrations, food fairs, and music nights for the entire Phoenix Indian community.
         </p>
       </section>
       
