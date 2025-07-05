@@ -30,7 +30,17 @@ export function HolidayBanner() {
           transition={{ duration: 0.5 }}
           className="container mx-auto px-4 -mt-12 mb-12 z-20 relative"
         >
-          <Card className="bg-gradient-to-r from-primary to-accent border-0 shadow-2xl">
+          <Card
+            className="bg-gradient-to-r from-primary to-accent border-0 shadow-2xl"
+            style={
+              {
+                '--primary': currentHoliday.primaryColor,
+                '--accent': currentHoliday.accentColor,
+                // Ensure text remains readable against any background
+                '--primary-foreground': '0 0% 100%',
+              } as React.CSSProperties
+            }
+          >
             <CardContent className="p-4 flex items-center justify-center gap-4 text-center">
               <currentHoliday.icon className="h-8 w-8 text-primary-foreground flex-shrink-0" />
               <p className="text-xl md:text-2xl font-bold text-primary-foreground">
