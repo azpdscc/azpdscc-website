@@ -22,7 +22,7 @@ export default function Home() {
           objectFit="cover"
           className="z-0"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/50 to-accent/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4">
           <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold !text-primary-foreground drop-shadow-lg">
             Connecting Arizona&apos;s Indian Community
