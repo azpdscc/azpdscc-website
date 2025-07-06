@@ -23,7 +23,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <TopBar />
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-6">
           <Logo />
           <nav className="hidden md:flex items-center gap-6 text-sm">
@@ -32,8 +32,10 @@ export function Header() {
                 key={href}
                 href={href}
                 className={cn(
-                  'font-semibold transition-colors hover:text-primary',
-                  pathname === href ? 'text-primary' : 'text-muted-foreground'
+                  'font-bold transition-colors hover:text-primary hover:underline underline-offset-4',
+                  pathname === href
+                    ? 'text-primary underline'
+                    : 'text-muted-foreground'
                 )}
               >
                 {label}
@@ -75,8 +77,10 @@ export function Header() {
                     key={href}
                     href={href}
                     className={cn(
-                      'text-lg font-semibold transition-colors hover:text-primary',
-                      pathname === href ? 'text-primary' : 'text-muted-foreground'
+                      'text-lg font-bold transition-colors hover:text-primary hover:underline underline-offset-4',
+                      pathname === href
+                        ? 'text-primary underline'
+                        : 'text-muted-foreground'
                     )}
                   >
                     {label}
