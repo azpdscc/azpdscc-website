@@ -77,4 +77,39 @@ The email addresses that receive the form submissions are currently set to place
     -   File: `src/ai/flows/send-general-registration-flow.ts`
     -   Find the line `to: 'vendors@azpdscc.org'` and change the email address.
 
-By following these steps, you can ensure all forms deliver emails to the correct inboxes.
+## 4. How to Update Social Media Links
+
+The header and footer contain social media icons. You need to update them to point to your organization's profiles.
+
+-   **Files to Edit:**
+    -   `src/components/layout/header.tsx`
+    -   `src/components/layout/footer.tsx`
+-   **What to do:** In both files, find the links that look like this:
+    ```html
+    <Link href="#" className="text-muted-foreground hover:text-primary">
+      <Twitter className="h-5 w-5" strokeWidth={1.5} />
+    </Link>
+    ```
+-   **Change the `href` attribute:** Replace the `"#"` with the full URL to your social media page.
+    -   **Example:** `href="https://twitter.com/your-profile"`
+
+## 5. How to Update Contact Information
+
+Your organization's phone number and physical address are displayed in a few places.
+
+-   **Files to Edit:**
+    -   `src/app/contact/page.tsx`
+    -   `src/components/layout/footer.tsx`
+-   **What to do:** Open these files and find the placeholder phone number `(602) 317-2239` and address `AZPDSCC Community Lane, Buckeye, AZ 85326`. Replace them with your correct information.
+
+## 6. How to Manage Other Content (Team & Blog)
+
+The "About Us" page team members and the blog posts are managed in data files, similar to events.
+
+-   **For Team Members:**
+    -   **File:** `src/lib/data.ts`
+    -   **Action:** Find the `teamMembers` array and edit the objects inside to change names, roles, bios, or image links.
+
+-   **For Blog Posts:**
+    -   **File:** `src/lib/blog-data.ts`
+    -   **Action:** To add a new blog post, copy an existing post object, paste it at the top of the `blogPosts` array, give it a new unique `id`, and update its content.
