@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { sendGeneralRegistration } from '@/ai/flows/send-general-registration-flow';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
   businessName: z.string().min(2, "Business name must be at least 2 characters."),
@@ -25,6 +28,7 @@ const formSchema = z.object({
 type GeneralRegistrationFormValues = z.infer<typeof formSchema>;
 
 export function GeneralRegistrationForm() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const form = useForm<GeneralRegistrationFormValues>({
     resolver: zodResolver(formSchema),
@@ -38,14 +42,37 @@ export function GeneralRegistrationForm() {
     },
   });
 
-  const onSubmit: SubmitHandler<GeneralRegistrationFormValues> = (data) => {
-    // In a real application, you would send this data to your backend.
-    console.log(data);
-    toast({
-      title: "Registration Successful!",
-      description: "Thank you for joining our vendor network! We'll be in touch about future opportunities.",
-    });
-    form.reset();
+  const onSubmit: SubmitHandler<GeneralRegistrationFormValues> = async (data) => {
+    setIsSubmitting(true);
+    try {
+      const response = await sendGeneralRegistration({
+        businessName: data.businessName,
+        contactName: data.contactName,
+        email: data.email,
+      });
+
+      if (response.success) {
+        toast({
+          title: "Registration Successful!",
+          description: response.message,
+        });
+        form.reset();
+      } else {
+        toast({
+          variant: 'destructive',
+          title: "Registration Failed",
+          description: response.message,
+        });
+      }
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: "An Error Occurred",
+        description: "Could not process the registration at this time. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -62,7 +89,7 @@ export function GeneralRegistrationForm() {
             <FormItem><FormLabel>Email Address</FormLabel><FormControl><Input type="email" placeholder="you@example.com" {...field} /></FormControl><FormMessage /></FormItem>
             )} />
             <FormField name="phone" control={form.control} render={({ field }) => (
-            <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input type="tel" placeholder="(555) 555-5555" {...field} /></FormControl><FormMessage /></FormItem>
+            <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input type="tel" placeholder="(555) 555-5555" {...field} /></FormControl><FormMessage /></FormMessage>
             )} />
         </div>
         <FormField name="category" control={form.control} render={({ field }) => (
@@ -90,7 +117,10 @@ export function GeneralRegistrationForm() {
           </FormItem>
         )} />
         
-        <Button type="submit" size="lg">Join Network</Button>
+        <Button type="submit" size="lg" disabled={isSubmitting}>
+          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          Join Network
+        </Button>
       </form>
     </Form>
   );

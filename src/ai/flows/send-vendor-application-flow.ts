@@ -1,0 +1,140 @@
+'use server';
+/**
+ * @fileOverview A flow to handle vendor applications, sending notifications and a ticket.
+ *
+ * - sendVendorApplication: Processes a new vendor application.
+ * - VendorApplicationInput: The input type for the flow.
+ * - VendorApplicationOutput: The return type for the flow.
+ */
+
+import { ai } from '@/ai/genkit';
+import { z } from 'zod';
+// TODO: To enable email sending, uncomment the following line and ensure you have a RESEND_API_KEY.
+// import { Resend } from 'resend';
+
+// Input schema for the vendor application flow
+const VendorApplicationInputSchema = z.object({
+  name: z.string().describe("The full name of the contact person."),
+  organization: z.string().optional().describe("The name of the vendor's organization."),
+  email: z.string().email().describe("The vendor's email address."),
+  boothType: z.string().describe("The type of booth selected, e.g., '10x10 Booth (Our Canopy) - $350'"),
+  totalPrice: z.number().describe("The total price for the selected booth."),
+});
+export type VendorApplicationInput = z.infer<typeof VendorApplicationInputSchema>;
+
+// Output schema for the flow
+const VendorApplicationOutputSchema = z.object({
+  success: z.boolean(),
+  message: z.string(),
+});
+export type VendorApplicationOutput = z.infer<typeof VendorApplicationOutputSchema>;
+
+/**
+ * Public function to trigger the vendor application flow.
+ * @param input The vendor application details.
+ * @returns A promise that resolves to the flow's output.
+ */
+export async function sendVendorApplication(input: VendorApplicationInput): Promise<VendorApplicationOutput> {
+  return sendVendorApplicationFlow(input);
+}
+
+// AI prompt to generate a vendor ticket email
+const vendorTicketEmailPrompt = ai.definePrompt({
+  name: 'vendorTicketEmailPrompt',
+  input: { schema: VendorApplicationInputSchema },
+  output: { format: 'text' }, // We are generating HTML, so text is fine.
+  prompt: `
+    Generate an HTML email to be sent to a vendor as their event ticket and confirmation.
+    The email should be professional, welcoming, and clearly structured.
+    The subject line should be: "Your Vendor Booth Confirmation for Diwali Festival of Lights 2024".
+
+    Use modern, clean HTML with inline CSS for maximum email client compatibility.
+    The email should have a main container with a light gray background (#f4f4f4) and a white content area with rounded corners.
+
+    The email must contain the following sections:
+    1.  A header with the "AZPDSCC" logo text and the title "Vendor Confirmation & Ticket".
+    2.  A personalized greeting: "Dear {{{name}}},".
+    3.  A confirmation message: "Thank you for registering as a vendor for the upcoming Diwali Festival of Lights 2024! We've received your application and are excited to have you."
+    4.  A "Ticket Details" section with the following information in a styled table or divs:
+        -   **Vendor Name:** {{{name}}}
+        -   **Organization:** {{{organization}}} (Show only if provided)
+        -   **Booth Type:** {{{boothType}}}
+        -   **Amount Paid:** \${{{totalPrice}}}
+    5.  A placeholder for a QR code. This should be a 150x150px image placeholder. Use: <img src="https://placehold.co/150x150.png" alt="QR Code" style="display: block; margin: 20px auto;" />
+    6.  Instructions: "Please present this email (or the QR code) at the vendor check-in gate on the day of the event."
+    7.  A closing: "We look forward to seeing you there," followed by "The AZPDSCC Team".
+
+    The entire response should be only the HTML code for the email body. Do not include any text before or after the <html> tag.
+  `,
+});
+
+// The main Genkit flow
+const sendVendorApplicationFlow = ai.defineFlow(
+  {
+    name: 'sendVendorApplicationFlow',
+    inputSchema: VendorApplicationInputSchema,
+    outputSchema: VendorApplicationOutputSchema,
+  },
+  async (input) => {
+    try {
+      // 1. Generate the vendor's ticket email
+      const { output: vendorEmailHtml } = await vendorTicketEmailPrompt(input);
+      if (!vendorEmailHtml) {
+        return { success: false, message: 'Failed to generate vendor ticket.' };
+      }
+
+      // 2. Prepare the notification email for the admin
+      const adminEmailText = `
+        A new vendor application has been submitted and paid for.
+
+        Details:
+        - Contact Name: ${input.name}
+        - Organization: ${input.organization || 'N/A'}
+        - Email: ${input.email}
+        - Booth Type: ${input.boothType}
+        - Amount Paid: $${input.totalPrice}
+
+        Please verify the Zelle payment and update records accordingly.
+      `;
+
+      // 3. Send the emails (simulated)
+      // TODO: Uncomment and configure the following section to send real emails.
+      /*
+      const resend = new Resend(process.env.RESEND_API_KEY);
+
+      // Send to vendor
+      await resend.emails.send({
+        from: 'AZPDSCC Vendors <vendors@yourdomain.com>',
+        to: input.email,
+        subject: 'Your Vendor Booth Confirmation for Diwali Festival of Lights 2024',
+        html: vendorEmailHtml,
+      });
+
+      // Send to admin
+      await resend.emails.send({
+        from: 'Vendor Bot <noreply@yourdomain.com>',
+        to: 'vendors@azpdscc.org',
+        subject: 'New Paid Vendor Application Submitted!',
+        text: adminEmailText,
+      });
+      */
+
+      console.log('--- SIMULATED VENDOR TICKET EMAIL ---');
+      console.log(`To: ${input.email}`);
+      console.log(`Subject: Your Vendor Booth Confirmation for Diwali Festival of Lights 2024`);
+      console.log(vendorEmailHtml);
+      console.log('------------------------------------');
+      
+      console.log('--- SIMULATED ADMIN NOTIFICATION EMAIL ---');
+      console.log('To: vendors@azpdscc.org');
+      console.log('Subject: New Paid Vendor Application Submitted!');
+      console.log(adminEmailText);
+      console.log('-----------------------------------------');
+
+      return { success: true, message: "Application submitted! A confirmation ticket has been sent to your email." };
+    } catch (error) {
+      console.error('Vendor application flow failed:', error);
+      return { success: false, message: 'An error occurred while processing your application.' };
+    }
+  }
+);

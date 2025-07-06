@@ -6,6 +6,7 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { cn } from '@/lib/utils';
+import { sendVendorApplication } from '@/ai/flows/send-vendor-application-flow';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,7 +17,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { useToast } from '@/hooks/use-toast';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 
 const formSchema = z.object({
@@ -52,6 +53,7 @@ const boothPrices: { [key: string]: number } = {
 
 export function ApplicationForm() {
   const [step, setStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const form = useForm<VendorApplicationFormValues>({
     resolver: zodResolver(formSchema),
@@ -73,16 +75,40 @@ export function ApplicationForm() {
     }
   };
 
-  const onSubmit: SubmitHandler<VendorApplicationFormValues> = (data) => {
-    // In a real application, you would send this data to a serverless function
-    // or backend endpoint to process the data and send a confirmation email.
-    console.log(data);
-    toast({
-      title: "Application Submitted!",
-      description: "Thank you! We will review your application and confirm your booth once payment is verified.",
-    });
-    form.reset();
-    setStep(1);
+  const onSubmit: SubmitHandler<VendorApplicationFormValues> = async (data) => {
+    setIsSubmitting(true);
+    try {
+      const response = await sendVendorApplication({
+        name: data.name,
+        organization: data.organization,
+        email: data.email,
+        boothType: boothOptions[data.boothType], // Send the full string description
+        totalPrice: boothPrices[data.boothType],
+      });
+
+      if (response.success) {
+        toast({
+          title: "Application Submitted!",
+          description: response.message,
+        });
+        form.reset();
+        setStep(1);
+      } else {
+        toast({
+          variant: 'destructive',
+          title: "Submission Failed",
+          description: response.message,
+        });
+      }
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: "An Error Occurred",
+        description: "Could not process the application at this time. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const selectedBoothType = form.watch('boothType');
@@ -205,7 +231,10 @@ export function ApplicationForm() {
             
             <div className="flex gap-4">
               <Button type="button" variant="outline" onClick={() => setStep(2)}>Back</Button>
-              <Button type="submit">Submit Application</Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Submit Application
+              </Button>
             </div>
           </section>
         )}
