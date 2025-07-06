@@ -3,11 +3,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { Heart, Users, HandHeart, Award, Paintbrush } from 'lucide-react';
+import { HandHeart, Award, Paintbrush, Users, Heart } from 'lucide-react';
+import { DonationForm } from '@/components/donate/donation-form';
 
 export const metadata: Metadata = {
   title: 'Donate or Volunteer | Support the Phoenix Indian Community',
@@ -37,54 +34,13 @@ export default function DonatePage() {
           {/* Donation Form */}
           <div className="lg:col-span-2">
             <Card className="shadow-2xl">
-              <Tabs defaultValue="one-time" className="w-full">
-                <CardHeader>
-                    <CardTitle className="font-headline text-3xl">Make a Donation</CardTitle>
-                    <CardDescription>Choose an amount and frequency that works for you.</CardDescription>
-                    <TabsList className="grid w-full grid-cols-2 mt-4">
-                        <TabsTrigger value="one-time">One-Time</TabsTrigger>
-                        <TabsTrigger value="monthly">Monthly</TabsTrigger>
-                    </TabsList>
-                </CardHeader>
-                <TabsContent value="one-time">
-                    <CardContent className="space-y-6">
-                        <Label className="font-semibold">Select an amount (USD)</Label>
-                        <ToggleGroup type="single" defaultValue="50" className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <ToggleGroupItem value="25" aria-label="Donate $25" className="h-16 text-xl">$25</ToggleGroupItem>
-                            <ToggleGroupItem value="50" aria-label="Donate $50" className="h-16 text-xl">$50</ToggleGroupItem>
-                            <ToggleGroupItem value="100" aria-label="Donate $100" className="h-16 text-xl">$100</ToggleGroupItem>
-                            <ToggleGroupItem value="250" aria-label="Donate $250" className="h-16 text-xl">$250</ToggleGroupItem>
-                        </ToggleGroup>
-                        <div className="relative">
-                            <Label htmlFor="custom-amount-one-time" className="sr-only">Custom Amount</Label>
-                            <Input id="custom-amount-one-time" type="number" placeholder="Or enter a custom amount" className="pl-8" />
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-                        </div>
-                    </CardContent>
-                    <CardFooter>
-                        <Button size="lg" className="w-full">Donate Now</Button>
-                    </CardFooter>
-                </TabsContent>
-                <TabsContent value="monthly">
-                    <CardContent className="space-y-6">
-                        <Label className="font-semibold">Select a monthly amount (USD)</Label>
-                        <ToggleGroup type="single" defaultValue="25" className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <ToggleGroupItem value="10" aria-label="Donate $10 monthly" className="h-16 text-xl">$10</ToggleGroupItem>
-                            <ToggleGroupItem value="25" aria-label="Donate $25 monthly" className="h-16 text-xl">$25</ToggleGroupItem>
-                            <ToggleGroupItem value="50" aria-label="Donate $50 monthly" className="h-16 text-xl">$50</ToggleGroupItem>
-                            <ToggleGroupItem value="100" aria-label="Donate $100 monthly" className="h-16 text-xl">$100</ToggleGroupItem>
-                        </ToggleGroup>
-                        <div className="relative">
-                            <Label htmlFor="custom-amount-monthly" className="sr-only">Custom Amount</Label>
-                            <Input id="custom-amount-monthly" type="number" placeholder="Or enter a custom amount" className="pl-8" />
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-                        </div>
-                    </CardContent>
-                    <CardFooter>
-                        <Button size="lg" className="w-full">Become a Monthly Supporter</Button>
-                    </CardFooter>
-                </TabsContent>
-              </Tabs>
+              <CardHeader>
+                  <CardTitle className="font-headline text-3xl">Make a Donation</CardTitle>
+                  <CardDescription>Your generous contribution helps us continue our mission.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <DonationForm />
+              </CardContent>
             </Card>
           </div>
 

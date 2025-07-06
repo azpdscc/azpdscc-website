@@ -1,3 +1,4 @@
+
 export type EventCategory = 'Music' | 'Food' | 'Dance' | 'Cultural';
 
 export type Event = {
@@ -32,4 +33,19 @@ export type VendorApplication = {
   zelleTransactionId?: string;
   zelleDateSent: Date;
   paymentSent: boolean;
+};
+
+export type DonationFormValues = {
+  frequency: 'one-time' | 'monthly';
+  amount: string;
+  customAmount?: string;
+  name: string;
+  email: string;
+  paymentMethod: 'zelle' | 'credit-card';
+  zelleSenderName?: string;
+  zelleTransactionId?: string;
+  paymentSent?: boolean;
+  cardNumber?: string;
+  expiryDate?: string;
+  cvc?: string;
 };
