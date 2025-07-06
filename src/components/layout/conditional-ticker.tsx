@@ -7,13 +7,17 @@ import { Ticker } from '@/components/ticker';
 import { events } from '@/lib/data';
 import type { Event } from '@/lib/types';
 
-// Helper to find the next upcoming event
+// Helper to find the next upcoming event from a specific list
 const getNextEvent = (): Event | null => {
   const now = new Date();
   // Set hours to 0 to compare dates only, so the event shows on its day
   now.setHours(0, 0, 0, 0);
 
-  const upcomingEvents = events
+  const targetEventNames = ['Vaisakhi Mela', 'Teeyan Da Mela'];
+
+  const upcomingTargetEvents = events
+    // Filter for only the two specified events
+    .filter(event => targetEventNames.some(name => event.name.includes(name)))
     .map(event => ({
       ...event,
       // Create a date object for comparison
@@ -25,7 +29,7 @@ const getNextEvent = (): Event | null => {
     .sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
 
   // Return the first event in the sorted list, or null if none
-  return upcomingEvents.length > 0 ? upcomingEvents[0] : null;
+  return upcomingTargetEvents.length > 0 ? upcomingTargetEvents[0] : null;
 };
 
 
