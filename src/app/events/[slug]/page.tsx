@@ -20,13 +20,13 @@ export async function generateMetadata(
  
   if (!event) {
     return {
-        title: 'Event Not Found | AZPDSCC Hub',
+        title: 'Event Not Found | PDSCC Hub',
         description: 'The event you are looking for could not be found. Please check our main events page for upcoming Arizona Indian festivals.',
     }
   }
 
   return {
-    title: `${event.name} | AZPDSCC Phoenix Indian Community`,
+    title: `${event.name} | PDSCC Phoenix Indian Community`,
     description: `Get details for ${event.name}, a premier event for the AZ India community. Find date, time, location, and RSVP info for this top Arizona Indian festival.`,
   }
 }
@@ -67,7 +67,7 @@ const createEventSchema = (event: Event) => {
     },
     organizer: {
       '@type': 'Organization',
-      name: 'AZPDSCC',
+      name: 'PDSCC',
       url: 'https://www.azpdscc.org',
     },
   };

@@ -43,16 +43,16 @@ const confirmationEmailPrompt = ai.definePrompt({
   input: { schema: z.object({ name: z.string() }) },
   output: { format: 'text' },
   prompt: `
-    Generate a simple, polite confirmation email body for a user who has just submitted a contact form to AZPDSCC.
+    Generate a simple, polite confirmation email body for a user who has just submitted a contact form to PDSCC.
     The tone should be professional and reassuring.
 
     Details:
     - User's Name: {{{name}}}
 
     Start the email with "Dear {{{name}}},".
-    Thank them for contacting AZPDSCC.
+    Thank them for contacting PDSCC.
     Let them know that their message has been received and that the team will review it and get back to them as soon as possible.
-    End with a warm closing like "Sincerely," followed by "The AZPDSCC Team".
+    End with a warm closing like "Sincerely," followed by "The PDSCC Team".
   `,
 });
 
@@ -73,11 +73,11 @@ const sendContactInquiryFlow = ai.defineFlow(
         // Fallback in case AI fails
         console.warn("AI confirmation email generation failed. Using fallback text.");
       }
-      const userEmailHtml = (userEmailBody || `Dear ${input.name},\n\nThank you for contacting AZPDSCC. We have received your message and will get back to you shortly.\n\nSincerely,\nThe AZPDSCC Team`).replace(/\n/g, '<br>');
+      const userEmailHtml = (userEmailBody || `Dear ${input.name},\n\nThank you for contacting PDSCC. We have received your message and will get back to you shortly.\n\nSincerely,\nThe PDSCC Team`).replace(/\n/g, '<br>');
 
       // 2. Prepare the notification email for the admin
       const adminEmailText = `
-        You have a new contact form submission from the AZPDSCC website.
+        You have a new contact form submission from the PDSCC website.
 
         From: ${input.name} (${input.email})
         Subject: ${input.subject}
@@ -91,9 +91,9 @@ const sendContactInquiryFlow = ai.defineFlow(
       // 3. Send both emails
       // Send to user
       await resend.emails.send({
-        from: 'AZPDSCC Info <info@azpdscc.org>',
+        from: 'PDSCC Info <info@azpdscc.org>',
         to: input.email,
-        subject: 'We\'ve Received Your Message | AZPDSCC',
+        subject: 'We\'ve Received Your Message | PDSCC',
         html: userEmailHtml,
       });
 

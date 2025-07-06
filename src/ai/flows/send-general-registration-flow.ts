@@ -50,9 +50,9 @@ const registrationEmailPrompt = ai.definePrompt({
     - Business Name: {{{businessName}}}
 
     Start the email with "Dear {{{contactName}}},".
-    Thank them for registering "{{{businessName}}}" with the AZPDSCC Vendor Network.
+    Thank them for registering "{{{businessName}}}" with the PDSCC Vendor Network.
     Mention that they are now on the priority list for notifications about upcoming event opportunities.
-    End with a warm closing like "Welcome aboard," followed by "The AZPDSCC Team".
+    End with a warm closing like "Welcome aboard," followed by "The PDSCC Team".
   `,
 });
 
@@ -90,9 +90,9 @@ const sendGeneralRegistrationFlow = ai.defineFlow(
 
       // Send to vendor
       await resend.emails.send({
-        from: 'AZPDSCC Vendors <vendors@azpdscc.org>',
+        from: 'PDSCC Vendors <vendors@azpdscc.org>',
         to: input.email,
-        subject: 'Welcome to the AZPDSCC Vendor Network!',
+        subject: 'Welcome to the PDSCC Vendor Network!',
         html: vendorEmailHtml,
       });
 

@@ -52,7 +52,7 @@ const vendorTicketEmailPrompt = ai.definePrompt({
     The email should have a main container with a light gray background (#f4f4f4) and a white content area with rounded corners.
 
     The email must contain the following sections:
-    1.  A header with the "AZPDSCC" logo text and the title "Vendor Confirmation & Ticket".
+    1.  A header with the "PDSCC" logo text and the title "Vendor Confirmation & Ticket".
     2.  A personalized greeting: "Dear {{{name}}},".
     3.  A confirmation message: "Thank you for registering as a vendor for the upcoming Diwali Festival of Lights 2024! We've received your application and are excited to have you."
     4.  A "Ticket Details" section with the following information in a styled table or divs:
@@ -62,7 +62,7 @@ const vendorTicketEmailPrompt = ai.definePrompt({
         -   **Amount Paid:** \${{{totalPrice}}}
     5.  A placeholder for a QR code. This should be a 150x150px image placeholder. Use: <img src="https://placehold.co/150x150.png" alt="QR Code" style="display: block; margin: 20px auto;" />
     6.  Instructions: "Please present this email (or the QR code) at the vendor check-in gate on the day of the event."
-    7.  A closing: "We look forward to seeing you there," followed by "The AZPDSCC Team".
+    7.  A closing: "We look forward to seeing you there," followed by "The PDSCC Team".
 
     The entire response should be only the HTML code for the email body. Do not include any text before or after the <html> tag.
   `,
@@ -102,7 +102,7 @@ const sendVendorApplicationFlow = ai.defineFlow(
 
       // Send to vendor
       await resend.emails.send({
-        from: 'AZPDSCC Vendors <vendors@azpdscc.org>',
+        from: 'PDSCC Vendors <vendors@azpdscc.org>',
         to: input.email,
         subject: 'Your Vendor Booth Confirmation for Diwali Festival of Lights 2024',
         html: vendorEmailHtml,

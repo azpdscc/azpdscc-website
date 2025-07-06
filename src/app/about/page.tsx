@@ -8,8 +8,8 @@ import { HeartHandshake, Target, Users, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export const metadata: Metadata = {
-  title: 'About AZPDSCC: Our Story & Mission for the Phoenix Indian Community',
-  description: 'Learn about the story, values, and team behind the Phoenix Desi Sports and Cultural Club (AZPDSCC), a non-profit organization dedicated to serving the AZ India community and AZ Desis in Phoenix.',
+  title: 'About PDSCC: Our Story & Mission for the Phoenix Indian Community',
+  description: 'Learn about the story, values, and team behind the Phoenix Desi Sports and Cultural Club (PDSCC), a non-profit organization dedicated to serving the AZ India community and AZ Desis in Phoenix.',
 };
 
 export default function AboutPage() {
@@ -33,14 +33,14 @@ export default function AboutPage() {
             <div>
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">Our Story: A Home for AZ Desis</h2>
               <p className="mt-4 text-lg text-muted-foreground">
-                The Phoenix Desi Sports and Cultural Club (AZPDSCC) was founded in 2010 by a group of passionate individuals who wanted to create a home away from home for the Phoenix Indian community and AZ Desis.
+                The Phoenix Desi Sports and Cultural Club (PDSCC) was founded in 2010 by a group of passionate individuals who wanted to create a home away from home for the Phoenix Indian community and AZ Desis.
               </p>
               <p className="mt-4 text-lg text-muted-foreground">
                 What started as small gatherings has grown into a vibrant non-profit organization that hosts some of the largest <Link href="/events" className="text-primary hover:underline">Arizona Indian festivals</Link> in the state.
               </p>
             </div>
             <div className="w-full h-full">
-              <Image src="https://placehold.co/600x400.png" data-ai-hint="team meeting" alt="Founding members of AZPDSCC" width={600} height={400} className="rounded-lg shadow-xl w-full" />
+              <Image src="https://placehold.co/600x400.png" data-ai-hint="team meeting" alt="Founding members of PDSCC" width={600} height={400} className="rounded-lg shadow-xl w-full" />
             </div>
           </div>
         </div>

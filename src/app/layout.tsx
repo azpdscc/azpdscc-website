@@ -25,8 +25,8 @@ const openSans = Open_Sans({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | AZPDSCC Hub',
-    default: 'AZPDSCC | Arizona Indian Community & Festivals Hub',
+    template: '%s | PDSCC Hub',
+    default: 'PDSCC | Arizona Indian Community & Festivals Hub',
   },
   description: "Your hub for Arizona Indian festivals, community events, and culture. Connect with the Phoenix Indian community, AZ Desis, and find vendor booths in Arizona.",
 };
@@ -39,7 +39,7 @@ export default function RootLayout({
   const organizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'AZPDSCC',
+    name: 'PDSCC',
     url: 'https://www.azpdscc.org',
     address: {
       '@type': 'PostalAddress',

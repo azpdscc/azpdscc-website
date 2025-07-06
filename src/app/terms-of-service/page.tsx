@@ -5,8 +5,8 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { FileText } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service | AZPDSCC',
-  description: 'Please read our Terms of Service carefully before using the AZPDSCC website and its services.',
+  title: 'Terms of Service | PDSCC',
+  description: 'Please read our Terms of Service carefully before using the PDSCC website and its services.',
   robots: {
     index: false, // It's often good practice to noindex legal pages
   }
@@ -46,7 +46,7 @@ export default function TermsOfServicePage() {
 
                 <h2 className="font-headline text-2xl text-foreground">3. Intellectual Property</h2>
                 <p>
-                   The service and its original content, features, and functionality are and will remain the exclusive property of AZPDSCC and its licensors. Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of AZPDSCC.
+                   The service and its original content, features, and functionality are and will remain the exclusive property of PDSCC and its licensors. Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of PDSCC.
                 </p>
 
                 <h2 className="font-headline text-2xl text-foreground">4. Termination</h2>
@@ -56,7 +56,7 @@ export default function TermsOfServicePage() {
 
                 <h2 className="font-headline text-2xl text-foreground">5. Limitation of Liability</h2>
                 <p>
-                  In no event shall AZPDSCC, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your access to or use of or inability to access or use the service.
+                  In no event shall PDSCC, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your access to or use of or inability to access or use the service.
                 </p>
                 
                 <h2 className="font-headline text-2xl text-foreground">6. Governing Law</h2>

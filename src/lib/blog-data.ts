@@ -12,7 +12,7 @@ export const blogPosts: BlogPost[] = [
     excerpt: 'Explore the joyous celebration of Holi right here in Arizona. Discover the meaning behind the festival of colors and see how our community comes together.',
     content: `Holi, the festival of colors, is one of the most vibrant and joyous occasions in the Indian calendar. It marks the arrival of spring and the victory of good over evil. But more than that, it's a day of pure, unadulterated fun.
 
-In Phoenix, the AZPDSCC community brings this festival to life with incredible energy. Families and friends gather in local parks, their white clothes ready to be transformed into a canvas of reds, blues, greens, and yellows. The air fills with laughter, the beat of dhol drums, and clouds of colored powder, or 'gulal'.
+In Phoenix, the PDSCC community brings this festival to life with incredible energy. Families and friends gather in local parks, their white clothes ready to be transformed into a canvas of reds, blues, greens, and yellows. The air fills with laughter, the beat of dhol drums, and clouds of colored powder, or 'gulal'.
 
 It's a festival that breaks down barriers. On this day, everyone is equal, covered in the same rainbow of colors. It’s a powerful symbol of unity and togetherness that is at the heart of our community's spirit.`,
   },
@@ -20,7 +20,7 @@ It's a festival that breaks down barriers. On this day, everyone is equal, cover
     id: 2,
     slug: 'diwali-story-light-over-darkness',
     title: 'The Story of Diwali: Why We Celebrate the Festival of Lights',
-    author: 'AZPDSCC Team',
+    author: 'PDSCC Team',
     date: 'October 12, 2024',
     image: 'https://placehold.co/800x400.png',
     excerpt: 'A deep dive into the stories and traditions that make Diwali a global celebration of light, hope, and the triumph of good over evil.',
@@ -38,7 +38,7 @@ For our community in Arizona, Diwali is a time for family gatherings, exchanging
     date: 'October 9, 2024',
     image: 'https://placehold.co/800x400.png',
     excerpt: 'From Pani Puri to Vada Pav, get ready to tantalize your taste buds. We explore the must-try street foods available at our Arizona Indian festivals.',
-    content: `One of the biggest attractions at any AZPDSCC festival is undoubtedly the food. The aroma of spices and sizzling snacks fills the air, drawing crowds to the dozens of vendor stalls. If you're new to Indian street food, here are a few essentials you must try:
+    content: `One of the biggest attractions at any PDSCC festival is undoubtedly the food. The aroma of spices and sizzling snacks fills the air, drawing crowds to the dozens of vendor stalls. If you're new to Indian street food, here are a few essentials you must try:
 
 **Pani Puri (or Golgappa):** A crispy, hollow ball filled with a delicious mixture of tamarind chutney, chili, chaat masala, potato, onion, and chickpeas. It's a burst of flavor in one bite!
 
@@ -52,7 +52,7 @@ Next time you're at one of our events, be adventurous and try something new. You
     id: 4,
     slug: 'the-art-of-rangoli-creating-beauty',
     title: 'The Art of Rangoli: Creating Beauty with Colors',
-    author: 'AZPDSCC Team',
+    author: 'PDSCC Team',
     date: 'October 6, 2024',
     image: 'https://placehold.co/800x400.png',
     excerpt: 'Discover the ancient art of Rangoli, a beautiful and intricate tradition that adorns homes during Indian festivals, symbolizing luck and prosperity.',
@@ -69,8 +69,8 @@ It is a transient art form, meant to be swept away the next day, reminding us of
     author: 'Community Voice',
     date: 'October 3, 2024',
     image: 'https://placehold.co/800x400.png',
-    excerpt: 'Seva, or selfless service, is a cornerstone of our community. Learn how volunteering and giving back are integral parts of the AZPDSCC mission.',
-    content: `At the heart of AZPDSCC is the principle of 'Seva,' which means selfless service. It's the idea that we can make our community stronger by giving our time and energy without any expectation of reward.
+    excerpt: 'Seva, or selfless service, is a cornerstone of our community. Learn how volunteering and giving back are integral parts of the PDSCC mission.',
+    content: `At the heart of PDSCC is the principle of 'Seva,' which means selfless service. It's the idea that we can make our community stronger by giving our time and energy without any expectation of reward.
 
 Our events, from the grand Diwali Mela to our community food drives, are powered by hundreds of dedicated volunteers. They are the ones setting up booths, guiding guests, serving food, and ensuring everything runs smoothly. This spirit of Seva extends beyond festivals. It’s about supporting community members in times of need, mentoring youth, and working together to create a positive impact in Arizona.
 

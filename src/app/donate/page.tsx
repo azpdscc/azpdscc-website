@@ -8,7 +8,7 @@ import { DonationForm } from '@/components/donate/donation-form';
 
 export const metadata: Metadata = {
   title: 'Donate or Volunteer | Support the Phoenix Indian Community',
-  description: 'Support AZPDSCC by making a donation or volunteering your time. Your contribution helps us host Arizona Indian festivals and support the AZ India community.',
+  description: 'Support PDSCC by making a donation or volunteering your time. Your contribution helps us host Arizona Indian festivals and support the AZ India community.',
 };
 
 export default function DonatePage() {

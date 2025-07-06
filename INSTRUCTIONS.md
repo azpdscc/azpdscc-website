@@ -1,6 +1,6 @@
 # Application Management Instructions
 
-This document provides instructions for managing the content and configuration of your AZPDSCC website.
+This document provides instructions for managing the content and configuration of your PDSCC website.
 
 ## 1. How to Update Placeholder Images
 

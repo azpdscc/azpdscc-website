@@ -39,13 +39,13 @@ const welcomeEmailPrompt = ai.definePrompt({
   name: 'welcomeEmailPrompt',
   output: { format: 'text' },
   prompt: `
-    Generate a warm and friendly welcome email body for a new subscriber to the AZPDSCC mailing list.
+    Generate a warm and friendly welcome email body for a new subscriber to the PDSCC mailing list.
     The tone should be celebratory and inviting.
 
     Start the email with a big, friendly "Welcome to the community!".
     Thank them for subscribing and let them know they'll now be the first to hear about upcoming festivals, events, and community news.
     Encourage them to connect on social media (without providing links).
-    End with "Warmly," followed by "The AZPDSCC Team".
+    End with "Warmly," followed by "The PDSCC Team".
   `,
 });
 
@@ -68,9 +68,9 @@ const sendWelcomeEmailFlow = ai.defineFlow(
       // 2. Send the email
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
-        from: 'AZPDSCC Info <info@azpdscc.org>',
+        from: 'PDSCC Info <info@azpdscc.org>',
         to: input.email,
-        subject: '🎉 Welcome to the AZPDSCC Community!',
+        subject: '🎉 Welcome to the PDSCC Community!',
         html: welcomeEmailHtml,
       });
      

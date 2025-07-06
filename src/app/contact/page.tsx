@@ -4,8 +4,8 @@ import { Mail, Phone, MapPin } from 'lucide-react';
 import { ContactForm } from '@/components/contact/contact-form';
 
 export const metadata: Metadata = {
-  title: 'Contact Us | Get in Touch with AZPDSCC',
-  description: 'Have a question or want to get involved? Contact the AZPDSCC team. We serve the Phoenix Indian community and welcome your inquiries.',
+  title: 'Contact Us | Get in Touch with PDSCC',
+  description: 'Have a question or want to get involved? Contact the PDSCC team. We serve the Phoenix Indian community and welcome your inquiries.',
 };
 
 export default function ContactPage() {

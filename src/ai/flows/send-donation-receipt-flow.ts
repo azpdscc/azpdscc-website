@@ -44,7 +44,7 @@ const receiptEmailPrompt = ai.definePrompt({
   input: { schema: DonationReceiptInputSchema },
   output: { format: 'text' },
   prompt: `
-    Generate a heartfelt thank you email body for a donation to AZPDSCC.
+    Generate a heartfelt thank you email body for a donation to PDSCC.
 
     The email should be professional, warm, and suitable for a tax receipt.
     The tone should be appreciative and reflect the community spirit of the organization.
@@ -57,9 +57,9 @@ const receiptEmailPrompt = ai.definePrompt({
 
     Start the email with "Dear {{{donorName}}},".
     Thank them for their generous {{#if isMonthly}}monthly{{else}}one-time{{/if}} donation of \${{{amount}}}.
-    Mention that their support helps AZPDSCC continue its mission of celebrating North Indian culture through sports and festivals in the Phoenix community.
+    Mention that their support helps PDSCC continue its mission of celebrating North Indian culture through sports and festivals in the Phoenix community.
     Include a line stating "This email serves as your official receipt." for tax purposes.
-    End with a warm closing like "With heartfelt gratitude," followed by "The AZPDSCC Team".
+    End with a warm closing like "With heartfelt gratitude," followed by "The PDSCC Team".
   `,
 });
 
@@ -83,9 +83,9 @@ const sendDonationReceiptFlow = ai.defineFlow(
       const resend = new Resend(process.env.RESEND_API_KEY);
 
       await resend.emails.send({
-        from: 'AZPDSCC Donations <receipts@azpdscc.org>',
+        from: 'PDSCC Donations <receipts@azpdscc.org>',
         to: input.donorEmail,
-        subject: 'Thank You for Your Donation to AZPDSCC!',
+        subject: 'Thank You for Your Donation to PDSCC!',
         html: emailBody.replace(/\n/g, '<br>'), // Simple conversion of newlines to <br> for HTML email
       });
 

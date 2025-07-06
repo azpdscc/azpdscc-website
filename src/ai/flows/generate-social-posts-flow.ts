@@ -49,7 +49,7 @@ const generateSocialPostsFlow = ai.defineFlow(
     const eventUrl = `https://www.azpdscc.org/events/${input.slug}`;
     const { output } = await ai.generate({
       prompt: `
-        You are a social media marketing expert for a community organization called AZPDSCC, which serves the Phoenix Indian community.
+        You are a social media marketing expert for a community organization called PDSCC, which serves the Phoenix Indian community.
         Your task is to generate exciting and engaging social media posts to announce a new event.
 
         Event Details:
@@ -59,7 +59,7 @@ const generateSocialPostsFlow = ai.defineFlow(
         - Link: ${eventUrl}
 
         Generate two posts:
-        1.  **Twitter Post:** Make it concise, under 280 characters. Use an energetic tone. Include the link and hashtags like #AZPDSCC #PhoenixIndianCommunity #ArizonaEvents #[EventName] (e.g., #Diwali).
+        1.  **Twitter Post:** Make it concise, under 280 characters. Use an energetic tone. Include the link and hashtags like #PDSCC #PhoenixIndianCommunity #ArizonaEvents #[EventName] (e.g., #Diwali).
         2.  **Facebook/Instagram Post:** Make it more descriptive and engaging. Use emojis to add visual appeal. Encourage interaction (e.g., "Tag a friend you want to go with!"). Include the event link and a similar set of hashtags.
 
         The tone should be celebratory, professional, and welcoming.

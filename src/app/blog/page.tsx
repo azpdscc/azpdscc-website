@@ -7,8 +7,8 @@ import { blogPosts } from '@/lib/blog-data';
 import { ArrowRight, User, Calendar } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'AZPDSCC Blog | Phoenix Indian Community Stories',
-  description: 'Explore articles about Indian festivals, culture, food, and community stories from the AZPDSCC Hub for AZ Desis and the Phoenix Indian community.',
+  title: 'PDSCC Blog | Phoenix Indian Community Stories',
+  description: 'Explore articles about Indian festivals, culture, food, and community stories from the PDSCC Hub for AZ Desis and the Phoenix Indian community.',
 };
 
 export default function BlogPage() {

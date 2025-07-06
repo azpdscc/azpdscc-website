@@ -5,8 +5,8 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Shield } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | AZPDSCC',
-  description: 'Learn how AZPDSCC collects, uses, and protects your personal information when you use our website and services.',
+  title: 'Privacy Policy | PDSCC',
+  description: 'Learn how PDSCC collects, uses, and protects your personal information when you use our website and services.',
   robots: {
     index: false, // It's often good practice to noindex legal pages
   }
@@ -35,7 +35,7 @@ export default function PrivacyPolicyPage() {
                 </Alert>
 
                 <p>
-                  AZPDSCC ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website www.azpdscc.org, use our services, or interact with us.
+                  PDSCC ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website www.azpdscc.org, use our services, or interact with us.
                 </p>
                 
                 <h2 className="font-headline text-2xl text-foreground">1. Information We Collect</h2>

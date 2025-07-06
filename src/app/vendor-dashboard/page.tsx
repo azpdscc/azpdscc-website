@@ -7,7 +7,7 @@ import { CheckCircle2 } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Vendor Dashboard | Manage Your Applications',
-  description: 'Manage your vendor applications for AZPDSCC events. Check the status of your booth for Arizona Indian festivals.',
+  description: 'Manage your vendor applications for PDSCC events. Check the status of your booth for Arizona Indian festivals.',
 };
 
 export default function VendorDashboardPage() {

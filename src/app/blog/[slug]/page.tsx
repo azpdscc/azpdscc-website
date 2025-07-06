@@ -17,13 +17,13 @@ export async function generateMetadata(
  
   if (!post) {
     return {
-        title: 'Post Not Found | AZPDSCC Blog',
+        title: 'Post Not Found | PDSCC Blog',
         description: 'The blog post you are looking for could not be found.',
     }
   }
 
   return {
-    title: `${post.title} | AZPDSCC Blog`,
+    title: `${post.title} | PDSCC Blog`,
     description: post.excerpt,
   }
 }
