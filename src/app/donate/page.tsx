@@ -20,7 +20,7 @@ export default function DonatePage() {
       {/* Hero Section */}
       <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground bg-primary">
         <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20" />
-        <div className="relative z-10 p-4">
+        <div className="relative z-10 p-4 container mx-auto">
           <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">
             Support the Phoenix Indian Community
           </h1>
@@ -105,7 +105,9 @@ export default function DonatePage() {
                 </p>
               </CardContent>
               <CardFooter>
-                <Button variant="default" size="lg" className="w-full">Sign Up to Volunteer</Button>
+                <Button asChild variant="default" size="lg" className="w-full">
+                  <Link href="/volunteer">Sign Up to Volunteer</Link>
+                </Button>
               </CardFooter>
             </Card>
           </div>
