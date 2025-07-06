@@ -1,12 +1,24 @@
 
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
-import { Instagram, Twitter, Facebook } from 'lucide-react';
+import { Instagram, Twitter, Facebook, Mail } from 'lucide-react';
+import { SubscribeForm } from './subscribe-form';
 
 export function Footer() {
   return (
     <footer className="bg-card border-t">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 pt-16 pb-8">
+        <div className="bg-primary/5 border border-primary/20 rounded-lg p-8 mb-12 text-center">
+            <Mail className="mx-auto h-12 w-12 text-primary mb-4" strokeWidth={1.5}/>
+            <h2 className="font-headline text-3xl font-bold text-foreground">Stay Connected</h2>
+            <p className="mt-2 max-w-2xl mx-auto text-muted-foreground">
+                Never miss an update. Subscribe to our mailing list for the latest news on festivals, community events, and special announcements.
+            </p>
+            <div className="mt-6 max-w-lg mx-auto">
+                <SubscribeForm />
+            </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-1">
             <Logo />
