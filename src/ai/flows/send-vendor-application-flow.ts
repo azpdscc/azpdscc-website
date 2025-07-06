@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A flow to handle vendor applications, sending notifications and a ticket.
@@ -9,8 +10,7 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-// TODO: To enable email sending, uncomment the following line and ensure you have a RESEND_API_KEY.
-// import { Resend } from 'resend';
+import { Resend } from 'resend';
 
 // Input schema for the vendor application flow
 const VendorApplicationInputSchema = z.object({
@@ -97,14 +97,12 @@ const sendVendorApplicationFlow = ai.defineFlow(
         Please verify the Zelle payment and update records accordingly.
       `;
 
-      // 3. Send the emails (simulated)
-      // TODO: Uncomment and configure the following section to send real emails.
-      /*
+      // 3. Send the emails
       const resend = new Resend(process.env.RESEND_API_KEY);
 
       // Send to vendor
       await resend.emails.send({
-        from: 'AZPDSCC Vendors <vendors@yourdomain.com>',
+        from: 'AZPDSCC Vendors <vendors@azpdscc.org>',
         to: input.email,
         subject: 'Your Vendor Booth Confirmation for Diwali Festival of Lights 2024',
         html: vendorEmailHtml,
@@ -112,24 +110,11 @@ const sendVendorApplicationFlow = ai.defineFlow(
 
       // Send to admin
       await resend.emails.send({
-        from: 'Vendor Bot <noreply@yourdomain.com>',
+        from: 'Vendor Bot <noreply@azpdscc.org>',
         to: 'vendors@azpdscc.org',
         subject: 'New Paid Vendor Application Submitted!',
         text: adminEmailText,
       });
-      */
-
-      console.log('--- SIMULATED VENDOR TICKET EMAIL ---');
-      console.log(`To: ${input.email}`);
-      console.log(`Subject: Your Vendor Booth Confirmation for Diwali Festival of Lights 2024`);
-      console.log(vendorEmailHtml);
-      console.log('------------------------------------');
-      
-      console.log('--- SIMULATED ADMIN NOTIFICATION EMAIL ---');
-      console.log('To: vendors@azpdscc.org');
-      console.log('Subject: New Paid Vendor Application Submitted!');
-      console.log(adminEmailText);
-      console.log('-----------------------------------------');
 
       return { success: true, message: "Application submitted! A confirmation ticket has been sent to your email." };
     } catch (error) {

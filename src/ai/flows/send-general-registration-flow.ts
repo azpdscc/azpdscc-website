@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A flow to handle general vendor registrations.
@@ -9,8 +10,7 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-// TODO: To enable email sending, uncomment the following line and ensure you have a RESEND_API_KEY.
-// import { Resend } from 'resend';
+import { Resend } from 'resend';
 
 // Input schema for the general registration flow
 const GeneralRegistrationInputSchema = z.object({
@@ -85,14 +85,12 @@ const sendGeneralRegistrationFlow = ai.defineFlow(
         No action is required. They have been added to the general vendor list.
       `;
 
-      // 3. Send the emails (simulated)
-      // TODO: Uncomment and configure the following section to send real emails.
-      /*
+      // 3. Send the emails
       const resend = new Resend(process.env.RESEND_API_KEY);
 
       // Send to vendor
       await resend.emails.send({
-        from: 'AZPDSCC Vendors <vendors@yourdomain.com>',
+        from: 'AZPDSCC Vendors <vendors@azpdscc.org>',
         to: input.email,
         subject: 'Welcome to the AZPDSCC Vendor Network!',
         html: vendorEmailHtml,
@@ -100,26 +98,12 @@ const sendGeneralRegistrationFlow = ai.defineFlow(
 
       // Send to admin
       await resend.emails.send({
-        from: 'Vendor Bot <noreply@yourdomain.com>',
+        from: 'Vendor Bot <noreply@azpdscc.org>',
         to: 'vendors@azpdscc.org',
         subject: 'New General Vendor Registration',
         text: adminEmailText,
       });
-      */
      
-      console.log('--- SIMULATED VENDOR REGISTRATION EMAIL ---');
-      console.log(`To: ${input.email}`);
-      console.log(`Subject: Welcome to the AZPDSCC Vendor Network!`);
-      console.log(vendorEmailHtml);
-      console.log('-----------------------------------------');
-      
-      console.log('--- SIMULATED ADMIN NOTIFICATION EMAIL ---');
-      console.log('To: vendors@azpdscc.org');
-      console.log('Subject: New General Vendor Registration');
-      console.log(adminEmailText);
-      console.log('-----------------------------------------');
-
-
       return { success: true, message: "Registration successful! A confirmation has been sent to your email." };
     } catch (error) {
       console.error('General registration flow failed:', error);

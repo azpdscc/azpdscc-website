@@ -10,8 +10,7 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-// TODO: To enable email sending, uncomment the following line and ensure you have an API key.
-// import { Resend } from 'resend';
+import { Resend } from 'resend';
 
 // Input schema for the donation receipt flow
 const DonationReceiptInputSchema = z.object({
@@ -80,28 +79,15 @@ const sendDonationReceiptFlow = ai.defineFlow(
     }
 
     // 2. Send the email using a service like Resend or SendGrid
-    //    IMPORTANT: This part is currently a placeholder. To enable actual email sending,
-    //    you must configure an email service and provide an API key.
     try {
-      // TODO: Uncomment and configure the following section to send real emails.
-      // Make sure to add your RESEND_API_KEY to your environment variables.
-      /*
       const resend = new Resend(process.env.RESEND_API_KEY);
 
       await resend.emails.send({
-        from: 'AZPDSCC Donations <receipts@yourdomain.com>',
+        from: 'AZPDSCC Donations <receipts@azpdscc.org>',
         to: input.donorEmail,
         subject: 'Thank You for Your Donation to AZPDSCC!',
         html: emailBody.replace(/\n/g, '<br>'), // Simple conversion of newlines to <br> for HTML email
       });
-      */
-      
-      console.log('--- SIMULATED EMAIL ---');
-      console.log(`To: ${input.donorEmail}`);
-      console.log(`Subject: Thank You for Your Donation to AZPDSCC!`);
-      console.log(emailBody);
-      console.log('-----------------------');
-
 
       return { success: true, message: 'Donation receipt sent successfully.' };
 
