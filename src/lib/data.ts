@@ -1,8 +1,45 @@
+
 import type { Event, TeamMember } from './types';
 
 export const events: Event[] = [
   {
     id: 1,
+    slug: 'vaisakhi-mela-2025',
+    name: 'Vaisakhi Mela 2025',
+    date: 'April 19, 2025',
+    time: '12:00 PM - 7:00 PM',
+    location: 'Goodyear Ballpark',
+    image: 'https://placehold.co/600x400.png',
+    description: 'A vibrant celebration of Vaisakhi, the Punjabi new year and harvest festival.',
+    fullDescription: 'Join us for the annual Vaisakhi Mela! This joyous event celebrates the Punjabi new year and harvest festival with traditional music (Bhangra and Giddha), delicious food, and a variety of cultural activities for the whole family. It\'s a day of community spirit and celebration.',
+    category: 'Cultural',
+  },
+  {
+    id: 2,
+    slug: 'teeyan-da-mela-2024',
+    name: 'Teeyan Da Mela 2024',
+    date: 'August 10, 2024',
+    time: '4:00 PM - 9:00 PM',
+    location: 'Phoenix Convention Center',
+    image: 'https://placehold.co/600x400.png',
+    description: 'A traditional Punjabi festival for women, celebrating the monsoon season with dance and music.',
+    fullDescription: 'Teeyan Da Mela is a special festival celebrating sisterhood and the monsoon season. This women-centric event features traditional Giddha performances, folk songs, food stalls, and a festive bazaar. Come dressed in your best traditional attire and celebrate with us!',
+    category: 'Dance',
+  },
+  {
+    id: 3,
+    slug: 'annual-community-picnic-2024',
+    name: 'Annual Community Picnic 2024',
+    date: 'October 26, 2024',
+    time: '11:00 AM - 3:00 PM',
+    location: 'Kiwanis Park, Tempe',
+    image: 'https://placehold.co/600x400.png',
+    description: 'A fun-filled day for the whole family with games, food, and community bonding.',
+    fullDescription: 'Our Annual Community Picnic is a chance for everyone to relax, connect, and have fun. We\'ll have food, sports activities like cricket and volleyball, games for children, and plenty of opportunities to meet new people and catch up with old friends. Don\'t miss this wonderful community gathering!',
+    category: 'Cultural',
+  },
+  {
+    id: 4,
     slug: 'diwali-festival-of-lights-2024',
     name: 'Diwali Festival of Lights 2024',
     date: 'November 2, 2024',
@@ -14,7 +51,7 @@ export const events: Event[] = [
     category: 'Cultural',
   },
   {
-    id: 2,
+    id: 5,
     slug: 'holi-festival-of-colors-2025',
     name: 'Holi Festival of Colors 2025',
     date: 'March 14, 2025',
@@ -26,7 +63,7 @@ export const events: Event[] = [
     category: 'Cultural',
   },
   {
-    id: 3,
+    id: 6,
     slug: 'arizona-india-food-fair-2024',
     name: 'Arizona India Food Fair 2024',
     date: 'October 12, 2024',
@@ -38,7 +75,7 @@ export const events: Event[] = [
     category: 'Food',
   },
   {
-    id: 4,
+    id: 7,
     slug: 'sangeet-sandhya-an-evening-of-music-2024',
     name: 'Sangeet Sandhya: An Evening of Music',
     date: 'September 21, 2024',
@@ -50,7 +87,7 @@ export const events: Event[] = [
     category: 'Music',
   },
   {
-    id: 5,
+    id: 8,
     slug: 'nritya-shakti-dance-showcase-2024',
     name: 'Nritya Shakti: Dance Showcase 2024',
     date: 'December 7, 2024',
@@ -62,7 +99,7 @@ export const events: Event[] = [
     category: 'Dance',
   },
   {
-    id: 6,
+    id: 9,
     slug: 'independence-day-celebration-2025',
     name: 'Independence Day Celebration 2025',
     date: 'August 15, 2025',
