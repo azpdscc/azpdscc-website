@@ -15,11 +15,24 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div className="bg-background">
-      <section className="py-16 md:py-24 bg-card">
+      <section className="py-16 md:py-24 bg-card text-center">
+        <div className="container mx-auto px-4">
+          <h1 className="font-headline text-4xl md:text-5xl font-bold text-foreground">
+            Our Mission for the Phoenix Indian Community
+          </h1>
+          <div className="mt-8 py-8 border-y border-primary/20 max-w-3xl mx-auto">
+            <p className="text-2xl font-medium text-foreground">
+              &ldquo;To celebrate and share the vibrant culture of North India through sports and festivals in the Phoenix community.&rdquo;
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h1 className="font-headline text-4xl md:text-5xl font-bold text-foreground">Our Story: Building the Phoenix Indian Community</h1>
+              <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">Our Story: A Home for AZ Desis</h2>
               <p className="mt-4 text-lg text-muted-foreground">
                 AZPDSCC was founded in 2010 by a group of passionate individuals who wanted to create a home away from home for the Phoenix Indian community and AZ Desis.
               </p>
@@ -30,17 +43,6 @@ export default function AboutPage() {
             <div className="w-full h-full">
               <Image src="https://placehold.co/600x400.png" data-ai-hint="team meeting" alt="Founding members of AZPDSCC" width={600} height={400} className="rounded-lg shadow-xl w-full" />
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-12 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="py-8 border-y border-primary/20 text-center">
-            <h2 className="text-sm font-semibold text-primary tracking-wider uppercase">Our Mission</h2>
-            <p className="mt-4 text-2xl font-medium text-foreground max-w-3xl mx-auto">
-              &ldquo;To celebrate and share the vibrant culture of North India through sports and festivals in the Phoenix community.&rdquo;
-            </p>
           </div>
         </div>
       </section>
@@ -84,7 +86,7 @@ export default function AboutPage() {
       <section className="py-16 md:py-24 bg-card">
         <div className="container mx-auto px-4">
           <h2 className="text-center font-headline text-3xl md:text-4xl font-bold">Meet Our Team</h2>
-          <p className="text-center mt-4 max-w-2xl mx-auto text-muted-foreground">
+          <p className="text-center mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
             We are a group of dedicated volunteers committed to serving the AZ India community.
           </p>
           <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -107,7 +109,7 @@ export default function AboutPage() {
       <section className="py-16 md:py-24 text-center">
         <div className="container mx-auto px-4">
           <h2 className="font-headline text-3xl md:text-4xl font-bold">Get Involved</h2>
-          <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
+          <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
             Inspired by our story? There are many ways to support our mission and the Phoenix Indian community. Explore our upcoming events or consider making a donation.
           </p>
           <div className="mt-8 flex flex-wrap gap-4 justify-center">
