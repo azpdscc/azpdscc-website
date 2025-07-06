@@ -29,45 +29,7 @@ export default function DonatePage() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          
-          {/* Donation Form */}
-          <div className="lg:col-span-2">
-            <Card className="shadow-2xl">
-              <CardHeader>
-                  <CardTitle className="font-headline text-3xl">Make a Donation</CardTitle>
-                  <CardDescription>Your generous contribution helps us continue our mission.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <DonationForm />
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Volunteer Section */}
-          <div className="lg:col-span-1">
-            <Card className="bg-secondary shadow-lg h-full flex flex-col">
-              <CardHeader>
-                <div className="flex justify-center mb-4">
-                    <div className="bg-primary/10 rounded-full p-4">
-                        <HandHeart className="h-10 w-10 text-primary" strokeWidth={1.5} />
-                    </div>
-                </div>
-                <CardTitle className="font-headline text-center text-3xl">Give the Gift of Time</CardTitle>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <p className="text-center text-muted-foreground">
-                    Volunteers are the heart of our organization. If you'd like to help with events, outreach, or administrative tasks, we'd love to have you. <Link href="/about" className="text-primary hover:underline">Learn more about our mission</Link>.
-                </p>
-              </CardContent>
-              <CardFooter>
-                <Button asChild variant="default" size="lg" className="w-full">
-                  <Link href="/volunteer">Sign Up to Volunteer</Link>
-                </Button>
-              </CardFooter>
-            </Card>
-          </div>
-        </div>
+        <DonationForm />
       </main>
 
       {/* Impact Section */}
