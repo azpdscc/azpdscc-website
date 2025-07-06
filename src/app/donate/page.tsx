@@ -24,7 +24,7 @@ export default function DonatePage() {
           <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">
             Support the Phoenix Indian Community
           </h1>
-          <p className="mt-4 max-w-2xl text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
+          <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
             Your contribution empowers us to preserve culture, celebrate heritage, and strengthen the Phoenix Indian community and AZ India connections.
           </p>
         </div>
