@@ -19,6 +19,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/donate`, lastModified: new Date(), priority: 0.7, changeFrequency: 'yearly' as const },
     { url: `${baseUrl}/volunteer`, lastModified: new Date(), priority: 0.7, changeFrequency: 'yearly' as const },
     { url: `${baseUrl}/contact`, lastModified: new Date(), priority: 0.7, changeFrequency: 'yearly' as const },
+    { url: `${baseUrl}/privacy-policy`, lastModified: new Date(), priority: 0.3, changeFrequency: 'yearly' as const },
+    { url: `${baseUrl}/terms-of-service`, lastModified: new Date(), priority: 0.3, changeFrequency: 'yearly' as const },
   ];
 
   // Dynamic event routes
