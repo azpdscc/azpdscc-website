@@ -24,7 +24,7 @@ export default function AboutPage() {
                 AZPDSCC was founded in 2010 by a group of passionate individuals who wanted to create a home away from home for the Phoenix Indian community and AZ Desis.
               </p>
               <p className="mt-4 text-muted-foreground">
-                What started as small gatherings has grown into a vibrant non-profit organization that hosts some of the largest <Link href="/events" className="text-primary hover:underline">Arizona Indian festivals</Link> in the state. Our mission is to celebrate our rich heritage, foster a sense of belonging, and build a strong, supportive community for generations to come.
+                What started as small gatherings has grown into a vibrant non-profit organization that hosts some of the largest <Link href="/events" className="text-primary hover:underline">Arizona Indian festivals</Link> in the state. Our mission is to celebrate and share the vibrant culture of North India through sports and festivals in the Phoenix community.
               </p>
             </div>
             <div className="w-full h-full">
