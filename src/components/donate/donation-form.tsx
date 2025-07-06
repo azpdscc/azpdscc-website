@@ -18,6 +18,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Loader2, CreditCard, Banknote } from 'lucide-react';
+import { Label } from '@/components/ui/label';
 
 const formSchema = z.object({
     frequency: z.enum(['one-time', 'monthly'], { required_error: "Please select a frequency." }),
@@ -64,9 +65,15 @@ export function DonationForm() {
     defaultValues: {
       frequency: 'one-time',
       amount: "50",
+      customAmount: "",
       name: "",
       email: "",
       paymentSent: false,
+      zelleSenderName: "",
+      zelleTransactionId: "",
+      cardNumber: "",
+      expiryDate: "",
+      cvc: "",
     },
   });
 
@@ -289,3 +296,4 @@ export function DonationForm() {
   );
 }
 
+    
