@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -23,48 +24,50 @@ export default function EventsPage() {
   }, [searchTerm, selectedCategory]);
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <section className="text-center mb-12">
-        <h1 className="font-headline text-4xl md:text-5xl font-bold">Arizona Indian Festivals & Events</h1>
-        <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
-          Discover vibrant Arizona Indian festivals, cultural celebrations, food fairs, and music nights for the entire Phoenix Indian community.
-        </p>
-      </section>
-      
-      <section className="mb-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-lg bg-card shadow-md">
-          <Input 
-            placeholder="Search for events..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="md:col-span-2"
-          />
-          <Select
-            value={selectedCategory}
-            onValueChange={(value: EventCategory | 'all') => setSelectedCategory(value)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Filter by category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              {categories.map(category => (
-                <SelectItem key={category} value={category}>{category}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+    <div className="bg-background">
+      <section className="py-16 md:py-24 bg-card text-center">
+        <div className="container mx-auto px-4">
+          <h1 className="font-headline text-4xl md:text-5xl font-bold text-foreground">Arizona Indian Festivals & Events</h1>
+          <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
+            Discover vibrant Arizona Indian festivals, cultural celebrations, food fairs, and music nights for the entire Phoenix Indian community.
+          </p>
         </div>
       </section>
       
-      <section className="mb-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredEvents.length > 0 ? (
-            filteredEvents.map(event => (
-              <EventCard key={event.id} event={event} />
-            ))
-          ) : (
-            <p className="md:col-span-3 text-center text-muted-foreground">No events found. Try adjusting your search or filters.</p>
-          )}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-lg bg-card shadow-md mb-12">
+            <Input 
+              placeholder="Search for events..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="md:col-span-2"
+            />
+            <Select
+              value={selectedCategory}
+              onValueChange={(value: EventCategory | 'all') => setSelectedCategory(value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Filter by category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                {categories.map(category => (
+                  <SelectItem key={category} value={category}>{category}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredEvents.length > 0 ? (
+              filteredEvents.map(event => (
+                <EventCard key={event.id} event={event} />
+              ))
+            ) : (
+              <p className="md:col-span-3 text-center text-muted-foreground">No events found. Try adjusting your search or filters.</p>
+            )}
+          </div>
         </div>
       </section>
     </div>
