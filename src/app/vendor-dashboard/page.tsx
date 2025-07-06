@@ -15,7 +15,7 @@ export default function VendorDashboardPage() {
     <div className="container mx-auto px-4 py-12">
       <section className="text-center mb-12">
         <h1 className="font-headline text-4xl md:text-5xl font-bold">Vendor Dashboard</h1>
-        <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
+        <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
           View the status of your applications and manage your booth details here.
         </p>
       </section>

@@ -12,7 +12,7 @@ export default function VendorJoinPage() {
     <div className="container mx-auto px-4 py-12">
       <section className="text-center mb-12">
         <h1 className="font-headline text-4xl md:text-5xl font-bold">Join Our AZ India Vendor Network</h1>
-        <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
+        <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
           Register your business to get priority notifications for vendor booths at Arizona events. Become part of our growing community of talented vendors serving AZ Desis.
         </p>
       </section>

@@ -54,7 +54,7 @@ export default function Home() {
             <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">
               Welcome to the Hub for AZ Indians
             </h2>
-            <p className="mt-4 max-w-3xl mx-auto text-muted-foreground">
+            <p className="mt-4 max-w-3xl mx-auto text-lg text-muted-foreground">
               We are a <Link href="/about" className="text-primary hover:underline">non-profit organization</Link> dedicated to preserving and promoting Indian culture for the Phoenix Indian community. We bring AZ Indians together through vibrant festivals and events across Arizona.
             </p>
           </div>

@@ -23,9 +23,15 @@ export default function AboutPage() {
               <p className="mt-4 text-lg text-muted-foreground">
                 AZPDSCC was founded in 2010 by a group of passionate individuals who wanted to create a home away from home for the Phoenix Indian community and AZ Desis.
               </p>
-              <p className="mt-4 text-muted-foreground">
-                What started as small gatherings has grown into a vibrant non-profit organization that hosts some of the largest <Link href="/events" className="text-primary hover:underline">Arizona Indian festivals</Link> in the state. Our mission is to celebrate and share the vibrant culture of North India through sports and festivals in the Phoenix community.
+              <p className="mt-4 text-lg text-muted-foreground">
+                What started as small gatherings has grown into a vibrant non-profit organization that hosts some of the largest <Link href="/events" className="text-primary hover:underline">Arizona Indian festivals</Link> in the state.
               </p>
+              <div className="mt-8 p-6 bg-primary/10 border-l-4 border-primary rounded-r-lg shadow-md">
+                <h3 className="font-headline text-2xl font-bold text-primary">Our Mission</h3>
+                <p className="mt-2 text-lg text-foreground font-medium">
+                  To celebrate and share the vibrant culture of North India through sports and festivals in the Phoenix community.
+                </p>
+              </div>
             </div>
             <div className="w-full h-full">
               <Image src="https://placehold.co/600x400.png" data-ai-hint="team meeting" alt="Founding members of AZPDSCC" width={600} height={400} className="rounded-lg shadow-xl w-full" />
