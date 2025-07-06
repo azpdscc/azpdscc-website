@@ -35,7 +35,7 @@ export function Ticker({ text, link, className, duration = 40 }: TickerProps) {
   );
 
   return (
-    <div className={cn('bg-primary text-primary-foreground relative h-12 w-full overflow-hidden', className)}>
+    <div className={cn('bg-black text-primary-foreground relative h-12 w-full overflow-hidden', className)}>
       <Link href={link} className="w-full h-full" aria-label={text}>
         <motion.div
           className="absolute left-0 top-0 flex h-full" // The container that moves
