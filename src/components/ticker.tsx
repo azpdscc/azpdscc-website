@@ -18,8 +18,8 @@ export function Ticker({ text, link, className, duration = 40 }: TickerProps) {
   // We use `flex-shrink-0` to prevent it from shrinking inside the flex container.
   const TickerContent = () => (
     <div className="flex items-center flex-shrink-0 px-8 py-2">
-      <Megaphone className="h-5 w-5 mr-4 flex-shrink-0" />
-      <span className="font-semibold text-md whitespace-nowrap">{text}</span>
+      <Megaphone className="h-4 w-4 mr-3 flex-shrink-0" />
+      <span className="font-semibold text-sm whitespace-nowrap">{text}</span>
     </div>
   );
 
@@ -35,7 +35,7 @@ export function Ticker({ text, link, className, duration = 40 }: TickerProps) {
   );
 
   return (
-    <div className={cn('bg-black text-primary-foreground relative h-12 w-full overflow-hidden', className)}>
+    <div className={cn('bg-black text-primary-foreground relative h-10 w-full overflow-hidden', className)}>
       <Link href={link} className="w-full h-full" aria-label={text}>
         <motion.div
           className="absolute left-0 top-0 flex h-full" // The container that moves
