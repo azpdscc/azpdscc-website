@@ -13,10 +13,11 @@ export const metadata: Metadata = {
 export default function VendorsPage() {
   return (
     <div className="bg-background">
-      <section className="py-16 md:py-24 bg-card text-center flex items-center min-h-[300px]">
-        <div className="container mx-auto px-4">
-          <h1 className="font-headline text-4xl md:text-5xl font-bold text-foreground">Vendor Booths for Arizona Indian Festivals</h1>
-          <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
+      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground bg-primary">
+        <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20" />
+        <div className="relative z-10 p-4 container mx-auto">
+          <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">Vendor Booths for Arizona Indian Festivals</h1>
+          <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
             Showcase your business to the large and engaged Phoenix Indian community. We offer opportunities for event-specific vendor booths in Arizona and a general network for future AZ India events.
           </p>
         </div>

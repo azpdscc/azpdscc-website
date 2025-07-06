@@ -15,20 +15,19 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div className="bg-background">
-      <section className="py-16 md:py-24 bg-card text-center flex items-center min-h-[300px]">
-        <div className="container mx-auto px-4">
-          <h1 className="font-headline text-4xl md:text-5xl font-bold text-foreground">
+      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground bg-primary">
+        <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20" />
+        <div className="relative z-10 p-4 container mx-auto">
+          <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">
             Our Mission for the Phoenix Indian Community
           </h1>
-          <div className="mt-8 py-8 border-y border-primary/20 max-w-3xl mx-auto">
-            <p className="text-2xl font-medium text-foreground">
-              &ldquo;To celebrate and share the vibrant culture of North India through sports and festivals in the Phoenix community.&rdquo;
-            </p>
-          </div>
+          <p className="mt-4 max-w-3xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
+            To celebrate and share the vibrant culture of North India through sports and festivals in the Phoenix community.
+          </p>
         </div>
       </section>
 
-      <section className="py-16 md:py-24">
+      <section className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
@@ -83,7 +82,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24">
+      <section className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4">
           <h2 className="text-center font-headline text-3xl md:text-4xl font-bold">Meet Our Team</h2>
           <p className="text-center mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
