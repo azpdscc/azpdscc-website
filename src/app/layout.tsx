@@ -5,6 +5,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { Montserrat, Open_Sans } from 'next/font/google';
 import { cn } from '@/lib/utils';
+import { Ticker } from '@/components/ticker';
 import './globals.css';
 
 const montserrat = Montserrat({
@@ -72,6 +73,10 @@ export default function RootLayout({
       <body className="font-body antialiased">
         <div className="flex min-h-screen flex-col">
           <Header />
+          <Ticker 
+            text="Hurry, register to become a vendor! Limited spaces available."
+            link="/vendors/apply"
+          />
           <main className="flex-1">{children}</main>
           <Footer />
         </div>
