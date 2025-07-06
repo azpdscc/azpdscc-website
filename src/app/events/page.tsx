@@ -25,7 +25,7 @@ export default function EventsPage() {
 
   return (
     <div className="bg-background">
-      <section className="py-16 md:py-24 bg-card text-center">
+      <section className="py-16 md:py-24 bg-card text-center flex items-center min-h-[300px]">
         <div className="container mx-auto px-4">
           <h1 className="font-headline text-4xl md:text-5xl font-bold text-foreground">Arizona Indian Festivals & Events</h1>
           <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
@@ -34,7 +34,7 @@ export default function EventsPage() {
         </div>
       </section>
       
-      <section className="py-16">
+      <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-lg bg-card shadow-md mb-12">
             <Input 

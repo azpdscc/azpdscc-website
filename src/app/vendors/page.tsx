@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function VendorsPage() {
   return (
     <div className="bg-background">
-      <section className="py-16 md:py-24 bg-card text-center">
+      <section className="py-16 md:py-24 bg-card text-center flex items-center min-h-[300px]">
         <div className="container mx-auto px-4">
           <h1 className="font-headline text-4xl md:text-5xl font-bold text-foreground">Vendor Booths for Arizona Indian Festivals</h1>
           <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
@@ -22,7 +22,7 @@ export default function VendorsPage() {
         </div>
       </section>
       
-      <section className="py-16">
+      <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             <Card className="shadow-lg flex flex-col">

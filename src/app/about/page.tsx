@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div className="bg-background">
-      <section className="py-16 md:py-24 bg-card text-center">
+      <section className="py-16 md:py-24 bg-card text-center flex items-center min-h-[300px]">
         <div className="container mx-auto px-4">
           <h1 className="font-headline text-4xl md:text-5xl font-bold text-foreground">
             Our Mission for the Phoenix Indian Community
