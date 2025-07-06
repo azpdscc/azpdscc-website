@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -20,6 +20,7 @@ import { generateEventsFile } from '@/ai/flows/generate-events-file-flow';
 import { generateSocialPosts, type GenerateSocialPostsOutput } from '@/ai/flows/generate-social-posts-flow';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Label } from '@/components/ui/label';
 
 const eventSchema = z.object({
   name: z.string().min(3, "Event name is required."),
@@ -50,6 +51,23 @@ export default function CreateEventPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [socialPosts, setSocialPosts] = useState<GenerateSocialPostsOutput | null>(null);
   const [isGeneratingSocial, setIsGeneratingSocial] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const CORRECT_PASSWORD = 'azpdscc-admin-2024';
+  const AUTH_KEY = 'event-creator-auth';
+
+  useEffect(() => {
+    try {
+      const isAuthed = localStorage.getItem(AUTH_KEY);
+      if (isAuthed === btoa(CORRECT_PASSWORD)) {
+          setIsAuthenticated(true);
+      }
+    } catch (e) {
+      console.warn('localStorage not available for auth check.');
+    }
+  }, []);
 
   const form = useForm<EventFormValues>({
     resolver: zodResolver(eventSchema),
@@ -143,6 +161,54 @@ export default function CreateEventPage() {
       description: `The ${type.toLowerCase()} has been copied to your clipboard.`,
     });
   };
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === CORRECT_PASSWORD) {
+      try {
+        localStorage.setItem(AUTH_KEY, btoa(CORRECT_PASSWORD));
+      } catch (e) {
+        console.warn('localStorage not available for auth persistence.');
+      }
+      setIsAuthenticated(true);
+      setError('');
+    } else {
+      setError('Incorrect password. Please try again.');
+      setPassword('');
+    }
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="container mx-auto px-4 py-12 flex items-center justify-center min-h-[60vh]">
+        <Card className="w-full max-w-md shadow-2xl">
+          <CardHeader>
+            <CardTitle className="font-headline text-2xl">Admin Access Required</CardTitle>
+            <CardDescription>Please enter the password to access the Event Creator.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="********"
+                  autoFocus
+                />
+              </div>
+              {error && <p className="text-sm font-medium text-destructive">{error}</p>}
+              <Button type="submit" className="w-full">
+                Unlock
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-12">
