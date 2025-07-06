@@ -9,7 +9,7 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 
-export const GenerateEventsFileInputSchema = z.object({
+const GenerateEventsFileInputSchema = z.object({
   newEvent: z.any().describe('The new event object to add.'),
   existingEvents: z
     .string()
