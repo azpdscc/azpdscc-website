@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -12,11 +12,14 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { FileText, Copy, Loader2, Sparkles } from 'lucide-react';
+import { FileText, Copy, Loader2, Sparkles, Twitter, Facebook } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { EventCategory } from '@/lib/types';
-import { events } from '@/lib/data'; // Import existing events
+import { events } from '@/lib/data';
 import { generateEventsFile } from '@/ai/flows/generate-events-file-flow';
+import { generateSocialPosts, type GenerateSocialPostsOutput } from '@/ai/flows/generate-social-posts-flow';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const eventSchema = z.object({
   name: z.string().min(3, "Event name is required."),
@@ -45,6 +48,8 @@ export default function CreateEventPage() {
   const { toast } = useToast();
   const [generatedCode, setGeneratedCode] = useState('// Fill out the form and click "Generate File" to create the code here.');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [socialPosts, setSocialPosts] = useState<GenerateSocialPostsOutput | null>(null);
+  const [isGeneratingSocial, setIsGeneratingSocial] = useState(false);
 
   const form = useForm<EventFormValues>({
     resolver: zodResolver(eventSchema),
@@ -63,13 +68,14 @@ export default function CreateEventPage() {
 
   const handleGenerateCode = async (values: EventFormValues) => {
     setIsGenerating(true);
+    setSocialPosts(null);
+    setIsGeneratingSocial(true);
     setGeneratedCode('// Generating AI-powered file content... please wait.');
     
     const slug = generateSlug(values.name || 'new-event');
     const image = values.image || 'https://placehold.co/600x400.png';
     
     const newEventObject = {
-      // ID will be set by the AI flow to ensure uniqueness
       id: 999, // Placeholder ID
       slug: slug,
       name: values.name,
@@ -95,8 +101,27 @@ export default function CreateEventPage() {
           description: "The full content of your data file has been generated.",
         });
       } else {
-        throw new Error("The AI returned empty content.");
+        throw new Error("The AI returned empty content for the file.");
       }
+
+      try {
+        const posts = await generateSocialPosts({
+          name: values.name,
+          date: values.date,
+          description: values.description,
+          slug: slug,
+        });
+        setSocialPosts(posts);
+      } catch (socialError) {
+        console.error(socialError);
+        setSocialPosts(null);
+        toast({
+          variant: 'destructive',
+          title: "Social Post Generation Failed",
+          description: "Could not generate social media posts, but your file content is ready.",
+        });
+      }
+
     } catch (error) {
       console.error(error);
       setGeneratedCode('// An error occurred during generation. Please try again.');
@@ -107,14 +132,15 @@ export default function CreateEventPage() {
       });
     } finally {
       setIsGenerating(false);
+      setIsGeneratingSocial(false);
     }
   };
 
-  const handleCopyCode = () => {
-    navigator.clipboard.writeText(generatedCode);
+  const handleCopyCode = (textToCopy: string, type: string) => {
+    navigator.clipboard.writeText(textToCopy);
     toast({
-      title: "Code Copied!",
-      description: "You can now paste it into your data file.",
+      title: `${type} Copied!`,
+      description: `The ${type.toLowerCase()} has been copied to your clipboard.`,
     });
   };
 
@@ -123,7 +149,7 @@ export default function CreateEventPage() {
       <section className="text-center mb-12">
         <h1 className="font-headline text-4xl md:text-5xl font-bold">Event Code Generator</h1>
         <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
-          Fill out this form to generate the entire `data.ts` file with your new event included.
+          Fill out this form to generate the entire `data.ts` file and get AI-generated social media posts.
         </p>
       </section>
 
@@ -176,14 +202,14 @@ export default function CreateEventPage() {
                 )} />
                  <Button type="submit" disabled={isGenerating}>
                     {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
-                    Generate File Content
+                    Generate Content
                 </Button>
               </form>
             </Form>
           </CardContent>
         </Card>
 
-        <div className="sticky top-24 h-fit">
+        <div className="sticky top-24 h-fit space-y-8">
           <Card className="shadow-lg">
             <CardHeader>
               <CardTitle>Generated `data.ts` File Content</CardTitle>
@@ -207,12 +233,52 @@ export default function CreateEventPage() {
                     {generatedCode}
                   </code>
                 </pre>
-                <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={handleCopyCode} disabled={isGenerating || generatedCode.startsWith('//')}>
+                <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={() => handleCopyCode(generatedCode, 'File Content')} disabled={isGenerating || generatedCode.startsWith('//')}>
                   <Copy className="h-4 w-4" />
                 </Button>
               </div>
             </CardContent>
           </Card>
+          
+          {(isGeneratingSocial || socialPosts) && (
+            <Card className="shadow-lg animate-in fade-in-50">
+              <CardHeader>
+                <CardTitle>AI-Generated Social Posts</CardTitle>
+                <CardDescription>Copy these posts to share on your social media accounts.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {isGeneratingSocial ? (
+                  <div className="space-y-4">
+                    <Skeleton className="h-8 w-1/2" />
+                    <Skeleton className="h-24 w-full" />
+                  </div>
+                ) : socialPosts && (
+                  <Tabs defaultValue="twitter">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="twitter"><Twitter className="mr-2 h-4 w-4" /> Twitter</TabsTrigger>
+                      <TabsTrigger value="facebook"><Facebook className="mr-2 h-4 w-4" /> Facebook & Insta</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="twitter">
+                      <div className="relative mt-2">
+                        <Textarea readOnly value={socialPosts.twitterPost} rows={5} className="pr-12 bg-secondary" />
+                        <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={() => handleCopyCode(socialPosts.twitterPost, 'Tweet')}>
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TabsContent>
+                    <TabsContent value="facebook">
+                       <div className="relative mt-2">
+                        <Textarea readOnly value={socialPosts.facebookPost} rows={8} className="pr-12 bg-secondary" />
+                         <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={() => handleCopyCode(socialPosts.facebookPost, 'Facebook Post')}>
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                )}
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>
