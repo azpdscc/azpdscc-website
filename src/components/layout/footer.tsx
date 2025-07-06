@@ -22,6 +22,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-1">
             <Logo />
+            <p className="mt-2 text-muted-foreground text-sm font-semibold">Phoenix Desi Sports and Cultural Club</p>
             <p className="mt-4 text-muted-foreground text-sm">
               To celebrate and share the vibrant culture of North India through sports and festivals in the Phoenix community.
             </p>

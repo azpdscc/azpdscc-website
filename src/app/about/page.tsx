@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 
 export const metadata: Metadata = {
   title: 'About AZPDSCC: Our Story & Mission for the Phoenix Indian Community',
-  description: 'Learn about the story, values, and team behind AZPDSCC, a non-profit organization dedicated to serving the AZ India community and AZ Desis in Phoenix.',
+  description: 'Learn about the story, values, and team behind the Phoenix Desi Sports and Cultural Club (AZPDSCC), a non-profit organization dedicated to serving the AZ India community and AZ Desis in Phoenix.',
 };
 
 export default function AboutPage() {
@@ -33,7 +33,7 @@ export default function AboutPage() {
             <div>
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">Our Story: A Home for AZ Desis</h2>
               <p className="mt-4 text-lg text-muted-foreground">
-                AZPDSCC was founded in 2010 by a group of passionate individuals who wanted to create a home away from home for the Phoenix Indian community and AZ Desis.
+                The Phoenix Desi Sports and Cultural Club (AZPDSCC) was founded in 2010 by a group of passionate individuals who wanted to create a home away from home for the Phoenix Indian community and AZ Desis.
               </p>
               <p className="mt-4 text-lg text-muted-foreground">
                 What started as small gatherings has grown into a vibrant non-profit organization that hosts some of the largest <Link href="/events" className="text-primary hover:underline">Arizona Indian festivals</Link> in the state.
