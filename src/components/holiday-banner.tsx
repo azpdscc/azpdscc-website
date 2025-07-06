@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { usHolidays, type Holiday } from '@/lib/holidays';
+import { holidays, type Holiday } from '@/lib/holidays';
 import { Card, CardContent } from '@/components/ui/card';
 
 export function HolidayBanner() {
@@ -14,7 +14,7 @@ export function HolidayBanner() {
     const currentMonth = today.getMonth() + 1; // getMonth() is 0-indexed
     const currentDay = today.getDate();
 
-    const holiday = usHolidays.find(
+    const holiday = holidays.find(
       (h) => h.month === currentMonth && h.day === currentDay
     );
 
