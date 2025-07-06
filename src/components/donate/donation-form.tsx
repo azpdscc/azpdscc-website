@@ -17,7 +17,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, CreditCard, Banknote, HandHeart, ArrowLeft } from 'lucide-react';
+import { Loader2, CreditCard, Banknote, HandHeart } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -88,11 +88,6 @@ export function DonationForm() {
     }
   };
 
-  const handleBackToStart = () => {
-    form.reset();
-    setStep(1);
-  };
-
   const onSubmit: SubmitHandler<DonationFormValues> = async (data) => {
     setIsLoading(true);
     
@@ -126,7 +121,8 @@ export function DonationForm() {
     }
 
     setIsLoading(false);
-    handleBackToStart();
+    form.reset();
+    setStep(1);
   };
 
   const paymentMethod = form.watch('paymentMethod');
@@ -140,7 +136,7 @@ export function DonationForm() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-      <div className="lg:col-span-2">
+      <div className={cn("lg:col-span-3", step === 1 && "lg:col-span-2")}>
         <Card className="shadow-2xl">
           <CardHeader>
               <CardTitle className="font-headline text-3xl">Make a Donation</CardTitle>
@@ -302,8 +298,8 @@ export function DonationForm() {
         </Card>
       </div>
 
-      <div className="lg:col-span-1">
-        {step === 1 ? (
+      {step === 1 && (
+        <div className="lg:col-span-1">
           <Card className="bg-secondary shadow-lg h-full flex flex-col">
             <CardHeader>
               <div className="flex justify-center mb-4">
@@ -324,25 +320,8 @@ export function DonationForm() {
               </Button>
             </CardFooter>
           </Card>
-        ) : (
-          <Card className="bg-card shadow-lg h-full flex flex-col items-center justify-center">
-            <CardHeader>
-                <CardTitle className="font-headline text-center text-2xl">Changed your mind?</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <p className="text-center text-muted-foreground">
-                    You can cancel your current donation and start over at any time.
-                </p>
-            </CardContent>
-            <CardFooter>
-              <Button variant="outline" size="lg" className="w-full" onClick={handleBackToStart}>
-                <ArrowLeft className="mr-2 h-5 w-5" />
-                Cancel and Start Over
-              </Button>
-            </CardFooter>
-          </Card>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
