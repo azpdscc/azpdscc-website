@@ -1,6 +1,7 @@
 
 import type { MetadataRoute } from 'next';
 import { events } from '@/lib/data';
+import { blogPosts } from '@/lib/blog-data';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://www.azpdscc.org';
@@ -10,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/`, lastModified: new Date(), priority: 1.0, changeFrequency: 'monthly' as const },
     { url: `${baseUrl}/about`, lastModified: new Date(), priority: 0.8, changeFrequency: 'yearly' as const },
     { url: `${baseUrl}/events`, lastModified: new Date(), priority: 0.9, changeFrequency: 'weekly' as const },
+    { url: `${baseUrl}/blog`, lastModified: new Date(), priority: 0.9, changeFrequency: 'weekly' as const },
     { url: `${baseUrl}/vendors`, lastModified: new Date(), priority: 0.8, changeFrequency: 'monthly' as const },
     { url: `${baseUrl}/vendors/apply`, lastModified: new Date(), priority: 0.7, changeFrequency: 'yearly' as const },
     { url: `${baseUrl}/vendors/join`, lastModified: new Date(), priority: 0.7, changeFrequency: 'yearly' as const },
@@ -26,8 +28,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: 'yearly' as const,
   }));
 
+  // Dynamic blog post routes
+  const blogRoutes = blogPosts.map(post => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: new Date(),
+    priority: 0.8,
+    changeFrequency: 'monthly' as const,
+  }));
+
   return [
     ...staticRoutes,
-    ...eventRoutes
+    ...eventRoutes,
+    ...blogRoutes
   ];
 }

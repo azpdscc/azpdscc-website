@@ -49,3 +49,14 @@ export type DonationFormValues = {
   expiryDate?: string;
   cvc?: string;
 };
+
+export type BlogPost = {
+  id: number;
+  slug: string;
+  title: string;
+  author: string;
+  date: string;
+  image: string;
+  excerpt: string;
+  content: string;
+};
