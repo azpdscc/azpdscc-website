@@ -45,7 +45,7 @@ export function Header() {
         </div>
 
         <div className="hidden md:flex items-center gap-4">
-          <Button asChild>
+          <Button asChild size="lg">
             <Link href="/donate">Donate</Link>
           </Button>
           <div className="flex items-center space-x-4">
