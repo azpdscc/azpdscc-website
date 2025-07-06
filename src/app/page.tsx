@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { EventCard } from '@/components/events/event-card';
 import { HolidayBanner } from '@/components/holiday-banner';
+import { Ticker } from '@/components/ticker';
 import { events } from '@/lib/data';
 import { ArrowRight, CircleDollarSign, Handshake, Sprout } from 'lucide-react';
 
@@ -45,6 +46,11 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <Ticker 
+        text="Hurry, register to become a vendor! Limited spaces available."
+        link="/vendors/apply"
+      />
 
       <HolidayBanner />
 
