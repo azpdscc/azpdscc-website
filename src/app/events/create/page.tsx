@@ -12,9 +12,11 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { FileText, Copy } from 'lucide-react';
+import { FileText, Copy, Loader2, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { Event, EventCategory } from '@/lib/types';
+import type { EventCategory } from '@/lib/types';
+import { events } from '@/lib/data'; // Import existing events
+import { generateEventsFile } from '@/ai/flows/generate-events-file-flow';
 
 const eventSchema = z.object({
   name: z.string().min(3, "Event name is required."),
@@ -34,14 +36,15 @@ type EventFormValues = z.infer<typeof eventSchema>;
 const generateSlug = (name: string) => {
   return name
     .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9\\s-]/g, '')
+    .replace(/\\s+/g, '-')
     .slice(0, 50);
 };
 
 export default function CreateEventPage() {
   const { toast } = useToast();
-  const [generatedCode, setGeneratedCode] = useState('');
+  const [generatedCode, setGeneratedCode] = useState('// Fill out the form and click "Generate File" to create the code here.');
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const form = useForm<EventFormValues>({
     resolver: zodResolver(eventSchema),
@@ -58,16 +61,16 @@ export default function CreateEventPage() {
     mode: 'onBlur',
   });
 
-  const formData = form.watch();
-
-  useEffect(() => {
-    const { ...values } = formData;
+  const handleGenerateCode = async (values: EventFormValues) => {
+    setIsGenerating(true);
+    setGeneratedCode('// Generating AI-powered file content... please wait.');
+    
     const slug = generateSlug(values.name || 'new-event');
     const image = values.image || 'https://placehold.co/600x400.png';
     
-    // Create a dummy event object for generation
-    const eventObject = {
-      id: "NEW_ID", // Placeholder
+    const newEventObject = {
+      // ID will be set by the AI flow to ensure uniqueness
+      id: 999, // Placeholder ID
       slug: slug,
       name: values.name,
       date: values.date,
@@ -79,21 +82,33 @@ export default function CreateEventPage() {
       category: values.category,
     };
 
-    const codeString = `
-{
-  id: 99, // IMPORTANT: Change this to a unique number!
-  slug: '${eventObject.slug}',
-  name: '${eventObject.name.replace(/'/g, "\\'")}',
-  date: '${eventObject.date.replace(/'/g, "\\'")}',
-  time: '${eventObject.time.replace(/'/g, "\\'")}',
-  location: '${eventObject.location.replace(/'/g, "\\'")}',
-  image: '${eventObject.image}',
-  description: \`${eventObject.description.replace(/`/g, "\\`")}\`,
-  fullDescription: \`${eventObject.fullDescription.replace(/`/g, "\\`")}\`,
-  category: '${eventObject.category}',
-},`;
-    setGeneratedCode(codeString);
-  }, [formData]);
+    try {
+      const fullFileContent = await generateEventsFile({
+        newEvent: newEventObject,
+        existingEvents: JSON.stringify(events),
+      });
+
+      if (fullFileContent) {
+        setGeneratedCode(fullFileContent);
+        toast({
+          title: "File Generated!",
+          description: "The full content of your data file has been generated.",
+        });
+      } else {
+        throw new Error("The AI returned empty content.");
+      }
+    } catch (error) {
+      console.error(error);
+      setGeneratedCode('// An error occurred during generation. Please try again.');
+      toast({
+        variant: 'destructive',
+        title: "Generation Failed",
+        description: "Could not generate the file content. Check the console for errors.",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(generatedCode);
@@ -108,7 +123,7 @@ export default function CreateEventPage() {
       <section className="text-center mb-12">
         <h1 className="font-headline text-4xl md:text-5xl font-bold">Event Code Generator</h1>
         <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
-          Fill out this form to create the code for a new event.
+          Fill out this form to generate the entire `data.ts` file with your new event included.
         </p>
       </section>
 
@@ -120,7 +135,7 @@ export default function CreateEventPage() {
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form className="space-y-6">
+              <form onSubmit={form.handleSubmit(handleGenerateCode)} className="space-y-6">
                 <FormField control={form.control} name="name" render={({ field }) => (
                   <FormItem><FormLabel>Event Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                 )} />
@@ -159,6 +174,10 @@ export default function CreateEventPage() {
                  <FormField control={form.control} name="image" render={({ field }) => (
                   <FormItem><FormLabel>Image URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                 )} />
+                 <Button type="submit" disabled={isGenerating}>
+                    {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                    Generate File Content
+                </Button>
               </form>
             </Form>
           </CardContent>
@@ -167,8 +186,8 @@ export default function CreateEventPage() {
         <div className="sticky top-24 h-fit">
           <Card className="shadow-lg">
             <CardHeader>
-              <CardTitle>Generated Code</CardTitle>
-              <CardDescription>Copy this code and add it to your events data file.</CardDescription>
+              <CardTitle>Generated `data.ts` File Content</CardTitle>
+              <CardDescription>Copy the entire content below to update your events.</CardDescription>
             </CardHeader>
             <CardContent>
                <Alert>
@@ -179,18 +198,16 @@ export default function CreateEventPage() {
                     <br />
                     2. Open the file: <code className="font-mono text-sm bg-muted p-1 rounded-sm">src/lib/data.ts</code>
                     <br />
-                    3. Paste the code into the `events` array.
-                    <br />
-                    4. **Crucially, remember to change the `id` to a new, unique number.**
+                    3. Select ALL the existing content and paste to replace it completely.
                   </AlertDescription>
               </Alert>
               <div className="relative mt-4">
-                <pre className="bg-secondary p-4 rounded-md text-sm overflow-x-auto">
+                <pre className="bg-secondary p-4 rounded-md text-sm overflow-x-auto max-h-[500px]">
                   <code>
                     {generatedCode}
                   </code>
                 </pre>
-                <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={handleCopyCode}>
+                <Button variant="ghost" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={handleCopyCode} disabled={isGenerating || generatedCode.startsWith('//')}>
                   <Copy className="h-4 w-4" />
                 </Button>
               </div>
