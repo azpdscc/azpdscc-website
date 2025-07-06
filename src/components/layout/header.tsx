@@ -2,7 +2,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, Twitter, Facebook, Github } from 'lucide-react';
+import { Menu, Twitter, Facebook, Instagram } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -56,7 +56,7 @@ export function Header() {
                 <Facebook className="h-5 w-5" strokeWidth={1.5} />
               </Link>
               <Link href="#" className="text-muted-foreground hover:text-primary">
-                <Github className="h-5 w-5" strokeWidth={1.5} />
+                <Instagram className="h-5 w-5" strokeWidth={1.5} />
               </Link>
             </div>
         </div>
@@ -99,7 +99,7 @@ export function Header() {
                       <Facebook className="h-5 w-5" strokeWidth={1.5} />
                   </Link>
                   <Link href="#" className="text-muted-foreground hover:text-primary">
-                      <Github className="h-5 w-5" strokeWidth={1.5} />
+                      <Instagram className="h-5 w-5" strokeWidth={1.5} />
                   </Link>
                 </div>
               </div>

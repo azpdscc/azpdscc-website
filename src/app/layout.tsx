@@ -58,7 +58,7 @@ export default function RootLayout({
     sameAs: [
       "https://twitter.com/azpdscc",
       "https://facebook.com/azpdscc",
-      "https://github.com/azpdscc",
+      "https://instagram.com/azpdscc",
     ],
   };
 
