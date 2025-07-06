@@ -30,18 +30,17 @@ const formSchema = z.object({
     // Zelle fields
     zelleSenderName: z.string().optional(),
     zelleTransactionId: z.string().optional(),
-    paymentSent: z.boolean().optional(),
     // Credit card fields (for validation simulation)
     cardNumber: z.string().optional(),
     expiryDate: z.string().optional(),
     cvc: z.string().optional(),
 }).refine(data => {
     if (data.paymentMethod === 'zelle') {
-        return !!data.zelleSenderName && data.zelleSenderName.length >= 2 && data.paymentSent;
+        return !!data.zelleSenderName && data.zelleSenderName.length >= 2;
     }
     return true;
 }, {
-    message: "Please fill out the required Zelle confirmation details.",
+    message: "Please enter the name on your Zelle account to help us verify payment.",
     path: ['zelleSenderName'],
 }).refine(data => {
      if (data.paymentMethod === 'credit-card') {
@@ -68,7 +67,6 @@ export function DonationForm() {
       customAmount: "",
       name: "",
       email: "",
-      paymentSent: false,
       zelleSenderName: "",
       zelleTransactionId: "",
       cardNumber: "",
@@ -95,6 +93,8 @@ export function DonationForm() {
     
     if(data.paymentMethod === 'credit-card') {
         try {
+            // In a real app, payment processing (e.g., Stripe) would happen here.
+            // On success, we then trigger the receipt.
             const result = await sendDonationReceipt({
                 donorName: data.name,
                 donorEmail: data.email,
@@ -116,7 +116,7 @@ export function DonationForm() {
     } else { // Zelle
          toast({
             title: "Information Received!",
-            description: "Thank you! We will confirm your donation once the Zelle payment is verified.",
+            description: "Thank you! We will confirm your donation and send a receipt once the Zelle payment is verified by our team.",
         });
     }
 
@@ -263,20 +263,13 @@ export function DonationForm() {
                 <div className="space-y-4 animate-in fade-in-50">
                     <div className="p-4 border-2 border-primary/50 rounded-lg bg-primary/5">
                         <h3 className="font-headline font-bold text-lg text-primary">Complete Your Donation via Zelle</h3>
-                        <p className="mt-2 text-muted-foreground">Please send <strong>${finalAmount}</strong> via Zelle to:</p>
+                        <p className="mt-2 text-muted-foreground">1. Please send <strong>${finalAmount}</strong> via Zelle to:</p>
                         <p className="text-2xl font-mono bg-background p-2 rounded-md text-center my-4">admin@azpdscc.org</p>
-                        <p className="font-bold text-destructive">Important: Please include your name in the Zelle memo.</p>
+                        <p className="mt-2 text-muted-foreground">2. After sending, fill out your Zelle account name below and submit this form.</p>
+                        <p className="font-bold text-destructive mt-2">Important: Your donation receipt will be emailed after our team manually verifies the transaction.</p>
                     </div>
                      <FormField name="zelleSenderName" control={form.control} render={({ field }) => (
-                        <FormItem><FormLabel>Name on Zelle Account</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl></FormItem>
-                    )} />
-                    <FormField control={form.control} name="paymentSent" render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                            <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                            <div className="space-y-1 leading-none">
-                            <FormLabel>I confirm that I have sent the Zelle payment of ${finalAmount}.</FormLabel>
-                            </div>
-                        </FormItem>
+                        <FormItem><FormLabel>Name on Zelle Account</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormDescription>This is required to match your payment to your donation.</FormDescription></FormItem>
                     )} />
                 </div>
             )}
@@ -295,5 +288,3 @@ export function DonationForm() {
     </Form>
   );
 }
-
-    
