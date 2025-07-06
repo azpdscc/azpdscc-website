@@ -69,7 +69,7 @@ export function VolunteerForm() {
         </div>
         
         <FormField name="phone" control={form.control} render={({ field }) => (
-          <FormItem><FormLabel>Phone Number (Optional)</FormLabel><FormControl><Input type="tel" placeholder="(555) 555-5555" {...field} /></FormControl><FormMessage /></FormMessage>
+          <FormItem><FormLabel>Phone Number (Optional)</FormLabel><FormControl><Input type="tel" placeholder="(555) 555-5555" {...field} /></FormControl><FormMessage /></FormItem>
         )} />
         
         <FormField
