@@ -185,14 +185,14 @@ export const teamMembers: TeamMember[] = [
   },
   {
     id: 11,
-    name: 'Parmjit Singh Longroya',
+    name: 'Paramjit Singh Longroya',
     role: 'Director',
     image: 'https://placehold.co/400x400.png',
     bio: 'A dedicated director committed to the success of our events and initiatives.',
   },
   {
     id: 12,
-    name: 'Parmjit Seapley',
+    name: 'Paramjit Seapley',
     role: 'Director',
     image: 'https://placehold.co/400x400.png',
     bio: 'A dedicated director committed to the success of our events and initiatives.',
