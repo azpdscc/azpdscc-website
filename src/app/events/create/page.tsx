@@ -129,7 +129,7 @@ export default function CreateEventPage() {
                     <FormItem><FormLabel>Date</FormLabel><FormControl><Input placeholder="e.g., May 5, 2025" {...field} /></FormControl><FormMessage /></FormItem>
                   )} />
                   <FormField control={form.control} name="time" render={({ field }) => (
-                    <FormItem><FormLabel>Time</FormLabel><FormControl><Input placeholder="e.g., 10:00 AM - 4:00 PM" {...field} /></FormControl><FormMessage /></FormMessage>
+                    <FormItem><FormLabel>Time</FormLabel><FormControl><Input placeholder="e.g., 10:00 AM - 4:00 PM" {...field} /></FormControl><FormMessage /></FormItem>
                   )} />
                 </div>
                  <FormField control={form.control} name="location" render={({ field }) => (
@@ -201,4 +201,3 @@ export default function CreateEventPage() {
     </div>
   );
 }
-
