@@ -6,6 +6,7 @@ import { Footer } from '@/components/layout/footer';
 import { Montserrat, Open_Sans } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { ConditionalTicker } from '@/components/layout/conditional-ticker';
+import { Breadcrumbs } from '@/components/layout/breadcrumbs';
 import './globals.css';
 
 const montserrat = Montserrat({
@@ -74,6 +75,7 @@ export default function RootLayout({
         <div className="flex min-h-screen flex-col">
           <Header />
           <ConditionalTicker />
+          <Breadcrumbs />
           <main className="flex-1">{children}</main>
           <Footer />
         </div>
