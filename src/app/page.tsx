@@ -16,8 +16,8 @@ export default function Home() {
     <div className="flex flex-col">
       <section className="relative h-[60vh] min-h-[400px] w-full">
         <Image
-          src="https://placehold.co/1920x1080.png"
-          alt="Indian festival celebration"
+          src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/IMG_2919.JPG"
+          alt="Vaisakhi festival celebration"
           data-ai-hint="festival celebration"
           fill
           sizes="100vw"
