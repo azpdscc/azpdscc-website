@@ -115,7 +115,7 @@ export const events: Event[] = [
     slug: "teeyandamela2025",
     name: "Teeyan Da Mela 2025",
     date: "August 2, 2025",
-    time: "2PM - 7PM",
+    time: "2:00 PM - 7:00 PM",
     location: "Indo American Cultural Hall",
     image: "https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/IMG_3123.JPG",
     description: "Teeyan da Mela is a vibrant Punjabi festival celebrating the onset of the monsoon season and traditionally observed by women. ",
