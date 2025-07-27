@@ -10,7 +10,9 @@ import { events } from '@/lib/data';
 import { ArrowRight, CircleDollarSign, Handshake, Sprout } from 'lucide-react';
 
 export default function Home() {
-  const upcomingEvents = events.slice(0, 5);
+  const upcomingEvents = [...events]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 5);
 
   return (
     <div className="flex flex-col">

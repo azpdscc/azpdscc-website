@@ -14,14 +14,18 @@ export default function EventsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<EventCategory | 'all'>('all');
 
+  const sortedEvents = useMemo(() => {
+    return [...events].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }, []);
+
   const filteredEvents = useMemo(() => {
-    return events.filter(event => {
+    return sortedEvents.filter(event => {
       const matchesSearch = event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                             event.description.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [searchTerm, selectedCategory]);
+  }, [searchTerm, selectedCategory, sortedEvents]);
 
   return (
     <div className="bg-background">
