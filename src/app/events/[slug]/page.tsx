@@ -85,7 +85,7 @@ export default function EventDetailPage({ params }: { params: { slug: string } }
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.locationAddress)}`;
 
   // Construct the Google Maps Static API URL
-  constapiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
   const staticMapUrl = apiKey
     ? `https://maps.googleapis.com/maps/api/staticmap?center=${encodeURIComponent(event.locationAddress)}&zoom=14&size=400x200&maptype=roadmap&markers=color:red%7Clabel:E%7C${encodeURIComponent(event.locationAddress)}&key=${apiKey}`
     : `https://placehold.co/400x200.png`;
