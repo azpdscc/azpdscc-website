@@ -1,6 +1,7 @@
 
 import type { Metadata, ResolvingMetadata } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { events } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
@@ -53,8 +54,8 @@ const createEventSchema = (event: Event) => {
     eventStatus: 'https://schema.org/EventScheduled',
     location: {
       '@type': 'Place',
-      name: event.location,
-      address: event.location,
+      name: event.locationName,
+      address: event.locationAddress,
     },
     image: [event.image],
     description: event.fullDescription,
@@ -81,6 +82,7 @@ export default function EventDetailPage({ params }: { params: { slug: string } }
   }
 
   const eventSchema = createEventSchema(event);
+  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.locationAddress)}`;
 
   return (
     <div>
@@ -141,15 +143,19 @@ export default function EventDetailPage({ params }: { params: { slug: string } }
                  <div className="flex items-start gap-3">
                     <MapPin className="h-5 w-5 mt-1 text-primary shrink-0" strokeWidth={1.5} />
                     <div>
-                        <p className="font-semibold text-foreground">Location</p>
-                        <p>{event.location}</p>
+                        <p className="font-semibold text-foreground">{event.locationName}</p>
+                        <Link href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                          {event.locationAddress}
+                        </Link>
                     </div>
                 </div>
               </div>
               <Button size="lg" className="w-full mt-6">Register / RSVP</Button>
               <Button variant="outline" size="lg" className="w-full mt-2">Add to Calendar</Button>
                <div className="mt-6 h-48 bg-secondary rounded-lg flex items-center justify-center">
-                    <p className="text-muted-foreground">Location map placeholder</p>
+                    <Link href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="w-full h-full">
+                       <Image src={`https://placehold.co/400x200.png`} data-ai-hint="map location" alt={`Map of ${event.locationName}`} width={400} height={200} className="w-full h-full object-cover rounded-lg" />
+                    </Link>
                 </div>
             </div>
           </div>

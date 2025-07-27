@@ -7,7 +7,8 @@ export type Event = {
   name: string;
   date: string;
   time: string;
-  location: string;
+  locationName: string;
+  locationAddress: string;
   image: string;
   description: string;
   fullDescription: string;

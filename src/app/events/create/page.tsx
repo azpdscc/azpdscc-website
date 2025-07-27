@@ -26,7 +26,8 @@ const eventSchema = z.object({
   name: z.string().min(3, "Event name is required."),
   date: z.string().regex(/^(January|February|March|April|May|June|July|August|September|October|November|December)\s\d{1,2},\s\d{4}$/, "Date must be in 'Month Day, Year' format (e.g., August 02, 2025)."),
   time: z.string().regex(/^\d{1,2}:\d{2}\s(AM|PM)\s-\s\d{1,2}:\d{2}\s(AM|PM)$/, "Time must be in 'H:MM AM/PM - H:MM AM/PM' format (e.g., 2:00 PM - 7:00 PM)."),
-  location: z.string().min(3, "Location is required."),
+  locationName: z.string().min(3, "Location name is required."),
+  locationAddress: z.string().min(10, "A full address is required."),
   image: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
   description: z.string().min(20, "Short description must be at least 20 characters."),
   fullDescription: z.string().min(50, "Full description must be at least 50 characters."),
@@ -75,7 +76,8 @@ export default function CreateEventPage() {
       name: '',
       date: '',
       time: '',
-      location: '',
+      locationName: '',
+      locationAddress: '',
       image: 'https://placehold.co/600x400.png',
       description: '',
       fullDescription: '',
@@ -99,7 +101,8 @@ export default function CreateEventPage() {
       name: values.name,
       date: values.date,
       time: values.time,
-      location: values.location,
+      locationName: values.locationName,
+      locationAddress: values.locationAddress,
       image: image,
       description: values.description,
       fullDescription: values.fullDescription,
@@ -239,8 +242,11 @@ export default function CreateEventPage() {
                     <FormItem><FormLabel>Time</FormLabel><FormControl><Input placeholder="e.g., 2:00 PM - 7:00 PM" {...field} /></FormControl><FormMessage /></FormItem>
                   )} />
                 </div>
-                 <FormField control={form.control} name="location" render={({ field }) => (
-                  <FormItem><FormLabel>Location</FormLabel><FormControl><Input placeholder="e.g., Goodyear Ballpark" {...field} /></FormControl><FormMessage /></FormItem>
+                 <FormField control={form.control} name="locationName" render={({ field }) => (
+                  <FormItem><FormLabel>Location Name</FormLabel><FormControl><Input placeholder="e.g., Goodyear Ballpark" {...field} /></FormControl><FormMessage /></FormItem>
+                )} />
+                 <FormField control={form.control} name="locationAddress" render={({ field }) => (
+                  <FormItem><FormLabel>Location Address</FormLabel><FormControl><Input placeholder="e.g., 1933 S Ballpark Way, Goodyear, AZ 85338" {...field} /></FormControl><FormMessage /></FormItem>
                 )} />
                  <FormField control={form.control} name="category" render={({ field }) => (
                   <FormItem>
