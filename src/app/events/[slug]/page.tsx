@@ -84,12 +84,6 @@ export default function EventDetailPage({ params }: { params: { slug: string } }
   const eventSchema = createEventSchema(event);
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.locationAddress)}`;
 
-  // Construct the Google Maps Static API URL
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-  const staticMapUrl = apiKey
-    ? `https://maps.googleapis.com/maps/api/staticmap?center=${encodeURIComponent(event.locationAddress)}&zoom=14&size=400x200&maptype=roadmap&markers=color:red%7Clabel:E%7C${encodeURIComponent(event.locationAddress)}&key=${apiKey}`
-    : `https://placehold.co/400x200.png`;
-
   return (
     <div>
       <script
@@ -158,11 +152,6 @@ export default function EventDetailPage({ params }: { params: { slug: string } }
               </div>
               <Button size="lg" className="w-full mt-6">Register / RSVP</Button>
               <Button variant="outline" size="lg" className="w-full mt-2">Add to Calendar</Button>
-               <div className="mt-6 h-48 bg-secondary rounded-lg flex items-center justify-center">
-                    <Link href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="w-full h-full">
-                       <Image src={staticMapUrl} data-ai-hint="map location" alt={`Map of ${event.locationName}`} width={400} height={200} className="w-full h-full object-cover rounded-lg" />
-                    </Link>
-                </div>
             </div>
           </div>
         </div>
