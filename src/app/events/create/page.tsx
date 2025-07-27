@@ -24,8 +24,8 @@ import { Label } from '@/components/ui/label';
 
 const eventSchema = z.object({
   name: z.string().min(3, "Event name is required."),
-  date: z.string().min(8, "A full date is required (e.g., 'April 19, 2025')."),
-  time: z.string().min(5, "A time or time range is required."),
+  date: z.string().regex(/^(January|February|March|April|May|June|July|August|September|October|November|December)\s\d{1,2},\s\d{4}$/, "Date must be in 'Month Day, Year' format (e.g., August 02, 2025)."),
+  time: z.string().regex(/^\d{1,2}:\d{2}\s(AM|PM)\s-\s\d{1,2}:\d{2}\s(AM|PM)$/, "Time must be in 'H:MM AM/PM - H:MM AM/PM' format (e.g., 2:00 PM - 7:00 PM)."),
   location: z.string().min(3, "Location is required."),
   image: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
   description: z.string().min(20, "Short description must be at least 20 characters."),
@@ -233,10 +233,10 @@ export default function CreateEventPage() {
                 )} />
                 <div className="grid md:grid-cols-2 gap-4">
                   <FormField control={form.control} name="date" render={({ field }) => (
-                    <FormItem><FormLabel>Date</FormLabel><FormControl><Input placeholder="e.g., May 5, 2025" {...field} /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Date</FormLabel><FormControl><Input placeholder="e.g., August 02, 2025" {...field} /></FormControl><FormMessage /></FormItem>
                   )} />
                   <FormField control={form.control} name="time" render={({ field }) => (
-                    <FormItem><FormLabel>Time</FormLabel><FormControl><Input placeholder="e.g., 10:00 AM - 4:00 PM" {...field} /></FormControl><FormMessage /></FormItem>
+                    <FormItem><FormLabel>Time</FormLabel><FormControl><Input placeholder="e.g., 2:00 PM - 7:00 PM" {...field} /></FormControl><FormMessage /></FormItem>
                   )} />
                 </div>
                  <FormField control={form.control} name="location" render={({ field }) => (
