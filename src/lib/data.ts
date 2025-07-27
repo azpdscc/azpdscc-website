@@ -1,3 +1,4 @@
+
 import type { Event, TeamMember } from './types';
 
 export const events: Event[] = [
@@ -113,7 +114,7 @@ export const events: Event[] = [
     id: 10,
     slug: "teeyandamela2025",
     name: "Teeyan Da Mela 2025",
-    date: "Aug 2, 2025",
+    date: "August 2, 2025",
     time: "2PM - 7PM",
     location: "Indo American Cultural Hall",
     image: "https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/IMG_3123.JPG",
