@@ -1,4 +1,3 @@
-
 import type { Event, TeamMember } from './types';
 
 export const events: Event[] = [
@@ -232,5 +231,12 @@ export const teamMembers: TeamMember[] = [
     role: "Director",
     image: "https://placehold.co/400x400.png",
     bio: "A dedicated director committed to the success of our events and initiatives."
+  },
+  {
+    id: 15,
+    name: "John Smith",
+    role: "Director",
+    image: "https://placehold.co/400x400.png",
+    bio: "A local businessman"
   }
 ];
