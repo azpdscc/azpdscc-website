@@ -49,10 +49,12 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h3 className="font-headline font-semibold text-foreground">Legal</h3>
+            <h3 className="font-headline font-semibold text-foreground">Legal & Admin</h3>
             <ul className="mt-4 space-y-2 text-sm">
               <li><Link href="/privacy-policy" className="text-muted-foreground hover:text-primary">Privacy Policy</Link></li>
               <li><Link href="/terms-of-service" className="text-muted-foreground hover:text-primary">Terms of Service</Link></li>
+              <li><Link href="/events/create" className="text-muted-foreground hover:text-primary">Event Generator</Link></li>
+              <li><Link href="/about/add" className="text-muted-foreground hover:text-primary">Member Generator</Link></li>
             </ul>
           </div>
           <div>
