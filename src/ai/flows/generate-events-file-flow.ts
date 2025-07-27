@@ -31,7 +31,8 @@ const generateFileContentManually = (newEvent: Event): string => {
   const highestId = existingEventsData.reduce((maxId, event) => Math.max(event.id, maxId), 0);
   const newEventWithId = { ...newEvent, id: highestId + 1 };
 
-  const updatedEvents = [...existingEventsData, newEventWithId];
+  // Add the new event to the beginning of the array
+  const updatedEvents = [newEventWithId, ...existingEventsData];
   
   const eventsString = JSON.stringify(updatedEvents, null, 2)
     // Remove quotes from keys to make it look like a JS object literal
@@ -80,7 +81,7 @@ const generateEventsFileFlow = ai.defineFlow(
         You will be given a JSON string of existing events and a new event object.
         Your goal is to add the new event to the list of existing events and generate the complete content for a TypeScript file named 'data.ts'.
 
-        - The new event should be added to the end of the 'events' array.
+        - The new event should be added to the beginning of the 'events' array.
         - The 'id' of the new event must be unique. Find the highest existing 'id' and add 1 to it for the new event's 'id'.
         - Ensure the final output is a single, valid TypeScript file string.
         - Do not include any explanations or markdown formatting. Only output the raw file content.
