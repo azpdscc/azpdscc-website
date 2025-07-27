@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview An AI flow to generate the full content of the events data file.
@@ -8,6 +9,8 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
+import { events as existingEventsData, teamMembers } from '@/lib/data';
+import type { Event } from '@/lib/types';
 
 const GenerateEventsFileInputSchema = z.object({
   newEvent: z.any().describe('The new event object to add.'),
@@ -23,11 +26,45 @@ const EventsFileContentSchema = z.object({
   fileContent: z.string().describe('The entire, complete TypeScript code for the data.ts file.'),
 });
 
+// Helper function to manually generate the file content as a fallback
+const generateFileContentManually = (newEvent: Event): string => {
+  const highestId = existingEventsData.reduce((maxId, event) => Math.max(event.id, maxId), 0);
+  const newEventWithId = { ...newEvent, id: highestId + 1 };
+
+  const updatedEvents = [...existingEventsData, newEventWithId];
+  
+  const eventsString = JSON.stringify(updatedEvents, null, 2)
+    // Remove quotes from keys to make it look like a JS object literal
+    .replace(/"([^"]+)":/g, '$1:');
+
+  const teamMembersString = JSON.stringify(teamMembers, null, 2)
+    .replace(/"([^"]+)":/g, '$1:');
+
+  return `
+import type { Event, TeamMember } from './types';
+
+export const events: Event[] = ${eventsString};
+
+export const teamMembers: TeamMember[] = ${teamMembersString};
+  `.trim();
+};
+
+
 export async function generateEventsFile(
   input: GenerateEventsFileInput
 ): Promise<string> {
-  const { output } = await generateEventsFileFlow(input);
-  return output?.fileContent || '';
+  try {
+    const { output } = await generateEventsFileFlow(input);
+    if (output?.fileContent) {
+      return output.fileContent;
+    }
+    // If AI fails or returns empty content, use the manual fallback
+    console.warn("AI generation failed or returned empty. Using manual fallback.");
+    return generateFileContentManually(input.newEvent);
+  } catch (error) {
+    console.error("Error in generateEventsFile flow, switching to manual fallback:", error);
+    return generateFileContentManually(input.newEvent);
+  }
 }
 
 const generateEventsFileFlow = ai.defineFlow(
@@ -63,7 +100,6 @@ const generateEventsFileFlow = ai.defineFlow(
         JSONstringify: (obj: any) => JSON.stringify(obj, null, 2),
       },
       config: {
-        // Higher temperature to encourage creativity in description if needed, but the structure is rigid.
         temperature: 0.3,
       },
       output: {
@@ -72,6 +108,10 @@ const generateEventsFileFlow = ai.defineFlow(
       },
     });
 
-    return output!;
+    if (!output || !output.fileContent) {
+        throw new Error("AI failed to generate file content.");
+    }
+
+    return output;
   }
 );
