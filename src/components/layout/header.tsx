@@ -93,13 +93,13 @@ export function Header() {
                   <Link href="/donate">Donate</Link>
                 </Button>
                 <div className="flex items-center justify-center space-x-4 pt-4 border-t">
-                  <Link href="#" className="text-muted-foreground hover:text-primary">
+                  <Link href="https://x.com/AZPDSCC" className="text-muted-foreground hover:text-primary">
                       <Twitter className="h-5 w-5" strokeWidth={1.5} />
                   </Link>
-                  <Link href="#" className="text-muted-foreground hover:text-primary">
+                  <Link href="https://www.facebook.com/pdscc" className="text-muted-foreground hover:text-primary">
                       <Facebook className="h-5 w-5" strokeWidth={1.5} />
                   </Link>
-                  <Link href="#" className="text-muted-foreground hover:text-primary">
+                  <Link href="https://www.instagram.com/azpdscc/" className="text-muted-foreground hover:text-primary">
                       <Instagram className="h-5 w-5" strokeWidth={1.5} />
                   </Link>
                 </div>
