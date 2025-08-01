@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, MapPin } from 'lucide-react';
 import type { Event } from '@/lib/types';
+import { format, parse } from 'date-fns';
 
 type Props = {
   params: { slug: string }
@@ -81,8 +82,47 @@ export default function EventDetailPage({ params }: { params: { slug: string } }
     notFound();
   }
 
+  const eventDate = new Date(event.date);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); 
+  const isPast = eventDate < today;
+
   const eventSchema = createEventSchema(event);
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.locationAddress)}`;
+
+  // Helper function to create a Google Calendar link
+  const createGoogleCalendarLink = (event: Event): string => {
+    try {
+      // Parse the event date and time
+      const date = parse(event.date, 'MMMM dd, yyyy', new Date());
+      const [startTimeStr, endTimeStr] = event.time.split(' - ');
+      const startTime = parse(startTimeStr, 'h:mm a', date);
+      const endTime = parse(endTimeStr, 'h:mm a', date);
+      
+      // Format dates to YYYYMMDDTHHmmSSZ format for Google Calendar
+      const startUTC = format(startTime, "yyyyMMdd'T'HHmmss'Z'");
+      const endUTC = format(endTime, "yyyyMMdd'T'HHmmss'Z'");
+
+      const details = `For more information, visit: https://www.azpdscc.org/events/${event.slug}`;
+
+      const params = new URLSearchParams({
+        action: 'TEMPLATE',
+        text: event.name,
+        dates: `${startUTC}/${endUTC}`,
+        details: details,
+        location: event.locationAddress,
+        trp: 'false',
+      });
+
+      return `https://calendar.google.com/calendar/render?${params.toString()}`;
+    } catch (error) {
+      console.error("Error creating calendar link:", error);
+      // Fallback to a simple search for the event if parsing fails
+      return `https://www.google.com/search?q=${encodeURIComponent(event.name + ' on ' + event.date)}`;
+    }
+  };
+  
+  const calendarLink = createGoogleCalendarLink(event);
 
   return (
     <div>
@@ -150,8 +190,12 @@ export default function EventDetailPage({ params }: { params: { slug: string } }
                     </div>
                 </div>
               </div>
-              <Button size="lg" className="w-full mt-6">Register / RSVP</Button>
-              <Button variant="outline" size="lg" className="w-full mt-2">Add to Calendar</Button>
+              <Button asChild size="lg" className="w-full mt-6" disabled={isPast}>
+                  <Link href="/contact">Register / RSVP</Link>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="w-full mt-2" disabled={isPast}>
+                  <Link href={calendarLink} target="_blank" rel="noopener noreferrer">Add to Calendar</Link>
+              </Button>
             </div>
           </div>
         </div>
