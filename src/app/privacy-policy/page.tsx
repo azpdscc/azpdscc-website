@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'Privacy Policy | PDSCC',
   description: 'Learn how PDSCC collects, uses, and protects your personal information when you use our website and services.',
   robots: {
-    index: false, // It's often good practice to noindex legal pages
+    index: false,
   }
 };
 
@@ -24,55 +24,68 @@ export default function PrivacyPolicyPage() {
                   <Shield className="h-10 w-10 text-primary" strokeWidth={1.5} />
                 </div>
                 <CardTitle className="font-headline text-4xl">Privacy Policy</CardTitle>
-                <p className="text-muted-foreground">Last Updated: October 18, 2024</p>
+                <p className="text-muted-foreground">Last Updated: August 1, 2025</p>
               </CardHeader>
               <CardContent className="prose prose-lg dark:prose-invert max-w-none text-muted-foreground space-y-6">
-                <Alert variant="destructive">
-                  <AlertTitle>Template Document</AlertTitle>
-                  <AlertDescription>
-                    This is a template privacy policy and should not be considered legal advice. Please consult with a legal professional to ensure this policy meets the specific needs and legal requirements of your organization.
-                  </AlertDescription>
-                </Alert>
-
                 <p>
-                  PDSCC ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website www.azpdscc.org, use our services, or interact with us.
+                  Phoenix Desi Sports and Cultural Club ("PDSCC," "we," "us," "our") is committed to protecting the privacy of our members, donors, volunteers, and website visitors. This Privacy Policy explains what information we collect, how we use and share it, and the choices you have about your information.
+                </p>
+                <p>
+                  This policy applies to all information collected through our website azpdscc.org, at our events, and through any other interaction with PDSCC.
                 </p>
                 
                 <h2 className="font-headline text-2xl text-foreground">1. Information We Collect</h2>
-                <p>
-                  We may collect personal information that you voluntarily provide to us when you register for an event, make a donation, sign up to be a vendor, contact us, or otherwise interact with our services. This information may include your name, email address, phone number, and payment information.
-                </p>
+                <p>We may collect the following types of information:</p>
+                <ul>
+                  <li><strong>Personal Identification Information:</strong> Name, email address, phone number, mailing address, date of birth, and emergency contact information. We collect this when you register for membership, sign up for an event, subscribe to our newsletter, or make a donation.</li>
+                  <li><strong>Donation Information:</strong> When you make a donation, we collect information necessary to process the transaction, such as your name, billing address, and donation amount. All payment transactions are processed through a secure third-party payment processor (e.g., PayPal, Stripe). We do not store your credit card details on our servers.</li>
+                  <li><strong>Photographs and Videos:</strong> We frequently take photographs and record videos at our sports and cultural events. Your participation in events constitutes consent to be photographed and recorded.</li>
+                  <li><strong>Technical &amp; Usage Data:</strong> When you visit our website, we may automatically collect information such as your IP address, browser type, operating system, and pages you visited. We use this data to analyze trends and improve our website experience.</li>
+                </ul>
                 
                 <h2 className="font-headline text-2xl text-foreground">2. How We Use Your Information</h2>
-                <p>
-                  We use the information we collect to:
-                </p>
+                <p>We use the information we collect for the following purposes:</p>
                 <ul>
-                  <li>Process your registrations, donations, and applications.</li>
-                  <li>Communicate with you about our events and activities.</li>
-                  <li>Send you administrative information, such as security alerts and support messages.</li>
-                  <li>Improve our website and services.</li>
-                  <li>Comply with legal obligations.</li>
+                  <li><strong>To Operate Our Organization:</strong> To manage your membership, register you for events and leagues, and communicate with you about club activities.</li>
+                  <li><strong>To Process Donations:</strong> To process your generous donations, send you tax-deductible receipts as a 501(c)(3) non-profit, and maintain donation records.</li>
+                  <li><strong>For Communication:</strong> To send you newsletters, event announcements, and other information related to PDSCC. You may opt out of these communications at any time.</li>
+                  <li><strong>For Promotion:</strong> To use photographs and videos from our events on our website, social media channels, and other promotional materials to showcase our community and activities. If you do not wish to be photographed or have your image used, please notify an event organizer.</li>
+                  <li><strong>To Improve Our Services:</strong> To analyze website usage and improve our content and offerings.</li>
+                  <li><strong>For Safety and Security:</strong> To have emergency contact information on hand during sports activities.</li>
                 </ul>
 
-                <h2 className="font-headline text-2xl text-foreground">3. Information Sharing</h2>
-                <p>
-                  We do not sell or rent your personal information to third parties. We may share your information with trusted third-party service providers who perform services for us or on our behalf, such as payment processing (e.g., Stripe, Zelle), email delivery, and hosting services.
-                </p>
+                <h2 className="font-headline text-2xl text-foreground">3. How We Share Your Information</h2>
+                <p>We do not sell, trade, or rent your personal information to others. We may share your information only in the following ways:</p>
+                <ul>
+                    <li><strong>With Service Providers:</strong> We may share information with third-party vendors who perform services on our behalf, such as payment processors, email marketing providers, and website hosting services. These providers are obligated to protect your information and use it only for the services they provide to us.</li>
+                    <li><strong>As Required by Law:</strong> We may disclose your information if required to do so by law or in response to a subpoena, court order, or other governmental request.</li>
+                </ul>
 
                 <h2 className="font-headline text-2xl text-foreground">4. Data Security</h2>
                 <p>
-                  We use administrative, technical, and physical security measures to help protect your personal information. While we have taken reasonable steps to secure the personal information you provide to us, please be aware that despite our efforts, no security measures are perfect or impenetrable.
+                  We implement reasonable administrative, technical, and physical security measures to protect your personal information from unauthorized access, use, or disclosure. However, no method of transmission over the Internet or method of electronic storage is 100% secure.
+                </p>
+
+                <h2 className="font-headline text-2xl text-foreground">5. Children's Privacy</h2>
+                <p>
+                  We are committed to protecting the privacy of children. We do not knowingly collect personal information from children under the age of 13 without obtaining verifiable parental consent. If you are a parent or guardian and believe your child has provided us with information without your consent, please contact us immediately.
+                </p>
+
+                <h2 className="font-headline text-2xl text-foreground">6. Your Rights and Choices</h2>
+                <p>You have the right to:</p>
+                <ul>
+                  <li><strong>Access and Update:</strong> Review and update your personal information by contacting us.</li>
+                  <li><strong>Opt-Out:</strong> Unsubscribe from our marketing communications by clicking the "unsubscribe" link in our emails or by contacting us.</li>
+                </ul>
+                
+                <h2 className="font-headline text-2xl text-foreground">7. Changes to This Privacy Policy</h2>
+                <p>
+                  We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new policy on our website. We encourage you to review this policy periodically.
                 </p>
                 
-                <h2 className="font-headline text-2xl text-foreground">5. Changes to This Policy</h2>
+                <h2 className="font-headline text-2xl text-foreground">8. Contact Us</h2>
                 <p>
-                  We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page. You are advised to review this Privacy Policy periodically for any changes.
-                </p>
-                
-                <h2 className="font-headline text-2xl text-foreground">6. Contact Us</h2>
-                <p>
-                  If you have any questions about this Privacy Policy, please contact us at <a href="mailto:admin@azpdscc.org" className="text-primary hover:underline">admin@azpdscc.org</a>.
+                  If you have any questions about this Privacy Policy, please contact us at: Phoenix Desi Sports and Cultural Club Email: <a href="mailto:admin@azpdscc.org" className="text-primary hover:underline">admin@azpdscc.org</a> Website: azpdscc.org
                 </p>
               </CardContent>
             </Card>
