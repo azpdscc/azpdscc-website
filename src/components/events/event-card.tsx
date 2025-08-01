@@ -12,6 +12,12 @@ interface EventCardProps {
 }
 
 export function EventCard({ event }: EventCardProps) {
+  const eventDate = new Date(event.date);
+  const today = new Date();
+  // Set hours to 0 to compare dates only. An event is "past" the day after it occurs.
+  today.setHours(0, 0, 0, 0); 
+  const isPast = eventDate < today;
+
   return (
     <Card className="flex flex-col h-full shadow-lg overflow-hidden transition-transform transform hover:-translate-y-1">
       <CardHeader className="p-0">
@@ -24,6 +30,9 @@ export function EventCard({ event }: EventCardProps) {
             sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
             className="object-cover"
           />
+          {isPast && (
+             <Badge variant="secondary" className="absolute top-2 left-2">Past Event</Badge>
+          )}
            <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground">{event.category}</Badge>
         </div>
       </CardHeader>
@@ -42,8 +51,10 @@ export function EventCard({ event }: EventCardProps) {
         </div>
       </CardContent>
       <CardFooter className="p-4 bg-secondary">
-        <Button asChild className="w-full">
-          <Link href={`/events/${event.slug}`}>Learn More</Link>
+        <Button asChild className="w-full" disabled={isPast}>
+          <Link href={`/events/${event.slug}`}>
+            {isPast ? 'View Details' : 'Learn More'}
+          </Link>
         </Button>
       </CardFooter>
     </Card>
