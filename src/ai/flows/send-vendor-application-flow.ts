@@ -111,7 +111,7 @@ const sendVendorApplicationFlow = ai.defineFlow(
       // Send to admin
       await resend.emails.send({
         from: 'Vendor Bot <noreply@azpdscc.org>',
-        to: 'vendors@azpdscc.org',
+        to: 'admin@azpdscc.org',
         subject: 'New Paid Vendor Application Submitted!',
         text: adminEmailText,
       });
