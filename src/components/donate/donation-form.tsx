@@ -61,8 +61,16 @@ export function DonationForm() {
   const form = useForm<DonationFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      paymentMethod: undefined,
       frequency: 'one-time',
       amount: "50",
+      customAmount: '',
+      name: '',
+      email: '',
+      zelleSenderName: '',
+      cardNumber: '',
+      expiryDate: '',
+      cvc: '',
     },
     mode: 'onBlur',
   });
@@ -110,7 +118,15 @@ export function DonationForm() {
             }
             form.reset({
                 frequency: 'one-time',
-                amount: '50'
+                amount: '50',
+                paymentMethod: undefined,
+                customAmount: '',
+                name: '',
+                email: '',
+                zelleSenderName: '',
+                cardNumber: '',
+                expiryDate: '',
+                cvc: '',
             });
         } else {
              toast({
@@ -318,5 +334,3 @@ export function DonationForm() {
     </div>
   );
 }
-
-    
