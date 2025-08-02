@@ -17,7 +17,7 @@ const DonationReceiptInputSchema = z.object({
   donorName: z.string().describe('The full name of the donor.'),
   donorEmail: z.string().email().describe('The email address of the donor.'),
   amount: z.number().describe('The amount of the donation.'),
-  date: z.date().describe('The date of the donation.'),
+  date: z.string().describe('The date of the donation.'),
   isMonthly: z.boolean().describe('Whether the donation is a recurring monthly donation.'),
   paymentMethod: z.string().describe("The payment method used ('zelle' or 'credit-card')."),
   zelleSenderName: z.string().optional().describe('The name on the Zelle account.'),
