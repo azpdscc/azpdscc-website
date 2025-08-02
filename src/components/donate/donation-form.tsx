@@ -6,7 +6,6 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
 import { sendDonationReceipt } from '@/ai/flows/send-donation-receipt-flow';
 import Link from 'next/link';
 
@@ -34,22 +33,25 @@ const formSchema = z.object({
     cardNumber: z.string().optional(),
     expiryDate: z.string().optional(),
     cvc: z.string().optional(),
-}).refine(data => {
-    if (data.paymentMethod === 'zelle') {
-        return !!data.zelleSenderName && data.zelleSenderName.length >= 2;
+}).superRefine((data, ctx) => {
+    if (data.paymentMethod === 'zelle' && (!data.zelleSenderName || data.zelleSenderName.length < 2)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Please enter the name on your Zelle account to help us verify payment.",
+        path: ['zelleSenderName'],
+      });
     }
-    return true;
-}, {
-    message: "Please enter the name on your Zelle account to help us verify payment.",
-    path: ['zelleSenderName'],
-}).refine(data => {
-     if (data.paymentMethod === 'credit-card') {
-        return !!data.cardNumber && !!data.expiryDate && !!data.cvc;
+    if (data.paymentMethod === 'credit-card') {
+        if (!data.cardNumber) {
+             ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Card number is required.", path: ['cardNumber'] });
+        }
+        if (!data.expiryDate) {
+             ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Expiry date is required.", path: ['expiryDate'] });
+        }
+        if (!data.cvc) {
+             ctx.addIssue({ code: z.ZodIssueCode.custom, message: "CVC is required.", path: ['cvc'] });
+        }
     }
-    return true;
-}, {
-    message: "Please fill in all credit card details.",
-    path: ['cardNumber']
 });
 
 
@@ -73,6 +75,7 @@ export function DonationForm() {
       expiryDate: "",
       cvc: "",
     },
+    mode: 'onBlur',
   });
 
   const triggerValidation = async (fields: (keyof DonationFormValues)[]) => {
@@ -92,7 +95,7 @@ export function DonationForm() {
     setIsLoading(true);
 
     try {
-        await sendDonationReceipt({
+        const response = await sendDonationReceipt({
             donorName: data.name,
             donorEmail: data.email,
             amount: parseFloat(data.amount),
@@ -102,18 +105,30 @@ export function DonationForm() {
             zelleSenderName: data.zelleSenderName,
         });
 
-        if (data.paymentMethod === 'credit-card') {
-            toast({
-                title: "Payment Successful!",
-                description: "Thank you for your generous donation. A receipt has been sent to your email.",
-            });
-        } else { // Zelle
-            toast({
-                title: "Information Received!",
-                description: "Thank you! We will confirm your donation and send a receipt once the Zelle payment is verified by our team.",
+        if (response.success) {
+            if (data.paymentMethod === 'credit-card') {
+                toast({
+                    title: "Payment Successful!",
+                    description: "Thank you for your generous donation. A receipt has been sent to your email.",
+                });
+            } else { // Zelle
+                toast({
+                    title: "Information Received!",
+                    description: "Thank you! We will confirm your donation and send a receipt once the Zelle payment is verified by our team.",
+                });
+            }
+            form.reset();
+            setStep(1);
+        } else {
+             toast({
+                variant: 'destructive',
+                title: "An Error Occurred",
+                description: response.message || "Could not process the donation at this time. Please try again.",
             });
         }
+
     } catch (error) {
+        console.error("Donation form submission error:", error);
         toast({
             variant: 'destructive',
             title: "An Error Occurred",
@@ -122,8 +137,6 @@ export function DonationForm() {
     }
 
     setIsLoading(false);
-    form.reset();
-    setStep(1);
   };
 
   const paymentMethod = form.watch('paymentMethod');
@@ -242,6 +255,7 @@ export function DonationForm() {
                                    </Label>
                                 </RadioGroup>
                             </FormControl>
+                            <FormMessage />
                         </FormItem>
                      )} />
 
@@ -255,14 +269,14 @@ export function DonationForm() {
                                 </AlertDescription>
                             </Alert>
                             <FormField name="cardNumber" control={form.control} render={({ field }) => (
-                                <FormItem><FormLabel>Card Number</FormLabel><FormControl><Input placeholder="**** **** **** 1234" {...field} /></FormControl></FormItem>
+                                <FormItem><FormLabel>Card Number</FormLabel><FormControl><Input placeholder="**** **** **** 1234" {...field} /></FormControl><FormMessage /></FormItem>
                             )}/>
                              <div className="grid grid-cols-2 gap-4">
                                 <FormField name="expiryDate" control={form.control} render={({ field }) => (
-                                    <FormItem><FormLabel>Expiry Date</FormLabel><FormControl><Input placeholder="MM/YY" {...field} /></FormControl></FormItem>
+                                    <FormItem><FormLabel>Expiry Date</FormLabel><FormControl><Input placeholder="MM/YY" {...field} /></FormControl><FormMessage /></FormItem>
                                 )}/>
                                 <FormField name="cvc" control={form.control} render={({ field }) => (
-                                    <FormItem><FormLabel>CVC</FormLabel><FormControl><Input placeholder="123" {...field} /></FormControl></FormItem>
+                                    <FormItem><FormLabel>CVC</FormLabel><FormControl><Input placeholder="123" {...field} /></FormControl><FormMessage /></FormItem>
                                 )}/>
                             </div>
                         </div>
@@ -278,7 +292,7 @@ export function DonationForm() {
                                 <p className="font-bold text-destructive mt-2">Important: Your donation receipt will be emailed after our team manually verifies the transaction.</p>
                             </div>
                              <FormField name="zelleSenderName" control={form.control} render={({ field }) => (
-                                <FormItem><FormLabel>Name on Zelle Account</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormDescription>This is required to match your payment to your donation.</FormDescription><FormMessage /></FormItem>
+                                <FormItem><FormLabel>Name on Zelle Account</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormDescription>This is required to match your payment to your donation.</FormMessage /></FormItem>
                             )} />
                         </div>
                     )}
