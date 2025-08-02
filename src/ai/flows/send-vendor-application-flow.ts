@@ -17,8 +17,13 @@ const VendorApplicationInputSchema = z.object({
   name: z.string().describe("The full name of the contact person."),
   organization: z.string().optional().describe("The name of the vendor's organization."),
   email: z.string().email().describe("The vendor's email address."),
+  phone: z.string().describe("The vendor's phone number."),
   boothType: z.string().describe("The type of booth selected, e.g., '10x10 Booth (Our Canopy) - $350'"),
   totalPrice: z.number().describe("The total price for the selected booth."),
+  productDescription: z.string().describe("The description of products/services offered."),
+  zelleSenderName: z.string().describe("The name on the Zelle account used for payment."),
+  zelleDateSent: z.string().describe("The date the Zelle payment was sent."),
+  paymentConfirmed: z.boolean().describe("Whether the vendor confirmed they sent the payment."),
 });
 export type VendorApplicationInput = z.infer<typeof VendorApplicationInputSchema>;
 
@@ -85,16 +90,27 @@ const sendVendorApplicationFlow = ai.defineFlow(
 
       // 2. Prepare the notification email for the admin
       const adminEmailText = `
-        A new vendor application has been submitted and paid for.
+A new vendor application has been submitted and paid for.
 
-        Details:
-        - Contact Name: ${input.name}
-        - Organization: ${input.organization || 'N/A'}
-        - Email: ${input.email}
-        - Booth Type: ${input.boothType}
-        - Amount Paid: $${input.totalPrice}
+Here are the details:
 
-        Please verify the Zelle payment and update records accordingly.
+Contact Information:
+- Full Name: ${input.name}
+- Organization: ${input.organization || 'N/A'}
+- Email: ${input.email}
+- Phone Number: ${input.phone}
+
+Booth Details:
+- Booth Type: ${input.boothType}
+- Product/Service Description: ${input.productDescription}
+
+Payment Information:
+- Total Price: $${input.totalPrice}
+- Zelle Sender Name: ${input.zelleSenderName}
+- Date Sent: ${input.zelleDateSent}
+- Payment Confirmed by Vendor: ${input.paymentConfirmed ? 'Yes' : 'No'}
+
+Please verify the Zelle payment and update records accordingly.
       `;
 
       // 3. Send the emails

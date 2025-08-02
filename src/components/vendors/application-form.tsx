@@ -83,8 +83,13 @@ export function ApplicationForm() {
         name: data.name,
         organization: data.organization,
         email: data.email,
+        phone: data.phone,
         boothType: boothOptions[data.boothType], // Send the full string description
         totalPrice: boothPrices[data.boothType],
+        productDescription: data.productDescription,
+        zelleSenderName: data.zelleSenderName,
+        zelleDateSent: format(data.zelleDateSent, "PPP"),
+        paymentConfirmed: data.paymentSent
       });
 
       if (response.success) {
@@ -209,7 +214,7 @@ export function ApplicationForm() {
                   <PopoverTrigger asChild><FormControl>
                       <Button variant={"outline"} className={cn("w-full sm:w-[240px] pl-3 text-left font-normal", !field.value && "text-white")}>
                         {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                        <CalendarIcon className={cn("ml-auto h-4 w-4 opacity-50", !field.value && "text-white")} strokeWidth={1.5} />
+                        <CalendarIcon className={cn("ml-auto h-4 w-4", !field.value ? "text-white" : "opacity-50")} strokeWidth={1.5} />
                       </Button>
                   </FormControl></PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
