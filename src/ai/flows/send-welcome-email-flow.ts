@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A flow to handle a new email subscription.
@@ -58,20 +59,29 @@ const sendWelcomeEmailFlow = ai.defineFlow(
   },
   async (input) => {
     try {
-      // 1. Generate the welcome email body
+      const resend = new Resend(process.env.RESEND_API_KEY);
+
+      // 1. Generate the welcome email body for the user
       const { output: welcomeEmailBody } = await welcomeEmailPrompt({});
       if (!welcomeEmailBody) {
         throw new Error("AI welcome email generation failed.");
       }
       const welcomeEmailHtml = (welcomeEmailBody).replace(/\n/g, '<br>');
 
-      // 2. Send the email
-      const resend = new Resend(process.env.RESEND_API_KEY);
+      // 2. Send the welcome email to the user
       await resend.emails.send({
         from: 'PDSCC Info <info@azpdscc.org>',
         to: input.email,
         subject: '🎉 Welcome to the PDSCC Community!',
         html: welcomeEmailHtml,
+      });
+
+      // 3. Send a notification email to the admin
+      await resend.emails.send({
+        from: 'Newsletter Bot <noreply@azpdscc.org>',
+        to: 'admin@azpdscc.org',
+        subject: 'New Newsletter Subscriber',
+        text: `A new user has subscribed to the newsletter:\n\nEmail: ${input.email}`,
       });
      
       return { success: true, message: "Subscription successful! A welcome email has been sent." };
