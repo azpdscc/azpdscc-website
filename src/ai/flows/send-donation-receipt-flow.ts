@@ -40,10 +40,15 @@ export async function sendDonationReceipt(input: DonationReceiptInput): Promise<
   return sendDonationReceiptFlow(input);
 }
 
+// A more flexible schema for the prompt itself.
+const ReceiptPromptInputSchema = DonationReceiptInputSchema.extend({
+    zelleSenderName: z.string().optional(),
+});
+
 // AI-powered prompt to generate a personalized email body for the donor
 const receiptEmailPrompt = ai.definePrompt({
   name: 'receiptEmailPrompt',
-  input: { schema: DonationReceiptInputSchema },
+  input: { schema: ReceiptPromptInputSchema },
   output: { format: 'text' },
   prompt: `
     Generate a heartfelt thank you email body for a donation to PDSCC.
@@ -130,7 +135,9 @@ const sendDonationReceiptFlow = ai.defineFlow(
 
     } catch (error) {
       console.error('Donation flow failed:', error);
-      return { success: false, message: 'Failed to process donation.' };
+      // It's helpful to see the actual error in the server logs
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      return { success: false, message: `Failed to process donation. Error: ${errorMessage}` };
     }
   }
 );
