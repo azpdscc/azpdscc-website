@@ -60,7 +60,7 @@ const receiptEmailPrompt = ai.definePrompt({
     Start the email with "Dear {{{donorName}}},".
     Thank them for their generous {{#if isMonthly}}monthly{{else}}one-time{{/if}} donation of \${{{amount}}}.
     Mention that their support helps PDSCC continue its mission of celebrating North Indian culture through sports and festivals in the Phoenix community.
-    {{#if (eq paymentMethod 'credit-card')}}
+    {{#if (eq paymentMethod "credit-card")}}
     Include a line stating "This email serves as your official receipt." for tax purposes.
     {{else}}
     Mention that they will receive an official tax receipt once the Zelle payment has been verified by the team.
