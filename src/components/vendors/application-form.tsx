@@ -64,6 +64,7 @@ export function ApplicationForm() {
       phone: "",
       boothType: undefined,
       productDescription: "",
+      zelleTransactionId: "",
       paymentSent: false,
     },
   });
