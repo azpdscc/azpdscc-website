@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -11,6 +12,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
+import { sendVolunteerInquiry } from '@/ai/flows/send-volunteer-inquiry-flow';
+import { Loader2 } from 'lucide-react';
 
 const interests = [
     { id: 'event-setup', label: 'Event Setup & Teardown' },
@@ -34,6 +37,7 @@ const volunteerFormSchema = z.object({
 type VolunteerFormValues = z.infer<typeof volunteerFormSchema>;
 
 export function VolunteerForm() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const form = useForm<VolunteerFormValues>({
     resolver: zodResolver(volunteerFormSchema),
@@ -46,14 +50,34 @@ export function VolunteerForm() {
     },
   });
 
-  const onSubmit: SubmitHandler<VolunteerFormValues> = (data) => {
-    // In a real application, you would send this to your backend
-    console.log(data);
-    toast({
-      title: "Thank You for Volunteering!",
-      description: "Your information has been received. We will contact you soon with next steps.",
-    });
-    form.reset();
+  const onSubmit: SubmitHandler<VolunteerFormValues> = async (data) => {
+    setIsSubmitting(true);
+    try {
+      const response = await sendVolunteerInquiry(data);
+
+      if (response.success) {
+        toast({
+          title: "Thank You for Volunteering!",
+          description: response.message,
+        });
+        form.reset();
+      } else {
+        toast({
+          variant: 'destructive',
+          title: "Submission Failed",
+          description: response.message,
+        });
+      }
+    } catch (error) {
+      console.error('Volunteer form submission error:', error);
+      toast({
+        variant: 'destructive',
+        title: "An Error Occurred",
+        description: "Could not send your application at this time. Please try again later.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -131,7 +155,10 @@ export function VolunteerForm() {
           </FormItem>
         )} />
         
-        <Button type="submit" size="lg">Submit Application</Button>
+        <Button type="submit" size="lg" disabled={isSubmitting}>
+          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          Submit Application
+        </Button>
       </form>
     </Form>
   );
