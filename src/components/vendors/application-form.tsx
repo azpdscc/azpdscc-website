@@ -64,6 +64,8 @@ export function ApplicationForm() {
       boothType: undefined,
       productDescription: "",
       paymentSent: false,
+      zelleSenderName: "",
+      zelleDateSent: undefined,
     },
   });
 
@@ -205,8 +207,8 @@ export function ApplicationForm() {
               <FormItem className="flex flex-col"><FormLabel>Date Sent</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild><FormControl>
-                      <Button variant={"outline"} className={cn("w-full sm:w-[240px] pl-3 text-left font-normal", !field.value && "text-white")}>
-                        {field.value ? format(field.value, "PPP") : <span className='text-white'>Pick a date</span>}
+                      <Button variant={"outline"} className={cn("w-full sm:w-[240px] pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
+                        {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" strokeWidth={1.5} />
                       </Button>
                   </FormControl></PopoverTrigger>
