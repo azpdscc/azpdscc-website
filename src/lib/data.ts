@@ -1,3 +1,4 @@
+
 import type { Event, TeamMember } from './types';
 
 export const events: Event[] = [
@@ -12,110 +13,6 @@ export const events: Event[] = [
     image: "https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/_R1_4929.JPG",
     description: "A vibrant celebration of Vaisakhi, the Punjabi new year and harvest festival.",
     fullDescription: "Join us for the annual Vaisakhi Mela! This joyous event celebrates the Punjabi new year and harvest festival with traditional music (Bhangra and Giddha), delicious food, and a variety of cultural activities for the whole family. It's a day of community spirit and celebration.",
-    category: "Cultural"
-  },
-  {
-    id: 2,
-    slug: "teeyan-da-mela-2024",
-    name: "Teeyan Da Mela 2024",
-    date: "August 10, 2024",
-    time: "4:00 PM - 9:00 PM",
-    locationName: "Phoenix Convention Center",
-    locationAddress: "100 N 3rd St, Phoenix, AZ 85004",
-    image: "https://placehold.co/600x400.png",
-    description: "A traditional Punjabi festival for women, celebrating the monsoon season with dance and music.",
-    fullDescription: "Teeyan Da Mela is a special festival celebrating sisterhood and the monsoon season. This women-centric event features traditional Giddha performances, folk songs, food stalls, and a festive bazaar. Come dressed in your best traditional attire and celebrate with us!",
-    category: "Dance"
-  },
-  {
-    id: 3,
-    slug: "annual-community-picnic-2024",
-    name: "Annual Community Picnic 2024",
-    date: "October 26, 2024",
-    time: "11:00 AM - 3:00 PM",
-    locationName: "Kiwanis Park, Tempe",
-    locationAddress: "5500 S Mill Ave, Tempe, AZ 85283",
-    image: "https://placehold.co/600x400.png",
-    description: "A fun-filled day for the whole family with games, food, and community bonding.",
-    fullDescription: "Our Annual Community Picnic is a chance for everyone to relax, connect, and have fun. We'll have food, sports activities like cricket and volleyball, games for children, and plenty of opportunities to meet new people and catch up with old friends. Don't miss this wonderful community gathering!",
-    category: "Cultural"
-  },
-  {
-    id: 4,
-    slug: "diwali-festival-of-lights-2024",
-    name: "Diwali Festival of Lights 2024",
-    date: "November 2, 2024",
-    time: "5:00 PM - 10:00 PM",
-    locationName: "Phoenix Temple Grounds",
-    locationAddress: "3019 N 83rd Ave, Phoenix, AZ 85033",
-    image: "https://placehold.co/600x400.png",
-    description: "Celebrate the festival of lights with fireworks, food, and cultural performances.",
-    fullDescription: "Join us for our grandest celebration of the year! The Diwali Festival of Lights will feature a spectacular fireworks display, dozens of food stalls with authentic Indian cuisine, live music, classical and folk dance performances, and activities for the whole family. It is a night of joy, community, and light over darkness.",
-    category: "Cultural"
-  },
-  {
-    id: 5,
-    slug: "holi-festival-of-colors-2025",
-    name: "Holi Festival of Colors 2025",
-    date: "March 14, 2025",
-    time: "11:00 AM - 4:00 PM",
-    locationName: "Scottsdale Civic Center Park",
-    locationAddress: "3939 N Drinkwater Blvd, Scottsdale, AZ 85251",
-    image: "https://placehold.co/600x400.png",
-    description: "Join us for a vibrant celebration of Holi with colors, music, and dance.",
-    fullDescription: "Experience the most colorful event in Arizona! Our Holi Festival brings together people from all walks of life to celebrate the arrival of spring. Enjoy throwing organic colored powders, dancing to the beats of a live DJ, delicious food trucks, and a day of fun and friendship.",
-    category: "Cultural"
-  },
-  {
-    id: 6,
-    slug: "arizona-india-food-fair-2024",
-    name: "Arizona India Food Fair 2024",
-    date: "October 12, 2024",
-    time: "12:00 PM - 8:00 PM",
-    locationName: "Chandler Community Center",
-    locationAddress: "125 E Commonwealth Ave, Chandler, AZ 85225",
-    image: "https://placehold.co/600x400.png",
-    description: "A culinary journey through the diverse flavors of India, from street food to fine dining.",
-    fullDescription: "Calling all foodies! The Arizona India Food Fair is your passport to the incredible culinary diversity of India. Sample dishes from every region, watch live cooking demonstrations from master chefs, and enjoy a day filled with delicious food, music, and cultural showcases.",
-    category: "Food"
-  },
-  {
-    id: 7,
-    slug: "sangeet-sandhya-an-evening-of-music-2024",
-    name: "Sangeet Sandhya: An Evening of Music",
-    date: "September 21, 2024",
-    time: "7:00 PM - 9:30 PM",
-    locationName: "Mesa Arts Center",
-    locationAddress: "1 E Main St, Mesa, AZ 85201",
-    image: "https://placehold.co/600x400.png",
-    description: "An enchanting evening featuring classical Indian music and contemporary fusion.",
-    fullDescription: "Sangeet Sandhya is a celebration of India's rich musical heritage. This concert will feature performances by renowned classical musicians, as well as exciting fusion pieces that blend traditional Indian sounds with contemporary genres. A perfect evening for music lovers.",
-    category: "Music"
-  },
-  {
-    id: 8,
-    slug: "nritya-shakti-dance-showcase-2024",
-    name: "Nritya Shakti: Dance Showcase 2024",
-    date: "December 7, 2024",
-    time: "6:00 PM - 8:30 PM",
-    locationName: "Tempe Center for the Arts",
-    locationAddress: "700 W Rio Salado Pkwy, Tempe, AZ 85281",
-    image: "https://placehold.co/600x400.png",
-    description: "A spectacular showcase of Indian dance forms, from Bharatanatyam to Bollywood.",
-    fullDescription: "Prepare to be mesmerized by Nritya Shakti, our annual dance showcase. This event highlights the grace, power, and beauty of Indian dance, featuring talented local artists performing everything from classical forms like Kathak and Bharatanatyam to high-energy Bollywood routines.",
-    category: "Dance"
-  },
-  {
-    id: 9,
-    slug: "independence-day-celebration-2025",
-    name: "Independence Day Celebration 2025",
-    date: "August 15, 2025",
-    time: "10:00 AM - 2:00 PM",
-    locationName: "Arizona State Capitol Lawn",
-    locationAddress: "1700 W Washington St, Phoenix, AZ 85007",
-    image: "https://placehold.co/600x400.png",
-    description: "Celebrate India's Independence Day with patriotic songs, flag hoisting, and cultural programs.",
-    fullDescription: "Join the Indian community of Arizona as we celebrate India's Independence Day. The event will feature a flag hoisting ceremony, singing of the national anthem, patriotic performances, and speeches from community leaders. A day to celebrate our freedom and heritage.",
     category: "Cultural"
   },
   {
