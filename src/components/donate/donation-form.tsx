@@ -27,9 +27,7 @@ const formSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters."),
     email: z.string().email(),
     paymentMethod: z.enum(['zelle', 'credit-card'], { required_error: "Please select a payment method." }),
-    // Zelle fields
     zelleSenderName: z.string().optional(),
-    // Credit card fields (for validation simulation)
     cardNumber: z.string().optional(),
     expiryDate: z.string().optional(),
     cvc: z.string().optional(),
@@ -42,14 +40,14 @@ const formSchema = z.object({
       });
     }
     if (data.paymentMethod === 'credit-card') {
-        if (!data.cardNumber) {
-             ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Card number is required.", path: ['cardNumber'] });
+        if (!data.cardNumber?.match(/^\d{16}$/)) {
+             ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Please enter a valid 16-digit card number.", path: ['cardNumber'] });
         }
-        if (!data.expiryDate) {
-             ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Expiry date is required.", path: ['expiryDate'] });
+        if (!data.expiryDate?.match(/^(0[1-9]|1[0-2])\/\d{2}$/)) {
+             ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Please use MM/YY format.", path: ['expiryDate'] });
         }
-        if (!data.cvc) {
-             ctx.addIssue({ code: z.ZodIssueCode.custom, message: "CVC is required.", path: ['cvc'] });
+        if (!data.cvc?.match(/^\d{3,4}$/)) {
+             ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Please enter a valid CVC.", path: ['cvc'] });
         }
     }
 });
@@ -83,7 +81,7 @@ export function DonationForm() {
     if (result) {
       if (step === 1) { // When moving from amount selection, also set the final amount
           const customAmount = form.getValues('customAmount');
-          if (customAmount) {
+          if (customAmount && parseFloat(customAmount) > 0) {
               form.setValue('amount', customAmount);
           }
       }
@@ -134,9 +132,9 @@ export function DonationForm() {
             title: "An Error Occurred",
             description: "Could not process the donation at this time. Please try again.",
         });
+    } finally {
+        setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   const paymentMethod = form.watch('paymentMethod');
@@ -146,7 +144,7 @@ export function DonationForm() {
   const oneTimeAmounts = ["25", "50", "100", "250"];
   const monthlyAmounts = ["10", "25", "50", "100"];
   const selectedAmounts = form.watch('frequency') === 'one-time' ? oneTimeAmounts : monthlyAmounts;
-  const finalAmount = customAmount || amount;
+  const finalAmount = (customAmount && parseFloat(customAmount) > 0) ? customAmount : amount;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -166,7 +164,13 @@ export function DonationForm() {
                       <FormItem className="space-y-3">
                         <FormLabel>Frequency</FormLabel>
                         <FormControl>
-                          <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex gap-4">
+                          <RadioGroup onValueChange={(value) => {
+                              field.onChange(value);
+                              // Reset amount when frequency changes
+                              const newDefaultAmount = value === 'one-time' ? '50' : '25';
+                              form.setValue('amount', newDefaultAmount);
+                              form.setValue('customAmount', '');
+                          }} defaultValue={field.value} className="flex gap-4">
                             <FormItem className="flex items-center space-x-3 space-y-0">
                               <FormControl><RadioGroupItem value="one-time" /></FormControl>
                               <FormLabel className="font-normal">One-Time</FormLabel>
@@ -185,7 +189,7 @@ export function DonationForm() {
                         <FormItem>
                             <FormLabel>Select an amount (USD)</FormLabel>
                              <FormControl>
-                                <ToggleGroup type="single" defaultValue={field.value} onValueChange={(value) => { if(value) { field.onChange(value); form.setValue('customAmount', '')} }} className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <ToggleGroup type="single" value={field.value} onValueChange={(value) => { if(value) { field.onChange(value); form.setValue('customAmount', '')} }} className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                     {selectedAmounts.map(val => (
                                         <ToggleGroupItem key={val} value={val} aria-label={`Donate $${val}`} className="h-16 text-xl" >${val}</ToggleGroupItem>
                                     ))}
@@ -292,7 +296,7 @@ export function DonationForm() {
                                 <p className="font-bold text-destructive mt-2">Important: Your donation receipt will be emailed after our team manually verifies the transaction.</p>
                             </div>
                              <FormField name="zelleSenderName" control={form.control} render={({ field }) => (
-                                <FormItem><FormLabel>Name on Zelle Account</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormDescription>This is required to match your payment to your donation.</FormMessage /></FormItem>
+                                <FormItem><FormLabel>Name on Zelle Account</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormDescription>This is required to match your payment to your donation.</FormDescription><FormMessage /></FormItem>
                             )} />
                         </div>
                     )}
@@ -340,3 +344,5 @@ export function DonationForm() {
     </div>
   );
 }
+
+    
