@@ -98,7 +98,7 @@ export function DonationForm() {
             donorName: finalData.name,
             donorEmail: finalData.email,
             amount: parseFloat(finalData.amount),
-            date: new Date(),
+            date: new Date().toISOString(),
             isMonthly: finalData.frequency === 'monthly',
             paymentMethod: finalData.paymentMethod,
             zelleSenderName: finalData.zelleSenderName,
@@ -334,3 +334,5 @@ export function DonationForm() {
     </div>
   );
 }
+
+    
