@@ -30,7 +30,6 @@ const formSchema = z.object({
   }),
   productDescription: z.string().min(20, "Description must be at least 20 characters.").max(500),
   zelleSenderName: z.string().min(2, "Zelle sender name is required."),
-  zelleTransactionId: z.string().optional(),
   zelleDateSent: z.date({ required_error: "Please select the date you sent the payment." }),
   paymentSent: z.boolean().refine(val => val === true, { message: "You must confirm payment has been sent." }),
 });
@@ -64,7 +63,6 @@ export function ApplicationForm() {
       phone: "",
       boothType: undefined,
       productDescription: "",
-      zelleTransactionId: "",
       paymentSent: false,
     },
   });
@@ -203,15 +201,12 @@ export function ApplicationForm() {
             <FormField name="zelleSenderName" control={form.control} render={({ field }) => (
               <FormItem><FormLabel>Name on Zelle Account</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage /></FormItem>
             )} />
-             <FormField name="zelleTransactionId" control={form.control} render={({ field }) => (
-              <FormItem><FormLabel>Zelle Transaction ID (Optional)</FormLabel><FormControl><Input placeholder="ABC123XYZ" {...field} /></FormControl><FormMessage /></FormItem>
-            )} />
             <FormField control={form.control} name="zelleDateSent" render={({ field }) => (
               <FormItem className="flex flex-col"><FormLabel>Date Sent</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild><FormControl>
-                      <Button variant={"outline"} className={cn("w-full sm:w-[240px] pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
-                        {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                      <Button variant={"outline"} className={cn("w-full sm:w-[240px] pl-3 text-left font-normal", !field.value && "text-white")}>
+                        {field.value ? format(field.value, "PPP") : <span className='text-white'>Pick a date</span>}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" strokeWidth={1.5} />
                       </Button>
                   </FormControl></PopoverTrigger>

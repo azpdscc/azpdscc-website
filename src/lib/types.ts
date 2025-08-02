@@ -31,7 +31,6 @@ export type VendorApplication = {
   boothType: '10x10-own' | '10x10-our' | '10x20-own' | '10x20-our';
   productDescription: string;
   zelleSenderName: string;
-  zelleTransactionId?: string;
   zelleDateSent: Date;
   paymentSent: boolean;
 };
