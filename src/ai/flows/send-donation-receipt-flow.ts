@@ -62,7 +62,8 @@ const receiptEmailPrompt = ai.definePrompt({
     Mention that their support helps PDSCC continue its mission of celebrating North Indian culture through sports and festivals in the Phoenix community.
     {{#if (eq paymentMethod "credit-card")}}
     Include a line stating "This email serves as your official receipt." for tax purposes.
-    {{else}}
+    {{/if}}
+    {{#if (eq paymentMethod "zelle")}}
     Mention that they will receive an official tax receipt once the Zelle payment has been verified by the team.
     {{/if}}
     End with a warm closing like "With heartfelt gratitude," followed by "The PDSCC Team".
