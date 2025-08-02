@@ -90,33 +90,34 @@ export function DonationForm() {
 
   const onSubmit: SubmitHandler<DonationFormValues> = async (data) => {
     setIsLoading(true);
-    
-    if(data.paymentMethod === 'credit-card') {
-        try {
-            // In a real app, payment processing (e.g., Stripe) would happen here.
-            // On success, we then trigger the receipt.
-            await sendDonationReceipt({
-                donorName: data.name,
-                donorEmail: data.email,
-                amount: parseFloat(data.amount),
-                date: new Date(),
-                isMonthly: data.frequency === 'monthly',
-            });
+
+    try {
+        await sendDonationReceipt({
+            donorName: data.name,
+            donorEmail: data.email,
+            amount: parseFloat(data.amount),
+            date: new Date(),
+            isMonthly: data.frequency === 'monthly',
+            paymentMethod: data.paymentMethod,
+            zelleSenderName: data.zelleSenderName,
+        });
+
+        if (data.paymentMethod === 'credit-card') {
             toast({
                 title: "Payment Successful!",
                 description: "Thank you for your generous donation. A receipt has been sent to your email.",
             });
-        } catch (error) {
+        } else { // Zelle
             toast({
-                variant: 'destructive',
-                title: "An Error Occurred",
-                description: "Could not process the donation at this time. Please try again.",
+                title: "Information Received!",
+                description: "Thank you! We will confirm your donation and send a receipt once the Zelle payment is verified by our team.",
             });
         }
-    } else { // Zelle
-         toast({
-            title: "Information Received!",
-            description: "Thank you! We will confirm your donation and send a receipt once the Zelle payment is verified by our team.",
+    } catch (error) {
+        toast({
+            variant: 'destructive',
+            title: "An Error Occurred",
+            description: "Could not process the donation at this time. Please try again.",
         });
     }
 

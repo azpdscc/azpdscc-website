@@ -19,6 +19,8 @@ const DonationReceiptInputSchema = z.object({
   amount: z.number().describe('The amount of the donation.'),
   date: z.date().describe('The date of the donation.'),
   isMonthly: z.boolean().describe('Whether the donation is a recurring monthly donation.'),
+  paymentMethod: z.string().describe("The payment method used ('zelle' or 'credit-card')."),
+  zelleSenderName: z.string().optional().describe('The name on the Zelle account.'),
 });
 export type DonationReceiptInput = z.infer<typeof DonationReceiptInputSchema>;
 
@@ -38,7 +40,7 @@ export async function sendDonationReceipt(input: DonationReceiptInput): Promise<
   return sendDonationReceiptFlow(input);
 }
 
-// AI-powered prompt to generate a personalized email body
+// AI-powered prompt to generate a personalized email body for the donor
 const receiptEmailPrompt = ai.definePrompt({
   name: 'receiptEmailPrompt',
   input: { schema: DonationReceiptInputSchema },
@@ -58,7 +60,11 @@ const receiptEmailPrompt = ai.definePrompt({
     Start the email with "Dear {{{donorName}}},".
     Thank them for their generous {{#if isMonthly}}monthly{{else}}one-time{{/if}} donation of \${{{amount}}}.
     Mention that their support helps PDSCC continue its mission of celebrating North Indian culture through sports and festivals in the Phoenix community.
+    {{#if (eq paymentMethod 'credit-card')}}
     Include a line stating "This email serves as your official receipt." for tax purposes.
+    {{else}}
+    Mention that they will receive an official tax receipt once the Zelle payment has been verified by the team.
+    {{/if}}
     End with a warm closing like "With heartfelt gratitude," followed by "The PDSCC Team".
   `,
 });
@@ -71,30 +77,59 @@ const sendDonationReceiptFlow = ai.defineFlow(
     outputSchema: DonationReceiptOutputSchema,
   },
   async (input) => {
-    // 1. Generate the email content using the AI prompt
-    const { output: emailBody } = await receiptEmailPrompt(input);
-
-    if (!emailBody) {
-      return { success: false, message: 'Failed to generate email content.' };
-    }
-
-    // 2. Send the email using a service like Resend or SendGrid
     try {
       const resend = new Resend(process.env.RESEND_API_KEY);
 
+      // 1. Generate the email content for the donor
+      const { output: emailBody } = await receiptEmailPrompt(input);
+
+      if (!emailBody) {
+        return { success: false, message: 'Failed to generate email content.' };
+      }
+
+      // 2. Send the receipt email to the donor
       await resend.emails.send({
         from: 'PDSCC Donations <receipts@azpdscc.org>',
         to: input.donorEmail,
         subject: 'Thank You for Your Donation to PDSCC!',
         html: emailBody.replace(/\n/g, '<br>'), // Simple conversion of newlines to <br> for HTML email
       });
+      
+      // 3. Prepare and send the notification email to the admin
+      const adminEmailText = `
+        You have received a new donation.
 
-      return { success: true, message: 'Donation receipt sent successfully.' };
+        Donor Details:
+        - Name: ${input.donorName}
+        - Email: ${input.donorEmail}
+
+        Donation Details:
+        - Amount: $${input.amount}
+        - Frequency: ${input.isMonthly ? 'Monthly' : 'One-Time'}
+        - Payment Method: ${input.paymentMethod}
+
+        ${input.paymentMethod === 'zelle' ? `
+        Zelle Information:
+        - Sender Name: ${input.zelleSenderName || 'Not provided'}
+        - Action Required: Please verify this payment in your Zelle account.
+        ` : `
+        Credit Card Information:
+        - Action Required: This was processed automatically. Please check your payment processor's dashboard for details.
+        `}
+      `;
+
+      await resend.emails.send({
+        from: 'Donation Bot <noreply@azpdscc.org>',
+        to: 'admin@azpdscc.org',
+        subject: `New Donation Received from ${input.donorName}`,
+        text: adminEmailText,
+      });
+
+      return { success: true, message: 'Donation information processed successfully.' };
 
     } catch (error) {
-      console.error('Email sending failed:', error);
-      // In a real app, you might want to retry or log this error to a monitoring service.
-      return { success: false, message: 'Failed to send email.' };
+      console.error('Donation flow failed:', error);
+      return { success: false, message: 'Failed to process donation.' };
     }
   }
 );
