@@ -155,7 +155,7 @@ export default function Home() {
               </div>
               <div className="mt-8 grid grid-cols-2 gap-8">
                 <div className="text-center md:text-left">
-                  <p className="font-headline text-4xl font-bold text-primary">10+</p>
+                  <p className="font-headline text-4xl font-bold text-primary">16</p>
                   <p className="text-muted-foreground">Years of Service</p>
                 </div>
                 <div className="text-center md:text-left">
@@ -163,11 +163,11 @@ export default function Home() {
                   <p className="text-muted-foreground">Community Members Engaged</p>
                 </div>
                 <div className="text-center md:text-left">
-                  <p className="font-headline text-4xl font-bold text-primary">100+</p>
+                  <p className="font-headline text-4xl font-bold text-primary">40</p>
                   <p className="text-muted-foreground">Events Organized</p>
                 </div>
                 <div className="text-center md:text-left">
-                  <p className="font-headline text-4xl font-bold text-primary">1,000+</p>
+                  <p className="font-headline text-4xl font-bold text-primary">100</p>
                   <p className="text-muted-foreground">Vendors Supported</p>
                 </div>
               </div>
