@@ -15,6 +15,8 @@ export default function EventsPage() {
   const [selectedCategory, setSelectedCategory] = useState<EventCategory | 'all'>('all');
 
   const sortedEvents = useMemo(() => {
+    // Sort events by date in descending order (newest first)
+    // This sorting is done inside useMemo to be stable across renders
     return [...events].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }, []);
 
