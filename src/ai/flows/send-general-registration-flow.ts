@@ -17,6 +17,9 @@ const GeneralRegistrationInputSchema = z.object({
   businessName: z.string().describe("The name of the business."),
   contactName: z.string().describe("The name of the contact person."),
   email: z.string().email().describe("The vendor's email address."),
+  phone: z.string().describe("The vendor's phone number."),
+  category: z.string().describe("The primary product category."),
+  description: z.string().describe("A short description of the business."),
 });
 export type GeneralRegistrationInput = z.infer<typeof GeneralRegistrationInputSchema>;
 
@@ -36,10 +39,13 @@ export async function sendGeneralRegistration(input: GeneralRegistrationInput): 
   return sendGeneralRegistrationFlow(input);
 }
 
-// AI prompt to generate a confirmation email
+// AI prompt to generate a confirmation email for the vendor
 const registrationEmailPrompt = ai.definePrompt({
   name: 'registrationEmailPrompt',
-  input: { schema: GeneralRegistrationInputSchema },
+  input: { schema: z.object({
+    contactName: z.string(),
+    businessName: z.string(),
+  })},
   output: { format: 'text' },
   prompt: `
     Generate a simple, welcoming confirmation email body for a new vendor who has joined the network.
@@ -66,7 +72,10 @@ const sendGeneralRegistrationFlow = ai.defineFlow(
   async (input) => {
     try {
       // 1. Generate the vendor confirmation email
-      const { output: vendorEmailBody } = await registrationEmailPrompt(input);
+      const { output: vendorEmailBody } = await registrationEmailPrompt({
+          businessName: input.businessName,
+          contactName: input.contactName
+      });
       if (!vendorEmailBody) {
         return { success: false, message: 'Failed to generate confirmation email.' };
       }
@@ -77,10 +86,13 @@ const sendGeneralRegistrationFlow = ai.defineFlow(
       const adminEmailText = `
         A new vendor has registered for the network.
 
-        Details:
+        Business Details:
         - Business Name: ${input.businessName}
         - Contact Name: ${input.contactName}
         - Email: ${input.email}
+        - Phone: ${input.phone}
+        - Category: ${input.category}
+        - Description: ${input.description}
 
         No action is required. They have been added to the general vendor list.
       `;

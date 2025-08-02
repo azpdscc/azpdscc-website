@@ -46,11 +46,7 @@ export function GeneralRegistrationForm() {
   const onSubmit: SubmitHandler<GeneralRegistrationFormValues> = async (data) => {
     setIsSubmitting(true);
     try {
-      const response = await sendGeneralRegistration({
-        businessName: data.businessName,
-        contactName: data.contactName,
-        email: data.email,
-      });
+      const response = await sendGeneralRegistration(data);
 
       if (response.success) {
         toast({
