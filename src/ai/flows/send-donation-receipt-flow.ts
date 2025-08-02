@@ -40,15 +40,10 @@ export async function sendDonationReceipt(input: DonationReceiptInput): Promise<
   return sendDonationReceiptFlow(input);
 }
 
-// A more flexible schema for the prompt itself.
-const ReceiptPromptInputSchema = DonationReceiptInputSchema.extend({
-    zelleSenderName: z.string().optional(),
-});
-
 // AI-powered prompt to generate a personalized email body for the donor
 const receiptEmailPrompt = ai.definePrompt({
   name: 'receiptEmailPrompt',
-  input: { schema: ReceiptPromptInputSchema },
+  input: { schema: DonationReceiptInputSchema },
   output: { format: 'text' },
   prompt: `
     Generate a heartfelt thank you email body for a donation to PDSCC.
@@ -65,11 +60,10 @@ const receiptEmailPrompt = ai.definePrompt({
     Start the email with "Dear {{{donorName}}},".
     Thank them for their generous {{#if isMonthly}}monthly{{else}}one-time{{/if}} donation of \${{{amount}}}.
     Mention that their support helps PDSCC continue its mission of celebrating North Indian culture through sports and festivals in the Phoenix community.
-    {{#if (eq paymentMethod "credit-card")}}
-    Include a line stating "This email serves as your official receipt." for tax purposes.
-    {{/if}}
-    {{#if (eq paymentMethod "zelle")}}
+    {{#if zelleSenderName}}
     Mention that they will receive an official tax receipt once the Zelle payment has been verified by the team.
+    {{else}}
+    Include a line stating "This email serves as your official receipt." for tax purposes.
     {{/if}}
     End with a warm closing like "With heartfelt gratitude," followed by "The PDSCC Team".
   `,
