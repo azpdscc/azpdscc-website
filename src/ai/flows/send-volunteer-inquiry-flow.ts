@@ -16,6 +16,7 @@ import { Resend } from 'resend';
 const VolunteerInquiryInputSchema = z.object({
   name: z.string().describe("The name of the person volunteering."),
   email: z.string().email().describe("The email address of the volunteer."),
+  phone: z.string().optional().describe("The volunteer's phone number."),
   interests: z.array(z.string()).describe("The areas the volunteer is interested in."),
   message: z.string().optional().describe("An optional message from the volunteer."),
 });
@@ -77,6 +78,7 @@ const sendVolunteerInquiryFlow = ai.defineFlow(
 
         Name: ${input.name}
         Email: ${input.email}
+        Phone: ${input.phone || 'Not provided'}
         
         Areas of Interest:
         - ${input.interests.join('\n- ')}
@@ -90,7 +92,7 @@ const sendVolunteerInquiryFlow = ai.defineFlow(
       // 3. Send both emails
       // Send to user
       await resend.emails.send({
-        from: 'PDSCC Volunteers <volunteers@azpdscc.org>',
+        from: 'PDSCC Volunteers <info@azpdscc.org>',
         to: input.email,
         subject: 'Thank You for Your Interest in Volunteering! | PDSCC',
         html: userEmailHtml,
