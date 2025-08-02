@@ -99,7 +99,7 @@ const sendVolunteerInquiryFlow = ai.defineFlow(
       // Send to admin
       await resend.emails.send({
         from: 'Volunteer Form Bot <noreply@azpdscc.org>',
-        to: 'volunteers@azpdscc.org', // Admin's email address for volunteer notifications
+        to: 'admin@azpdscc.org', // Admin's email address for volunteer notifications
         subject: `New Volunteer Sign-Up: ${input.name}`,
         text: adminEmailText,
       });
