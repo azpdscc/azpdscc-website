@@ -2,7 +2,7 @@
 import type { Metadata } from 'next';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, Diamond, Medal, Gem, Shield } from 'lucide-react';
+import { CheckCircle2, Diamond, Medal, Award, Shield } from 'lucide-react';
 import { SponsorshipForm } from '@/components/sponsorship/sponsorship-form';
 
 export const metadata: Metadata = {
@@ -38,7 +38,7 @@ const sponsorshipTiers = [
   {
     name: 'Silver',
     price: '$5,000',
-    icon: Gem,
+    icon: Award,
     features: [
       'Logo placement on event banners and website',
       'Booth space at one major festival',
