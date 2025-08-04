@@ -41,7 +41,7 @@ type EventFormValues = z.infer<typeof eventSchema>;
 interface EventFormProps {
   type: 'Add' | 'Edit';
   event?: Event;
-  action: (data: any) => Promise<void>; // Use 'any' to accommodate date string conversion
+  action: (data: any) => Promise<void | { error: string }>;
 }
 
 export function EventForm({ type, event, action }: EventFormProps) {
@@ -54,7 +54,7 @@ export function EventForm({ type, event, action }: EventFormProps) {
     resolver: zodResolver(eventSchema),
     defaultValues: {
       name: event?.name || '',
-      date: event?.date ? new Date(event.date) : undefined,
+      date: event?.date ? new Date(event.date) : new Date(),
       time: event?.time || '',
       locationName: event?.locationName || '',
       locationAddress: event?.locationAddress || '',
@@ -106,12 +106,27 @@ export function EventForm({ type, event, action }: EventFormProps) {
         ...data,
         date: format(data.date, 'MMMM dd, yyyy'),
       };
+      
       await action(dataForAction);
+      
+      // The action function will redirect on success, so this code will only
+      // be reached if there's no redirect. We can assume success here.
       toast({
         title: `Event ${type === 'Add' ? 'Created' : 'Updated'}`,
-        description: `Your event has been successfully ${type === 'Add' ? 'created' : 'updated'}.`,
+        description: `Your event has been successfully ${type === 'Add' ? 'created' : 'updated'}. Redirecting...`,
       });
+      // Manually redirect as a fallback if the server action doesn't
+      router.push('/admin/events');
+
     } catch (error) {
+      // Next.js redirect throws an error, which we can safely ignore.
+      // Any other error will be a genuine issue.
+      if (error && typeof error === 'object' && 'digest' in error && (error as any).digest?.startsWith('NEXT_REDIRECT')) {
+        // This is a redirect error, so we can ignore it.
+        return;
+      }
+
+      console.error("Form submission error:", error);
       toast({
         variant: 'destructive',
         title: 'An Error Occurred',
@@ -127,9 +142,9 @@ export function EventForm({ type, event, action }: EventFormProps) {
           <FormItem><FormLabel>Event Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
         )} />
         <div className="grid md:grid-cols-2 gap-4">
-          <FormItem>
-            <FormLabel>Date</FormLabel>
-            <FormField control={form.control} name="date" render={({ field }) => (
+          <FormField control={form.control} name="date" render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Date</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -143,9 +158,9 @@ export function EventForm({ type, event, action }: EventFormProps) {
                     <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
                   </PopoverContent>
                 </Popover>
-            )} />
-             <FormMessage />
-          </FormItem>
+              <FormMessage />
+            </FormItem>
+          )} />
           <FormField control={form.control} name="time" render={({ field }) => (
             <FormItem><FormLabel>Time</FormLabel><FormControl><Input placeholder="e.g., 2:00 PM - 7:00 PM" {...field} /></FormControl><FormMessage /></FormItem>
           )} />

@@ -33,7 +33,19 @@ export default function EventsPage() {
     async function fetchEvents() {
         setIsLoading(true);
         const fetchedEvents = await getEvents();
-        setEvents(fetchedEvents);
+        // Sort events: upcoming first (soonest to latest), then past (most recent to oldest)
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+
+        const upcoming = fetchedEvents
+            .filter(e => new Date(e.date) >= now)
+            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        
+        const past = fetchedEvents
+            .filter(e => new Date(e.date) < now)
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+        setEvents([...upcoming, ...past]);
         setIsLoading(false);
     }
     fetchEvents();
