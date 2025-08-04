@@ -18,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/vendors/apply`, lastModified: new Date(), priority: 0.7, changeFrequency: 'yearly' as const },
     { url: `${baseUrl}/vendors/join`, lastModified: new Date(), priority: 0.7, changeFrequency: 'yearly' as const },
     { url: `${baseUrl}/vendor-dashboard`, lastModified: new Date(), priority: 0.5, changeFrequency: 'monthly' as const },
+    { url: `${baseUrl}/sponsorship`, lastModified: new Date(), priority: 0.8, changeFrequency: 'monthly' as const },
     { url: `${baseUrl}/donate`, lastModified: new Date(), priority: 0.7, changeFrequency: 'yearly' as const },
     { url: `${baseUrl}/volunteer`, lastModified: new Date(), priority: 0.7, changeFrequency: 'yearly' as const },
     { url: `${baseUrl}/contact`, lastModified: new Date(), priority: 0.7, changeFrequency: 'yearly' as const },

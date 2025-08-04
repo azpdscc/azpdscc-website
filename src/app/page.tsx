@@ -172,7 +172,7 @@ export default function Home() {
           </div>
           <div className="text-center mt-12">
             <Button asChild variant="link" className="text-lg">
-                <Link href="/contact">Become a Sponsor <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                <Link href="/sponsorship">Become a Sponsor <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
           </div>
         </div>
