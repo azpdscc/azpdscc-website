@@ -8,6 +8,7 @@ import { EventCard } from '@/components/events/event-card';
 import { HolidayBanner } from '@/components/holiday-banner';
 import { events } from '@/lib/data';
 import { ArrowRight, CircleDollarSign, Handshake, Sprout, Youtube } from 'lucide-react';
+import { PastEventBanner } from '@/components/past-event-banner';
 
 export default function Home() {
   const upcomingEvents = [...events]
@@ -49,6 +50,7 @@ export default function Home() {
       </section>
 
       <HolidayBanner />
+      <PastEventBanner />
 
       <section id="about" className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4">
