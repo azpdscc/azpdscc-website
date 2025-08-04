@@ -6,9 +6,12 @@ import { notFound } from 'next/navigation';
 import { events } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, Clock, MapPin } from 'lucide-react';
+import { Calendar, Clock, MapPin, Youtube } from 'lucide-react';
 import type { Event } from '@/lib/types';
 import { format, parse } from 'date-fns';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Card } from '@/components/ui/card';
+
 
 type Props = {
   params: { slug: string }
@@ -150,6 +153,22 @@ export default function EventDetailPage({ params }: { params: { slug: string } }
       </section>
 
       <div className="container mx-auto px-4 py-12">
+        {isPast && (
+          <Card className="mb-8 border-primary/20 bg-primary/5 shadow-lg">
+            <div className="p-6 text-center">
+              <Youtube className="h-12 w-12 mx-auto text-primary mb-3" strokeWidth={1.5} />
+              <AlertTitle className="font-headline text-2xl font-bold text-primary">This Event Has Ended</AlertTitle>
+              <AlertDescription className="mt-2 text-muted-foreground text-base">
+                You can watch the full recording of {event.name} on our official YouTube channel.
+              </AlertDescription>
+              <Button asChild className="mt-4">
+                <Link href="https://youtube.com/@your-channel-name" target="_blank" rel="noopener noreferrer">
+                  Watch on YouTube
+                </Link>
+              </Button>
+            </div>
+          </Card>
+        )}
         <div className="grid md:grid-cols-3 gap-8">
           <div className="md:col-span-2">
             <h2 className="font-headline text-3xl font-bold mb-4">About the Event</h2>
