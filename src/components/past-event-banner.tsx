@@ -66,22 +66,24 @@ export function PastEventBanner() {
           transition={{ duration: 0.5 }}
           className="container mx-auto px-4 py-4 z-20 relative"
         >
-          <Alert className="bg-secondary shadow-lg border-primary/20">
-            <Youtube className="h-5 w-5 text-primary" strokeWidth={1.5} />
-            <div className="flex-grow ml-2">
-              <AlertTitle className="font-headline font-bold">Did you miss {recentEvent.name}?</AlertTitle>
-              <AlertDescription>
-                Watch the full recording on our YouTube channel!
-              </AlertDescription>
-            </div>
-            <Button asChild size="sm" className="shrink-0 ml-4">
-              <Link href="https://www.youtube.com/@AZPDSCC" target="_blank" rel="noopener noreferrer">Watch Now</Link>
-            </Button>
-            <Button variant="ghost" size="icon" className="shrink-0 h-8 w-8" onClick={handleDismiss}>
-                <X className="h-4 w-4"/>
-                <span className="sr-only">Dismiss</span>
-            </Button>
-          </Alert>
+          <div className="max-w-2xl mx-auto">
+            <Alert className="bg-secondary shadow-lg border-primary/20 items-center">
+              <Youtube className="h-5 w-5 text-primary shrink-0" strokeWidth={1.5} />
+              <div className="flex-grow ml-3">
+                <AlertTitle className="font-headline font-bold">Did you miss {recentEvent.name}?</AlertTitle>
+                <AlertDescription>
+                  Watch the full recording on our YouTube channel!
+                </AlertDescription>
+              </div>
+              <Button asChild size="sm" className="shrink-0 ml-4">
+                <Link href="https://www.youtube.com/@AZPDSCC" target="_blank" rel="noopener noreferrer">Watch Now</Link>
+              </Button>
+              <Button variant="ghost" size="icon" className="shrink-0 h-8 w-8 -mr-2" onClick={handleDismiss}>
+                  <X className="h-4 w-4"/>
+                  <span className="sr-only">Dismiss</span>
+              </Button>
+            </Alert>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
