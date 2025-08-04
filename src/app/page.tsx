@@ -52,7 +52,7 @@ export default function Home() {
       <HolidayBanner />
       <PastEventBanner />
 
-      <section id="about" className="py-16 md:py-24 bg-background">
+      <section id="about" className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center">
             <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">
