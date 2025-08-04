@@ -7,12 +7,13 @@ import { getFirestore }from 'firebase/firestore';
 
 // IMPORTANT: This is a placeholder configuration.
 const firebaseConfig = {
-  apiKey: "REPLACE_WITH_YOUR_API_KEY",
-  authDomain: "REPLACE_WITH_YOUR_AUTH_DOMAIN",
-  projectId: "REPLACE_WITH_YOUR_PROJECT_ID",
-  storageBucket: "REPLACE_WITH_YOUR_STORAGE_BUCKET",
-  messagingSenderId: "REPLACE_WITH_YOUR_MESSAGING_SENDER_ID",
-  appId: "REPLACE_WITH_YOUR_APP_ID",
+  "projectId": "azpdscc-hub",
+  "appId": "1:594549470017:web:4c36f8e414cc3dcbc067c0",
+  "storageBucket": "azpdscc-hub.firebasestorage.app",
+  "apiKey": "AIzaSyDwpzJ1tR_2ljCm-knQwaghPuTjgwbvY2I",
+  "authDomain": "azpdscc-hub.firebaseapp.com",
+  "measurementId": "",
+  "messagingSenderId": "594549470017"
 };
 
 // Initialize Firebase
