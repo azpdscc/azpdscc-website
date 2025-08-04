@@ -66,7 +66,7 @@ export function PastEventBanner() {
                      <p className="font-bold">Did you miss {recentEvent.name}?</p>
                      <p className="text-sm text-primary-foreground/90">Watch the full recording on our YouTube channel!</p>
                    </div>
-                  <Button asChild size="sm" variant="secondary" className="shrink-0 bg-primary-foreground/20 hover:bg-primary-foreground/30 text-primary-foreground">
+                  <Button asChild size="sm" variant="secondary" className="shrink-0 bg-white text-primary hover:bg-white/90">
                     <Link href="https://www.youtube.com/@AZPDSCC" target="_blank" rel="noopener noreferrer">Watch Now</Link>
                   </Button>
                 </CardContent>
@@ -77,3 +77,4 @@ export function PastEventBanner() {
     </AnimatePresence>
   );
 }
+
