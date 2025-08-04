@@ -1,7 +1,7 @@
 
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
-import { Instagram, Twitter, Facebook, Mail } from 'lucide-react';
+import { Instagram, Twitter, Facebook, Mail, Youtube } from 'lucide-react';
 import { SubscribeForm } from './subscribe-form';
 
 export function Footer() {
@@ -35,6 +35,9 @@ export function Footer() {
               </Link>
               <Link href="https://www.instagram.com/azpdscc/" className="text-muted-foreground hover:text-primary">
                 <Instagram className="h-5 w-5" strokeWidth={1.5} />
+              </Link>
+              <Link href="https://www.youtube.com/@AZPDSCC" className="text-muted-foreground hover:text-primary">
+                <Youtube className="h-5 w-5" strokeWidth={1.5} />
               </Link>
             </div>
           </div>

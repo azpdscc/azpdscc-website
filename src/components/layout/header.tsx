@@ -2,7 +2,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, Twitter, Facebook, Instagram } from 'lucide-react';
+import { Menu, Twitter, Facebook, Instagram, Youtube } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -60,6 +60,9 @@ export function Header() {
               <Link href="https://www.instagram.com/azpdscc/" className="text-muted-foreground hover:text-primary">
                 <Instagram className="h-5 w-5" strokeWidth={1.5} />
               </Link>
+              <Link href="https://www.youtube.com/@AZPDSCC" className="text-muted-foreground hover:text-primary">
+                <Youtube className="h-5 w-5" strokeWidth={1.5} />
+              </Link>
             </div>
         </div>
 
@@ -102,6 +105,9 @@ export function Header() {
                   </Link>
                   <Link href="https://www.instagram.com/azpdscc/" className="text-muted-foreground hover:text-primary">
                       <Instagram className="h-5 w-5" strokeWidth={1.5} />
+                  </Link>
+                  <Link href="https://www.youtube.com/@AZPDSCC" className="text-muted-foreground hover:text-primary">
+                    <Youtube className="h-5 w-5" strokeWidth={1.5} />
                   </Link>
                 </div>
               </div>

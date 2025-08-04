@@ -60,6 +60,7 @@ export default function RootLayout({
       "https://twitter.com/azpdscc",
       "https://facebook.com/azpdscc",
       "https://instagram.com/azpdscc",
+      "https://www.youtube.com/@AZPDSCC",
     ],
   };
 
