@@ -15,6 +15,15 @@ export default function Home() {
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5);
 
+  const sponsors = [
+    { name: 'Sponsor 1', logo: 'https://placehold.co/150x75.png' },
+    { name: 'Sponsor 2', logo: 'https://placehold.co/150x75.png' },
+    { name: 'Sponsor 3', logo: 'https://placehold.co/150x75.png' },
+    { name: 'Sponsor 4', logo: 'https://placehold.co/150x75.png' },
+    { name: 'Sponsor 5', logo: 'https://placehold.co/150x75.png' },
+    { name: 'Sponsor 6', logo: 'https://placehold.co/150x75.png' },
+  ];
+
   return (
     <div className="flex flex-col">
       <section className="relative h-[60vh] min-h-[400px] w-full">
@@ -157,6 +166,33 @@ export default function Home() {
                     </Link>
                 </Button>
             </div>
+          </div>
+        </div>
+      </section>
+      
+      <section id="sponsors" className="py-16 md:py-24 bg-card">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">
+              Our Valued Sponsors
+            </h2>
+            <p className="mt-4 max-w-3xl mx-auto text-lg text-muted-foreground">
+              We are grateful for the generous support of our sponsors who help make our events possible and support the Phoenix Indian community.
+            </p>
+          </div>
+          <div className="mt-12">
+            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-6">
+              {sponsors.map((sponsor) => (
+                <div key={sponsor.name} className="flex items-center justify-center" title={sponsor.name}>
+                  <Image src={sponsor.logo} alt={sponsor.name} width={150} height={75} data-ai-hint="company logo" className="grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all" />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="text-center mt-12">
+            <Button asChild variant="link" className="text-lg">
+                <Link href="/contact">Become a Sponsor <ArrowRight className="ml-2 h-4 w-4" /></Link>
+            </Button>
           </div>
         </div>
       </section>
