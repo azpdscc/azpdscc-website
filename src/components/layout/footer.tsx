@@ -59,6 +59,7 @@ export function Footer() {
               <li><Link href="/terms-of-service" className="text-muted-foreground hover:text-primary">Terms of Service</Link></li>
               <li><Link href="/events/create" className="text-muted-foreground hover:text-primary">Event Generator</Link></li>
               <li><Link href="/about/add" className="text-muted-foreground hover:text-primary">Member Generator</Link></li>
+              <li><Link href="/admin/events" className="text-muted-foreground hover:text-primary">Admin</Link></li>
             </ul>
           </div>
           <div>

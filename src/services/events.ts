@@ -1,3 +1,4 @@
+
 /**
  * @fileoverview This file contains functions for interacting with the Events
  * collection in Firebase Firestore. It handles all database operations for events,
@@ -5,7 +6,7 @@
  */
 
 import { db } from '@/lib/firebase';
-import type { Event } from '@/lib/types';
+import type { Event, EventFormData } from '@/lib/types';
 import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, orderBy } from 'firebase/firestore';
 
 const eventsCollectionRef = collection(db, 'events');
@@ -27,6 +28,29 @@ export async function getEvents(): Promise<Event[]> {
     return [];
   }
 }
+
+/**
+ * Fetches a single event by its ID from Firestore.
+ * @param {string} id - The ID of the event document to fetch.
+ * @returns {Promise<Event | null>} A promise that resolves to the event object or null if not found.
+ */
+export async function getEventById(id: string): Promise<Event | null> {
+    try {
+        const docRef = doc(db, 'events', id);
+        const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) {
+            console.log(`No event found with id: ${id}`);
+            return null;
+        }
+
+        return { id: docSnap.id, ...docSnap.data() } as Event;
+    } catch (error) {
+        console.error("Error fetching event by id:", error);
+        return null;
+    }
+}
+
 
 /**
  * Fetches a single event by its slug from Firestore.
@@ -54,10 +78,10 @@ export async function getEventBySlug(slug: string): Promise<Event | null> {
 
 /**
  * Creates a new event in Firestore.
- * @param {Omit<Event, 'id'>} eventData - The data for the new event, without an id.
+ * @param {EventFormData} eventData - The data for the new event, without an id.
  * @returns {Promise<string | null>} The ID of the newly created document, or null on failure.
  */
-export async function createEvent(eventData: Omit<Event, 'id'>): Promise<string | null> {
+export async function createEvent(eventData: EventFormData): Promise<string | null> {
     try {
         const docRef = await addDoc(eventsCollectionRef, eventData);
         return docRef.id;
@@ -70,10 +94,10 @@ export async function createEvent(eventData: Omit<Event, 'id'>): Promise<string 
 /**
  * Updates an existing event in Firestore.
  * @param {string} id - The ID of the event document to update.
- * @param {Partial<Event>} eventData - An object with the fields to update.
+ * @param {Partial<EventFormData>} eventData - An object with the fields to update.
  * @returns {Promise<boolean>} True on success, false on failure.
  */
-export async function updateEvent(id: string, eventData: Partial<Event>): Promise<boolean> {
+export async function updateEvent(id: string, eventData: Partial<EventFormData>): Promise<boolean> {
     try {
         const eventDoc = doc(db, 'events', id);
         await updateDoc(eventDoc, eventData);
