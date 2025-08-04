@@ -209,12 +209,16 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
                     </div>
                 </div>
               </div>
-              <Button asChild size="lg" className="w-full mt-6" disabled={isPast}>
-                  <Link href="/contact">Register / RSVP</Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="w-full mt-2" disabled={isPast}>
-                  <Link href={calendarLink} target="_blank" rel="noopener noreferrer">Add to Calendar</Link>
-              </Button>
+              {!isPast && (
+                <>
+                  <Button asChild size="lg" className="w-full mt-6">
+                      <Link href="/contact">Register / RSVP</Link>
+                  </Button>
+                  <Button asChild variant="outline" size="lg" className="w-full mt-2">
+                      <Link href={calendarLink} target="_blank" rel="noopener noreferrer">Add to Calendar</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
