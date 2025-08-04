@@ -7,7 +7,7 @@
 
 import { db } from '@/lib/firebase';
 import type { Event, EventFormData } from '@/lib/types';
-import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, orderBy } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, orderBy, writeBatch } from 'firebase/firestore';
 
 const eventsCollectionRef = collection(db, 'events');
 
@@ -17,6 +17,8 @@ const eventsCollectionRef = collection(db, 'events');
  */
 export async function getEvents(): Promise<Event[]> {
   try {
+    // Note: Firestore's date ordering for strings might not be chronological if format varies.
+    // 'MMMM dd, yyyy' should be consistent enough for this app.
     const q = query(eventsCollectionRef, orderBy('date', 'desc'));
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map(doc => ({
@@ -88,6 +90,28 @@ export async function createEvent(eventData: EventFormData): Promise<string | nu
     } catch (error) {
         console.error("Error creating event:", error);
         return null;
+    }
+}
+
+/**
+ * Creates multiple events in a single batch operation.
+ * @param {Omit<Event, 'id'>[]} eventsData - An array of event data objects.
+ * @returns {Promise<boolean>} True on success, false on failure.
+ */
+export async function batchCreateEvents(eventsData: Omit<Event, 'id'>[]): Promise<boolean> {
+    const batch = writeBatch(db);
+
+    eventsData.forEach((event) => {
+        const newEventRef = doc(eventsCollectionRef); // Create a new document reference with a unique ID
+        batch.set(newEventRef, event);
+    });
+
+    try {
+        await batch.commit();
+        return true;
+    } catch (error) {
+        console.error("Error batch creating events:", error);
+        return false;
     }
 }
 
