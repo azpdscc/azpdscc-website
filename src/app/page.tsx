@@ -151,7 +151,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="sponsors" className="py-16 md:py-24 bg-card">
+      <section id="sponsors" className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center">
             <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">
@@ -178,7 +178,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="impact" className="py-16 md:py-24 bg-background">
+      <section id="impact" className="py-16 md:py-24 bg-card">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
