@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { teamMembers } from '@/lib/data';
+import { getTeamMembers } from '@/services/team';
 import { HeartHandshake, Target, Users, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -12,7 +12,9 @@ export const metadata: Metadata = {
   description: 'Learn about the story, values, and team behind the Phoenix Desi Sports and Cultural Club (PDSCC), a non-profit organization dedicated to serving the AZ India community and AZ Desis in Phoenix.',
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const teamMembers = await getTeamMembers();
+
   return (
     <div className="bg-background">
       <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground bg-primary">

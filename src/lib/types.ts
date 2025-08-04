@@ -30,7 +30,7 @@ export type EventFormData = {
 };
 
 export type TeamMember = {
-  id: number;
+  id: string; // Firestore document ID is a string
   name: string;
   role: string;
   image: string;
