@@ -162,7 +162,7 @@ export default function EventDetailPage({ params }: { params: { slug: string } }
                 You can watch the full recording of {event.name} on our official YouTube channel.
               </AlertDescription>
               <Button asChild className="mt-4">
-                <Link href="https://youtube.com/@your-channel-name" target="_blank" rel="noopener noreferrer">
+                <Link href="https://www.youtube.com/@AZPDSCC" target="_blank" rel="noopener noreferrer">
                   Watch on YouTube
                 </Link>
               </Button>
