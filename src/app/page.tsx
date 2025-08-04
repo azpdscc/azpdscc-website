@@ -7,7 +7,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { EventCard } from '@/components/events/event-card';
 import { HolidayBanner } from '@/components/holiday-banner';
 import { events } from '@/lib/data';
-import { ArrowRight, CircleDollarSign, Handshake, Sprout } from 'lucide-react';
+import { ArrowRight, CircleDollarSign, Handshake, Sprout, Youtube } from 'lucide-react';
 
 export default function Home() {
   const upcomingEvents = [...events]
@@ -137,6 +137,25 @@ export default function Home() {
             <CarouselPrevious className="hidden sm:flex" />
             <CarouselNext className="hidden sm:flex" />
           </Carousel>
+        </div>
+      </section>
+
+      <section id="past-events" className="py-16 md:py-24 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="bg-secondary/50 rounded-lg p-8 text-center flex flex-col items-center">
+            <Youtube className="h-12 w-12 text-primary mb-4" strokeWidth={1.5} />
+            <h2 className="font-headline text-3xl font-bold text-foreground">Catch Up on Past Events</h2>
+            <p className="mt-2 max-w-2xl mx-auto text-muted-foreground">
+                Missed one of our celebrations? Watch full recordings of our past festivals and community gatherings on our official YouTube channel.
+            </p>
+            <div className="mt-6">
+                <Button asChild size="lg">
+                    <Link href="https://www.youtube.com/@AZPDSCC" target="_blank" rel="noopener noreferrer">
+                        Watch on YouTube
+                    </Link>
+                </Button>
+            </div>
+          </div>
         </div>
       </section>
 
