@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { ConditionalTicker } from '@/components/layout/conditional-ticker';
 import { Breadcrumbs } from '@/components/layout/breadcrumbs';
 import './globals.css';
+import { ConditionalLayout } from '@/components/layout/conditional-layout';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -73,13 +74,9 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
-        <div className="flex min-h-screen flex-col">
-          <Header />
-          <ConditionalTicker />
-          <Breadcrumbs />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
+        <ConditionalLayout>
+            {children}
+        </ConditionalLayout>
         <Toaster />
       </body>
     </html>

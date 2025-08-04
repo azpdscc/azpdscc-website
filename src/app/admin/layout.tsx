@@ -8,9 +8,26 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Shield } from 'lucide-react';
+import { Header } from '@/components/layout/header';
+import Link from 'next/link';
+import { Logo } from '@/components/logo';
 
 const CORRECT_PASSWORD = 'azpdscc-admin-2024';
 const AUTH_KEY = 'admin-auth';
+
+
+function AdminFooter() {
+  return (
+     <footer className="bg-card border-t mt-auto">
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center text-sm text-muted-foreground">
+          <p>&copy; {new Date().getFullYear()} AZPDSCC Admin Panel.</p>
+        </div>
+      </div>
+    </footer>
+  )
+}
+
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -87,5 +104,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     );
   }
 
-  return <>{children}</>;
+  return (
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-1">{children}</main>
+      <AdminFooter />
+    </div>
+  );
 }
