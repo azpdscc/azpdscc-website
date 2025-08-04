@@ -3,13 +3,12 @@ import type { Metadata, ResolvingMetadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { events } from '@/lib/data';
+import { getEvents, getEventBySlug } from '@/services/events';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, MapPin, Youtube } from 'lucide-react';
 import type { Event } from '@/lib/types';
 import { format, parse } from 'date-fns';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Card } from '@/components/ui/card';
 
 
@@ -21,7 +20,7 @@ export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const event = events.find((e) => e.slug === params.slug);
+  const event = await getEventBySlug(params.slug);
  
   if (!event) {
     return {
@@ -38,6 +37,7 @@ export async function generateMetadata(
 
 
 export async function generateStaticParams() {
+  const events = await getEvents();
   return events.map((event) => ({
     slug: event.slug,
   }));
@@ -78,8 +78,8 @@ const createEventSchema = (event: Event) => {
   };
 };
 
-export default function EventDetailPage({ params }: { params: { slug: string } }) {
-  const event = events.find((e) => e.slug === params.slug);
+export default async function EventDetailPage({ params }: { params: { slug: string } }) {
+  const event = await getEventBySlug(params.slug);
 
   if (!event) {
     notFound();
@@ -157,10 +157,10 @@ export default function EventDetailPage({ params }: { params: { slug: string } }
           <Card className="mb-8 border-primary/20 bg-primary/5 shadow-lg">
             <div className="p-6 text-center">
               <Youtube className="h-12 w-12 mx-auto text-primary mb-3" strokeWidth={1.5} />
-              <AlertTitle className="font-headline text-2xl font-bold text-primary">This Event Has Ended</AlertTitle>
-              <AlertDescription className="mt-2 text-muted-foreground text-base">
+              <h2 className="font-headline text-2xl font-bold text-primary">This Event Has Ended</h2>
+              <p className="mt-2 text-muted-foreground text-base">
                 You can watch the full recording of {event.name} on our official YouTube channel.
-              </AlertDescription>
+              </p>
               <Button asChild className="mt-4">
                 <Link href="https://www.youtube.com/@AZPDSCC" target="_blank" rel="noopener noreferrer">
                   Watch on YouTube

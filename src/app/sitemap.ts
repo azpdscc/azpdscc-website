@@ -1,9 +1,9 @@
 
 import type { MetadataRoute } from 'next';
-import { events } from '@/lib/data';
+import { getEvents } from '@/services/events';
 import { blogPosts } from '@/lib/blog-data';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.azpdscc.org';
 
   // Static routes
@@ -26,7 +26,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/terms-of-service`, lastModified: new Date(), priority: 0.3, changeFrequency: 'yearly' as const },
   ];
 
-  // Dynamic event routes
+  // Dynamic event routes from Firestore
+  const events = await getEvents();
   const eventRoutes = events.map(event => ({
     url: `${baseUrl}/events/${event.slug}`,
     lastModified: new Date(),

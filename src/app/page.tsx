@@ -6,12 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { EventCard } from '@/components/events/event-card';
 import { HolidayBanner } from '@/components/holiday-banner';
-import { events } from '@/lib/data';
-import { ArrowRight, CircleDollarSign, Handshake, Sprout, Youtube } from 'lucide-react';
+import { getEvents } from '@/services/events';
+import { ArrowRight, CircleDollarSign, Handshake, Sprout } from 'lucide-react';
 import { PastEventBanner } from '@/components/past-event-banner';
 
-export default function Home() {
-  const upcomingEvents = [...events]
+export default async function Home() {
+  const allEvents = await getEvents();
+  const upcomingEvents = allEvents
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5);
 

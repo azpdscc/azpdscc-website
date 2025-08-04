@@ -2,10 +2,10 @@
 export type EventCategory = 'Music' | 'Food' | 'Dance' | 'Cultural';
 
 export type Event = {
-  id: number;
+  id: string; // Firestore document ID is a string
   slug: string;
   name: string;
-  date: string;
+  date: string; // Keep as string for simplicity, e.g. "April 02, 2025"
   time: string;
   locationName: string;
   locationAddress: string;

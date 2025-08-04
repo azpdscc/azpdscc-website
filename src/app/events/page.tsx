@@ -1,33 +1,52 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { EventCard } from '@/components/events/event-card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { events } from '@/lib/data';
-import type { EventCategory } from '@/lib/types';
+import { getEvents } from '@/services/events';
+import type { Event, EventCategory } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const categories: EventCategory[] = ['Cultural', 'Food', 'Music', 'Dance'];
+
+function EventSkeleton() {
+    return (
+        <div className="flex flex-col space-y-3">
+            <Skeleton className="h-[200px] w-full rounded-xl" />
+            <div className="space-y-2">
+                <Skeleton className="h-4 w-[250px]" />
+                <Skeleton className="h-4 w-[200px]" />
+            </div>
+        </div>
+    )
+}
 
 export default function EventsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<EventCategory | 'all'>('all');
+  const [events, setEvents] = useState<Event[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const sortedEvents = useMemo(() => {
-    // Sort events by date in descending order (newest first)
-    // This sorting is done inside useMemo to be stable across renders
-    return [...events].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  useEffect(() => {
+    async function fetchEvents() {
+        setIsLoading(true);
+        const fetchedEvents = await getEvents();
+        setEvents(fetchedEvents);
+        setIsLoading(false);
+    }
+    fetchEvents();
   }, []);
 
   const filteredEvents = useMemo(() => {
-    return sortedEvents.filter(event => {
+    return events.filter(event => {
       const matchesSearch = event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                             event.description.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [searchTerm, selectedCategory, sortedEvents]);
+  }, [searchTerm, selectedCategory, events]);
 
   return (
     <div className="bg-background">
@@ -67,7 +86,9 @@ export default function EventsPage() {
           </div>
         
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredEvents.length > 0 ? (
+            {isLoading ? (
+                Array.from({ length: 3 }).map((_, index) => <EventSkeleton key={index} />)
+            ) : filteredEvents.length > 0 ? (
               filteredEvents.map(event => (
                 <EventCard key={event.id} event={event} />
               ))

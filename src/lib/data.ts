@@ -1,34 +1,8 @@
 
 import type { Event, TeamMember } from './types';
 
-export const events: Event[] = [
-  {
-    id: 1,
-    slug: "vaisakhi-mela-2025",
-    name: "Vaisakhi Mela 2025",
-    date: "April 02, 2025",
-    time: "12:00 PM - 7:00 PM",
-    locationName: "Goodyear Ballpark",
-    locationAddress: "2209 N 99th Ave, Phoenix, AZ 85037",
-    image: "https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/_R1_4929.JPG",
-    description: "A vibrant celebration of Vaisakhi, the Punjabi new year and harvest festival.",
-    fullDescription: "Join us for the annual Vaisakhi Mela! This joyous event celebrates the Punjabi new year and harvest festival with traditional music (Bhangra and Giddha), delicious food, and a variety of cultural activities for the whole family. It's a day of community spirit and celebration.",
-    category: "Cultural"
-  },
-  {
-    id: 10,
-    slug: "teeyandamela2025",
-    name: "Teeyan Da Mela 2025",
-    date: "August 02, 2025",
-    time: "2:00 PM - 7:00 PM",
-    locationName: "Indo American Cultural Hall",
-    locationAddress: "2809 W Maryland Ave, Phoenix, AZ 85017",
-    image: "https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/IMG_3123.JPG",
-    description: "Teeyan da Mela is a vibrant Punjabi festival celebrating the onset of the monsoon season and traditionally observed by women. ",
-    fullDescription: "Teeyan da Mela is a vibrant Punjabi festival celebrating the onset of the monsoon season and traditionally observed by women. It's a joyous occasion marked by colourful attire, traditional folk dances like Giddha, singing, swings (peengh), and delicious food. The festival embodies the spirit of female camaraderie, cultural heritage, and the beauty of nature's renewal.",
-    category: "Cultural"
-  }
-];
+// Event data is now fetched from Firestore. This is kept for type reference and potential fallback.
+export const events: Event[] = [];
 
 export const teamMembers: TeamMember[] = [
   {

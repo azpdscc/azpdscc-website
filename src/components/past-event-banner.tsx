@@ -6,42 +6,46 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { differenceInDays } from 'date-fns';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { events } from '@/lib/data';
+import { getEvents } from '@/services/events';
 import Link from 'next/link';
 import { Youtube } from 'lucide-react';
 import type { Event } from '@/lib/types';
 
-// Function to get the most recent past event
-const getMostRecentPastEvent = (): Event | null => {
-  const now = new Date();
-  now.setHours(0, 0, 0, 0);
-
-  const pastEvents = events
-    .map(event => ({
-      ...event,
-      dateObj: new Date(event.date),
-    }))
-    .filter(event => event.dateObj < now)
-    .sort((a, b) => b.dateObj.getTime() - a.dateObj.getTime());
-
-  return pastEvents.length > 0 ? pastEvents[0] : null;
-};
 
 export function PastEventBanner() {
   const [isVisible, setIsVisible] = useState(false);
   const [recentEvent, setRecentEvent] = useState<Event | null>(null);
 
   useEffect(() => {
-    const event = getMostRecentPastEvent();
-    if (event) {
-      const daysSinceEvent = differenceInDays(new Date(), event.dateObj);
-      
-      // Show banner from the day after the event up to 14 days after.
-      if (daysSinceEvent >= 1 && daysSinceEvent <= 14) {
-        setRecentEvent(event);
-        setIsVisible(true);
-      }
-    }
+    // Function to get the most recent past event
+    const getMostRecentPastEvent = async (): Promise<Event | null> => {
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+
+        const allEvents = await getEvents();
+
+        const pastEvents = allEvents
+            .map(event => ({
+            ...event,
+            dateObj: new Date(event.date),
+            }))
+            .filter(event => event.dateObj < now)
+            .sort((a, b) => b.dateObj.getTime() - a.dateObj.getTime());
+
+        return pastEvents.length > 0 ? pastEvents[0] : null;
+    };
+
+    getMostRecentPastEvent().then(event => {
+        if (event) {
+            const daysSinceEvent = differenceInDays(new Date(), event.dateObj);
+            
+            // Show banner from the day after the event up to 14 days after.
+            if (daysSinceEvent >= 1 && daysSinceEvent <= 14) {
+                setRecentEvent(event);
+                setIsVisible(true);
+            }
+        }
+    });
   }, []);
 
   if (!isVisible || !recentEvent) {
@@ -77,4 +81,3 @@ export function PastEventBanner() {
     </AnimatePresence>
   );
 }
-
