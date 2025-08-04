@@ -6,7 +6,7 @@
 
 import { db } from '@/lib/firebase';
 import type { TeamMember } from '@/lib/types';
-import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, orderBy } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, orderBy, query } from 'firebase/firestore';
 
 const teamCollectionRef = collection(db, 'teamMembers');
 
