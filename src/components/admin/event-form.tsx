@@ -127,25 +127,25 @@ export function EventForm({ type, event, action }: EventFormProps) {
           <FormItem><FormLabel>Event Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
         )} />
         <div className="grid md:grid-cols-2 gap-4">
-          <FormField control={form.control} name="date" render={({ field }) => (
-            <FormItem>
-              <FormLabel>Date</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}>
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )} />
+          <FormItem>
+            <FormLabel>Date</FormLabel>
+            <FormField control={form.control} name="date" render={({ field }) => (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}>
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                  </PopoverContent>
+                </Popover>
+            )} />
+             <FormMessage />
+          </FormItem>
           <FormField control={form.control} name="time" render={({ field }) => (
             <FormItem><FormLabel>Time</FormLabel><FormControl><Input placeholder="e.g., 2:00 PM - 7:00 PM" {...field} /></FormControl><FormMessage /></FormItem>
           )} />
@@ -176,13 +176,10 @@ export function EventForm({ type, event, action }: EventFormProps) {
             <FormLabel htmlFor="ai-prompt">AI Description Generator</FormLabel>
             <Textarea
                 id="ai-prompt"
-                placeholder="e.g., A vibrant Vaisakhi Mela celebrating Punjabi culture with live Bhangra music, food stalls, and kids' activities."
+                placeholder="Provide a few details about the event, and let AI write the descriptions for you. e.g., A vibrant Vaisakhi Mela celebrating Punjabi culture with live Bhangra music, food stalls, and kids' activities."
                 value={aiPrompt}
                 onChange={(e) => setAiPrompt(e.target.value)}
             />
-            <FormDescription>
-                Provide a few details about the event, and let AI write the descriptions for you.
-            </FormDescription>
             <Button type="button" variant="outline" size="sm" onClick={handleGenerateDescriptions} disabled={isGenerating}>
                 {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
                 Generate Descriptions
