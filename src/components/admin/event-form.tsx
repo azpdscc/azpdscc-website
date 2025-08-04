@@ -7,16 +7,24 @@ import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, CalendarIcon, Sparkles } from 'lucide-react';
 import type { Event, EventCategory } from '@/lib/types';
 import { useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
+import { useState } from 'react';
+import { generateEventDescriptions } from '@/ai/flows/generate-event-descriptions-flow';
 
 const eventSchema = z.object({
   name: z.string().min(3, "Event name is required."),
-  date: z.string().regex(/^(January|February|March|April|May|June|July|August|September|October|November|December)\s\d{1,2},\s\d{4}$/, "Date must be in 'Month Day, Year' format (e.g., August 02, 2025)."),
+  date: z.date({
+    required_error: "A date is required.",
+  }),
   time: z.string().regex(/^\d{1,2}:\d{2}\s(AM|PM)\s-\s\d{1,2}:\d{2}\s(AM|PM)$/, "Time must be in 'H:MM AM/PM - H:MM AM/PM' format (e.g., 2:00 PM - 7:00 PM)."),
   locationName: z.string().min(3, "Location name is required."),
   locationAddress: z.string().min(10, "A full address is required."),
@@ -33,18 +41,20 @@ type EventFormValues = z.infer<typeof eventSchema>;
 interface EventFormProps {
   type: 'Add' | 'Edit';
   event?: Event;
-  action: (data: EventFormValues) => Promise<void>;
+  action: (data: any) => Promise<void>; // Use 'any' to accommodate date string conversion
 }
 
 export function EventForm({ type, event, action }: EventFormProps) {
   const { toast } = useToast();
   const router = useRouter();
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState('');
 
   const form = useForm<EventFormValues>({
     resolver: zodResolver(eventSchema),
     defaultValues: {
       name: event?.name || '',
-      date: event?.date || '',
+      date: event?.date ? new Date(event.date) : undefined,
       time: event?.time || '',
       locationName: event?.locationName || '',
       locationAddress: event?.locationAddress || '',
@@ -58,9 +68,45 @@ export function EventForm({ type, event, action }: EventFormProps) {
 
   const { isSubmitting } = form.formState;
 
+  const handleGenerateDescriptions = async () => {
+    if (!aiPrompt) {
+        toast({
+            variant: 'destructive',
+            title: "Prompt is empty",
+            description: "Please enter some details about the event to generate descriptions.",
+        });
+        return;
+    }
+    setIsGenerating(true);
+    try {
+        const result = await generateEventDescriptions({ prompt: aiPrompt });
+        if (result) {
+            form.setValue('description', result.description, { shouldValidate: true });
+            form.setValue('fullDescription', result.fullDescription, { shouldValidate: true });
+            toast({
+                title: "Descriptions Generated!",
+                description: "The AI has filled in the description fields for you.",
+            });
+        }
+    } catch (error) {
+        toast({
+            variant: 'destructive',
+            title: "Generation Failed",
+            description: "Could not generate descriptions. Please try again.",
+        });
+    } finally {
+        setIsGenerating(false);
+    }
+  };
+
   const onSubmit: SubmitHandler<EventFormValues> = async (data) => {
     try {
-      await action(data);
+      // Convert date object back to the string format Firestore expects
+      const dataForAction = {
+        ...data,
+        date: format(data.date, 'MMMM dd, yyyy'),
+      };
+      await action(dataForAction);
       toast({
         title: `Event ${type === 'Add' ? 'Created' : 'Updated'}`,
         description: `Your event has been successfully ${type === 'Add' ? 'created' : 'updated'}.`,
@@ -82,7 +128,23 @@ export function EventForm({ type, event, action }: EventFormProps) {
         )} />
         <div className="grid md:grid-cols-2 gap-4">
           <FormField control={form.control} name="date" render={({ field }) => (
-            <FormItem><FormLabel>Date</FormLabel><FormControl><Input placeholder="e.g., August 02, 2025" {...field} /></FormControl><FormMessage /></FormItem>
+            <FormItem className="flex flex-col">
+              <FormLabel>Date</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !field.value && "text-muted-foreground")}>
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
           )} />
           <FormField control={form.control} name="time" render={({ field }) => (
             <FormItem><FormLabel>Time</FormLabel><FormControl><Input placeholder="e.g., 2:00 PM - 7:00 PM" {...field} /></FormControl><FormMessage /></FormItem>
@@ -109,6 +171,24 @@ export function EventForm({ type, event, action }: EventFormProps) {
             <FormMessage />
           </FormItem>
         )} />
+
+        <div className="space-y-2 p-4 border rounded-lg bg-secondary/50">
+            <FormLabel htmlFor="ai-prompt">AI Description Generator</FormLabel>
+            <Textarea
+                id="ai-prompt"
+                placeholder="e.g., A vibrant Vaisakhi Mela celebrating Punjabi culture with live Bhangra music, food stalls, and kids' activities."
+                value={aiPrompt}
+                onChange={(e) => setAiPrompt(e.target.value)}
+            />
+            <FormDescription>
+                Provide a few details about the event, and let AI write the descriptions for you.
+            </FormDescription>
+            <Button type="button" variant="secondary" size="sm" onClick={handleGenerateDescriptions} disabled={isGenerating}>
+                {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                Generate Descriptions
+            </Button>
+        </div>
+
          <FormField control={form.control} name="description" render={({ field }) => (
           <FormItem><FormLabel>Short Description (for cards)</FormLabel><FormControl><Textarea {...field} /></FormControl><FormMessage /></FormItem>
         )} />
