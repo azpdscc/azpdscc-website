@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useTransition } from 'react';
@@ -16,6 +17,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { useToast } from '@/hooks/use-toast';
 import { deleteEventAction } from '@/app/admin/events/actions';
+import { deleteTeamMemberAction } from '@/app/admin/team/actions';
 
 interface DeleteButtonProps {
     id: string;
@@ -70,10 +72,12 @@ export function DeleteTeamMemberButton({ id }: DeleteButtonProps) {
 
   const handleDelete = () => {
     startTransition(async () => {
-      // Dummy action for now, replace with actual deleteTeamMemberAction if needed
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('Deleted team member', id);
-      toast({ title: "Success", description: "Team member deleted." });
+      const result = await deleteTeamMemberAction(id);
+      if (result.success) {
+        toast({ title: "Success", description: result.message });
+      } else {
+        toast({ variant: 'destructive', title: "Error", description: result.message });
+      }
     });
   };
 
