@@ -1,8 +1,10 @@
+
 'use client';
 
+import { useState } from 'react';
 import type { Event } from '@/lib/types';
 import type { EventFormState } from '@/app/admin/events/actions';
-import { useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -15,30 +17,24 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CalendarIcon, Loader2, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format, parse } from 'date-fns';
+import { SubmitButton } from './submit-button';
 
 interface EventFormProps {
   event?: Event;
-  formAction: (payload: FormData) => void;
-  formState: EventFormState;
+  formAction: (prevState: EventFormState, formData: FormData) => Promise<EventFormState>;
+  initialState: EventFormState;
 }
 
-function SubmitButton({ isEditing }: { isEditing: boolean }) {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" disabled={pending}>
-      {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-      {isEditing ? 'Update Event' : 'Add Event'}
-    </Button>
-  );
-}
-
-export function EventForm({ event, formAction, formState }: EventFormProps) {
+export function EventForm({ event, formAction, initialState }: EventFormProps) {
   const isEditing = !!event;
+  const [formState, action] = useActionState(formAction, initialState);
 
-  const defaultDate = event?.date ? parse(event.date, 'MMMM dd, yyyy', new Date()) : undefined;
+  // Set initial date from event or leave undefined for new events
+  const initialDate = event?.date ? parse(event.date, 'MMMM dd, yyyy', new Date()) : undefined;
+  const [date, setDate] = useState<Date | undefined>(initialDate);
 
   return (
-    <form action={formAction} className="space-y-6">
+    <form action={action} className="space-y-6">
       {/* Name and Slug */}
       <div className="grid md:grid-cols-2 gap-4">
         <div>
@@ -57,48 +53,31 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
       <div className="grid md:grid-cols-2 gap-4">
          <div>
             <Label htmlFor="date">Date</Label>
+            {/* Hidden input to pass date to the form action */}
+            <Input id="date" name="date" value={date?.toISOString() ?? ''} className="hidden" readOnly />
+
             <Popover>
-                <PopoverTrigger asChild>
-                    <Input id="date" name="date" defaultValue={defaultDate?.toISOString()} className="hidden" />
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" asChild>
-                    <Calendar
-                        mode="single"
-                        defaultMonth={defaultDate}
-                        selected={defaultDate}
-                        onSelect={(day) => {
-                            const input = document.getElementById('date') as HTMLInputElement;
-                            if (input && day) {
-                                input.value = day.toISOString();
-                            }
-                        }}
-                    />
-                </PopoverContent>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    'w-full justify-start text-left font-normal',
+                    !date && 'text-muted-foreground'
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date ? format(date, 'PPP') : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  initialFocus
+                />
+              </PopoverContent>
             </Popover>
-            <div className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm">
-                <span>{defaultDate ? format(defaultDate, "PPP") : "Select a date"}</span>
-                <Popover>
-                    <PopoverTrigger><CalendarIcon className="h-4 w-4" /></PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                         <Calendar
-                            mode="single"
-                            defaultMonth={defaultDate}
-                            onSelect={(day) => {
-                                const input = document.getElementById('date') as HTMLInputElement;
-                                if (input && day) {
-                                    input.value = day.toISOString();
-                                    // Manually update displayed date
-                                    const parentDiv = input.parentElement?.nextElementSibling as HTMLDivElement;
-                                    if(parentDiv) {
-                                        parentDiv.querySelector('span')!.textContent = format(day, "PPP");
-                                    }
-                                }
-                            }}
-                            initialFocus
-                        />
-                    </PopoverContent>
-                </Popover>
-            </div>
             {formState.errors.date && <p className="text-sm text-destructive mt-1">{formState.errors.date[0]}</p>}
          </div>
         <div>
