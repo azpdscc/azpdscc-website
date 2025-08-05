@@ -1,8 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
-import { useFormState } from 'react-dom';
+import { useState, useActionState } from 'react';
 import type { Event } from '@/lib/types';
 import type { FormState } from '@/app/admin/events/actions';
 import { createEventAction, updateEventAction } from '@/app/admin/events/actions';
@@ -31,7 +30,7 @@ export function EventForm({ event }: EventFormProps) {
 
   const action = isEditing ? updateEventAction.bind(null, event.id) : createEventAction;
   const initialState: FormState = { errors: {}, message: '' };
-  const [formState, formAction] = useFormState(action, initialState);
+  const [formState, formAction] = useActionState(action, initialState);
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [description, setDescription] = useState(event?.description || '');
