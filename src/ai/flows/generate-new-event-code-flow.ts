@@ -30,6 +30,7 @@ const NewEventSchema = z.object({
     time: z.string(),
     locationName: z.string(),
     locationAddress: z.string(),
+    image: z.string().url(),
     category: z.enum(['Cultural', 'Food', 'Music', 'Dance']),
     description: z.string(),
     fullDescription: z.string(),
@@ -56,7 +57,6 @@ export async function generateNewEventCode(
       ...input.newEvent,
       id: `evt-${Date.now()}-${Math.floor(Math.random() * 1000)}`, // Generate a unique-enough ID
       slug: createSlug(input.newEvent.name),
-      image: "https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/placeholder-1.png", // Always use a default placeholder
   };
 
   // Combine new event with existing ones, placing the new one at the top.

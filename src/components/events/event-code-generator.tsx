@@ -35,6 +35,7 @@ const formSchema = z.object({
   endTime: z.date({ required_error: 'An end time is required.'}),
   locationName: z.string().min(1, 'Location name is required'),
   locationAddress: z.string().min(1, 'Location address is required'),
+  image: z.string().url('A valid image URL is required.'),
   category: z.enum(['Cultural', 'Food', 'Music', 'Dance']),
   description: z.string().min(1, 'Short description is required'),
   fullDescription: z.string().min(1, 'Full description is required'),
@@ -62,6 +63,7 @@ export function EventCodeGenerator() {
         endTime: new Date('2024-11-02T22:00:00'),
         locationName: 'Goodyear Ballpark',
         locationAddress: '1933 S Ballpark Way, Goodyear, AZ 85338',
+        image: 'https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/placeholder-1.png',
         category: 'Cultural',
         description: '',
         fullDescription: '',
@@ -124,6 +126,7 @@ export function EventCodeGenerator() {
                 time: formattedData.time,
                 locationName: formattedData.locationName,
                 locationAddress: formattedData.locationAddress,
+                image: formattedData.image,
                 category: formattedData.category,
                 description: formattedData.description,
                 fullDescription: formattedData.fullDescription,
@@ -258,6 +261,9 @@ export function EventCodeGenerator() {
                             )} />
                             <FormField name="locationAddress" control={form.control} render={({ field }) => (
                                 <FormItem><FormLabel>Location Address</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                            )} />
+                            <FormField name="image" control={form.control} render={({ field }) => (
+                                <FormItem><FormLabel>Image URL</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                             )} />
                              <FormField name="category" control={form.control} render={({ field }) => (
                                 <FormItem>
