@@ -154,7 +154,7 @@ export function EventForm({ type, event, action, formState }: EventFormProps) {
             <Label htmlFor="ai-prompt">AI Description Generator</Label>
             <Textarea
                 id="ai-prompt"
-                placeholder="Provide a few details about the event, and let AI write the descriptions for you. e.g., A vibrant Vaisakhi Mela celebrating Punjabi culture with live Bhangra music, food stalls, and kids' activities."
+                placeholder="Provide a few details about the event, and let AI write the descriptions for you. e.g., a vibrant Vaisakhi Mela celebrating Punjabi culture with live Bhangra music, food stalls, and kids' activities."
                 value={aiPrompt}
                 onChange={(e) => setAiPrompt(e.target.value)}
             />
