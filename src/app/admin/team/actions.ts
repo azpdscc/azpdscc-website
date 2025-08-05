@@ -1,3 +1,4 @@
+
 'use server';
 
 import { z } from 'zod';
@@ -45,6 +46,10 @@ export async function createTeamMemberAction(
 
   try {
     await createTeamMember(validatedFields.data);
+    // Moved redirect into the try block to ensure it only runs on success
+    revalidatePath('/about');
+    revalidatePath('/admin/team');
+    redirect('/admin/team');
   } catch (err) {
     return {
       errors: { _form: ['Database error. Failed to create member.'] },
@@ -52,10 +57,6 @@ export async function createTeamMemberAction(
       message: 'Database error. Failed to create member.',
     };
   }
-
-  revalidatePath('/about');
-  revalidatePath('/admin/team');
-  redirect('/admin/team');
 }
 
 export async function updateTeamMemberAction(
@@ -80,6 +81,10 @@ export async function updateTeamMemberAction(
 
   try {
     await updateTeamMember(id, validatedFields.data);
+    // Moved redirect into the try block to ensure it only runs on success
+    revalidatePath('/about');
+    revalidatePath('/admin/team');
+    redirect('/admin/team');
   } catch (err) {
      return {
       errors: { _form: ['Database error. Failed to update member.'] },
@@ -87,10 +92,6 @@ export async function updateTeamMemberAction(
       message: 'Database error. Failed to update member.',
     };
   }
-
-  revalidatePath('/about');
-  revalidatePath('/admin/team');
-  redirect('/admin/team');
 }
 
 

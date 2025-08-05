@@ -1,3 +1,4 @@
+
 'use server';
 
 import { z } from 'zod';
@@ -63,7 +64,6 @@ export async function createEventAction(
   });
 
   if (!validatedFields.success) {
-    console.log(validatedFields.error.flatten().fieldErrors);
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       success: false,
@@ -81,6 +81,11 @@ export async function createEventAction(
     if (!newEventId) {
       throw new Error('Database operation failed.');
     }
+    // Moved redirect into the try block to ensure it only runs on success
+    revalidatePath('/events');
+    revalidatePath('/admin/events');
+    revalidatePath('/');
+    redirect('/admin/events');
   } catch (err) {
     return {
       errors: {
@@ -90,11 +95,6 @@ export async function createEventAction(
       message: 'An unexpected error occurred while creating the event.',
     };
   }
-
-  revalidatePath('/events');
-  revalidatePath('/admin/events');
-  revalidatePath('/');
-  redirect('/admin/events');
 }
 
 
@@ -138,6 +138,11 @@ export async function updateEventAction(
     if (!success) {
       throw new Error('Database update failed.');
     }
+    // Moved redirect into the try block to ensure it only runs on success
+    revalidatePath('/events');
+    revalidatePath(`/events/${validatedFields.data.slug}`);
+    revalidatePath('/admin/events');
+    redirect('/admin/events');
   } catch (err) {
      return {
       errors: {
@@ -147,11 +152,6 @@ export async function updateEventAction(
       message: 'An unexpected error occurred while updating the event.',
     };
   }
-
-  revalidatePath('/events');
-  revalidatePath(`/events/${validatedFields.data.slug}`);
-  revalidatePath('/admin/events');
-  redirect('/admin/events');
 }
 
 export async function deleteEventAction(id: string) {
