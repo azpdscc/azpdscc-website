@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation';
 import { createEvent, updateEvent, deleteEvent, batchCreateEvents } from '@/services/events';
 import type { EventFormData, Event } from '@/lib/types';
 import { z } from 'zod';
+import { format } from 'date-fns';
 
 const generateSlug = (name: string) => {
   return name
@@ -15,9 +16,45 @@ const generateSlug = (name: string) => {
     .slice(0, 50);
 };
 
-export async function createEventAction(formData: EventFormData) {
-  const slug = generateSlug(formData.name);
-  const dataWithSlug = { ...formData, slug };
+const eventSchema = z.object({
+  name: z.string().min(3, "Event name is required."),
+  date: z.string().min(1, "Date is required."),
+  time: z.string().regex(/^\d{1,2}:\d{2}\s(AM|PM)\s-\s\d{1,2}:\d{2}\s(AM|PM)$/, "Time must be in 'H:MM AM/PM - H:MM AM/PM' format (e.g., 2:00 PM - 7:00 PM)."),
+  locationName: z.string().min(3, "Location name is required."),
+  locationAddress: z.string().min(10, "A full address is required."),
+  image: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
+  description: z.string().min(20, "Short description must be at least 20 characters."),
+  fullDescription: z.string().min(50, "Full description must be at least 50 characters."),
+  category: z.enum(['Cultural', 'Food', 'Music', 'Dance']),
+});
+
+
+export async function createEventAction(formData: FormData) {
+  const validatedFields = eventSchema.safeParse({
+    name: formData.get('name'),
+    date: formData.get('date'),
+    time: formData.get('time'),
+    locationName: formData.get('locationName'),
+    locationAddress: formData.get('locationAddress'),
+    image: formData.get('image'),
+    description: formData.get('description'),
+    fullDescription: formData.get('fullDescription'),
+    category: formData.get('category'),
+  });
+
+  if (!validatedFields.success) {
+    // Handle validation errors
+    // In a real app, you would return this to the form to display errors
+    console.error("Validation failed:", validatedFields.error.flatten().fieldErrors);
+    return;
+  }
+  
+  const slug = generateSlug(validatedFields.data.name);
+  const dataWithSlug = { 
+    ...validatedFields.data,
+    slug,
+    image: validatedFields.data.image || 'https://placehold.co/600x400.png',
+  };
   
   const result = await createEvent(dataWithSlug);
 
@@ -27,13 +64,32 @@ export async function createEventAction(formData: EventFormData) {
     revalidatePath('/');
     redirect('/admin/events');
   } 
-  // No explicit 'else' needed as redirect throws an error, stopping execution.
-  // If createEvent throws, the error will be caught by the form's try/catch block.
 }
 
-export async function updateEventAction(id: string, formData: EventFormData) {
-  const slug = generateSlug(formData.name);
-  const dataWithSlug = { ...formData, slug };
+export async function updateEventAction(id: string, formData: FormData) {
+  const validatedFields = eventSchema.safeParse({
+    name: formData.get('name'),
+    date: formData.get('date'),
+    time: formData.get('time'),
+    locationName: formData.get('locationName'),
+    locationAddress: formData.get('locationAddress'),
+    image: formData.get('image'),
+    description: formData.get('description'),
+    fullDescription: formData.get('fullDescription'),
+    category: formData.get('category'),
+  });
+
+   if (!validatedFields.success) {
+    console.error("Validation failed:", validatedFields.error.flatten().fieldErrors);
+    return;
+  }
+  
+  const slug = generateSlug(validatedFields.data.name);
+  const dataWithSlug = { 
+    ...validatedFields.data,
+     slug,
+    image: validatedFields.data.image || 'https://placehold.co/600x400.png',
+  };
 
   const result = await updateEvent(id, dataWithSlug);
 
