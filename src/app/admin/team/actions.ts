@@ -27,7 +27,8 @@ export async function createTeamMemberAction(formData: FormData) {
     // This part is currently not set up to return errors to the form,
     // but the validation ensures bad data doesn't get sent to the database.
     console.error('Form validation failed:', validatedFields.error.flatten().fieldErrors);
-    return; // Stop execution if validation fails
+    // In a real app, you'd return this error and display it in the form.
+    return;
   }
 
   const result = await createTeamMember({

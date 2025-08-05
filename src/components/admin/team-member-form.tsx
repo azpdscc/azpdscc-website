@@ -16,8 +16,6 @@ interface TeamMemberFormProps {
   action: (data: FormData) => Promise<void>;
 }
 
-// The SubmitButton MUST be a separate component defined inside or outside,
-// but it must be rendered as a child of the form for `useFormStatus` to work.
 function SubmitButton({ type }: { type: 'Add' | 'Edit' }) {
     const { pending } = useFormStatus();
     return (
