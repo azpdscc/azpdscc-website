@@ -5,6 +5,13 @@ import { useState } from 'react';
 import type { Event } from '@/lib/types';
 import type { EventFormState } from '@/app/admin/events/actions';
 import Link from 'next/link';
+import { useForm, useWatch } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { format, parse, isValid } from 'date-fns';
+import { cn } from '@/lib/utils';
+import { generateEventDescriptions } from '@/ai/flows/generate-event-descriptions-flow';
+
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -13,10 +20,24 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { CalendarIcon, AlertCircle } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { format, parse } from 'date-fns';
+import { CalendarIcon, AlertCircle, Sparkles, Loader2 } from 'lucide-react';
 import { SubmitButton } from './submit-button';
+
+// Schema for the form fields
+const eventFormSchema = z.object({
+  name: z.string().min(5, "Name must be at least 5 characters"),
+  slug: z.string().min(3, "Slug must be at least 3 characters").regex(/^[a-z0-9-]+$/, "Slug can only contain lowercase letters, numbers, and hyphens"),
+  date: z.date({ required_error: 'Please select a date.'}),
+  time: z.string().regex(/^\d{1,2}:\d{2}\s(AM|PM)\s-\s\d{1,2}:\d{2}\s(AM|PM)$/, "Time must be in 'H:MM AM/PM - H:MM AM/PM' format"),
+  locationName: z.string().min(3, "Location name is required"),
+  locationAddress: z.string().min(10, "Full address is required"),
+  image: z.string().url("Must be a valid URL"),
+  description: z.string().min(20, "Short description must be at least 20 characters").max(150, "Short description cannot exceed 150 characters"),
+  fullDescription: z.string().min(50, "Full description must be at least 50 words"),
+  category: z.enum(['Cultural', 'Food', 'Music', 'Dance']),
+});
+
+type EventFormValues = z.infer<typeof eventFormSchema>;
 
 interface EventFormProps {
   event?: Event;
@@ -26,10 +47,44 @@ interface EventFormProps {
 
 export function EventForm({ event, formAction, formState }: EventFormProps) {
   const isEditing = !!event;
+  const [date, setDate] = useState<Date | undefined>(
+    event?.date ? parse(event.date, 'MMMM dd, yyyy', new Date()) : undefined
+  );
   
-  // Set initial date from event or leave undefined for new events
-  const initialDate = event?.date ? parse(event.date, 'MMMM dd, yyyy', new Date()) : undefined;
-  const [date, setDate] = useState<Date | undefined>(initialDate);
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationError, setGenerationError] = useState<string | null>(null);
+
+  // We need to use react-hook-form to manage the description fields for AI population
+  const form = useForm<EventFormValues>({
+    // We don't need a resolver here as the final validation is in the server action
+  });
+
+  const handleGenerateDescriptions = async () => {
+    if (!aiPrompt) {
+        setGenerationError("Please enter a prompt first.");
+        return;
+    }
+    setIsGenerating(true);
+    setGenerationError(null);
+    try {
+        const result = await generateEventDescriptions({ prompt: aiPrompt });
+        if (result.description && result.fullDescription) {
+            form.setValue('description', result.description);
+            form.setValue('fullDescription', result.fullDescription);
+        } else {
+            throw new Error("Received empty descriptions from AI.");
+        }
+    } catch (error) {
+        console.error("AI Generation failed:", error);
+        setGenerationError("Failed to generate descriptions. Please try again.");
+    } finally {
+        setIsGenerating(false);
+    }
+  };
+
+  const watchedDescription = useWatch({ control: form.control, name: 'description' });
+  const watchedFullDescription = useWatch({ control: form.control, name: 'fullDescription' });
 
   return (
     <form action={formAction} className="space-y-6">
@@ -51,9 +106,7 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
       <div className="grid md:grid-cols-2 gap-4">
          <div>
             <Label htmlFor="date">Date</Label>
-            {/* Hidden input to pass date to the form action */}
-            <Input id="date" name="date" value={date?.toISOString() ?? ''} className="hidden" readOnly />
-
+            <Input type="hidden" id="date" name="date" value={date ? date.toISOString() : ''} />
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -64,7 +117,7 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, 'PPP') : <span>Pick a date</span>}
+                  {date && isValid(date) ? format(date, 'PPP') : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
@@ -122,16 +175,47 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
              {formState.errors?.category && <p className="text-sm text-destructive mt-1">{formState.errors.category[0]}</p>}
         </div>
       </div>
+      
+       {/* AI Description Generation */}
+      <div className="space-y-2 p-4 border rounded-lg bg-primary/5">
+        <Label htmlFor="ai-prompt" className="flex items-center gap-2 font-semibold text-primary">
+            <Sparkles className="h-5 w-5" />
+            Generate Descriptions with AI
+        </Label>
+        <Textarea 
+          id="ai-prompt" 
+          placeholder="e.g., A colorful Holi celebration with music, dancing, and food trucks at Goodyear Ballpark."
+          value={aiPrompt}
+          onChange={(e) => setAiPrompt(e.target.value)}
+          rows={2}
+        />
+        <Button type="button" variant="secondary" onClick={handleGenerateDescriptions} disabled={isGenerating}>
+            {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+            Generate
+        </Button>
+        {generationError && <p className="text-sm text-destructive mt-1">{generationError}</p>}
+      </div>
+
 
        {/* Descriptions */}
       <div>
         <Label htmlFor="description">Short Description (for cards)</Label>
-        <Textarea id="description" name="description" defaultValue={event?.description} rows={2} />
+        <Textarea 
+          id="description" 
+          name="description" 
+          defaultValue={event?.description} 
+          key={watchedDescription} // Re-render when value changes programmatically
+          rows={2} />
          {formState.errors?.description && <p className="text-sm text-destructive mt-1">{formState.errors.description[0]}</p>}
       </div>
       <div>
         <Label htmlFor="fullDescription">Full Description (for event page)</Label>
-        <Textarea id="fullDescription" name="fullDescription" defaultValue={event?.fullDescription} rows={6} />
+        <Textarea 
+          id="fullDescription" 
+          name="fullDescription" 
+          defaultValue={event?.fullDescription} 
+          key={watchedFullDescription} // Re-render when value changes programmatically
+          rows={6} />
          {formState.errors?.fullDescription && <p className="text-sm text-destructive mt-1">{formState.errors.fullDescription[0]}</p>}
       </div>
 
