@@ -55,7 +55,7 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
   const [generationError, setGenerationError] = useState<string | null>(null);
 
   // We need to use react-hook-form to manage the description fields for AI population
-  const form = useForm<EventFormValues>({
+  const form = useForm<Omit<EventFormValues, 'date'>>({
     // We don't need a resolver here as the final validation is in the server action
   });
 
@@ -105,13 +105,11 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
               <PopoverTrigger asChild>
                 <Button
                   id="date-popover"
-                  name="date"
                   variant="outline"
                   className={cn(
                     'w-full justify-start text-left font-normal',
                     !date && 'text-muted-foreground'
                   )}
-                  value={date?.toISOString()}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {date && isValid(date) ? format(date, 'PPP') : <span>Pick a date</span>}
@@ -126,6 +124,7 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
                 />
               </PopoverContent>
             </Popover>
+            <input type="hidden" name="date" value={date?.toISOString() ?? ''} />
             {formState.errors?.date && <p className="text-sm text-destructive mt-1">{formState.errors.date[0]}</p>}
          </div>
         <div>
