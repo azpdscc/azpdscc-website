@@ -14,7 +14,7 @@ import { SubmitButton } from './submit-button';
 
 interface TeamMemberFormProps {
   member?: TeamMember;
-  formAction: (prevState: TeamMemberFormState, formData: FormData) => Promise<TeamMemberFormState>;
+  formAction: (payload: FormData) => void;
   formState: TeamMemberFormState;
 }
 

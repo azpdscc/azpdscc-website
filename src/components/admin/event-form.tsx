@@ -20,7 +20,7 @@ import { SubmitButton } from './submit-button';
 
 interface EventFormProps {
   event?: Event;
-  formAction: (prevState: EventFormState, formData: FormData) => Promise<EventFormState>;
+  formAction: (payload: FormData) => void;
   formState: EventFormState;
 }
 
