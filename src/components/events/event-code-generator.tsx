@@ -169,7 +169,7 @@ export function EventCodeGenerator() {
 
   return (
     <div className="min-h-screen p-4 md:p-8">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
             <Sparkles className="mx-auto h-12 w-12 text-primary" strokeWidth={1.5} />
             <h1 className="font-headline text-4xl mt-4">Event Code Generator</h1>
@@ -178,7 +178,7 @@ export function EventCodeGenerator() {
             </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 gap-8">
             <Card>
                 <CardHeader>
                     <CardTitle>1. Enter New Event Details</CardTitle>
@@ -261,7 +261,7 @@ export function EventCodeGenerator() {
                 </CardContent>
             </Card>
 
-            <div className="space-y-8">
+            <div className="space-y-8 mt-8">
                  <Card>
                     <CardHeader>
                         <CardTitle>2. Generated `data.ts` File Content</CardTitle>
