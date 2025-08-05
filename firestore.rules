@@ -1,24 +1,16 @@
-
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Allow public read access to events for website display
+    // WARNING: These rules are temporarily open for development.
+    // See SECURITY.md for instructions on how to secure your app.
     match /events/{eventId} {
       allow read: if true;
-      allow write: if request.auth != null; // Only authenticated users can write
+      allow write: if true; // Insecure: Allows anyone to write. Secure this before production.
     }
 
-    // Allow public read access to team members for the About Us page
     match /teamMembers/{memberId} {
       allow read: if true;
-      allow write: if request.auth != null; // Only authenticated users can write
-    }
-    
-    // Default-deny all other collections
-    match /{document=**} {
-      allow read, write: if false;
+      allow write: if true; // Insecure: Allows anyone to write. Secure this before production.
     }
   }
 }
