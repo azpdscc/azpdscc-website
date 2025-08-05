@@ -11,23 +11,30 @@ import { Shield } from 'lucide-react';
 import { Header } from '@/components/layout/header';
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
+import { Footer } from '@/components/layout/footer';
 
 const CORRECT_PASSWORD = 'azpdscc-admin-2024';
 const AUTH_KEY = 'admin-auth';
 
-
-function AdminFooter() {
-  return (
-     <footer className="bg-card border-t mt-auto">
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} AZPDSCC Admin Panel.</p>
-        </div>
-      </div>
-    </footer>
-  )
+function AdminHeader() {
+    return (
+        <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+            <div className="container flex h-20 items-center justify-between">
+                <div className="flex items-center gap-6">
+                <Logo />
+                <nav className="hidden md:flex items-center gap-6 text-sm">
+                     <Link href="/admin" className="font-bold transition-colors hover:text-primary hover:underline underline-offset-4 text-muted-foreground">Dashboard</Link>
+                     <Link href="/admin/events" className="font-bold transition-colors hover:text-primary hover:underline underline-offset-4 text-muted-foreground">Events</Link>
+                     <Link href="/admin/team" className="font-bold transition-colors hover:text-primary hover:underline underline-offset-4 text-muted-foreground">Team</Link>
+                </nav>
+                </div>
+                 <Button asChild variant="outline">
+                    <Link href="/">View Public Site</Link>
+                </Button>
+            </div>
+        </header>
+    )
 }
-
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -71,43 +78,46 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   if (!isAuthenticated) {
     return (
-      <div className="container mx-auto px-4 py-12 flex items-center justify-center min-h-[calc(100vh-20rem)]">
-        <Card className="w-full max-w-md shadow-2xl">
-          <CardHeader className="text-center">
-            <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit mb-4">
-                <Shield className="h-10 w-10 text-primary" strokeWidth={1.5} />
-            </div>
-            <CardTitle className="font-headline text-2xl">Admin Access Required</CardTitle>
-            <CardDescription>Enter the password to manage site content.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="********"
-                  autoFocus
-                />
-              </div>
-              {error && <p className="text-sm font-medium text-destructive">{error}</p>}
-              <Button type="submit" className="w-full">
-                Unlock Admin
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+      <div className="flex flex-col min-h-screen">
+        <main className="flex-grow flex items-center justify-center">
+            <Card className="w-full max-w-md shadow-2xl">
+            <CardHeader className="text-center">
+                <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit mb-4">
+                    <Shield className="h-10 w-10 text-primary" strokeWidth={1.5} />
+                </div>
+                <CardTitle className="font-headline text-2xl">Admin Access Required</CardTitle>
+                <CardDescription>Enter the password to manage site content.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <form onSubmit={handleLogin} className="space-y-4">
+                <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="********"
+                    autoFocus
+                    />
+                </div>
+                {error && <p className="text-sm font-medium text-destructive">{error}</p>}
+                <Button type="submit" className="w-full">
+                    Unlock Admin
+                </Button>
+                </form>
+            </CardContent>
+            </Card>
+        </main>
       </div>
     );
   }
 
   return (
     <div className="flex flex-col min-h-screen">
-      <main className="flex-1">{children}</main>
-      <AdminFooter />
+      <AdminHeader />
+      <main className="flex-1 py-8">{children}</main>
+      <Footer />
     </div>
   );
 }
