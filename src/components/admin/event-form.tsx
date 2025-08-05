@@ -115,7 +115,7 @@ export function EventForm({ type, event, action, formState }: EventFormProps) {
                         <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
                     </PopoverContent>
                 </Popover>
-                {date && <input type="hidden" name="date" value={format(date, 'MMMM dd, yyyy')} />}
+                {date && <input type="hidden" name="date" value={date.toISOString()} />}
                  <FormErrors errors={formState.errors.date} />
             </div>
             <div className="space-y-2">

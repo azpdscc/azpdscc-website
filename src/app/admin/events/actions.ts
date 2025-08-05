@@ -18,7 +18,10 @@ const generateSlug = (name: string) => {
 
 const eventSchema = z.object({
   name: z.string().min(3, "Event name must be at least 3 characters."),
-  date: z.string().min(1, "Date is required."),
+  date: z.date({
+    required_error: "Date is required.",
+    invalid_type_error: "That's not a valid date!",
+  }),
   time: z.string().regex(/^\d{1,2}:\d{2}\s(AM|PM)\s-\s\d{1,2}:\d{2}\s(AM|PM)$/, "Time must be in 'H:MM AM/PM - H:MM AM/PM' format (e.g., 2:00 PM - 7:00 PM)."),
   locationName: z.string().min(3, "Location name is required."),
   locationAddress: z.string().min(10, "A full address is required."),
@@ -53,9 +56,12 @@ export async function createEventAction(
     formState: EventFormState,
     formData: FormData
 ): Promise<EventFormState> {
+  const dateValue = formData.get('date');
+  const date = dateValue ? new Date(dateValue as string) : null;
+
   const validatedFields = eventSchema.safeParse({
     name: formData.get('name'),
-    date: formData.get('date'),
+    date: date,
     time: formData.get('time'),
     locationName: formData.get('locationName'),
     locationAddress: formData.get('locationAddress'),
@@ -77,6 +83,7 @@ export async function createEventAction(
   const dataWithSlug = { 
     ...validatedFields.data,
     slug,
+    date: format(validatedFields.data.date, 'MMMM dd, yyyy'),
     image: validatedFields.data.image || 'https://placehold.co/600x400.png',
   };
   
@@ -86,6 +93,7 @@ export async function createEventAction(
         throw new Error("Database operation failed.");
     }
   } catch (error) {
+    console.error(error);
     return {
         errors: { _form: ["An unexpected error occurred while creating the event."] },
         success: false,
@@ -104,9 +112,12 @@ export async function updateEventAction(
     formState: EventFormState,
     formData: FormData
 ): Promise<EventFormState> {
+  const dateValue = formData.get('date');
+  const date = dateValue ? new Date(dateValue as string) : null;
+
   const validatedFields = eventSchema.safeParse({
     name: formData.get('name'),
-    date: formData.get('date'),
+    date: date,
     time: formData.get('time'),
     locationName: formData.get('locationName'),
     locationAddress: formData.get('locationAddress'),
@@ -128,6 +139,7 @@ export async function updateEventAction(
   const dataWithSlug = { 
     ...validatedFields.data,
      slug,
+    date: format(validatedFields.data.date, 'MMMM dd, yyyy'),
     image: validatedFields.data.image || 'https://placehold.co/600x400.png',
   };
 
