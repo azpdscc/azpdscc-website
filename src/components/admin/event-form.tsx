@@ -77,7 +77,11 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
         }
     } catch (error) {
         console.error("AI Generation failed:", error);
-        setGenerationError("Failed to generate descriptions. Please try again.");
+        if (error instanceof Error && (error.message.includes('503') || error.message.toLowerCase().includes('overloaded'))) {
+            setGenerationError("The AI model is currently overloaded. Please try again in a few moments.");
+        } else {
+            setGenerationError("Failed to generate descriptions. Please try again.");
+        }
     } finally {
         setIsGenerating(false);
     }
