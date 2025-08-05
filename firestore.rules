@@ -1,16 +1,19 @@
+
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // WARNING: These rules are temporarily open for development.
-    // See SECURITY.md for instructions on how to secure your app.
+    
+    // WARNING: These rules are insecure and are for development purposes only.
+    // They allow anyone to read, write, and delete data in your database.
+    // You MUST secure these rules before deploying your application to production.
+    // See the SECURITY.md file for instructions on how to secure your app.
+
     match /events/{eventId} {
-      allow read: if true;
-      allow write: if true; // Insecure: Allows anyone to write. Secure this before production.
+      allow read, write: if true;
     }
 
     match /teamMembers/{memberId} {
-      allow read: if true;
-      allow write: if true; // Insecure: Allows anyone to write. Secure this before production.
+      allow read, write: if true;
     }
   }
 }

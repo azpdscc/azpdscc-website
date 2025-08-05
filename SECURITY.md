@@ -2,9 +2,7 @@
 
 This document provides instructions for securing your PDSCC website admin panel.
 
-**IMPORTANT:** Your current Firestore security rules are configured to allow anyone to read and write to your database. This was done to enable initial development and event creation, but it is **NOT SECURE** for a live application.
-
-You must implement proper authentication before launching your website to the public.
+**IMPORTANT:** Your current Firestore security rules are configured to allow **anyone** to read and write to your database. This is insecure and was only done for initial development. You **must** implement proper authentication before launching your website to the public.
 
 ## Securing Your Admin Panel
 
@@ -63,7 +61,7 @@ Replace the content of `firestore.rules` with the following:
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow public read access
+    // Allow public read access to everyone
     match /events/{eventId} {
       allow read: if true;
       allow write: if request.auth != null; // ONLY allows logged-in users to write
