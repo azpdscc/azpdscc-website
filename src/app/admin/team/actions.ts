@@ -7,10 +7,33 @@ import { createTeamMember, updateTeamMember, deleteTeamMember } from '@/services
 import type { TeamMember } from '@/lib/types';
 import { z } from 'zod';
 
-type MemberFormData = Omit<TeamMember, 'id'>;
+// This is the shape of the data coming from the form
+const memberFormSchema = z.object({
+  name: z.string().min(3, "Member name is required."),
+  role: z.string().min(3, "Role is required."),
+  bio: z.string().min(10, "Bio must be at least 10 characters long."),
+  image: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
+});
 
-export async function createTeamMemberAction(formData: MemberFormData) {
-  const result = await createTeamMember(formData);
+export async function createTeamMemberAction(formData: FormData) {
+  const validatedFields = memberFormSchema.safeParse({
+    name: formData.get('name'),
+    role: formData.get('role'),
+    bio: formData.get('bio'),
+    image: formData.get('image'),
+  });
+
+  if (!validatedFields.success) {
+    // This part is currently not set up to return errors to the form,
+    // but the validation ensures bad data doesn't get sent to the database.
+    console.error('Form validation failed:', validatedFields.error.flatten().fieldErrors);
+    return; // Stop execution if validation fails
+  }
+
+  const result = await createTeamMember({
+      ...validatedFields.data,
+      image: validatedFields.data.image || 'https://placehold.co/400x400.png', // Fallback to placeholder
+  });
 
   if (result) {
     revalidatePath('/about');
@@ -19,8 +42,23 @@ export async function createTeamMemberAction(formData: MemberFormData) {
   }
 }
 
-export async function updateTeamMemberAction(id: string, formData: MemberFormData) {
-  const result = await updateTeamMember(id, formData);
+export async function updateTeamMemberAction(id: string, formData: FormData) {
+    const validatedFields = memberFormSchema.safeParse({
+        name: formData.get('name'),
+        role: formData.get('role'),
+        bio: formData.get('bio'),
+        image: formData.get('image'),
+    });
+
+    if (!validatedFields.success) {
+        console.error('Form validation failed:', validatedFields.error.flatten().fieldErrors);
+        return;
+    }
+
+  const result = await updateTeamMember(id, {
+      ...validatedFields.data,
+      image: validatedFields.data.image || 'https://placehold.co/400x400.png',
+  });
 
   if (result) {
     revalidatePath('/about');
