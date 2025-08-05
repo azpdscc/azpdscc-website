@@ -39,6 +39,24 @@ export async function generateEventDescriptions(
   return generateEventDescriptionsFlow(input);
 }
 
+const prompt = ai.definePrompt({
+  name: 'generateEventDescriptionPrompt',
+  input: { schema: GenerateEventDescriptionsInputSchema },
+  output: { schema: GenerateEventDescriptionsOutputSchema },
+  prompt: `You are an expert event marketer for a community organization (PDSCC). Your task is to write compelling descriptions for an event based on a simple prompt.
+
+      The tone should be vibrant, welcoming, and community-focused. The descriptions should appeal to the Phoenix Indian community and AZ Desis.
+
+      Prompt: "{{{prompt}}}"
+
+      Generate two descriptions:
+      1.  A short, catchy description for an event listing card (max 150 characters).
+      2.  A full, detailed description for the event's dedicated page (at least 50 words), elaborating on the activities, atmosphere, and what makes the event special.
+
+      Return the output in the requested JSON format.`,
+});
+
+
 // The main Genkit flow
 const generateEventDescriptionsFlow = ai.defineFlow(
   {
@@ -46,28 +64,9 @@ const generateEventDescriptionsFlow = ai.defineFlow(
     inputSchema: GenerateEventDescriptionsInputSchema,
     outputSchema: GenerateEventDescriptionsOutputSchema,
   },
-  async ({ prompt }) => {
+  async (input) => {
     
-    const { output } = await ai.generate({
-      prompt: `You are an expert event marketer for a community organization (PDSCC). Your task is to write compelling descriptions for an event based on a simple prompt.
-
-      The tone should be vibrant, welcoming, and community-focused. The descriptions should appeal to the Phoenix Indian community and AZ Desis.
-
-      Prompt: "${prompt}"
-
-      Generate two descriptions:
-      1.  A short, catchy description for an event listing card (max 150 characters).
-      2.  A full, detailed description for the event's dedicated page (at least 50 words), elaborating on the activities, atmosphere, and what makes the event special.
-
-      Return the output in the requested JSON format.`,
-      output: {
-        format: 'json',
-        schema: GenerateEventDescriptionsOutputSchema,
-      },
-      config: {
-        temperature: 0.7, // Add a bit of creativity
-      },
-    });
+    const { output } = await prompt(input);
 
     if (!output) {
       throw new Error('AI failed to generate descriptions.');
