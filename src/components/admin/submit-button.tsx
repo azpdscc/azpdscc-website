@@ -11,7 +11,7 @@ interface SubmitButtonProps {
   updateText?: string;
 }
 
-export function SubmitButton({ isEditing, createText = "Create", updateText = "Update" }: SubmitButtonProps) {
+export function SubmitButton({ isEditing, createText = "Create Event", updateText = "Update Event" }: SubmitButtonProps) {
   const { pending } = useFormStatus();
 
   return (
