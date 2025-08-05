@@ -1,4 +1,3 @@
-
 import type { MetadataRoute } from 'next';
 import { getEvents } from '@/services/events';
 import { blogPosts } from '@/lib/blog-data';
