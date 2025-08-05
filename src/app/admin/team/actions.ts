@@ -48,6 +48,7 @@ export async function createTeamMemberAction(
     await createTeamMember(validatedFields.data);
     revalidatePath('/about');
     revalidatePath('/admin/team');
+    redirect('/admin/team');
   } catch (err) {
     const message = err instanceof Error ? err.message : 'An unknown error occurred.';
     return {
@@ -56,8 +57,6 @@ export async function createTeamMemberAction(
       message: 'Database error. Failed to create member.',
     };
   }
-
-  redirect('/admin/team');
 }
 
 export async function updateTeamMemberAction(
@@ -84,6 +83,7 @@ export async function updateTeamMemberAction(
     await updateTeamMember(id, validatedFields.data);
     revalidatePath('/about');
     revalidatePath('/admin/team');
+    redirect('/admin/team');
   } catch (err) {
     const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {
@@ -92,8 +92,6 @@ export async function updateTeamMemberAction(
       message: 'Database error. Failed to update member.',
     };
   }
-
-  redirect('/admin/team');
 }
 
 

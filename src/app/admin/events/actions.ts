@@ -95,6 +95,7 @@ export async function createEventAction(
     revalidatePath('/events');
     revalidatePath('/admin/events');
     revalidatePath('/');
+    redirect('/admin/events');
     
   } catch (err) {
     console.error(err);
@@ -107,8 +108,6 @@ export async function createEventAction(
       message: `An unexpected error occurred while creating the event: ${message}`,
     };
   }
-
-  redirect('/admin/events');
 }
 
 
@@ -158,6 +157,7 @@ export async function updateEventAction(
     revalidatePath('/events');
     revalidatePath(`/events/${slug}`);
     revalidatePath('/admin/events');
+    redirect('/admin/events');
 
   } catch (err) {
      console.error(err);
@@ -170,8 +170,6 @@ export async function updateEventAction(
       message: `An unexpected error occurred while updating the event: ${message}`,
     };
   }
-
-  redirect('/admin/events');
 }
 
 export async function deleteEventAction(id: string) {

@@ -5,9 +5,7 @@ import { useState } from 'react';
 import type { Event } from '@/lib/types';
 import type { EventFormState } from '@/app/admin/events/actions';
 import Link from 'next/link';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { format, parse, isValid } from 'date-fns';
+import { parse, isValid } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { generateEventDescriptions } from '@/ai/flows/generate-event-descriptions-flow';
 
@@ -21,6 +19,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CalendarIcon, AlertCircle, Sparkles, Loader2 } from 'lucide-react';
 import { SubmitButton } from './submit-button';
+import { format } from 'date-fns';
 
 interface EventFormProps {
   event?: Event;
@@ -72,6 +71,7 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
 
   return (
     <form action={formAction} className="space-y-6">
+      <input type="hidden" name="date" value={date?.toISOString() ?? ''} />
       <div>
         <Label htmlFor="name">Event Name</Label>
         <Input id="name" name="name" defaultValue={event?.name} />
@@ -105,7 +105,6 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
                 />
               </PopoverContent>
             </Popover>
-            <input type="hidden" name="date" value={date?.toISOString() ?? ''} />
             {formState.errors?.date && <p className="text-sm text-destructive mt-1">{formState.errors.date[0]}</p>}
          </div>
         <div>
