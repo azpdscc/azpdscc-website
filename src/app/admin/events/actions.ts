@@ -88,10 +88,7 @@ export async function createEventAction(
     if (!newEventId) {
       throw new Error('Database operation failed to return an ID.');
     }
-    revalidatePath('/events');
-    revalidatePath('/admin/events');
-    revalidatePath('/');
-    redirect('/admin/events');
+    
   } catch (err) {
     console.error(err); // Log the actual error
     const message = err instanceof Error ? err.message : 'An unknown error occurred.';
@@ -103,6 +100,11 @@ export async function createEventAction(
       message: `An unexpected error occurred while creating the event: ${message}`,
     };
   }
+
+  revalidatePath('/events');
+  revalidatePath('/admin/events');
+  revalidatePath('/');
+  redirect('/admin/events');
 }
 
 
@@ -148,10 +150,7 @@ export async function updateEventAction(
     if (!success) {
       throw new Error('Database update failed.');
     }
-    revalidatePath('/events');
-    revalidatePath(`/events/${slug}`);
-    revalidatePath('/admin/events');
-    redirect('/admin/events');
+    
   } catch (err) {
      console.error(err); // Log the actual error
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
@@ -163,6 +162,11 @@ export async function updateEventAction(
       message: `An unexpected error occurred while updating the event: ${message}`,
     };
   }
+
+  revalidatePath('/events');
+  revalidatePath(`/events/${createSlug(formData.get('name') as string)}`);
+  revalidatePath('/admin/events');
+  redirect('/admin/events');
 }
 
 export async function deleteEventAction(id: string) {

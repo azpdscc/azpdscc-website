@@ -25,14 +25,14 @@ import { SubmitButton } from './submit-button';
 
 // Schema for the form fields
 const eventFormSchema = z.object({
-  name: z.string().min(5, "Name must be at least 5 characters"),
+  name: z.string().min(1, "Name is required"),
   date: z.date({ required_error: 'Please select a date.'}),
-  time: z.string().regex(/^\d{1,2}:\d{2}\s(AM|PM)\s-\s\d{1,2}:\d{2}\s(AM|PM)$/, "Time must be in 'H:MM AM/PM - H:MM AM/PM' format"),
-  locationName: z.string().min(3, "Location name is required"),
-  locationAddress: z.string().min(10, "Full address is required"),
+  time: z.string().min(1, "Time is required"),
+  locationName: z.string().min(1, "Location name is required"),
+  locationAddress: z.string().min(1, "Address is required"),
   image: z.string().url("Must be a valid URL"),
-  description: z.string().min(20, "Short description must be at least 20 characters").max(150, "Short description cannot exceed 150 characters"),
-  fullDescription: z.string().min(50, "Full description must be at least 50 words"),
+  description: z.string().min(1, "Short description is required").max(150, "Short description cannot exceed 150 characters"),
+  fullDescription: z.string().min(1, "Full description is required"),
   category: z.enum(['Cultural', 'Food', 'Music', 'Dance']),
 });
 
@@ -100,11 +100,12 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
       {/* Date and Time */}
       <div className="grid md:grid-cols-2 gap-4">
          <div>
-            <Label htmlFor="date">Date</Label>
+            <Label htmlFor="date-popover">Date</Label>
             <Input type="hidden" id="date" name="date" value={date ? date.toISOString() : ''} />
             <Popover>
               <PopoverTrigger asChild>
                 <Button
+                  id="date-popover"
                   variant="outline"
                   className={cn(
                     'w-full justify-start text-left font-normal',
@@ -199,7 +200,7 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
           id="description" 
           name="description" 
           defaultValue={event?.description} 
-          key={watchedDescription} // Re-render when value changes programmatically
+          {...form.register('description')}
           rows={2} />
          {formState.errors?.description && <p className="text-sm text-destructive mt-1">{formState.errors.description[0]}</p>}
       </div>
@@ -209,7 +210,7 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
           id="fullDescription" 
           name="fullDescription" 
           defaultValue={event?.fullDescription} 
-          key={watchedFullDescription} // Re-render when value changes programmatically
+          {...form.register('fullDescription')}
           rows={6} />
          {formState.errors?.fullDescription && <p className="text-sm text-destructive mt-1">{formState.errors.fullDescription[0]}</p>}
       </div>
@@ -218,7 +219,7 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
         <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>Error</AlertTitle>
-            <AlertDescription>{formState.errors._form[0]}</AlertDescription>
+            <AlertDescription>{formState.errors._form.join(' ')}</AlertDescription>
         </Alert>
       )}
 
