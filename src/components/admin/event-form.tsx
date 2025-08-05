@@ -25,7 +25,7 @@ import { SubmitButton } from './submit-button';
 
 const eventFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  date: z.string().min(1, "Date is required"),
+  date: z.date({ required_error: 'Please select a date.'}),
   time: z.string().min(1, "Time is required"),
   locationName: z.string().min(1, "Location name is required"),
   locationAddress: z.string().min(1, "Address is required"),
@@ -54,7 +54,7 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
     resolver: zodResolver(eventFormSchema),
     defaultValues: {
       name: event?.name || '',
-      date: event?.date ? format(new Date(event.date), 'yyyy-MM-dd') : '',
+      date: event?.date ? new Date(event.date) : undefined,
       time: event?.time || '',
       locationName: event?.locationName || '',
       locationAddress: event?.locationAddress || '',
@@ -125,7 +125,7 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
                           )}
                         >
                           {field.value ? (
-                            format(new Date(field.value), "PPP")
+                            format(field.value, "PPP")
                           ) : (
                             <span>Pick a date</span>
                           )}
@@ -136,8 +136,8 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
                     <PopoverContent className="w-auto p-0" align="start">
                        <Calendar
                         mode="single"
-                        selected={field.value ? new Date(field.value) : undefined}
-                        onSelect={(date) => field.onChange(date ? format(date, 'yyyy-MM-dd') : '')}
+                        selected={field.value}
+                        onSelect={field.onChange}
                         initialFocus
                       />
                     </PopoverContent>
