@@ -75,15 +75,15 @@ export async function createEventAction(
     };
   }
   
-  const slug = createSlug(validatedFields.data.name);
-
-  const eventData = {
-    ...validatedFields.data,
-    slug,
-    date: format(validatedFields.data.date, 'MMMM dd, yyyy')
-  };
-
   try {
+    const slug = createSlug(validatedFields.data.name);
+
+    const eventData = {
+      ...validatedFields.data,
+      slug,
+      date: format(validatedFields.data.date, 'MMMM dd, yyyy')
+    };
+
     const newEventId = await createEvent(eventData);
     if (!newEventId) {
       throw new Error('Database operation failed to return an ID.');
@@ -93,13 +93,14 @@ export async function createEventAction(
     revalidatePath('/');
     redirect('/admin/events');
   } catch (err) {
+    console.error(err); // Log the actual error
     const message = err instanceof Error ? err.message : 'An unknown error occurred.';
     return {
       errors: {
         _form: ['An unexpected error occurred while creating the event.', message],
       },
       success: false,
-      message: 'An unexpected error occurred while creating the event.',
+      message: `An unexpected error occurred while creating the event: ${message}`,
     };
   }
 }
@@ -134,31 +135,32 @@ export async function updateEventAction(
     };
   }
 
-  const slug = createSlug(validatedFields.data.name);
-
-  const eventData = {
-    ...validatedFields.data,
-    slug,
-    date: format(validatedFields.data.date, 'MMMM dd, yyyy')
-  };
-
   try {
+    const slug = createSlug(validatedFields.data.name);
+
+    const eventData = {
+      ...validatedFields.data,
+      slug,
+      date: format(validatedFields.data.date, 'MMMM dd, yyyy')
+    };
+
     const success = await updateEvent(id, eventData);
     if (!success) {
       throw new Error('Database update failed.');
     }
     revalidatePath('/events');
-    revalidatePath(`/events/${validatedFields.data.slug}`);
+    revalidatePath(`/events/${slug}`);
     revalidatePath('/admin/events');
     redirect('/admin/events');
   } catch (err) {
+     console.error(err); // Log the actual error
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {
       errors: {
         _form: ['An unexpected error occurred while updating the event.', message],
       },
       success: false,
-      message: 'An unexpected error occurred while updating the event.',
+      message: `An unexpected error occurred while updating the event: ${message}`,
     };
   }
 }
