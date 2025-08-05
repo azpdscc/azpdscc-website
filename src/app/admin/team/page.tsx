@@ -1,34 +1,34 @@
 import Link from 'next/link';
-import { getEvents } from '@/services/events';
+import { getTeamMembers } from '@/services/team';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
 import { PlusCircle, Edit, Trash2, LayoutDashboard } from 'lucide-react';
-import { DeleteEventButton } from '@/components/admin/delete-buttons';
+import { DeleteTeamMemberButton } from '@/components/admin/delete-buttons';
+import Image from 'next/image';
 
-export default async function ManageEventsPage() {
-    const events = await getEvents();
+export default async function ManageTeamPage() {
+    const teamMembers = await getTeamMembers();
 
     return (
         <div className="container mx-auto p-4 md:p-8">
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
-                        <CardTitle className="font-headline text-2xl">Manage Events</CardTitle>
-                        <CardDescription>A list of all events in the system.</CardDescription>
+                        <CardTitle className="font-headline text-2xl">Manage Team Members</CardTitle>
+                        <CardDescription>A list of all team members.</CardDescription>
                     </div>
                     <div className="flex items-center gap-2">
-                         <Button asChild variant="outline">
+                        <Button asChild variant="outline">
                             <Link href="/admin">
                                 <LayoutDashboard className="mr-2 h-4 w-4" />
                                 Admin Dashboard
                             </Link>
                         </Button>
                         <Button asChild>
-                            <Link href="/admin/events/add">
+                            <Link href="/admin/team/add">
                                 <PlusCircle className="mr-2 h-4 w-4" />
-                                Add Event
+                                Add Member
                             </Link>
                         </Button>
                     </div>
@@ -37,26 +37,28 @@ export default async function ManageEventsPage() {
                     <Table>
                         <TableHeader>
                             <TableRow>
+                                <TableHead>Image</TableHead>
                                 <TableHead>Name</TableHead>
-                                <TableHead>Date</TableHead>
-                                <TableHead>Category</TableHead>
+                                <TableHead>Role</TableHead>
                                 <TableHead className="text-right">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {events.map((event) => (
-                                <TableRow key={event.id}>
-                                    <TableCell className="font-medium">{event.name}</TableCell>
-                                    <TableCell>{event.date}</TableCell>
-                                    <TableCell><Badge variant="secondary">{event.category}</Badge></TableCell>
+                            {teamMembers.map((member) => (
+                                <TableRow key={member.id}>
+                                    <TableCell>
+                                        <Image src={member.image} alt={member.name} width={40} height={40} className="rounded-full" />
+                                    </TableCell>
+                                    <TableCell className="font-medium">{member.name}</TableCell>
+                                    <TableCell>{member.role}</TableCell>
                                     <TableCell className="text-right">
                                        <Button asChild variant="ghost" size="icon">
-                                            <Link href={`/admin/events/edit/${event.id}`}>
+                                            <Link href={`/admin/team/edit/${member.id}`}>
                                                 <Edit className="h-4 w-4" />
                                                 <span className="sr-only">Edit</span>
                                             </Link>
                                        </Button>
-                                       <DeleteEventButton id={event.id} />
+                                       <DeleteTeamMemberButton id={member.id} />
                                     </TableCell>
                                 </TableRow>
                             ))}
