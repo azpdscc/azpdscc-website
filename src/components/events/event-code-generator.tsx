@@ -6,6 +6,7 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { generateNewEventCode } from '@/ai/flows/generate-new-event-code-flow';
+import { generateEventDescriptions } from '@/ai/flows/generate-event-descriptions-flow';
 import { getEvents } from '@/services/events';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -47,6 +48,7 @@ export function EventCodeGenerator() {
   const [error, setError] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [generatedContent, setGeneratedContent] = useState({ fileContent: '', socialPosts: '' });
   const [isCopied, setIsCopied] = useState({ file: false, social: false });
   const { toast } = useToast();
@@ -61,10 +63,37 @@ export function EventCodeGenerator() {
         locationName: 'Goodyear Ballpark',
         locationAddress: '1933 S Ballpark Way, Goodyear, AZ 85338',
         category: 'Cultural',
-        description: 'Celebrate the festival of lights with our community! Enjoy spectacular fireworks, delicious food, and vibrant cultural performances under the stars.',
-        fullDescription: 'Join PDSCC for our grandest event of the year, the Diwali Festival of Lights! Immerse yourself in the joyous atmosphere with mesmerizing performances, an array of authentic Indian cuisine from local vendors, and a breathtaking fireworks display. This family-friendly event is a wonderful opportunity to experience the rich traditions of Diwali. Let\'s celebrate light, hope, and the triumph of good over evil together as a community.'
+        description: '',
+        fullDescription: '',
     },
   });
+  
+  const handleGenerateDescriptions = async () => {
+    const eventName = form.getValues('name');
+    if (!eventName) {
+        form.setError('name', { type: 'manual', message: 'Please enter an event name first.'});
+        return;
+    }
+
+    setIsGenerating(true);
+    try {
+        const result = await generateEventDescriptions({ prompt: eventName });
+        if (result) {
+            form.setValue('description', result.description, { shouldValidate: true });
+            form.setValue('fullDescription', result.fullDescription, { shouldValidate: true });
+        }
+    } catch (error) {
+        console.error("Failed to generate descriptions:", error);
+         toast({
+            variant: 'destructive',
+            title: 'AI Error',
+            description: 'Failed to generate descriptions. Please try again.',
+        });
+    } finally {
+        setIsGenerating(false);
+    }
+  };
+
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -245,16 +274,30 @@ export function EventCodeGenerator() {
                                     <FormMessage />
                                 </FormItem>
                             )} />
-                             <FormField name="description" control={form.control} render={({ field }) => (
-                                <FormItem><FormLabel>Short Description</FormLabel><FormControl><Textarea rows={2} {...field} /></FormControl><FormMessage /></FormItem>
-                            )} />
-                             <FormField name="fullDescription" control={form.control} render={({ field }) => (
-                                <FormItem><FormLabel>Full Description</FormLabel><FormControl><Textarea rows={5} {...field} /></FormControl><FormMessage /></FormItem>
-                            )} />
+                            
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <FormLabel>Descriptions</FormLabel>
+                                    <Button type="button" variant="secondary" size="sm" onClick={handleGenerateDescriptions} disabled={isGenerating}>
+                                        {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                                        Generate with AI
+                                    </Button>
+                                </div>
+                                <FormField name="description" control={form.control} render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="font-normal text-muted-foreground">Short Description</FormLabel>
+                                    <FormControl><Textarea rows={2} {...field} /></FormControl><FormMessage /></FormItem>
+                                )}/>
+                                <FormField name="fullDescription" control={form.control} render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="font-normal text-muted-foreground">Full Description</FormLabel>
+                                        <FormControl><Textarea rows={5} {...field} /></FormControl><FormMessage /></FormItem>
+                                )}/>
+                            </div>
 
                             <Button type="submit" disabled={isLoading}>
                                 {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
-                                Generate Content
+                                Generate Final Code
                             </Button>
                         </form>
                     </Form>

@@ -14,9 +14,9 @@
     --primary: 6 79% 57%;
     --primary-darker: 6 70% 50%;
     --primary-foreground: 0 0% 100%;
-    /* Accent: #D4AF37 */
-    --accent: 45 66% 52%;
-    --accent-foreground: 240 10% 3.9%;
+    /* Accent: Use a shade of primary red */
+    --accent: 6 79% 57%;
+    --accent-foreground: 0 0% 100%;
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 0 0% 96.1%;
@@ -48,7 +48,7 @@
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
-    --accent: 45 66% 52%;
+    --accent: 6 79% 57%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
