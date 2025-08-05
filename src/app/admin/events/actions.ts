@@ -24,7 +24,17 @@ export type EventFormState = {
   message: string;
 };
 
-// Simplified validation
+const createSlug = (name: string) => {
+    return name
+        .toLowerCase()
+        .replace(/\s+/g, '-') // Replace spaces with -
+        .replace(/[^\w-]+/g, '') // Remove all non-word chars
+        .replace(/--+/g, '-') // Replace multiple - with single -
+        .replace(/^-+/, '') // Trim - from start of text
+        .replace(/-+$/, ''); // Trim - from end of text
+}
+
+// Zod schema for validating form data
 const eventSchema = z.object({
   name: z.string().min(1, "Name is required"),
   date: z.date({ required_error: 'Please select a date.'}),
@@ -37,21 +47,13 @@ const eventSchema = z.object({
   category: z.enum(['Cultural', 'Food', 'Music', 'Dance']),
 });
 
-const createSlug = (name: string) => {
-    return name
-        .toLowerCase()
-        .replace(/\s+/g, '-') // Replace spaces with -
-        .replace(/[^\w-]+/g, '') // Remove all non-word chars
-        .replace(/--+/g, '-') // Replace multiple - with single -
-        .replace(/^-+/, '') // Trim - from start of text
-        .replace(/-+$/, ''); // Trim - from end of text
-}
 
 export async function createEventAction(
   prevState: EventFormState,
   formData: FormData
 ): Promise<EventFormState> {
   
+  // Convert date from string to Date object for validation
   const dateEntry = formData.get('date');
   const dateObject = typeof dateEntry === 'string' && dateEntry ? new Date(dateEntry) : null;
 
@@ -78,6 +80,7 @@ export async function createEventAction(
   try {
     const slug = createSlug(validatedFields.data.name);
 
+    // Format the validated date object into a string for Firestore
     const eventData = {
       ...validatedFields.data,
       slug,

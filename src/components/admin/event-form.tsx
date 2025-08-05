@@ -5,7 +5,6 @@ import { useState } from 'react';
 import type { Event } from '@/lib/types';
 import type { EventFormState } from '@/app/admin/events/actions';
 import Link from 'next/link';
-import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { format, parse, isValid } from 'date-fns';
@@ -23,21 +22,6 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CalendarIcon, AlertCircle, Sparkles, Loader2 } from 'lucide-react';
 import { SubmitButton } from './submit-button';
 
-// Schema for the form fields
-const eventFormSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  date: z.date({ required_error: 'Please select a date.'}),
-  time: z.string().min(1, "Time is required"),
-  locationName: z.string().min(1, "Location name is required"),
-  locationAddress: z.string().min(1, "Address is required"),
-  image: z.string().url("Must be a valid URL"),
-  description: z.string().min(1, "Short description is required").max(150, "Short description cannot exceed 150 characters"),
-  fullDescription: z.string().min(1, "Full description is required"),
-  category: z.enum(['Cultural', 'Food', 'Music', 'Dance']),
-});
-
-type EventFormValues = z.infer<typeof eventFormSchema>;
-
 interface EventFormProps {
   event?: Event;
   formAction: (payload: FormData) => void;
@@ -54,10 +38,10 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationError, setGenerationError] = useState<string | null>(null);
 
-  // We need to use react-hook-form to manage the description fields for AI population
-  const form = useForm<Omit<EventFormValues, 'date'>>({
-    // We don't need a resolver here as the final validation is in the server action
-  });
+  // Use simple state for AI-populated fields to avoid complexity with react-hook-form
+  const [description, setDescription] = useState(event?.description || '');
+  const [fullDescription, setFullDescription] = useState(event?.fullDescription || '');
+
 
   const handleGenerateDescriptions = async () => {
     if (!aiPrompt) {
@@ -69,8 +53,8 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
     try {
         const result = await generateEventDescriptions({ prompt: aiPrompt });
         if (result.description && result.fullDescription) {
-            form.setValue('description', result.description);
-            form.setValue('fullDescription', result.fullDescription);
+            setDescription(result.description);
+            setFullDescription(result.fullDescription);
         } else {
             throw new Error("Received empty descriptions from AI.");
         }
@@ -85,9 +69,6 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
         setIsGenerating(false);
     }
   };
-
-  const watchedDescription = useWatch({ control: form.control, name: 'description' });
-  const watchedFullDescription = useWatch({ control: form.control, name: 'fullDescription' });
 
   return (
     <form action={formAction} className="space-y-6">
@@ -198,9 +179,9 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
         <Label htmlFor="description">Short Description (for cards)</Label>
         <Textarea 
           id="description" 
-          name="description" 
-          defaultValue={event?.description} 
-          {...form.register('description')}
+          name="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
           rows={2} />
          {formState.errors?.description && <p className="text-sm text-destructive mt-1">{formState.errors.description[0]}</p>}
       </div>
@@ -209,8 +190,8 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
         <Textarea 
           id="fullDescription" 
           name="fullDescription" 
-          defaultValue={event?.fullDescription} 
-          {...form.register('fullDescription')}
+          value={fullDescription}
+          onChange={(e) => setFullDescription(e.target.value)}
           rows={6} />
          {formState.errors?.fullDescription && <p className="text-sm text-destructive mt-1">{formState.errors.fullDescription[0]}</p>}
       </div>
