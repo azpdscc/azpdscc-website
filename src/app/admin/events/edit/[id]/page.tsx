@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useFormState } from 'react-dom';
+import { useActionState } from 'react';
 import { getEventById } from '@/services/events';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,7 +17,7 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
 
   const initialState: EventFormState = { errors: {}, success: false, message: '' };
   const updateEventWithId = updateEventAction.bind(null, id);
-  const [formState, action] = useFormState(updateEventWithId, initialState);
+  const [formState, action] = useActionState(updateEventWithId, initialState);
 
   useEffect(() => {
     async function fetchEvent() {
