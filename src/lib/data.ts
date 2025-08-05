@@ -5,4 +5,4 @@ import type { Event, TeamMember } from './types';
 export const events: Event[] = [];
 
 // Team member data is now fetched from Firestore. This file can be removed or kept for type reference.
-export const teamMembers: Omit<TeamMember, 'id'>[] = [];
+export const teamMembers: TeamMember[] = [];

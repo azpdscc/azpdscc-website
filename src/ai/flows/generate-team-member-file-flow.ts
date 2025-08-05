@@ -9,7 +9,8 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { events, teamMembers } from '@/lib/data';
+import { getEvents } from '@/services/events';
+import { getTeamMembers } from '@/services/team';
 import type { TeamMember } from '@/lib/types';
 
 const GenerateTeamMemberFileInputSchema = z.object({
@@ -24,12 +25,15 @@ const FileContentSchema = z.object({
 });
 
 // Helper function to manually generate the file content as a fallback
-const generateFileContentManually = (newMember: TeamMember): string => {
-  const highestId = teamMembers.reduce((maxId, member) => Math.max(member.id, maxId), 0);
-  const newMemberWithId = { ...newMember, id: highestId + 1 };
-
-  // Add the new member to the end of the array
-  const updatedTeamMembers = [...teamMembers, newMemberWithId];
+const generateFileContentManually = async (newMember: Omit<TeamMember, 'id'>): Promise<string> => {
+  const teamMembers = await getTeamMembers();
+  const events = await getEvents();
+  
+  // Firestore IDs are strings, so we can't just find the max number.
+  // We'll add it without an ID and let the service handle it, but for a pure file-based
+  // approach, you'd need a different strategy. For now, we'll just log it.
+  console.log("Adding new member manually:", newMember);
+  const updatedTeamMembers = [...teamMembers, { ...newMember, id: 'temp-id' }];
   
   const eventsString = JSON.stringify(events, null, 2)
     .replace(/"([^"]+)":/g, '$1:');
@@ -56,10 +60,10 @@ export async function generateTeamMemberFile(
     }
     // If AI fails or returns empty content, use the manual fallback
     console.warn("AI generation failed or returned empty. Using manual fallback.");
-    return generateFileContentManually(input.newMember);
+    return await generateFileContentManually(input.newMember);
   } catch (error) {
     console.error("Error in generateTeamMemberFile flow, switching to manual fallback:", error);
-    return generateFileContentManually(input.newMember);
+    return await generateFileContentManually(input.newMember);
   }
 }
 
@@ -72,8 +76,8 @@ const generateTeamMemberFileFlow = ai.defineFlow(
   async (input) => {
     // We pass the full data to the prompt context to ensure it has everything.
     const fullData = {
-      existingEvents: events,
-      existingTeamMembers: teamMembers,
+      existingEvents: await getEvents(),
+      existingTeamMembers: await getTeamMembers(),
       newMember: input.newMember,
     };
 
@@ -84,7 +88,7 @@ const generateTeamMemberFileFlow = ai.defineFlow(
         Your goal is to add the new team member to the 'teamMembers' array and generate the complete content for the TypeScript file.
 
         - The new member should be added to the END of the 'teamMembers' array.
-        - The 'id' of the new member must be unique. Find the highest existing 'id' in the 'teamMembers' array and add 1 to it.
+        - You must generate a new unique string ID for the new member. It should not match any existing ID.
         - Ensure the final output is a single, valid TypeScript file string.
         - Do not include any explanations or markdown formatting. Only output the raw file content.
         - Preserve the 'events' export and all its existing data.
