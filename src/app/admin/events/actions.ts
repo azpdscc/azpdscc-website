@@ -37,12 +37,13 @@ const createSlug = (name: string) => {
 // Zod schema for validating form data
 const eventSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  date: z.date({ required_error: 'Please select a date.'}),
+  // Use z.coerce.date() to automatically convert the string from FormData into a Date object
+  date: z.coerce.date({ required_error: 'Please select a date.'}),
   time: z.string().min(1, "Time is required"),
   locationName: z.string().min(1, "Location name is required"),
   locationAddress: z.string().min(1, "Address is required"),
   image: z.string().url("Must be a valid URL"),
-  description: z.string().min(1, "Short description is required").max(150, "Short description cannot exceed 150 characters"),
+  description: z.string().min(1, "Short description is required"),
   fullDescription: z.string().min(1, "Full description is required"),
   category: z.enum(['Cultural', 'Food', 'Music', 'Dance']),
 });
@@ -53,13 +54,9 @@ export async function createEventAction(
   formData: FormData
 ): Promise<EventFormState> {
   
-  // Convert date from string to Date object for validation
-  const dateEntry = formData.get('date');
-  const dateObject = typeof dateEntry === 'string' && dateEntry ? new Date(dateEntry) : null;
-
   const validatedFields = eventSchema.safeParse({
     name: formData.get('name'),
-    date: dateObject,
+    date: formData.get('date'), // Pass the string directly to be coerced
     time: formData.get('time'),
     locationName: formData.get('locationName'),
     locationAddress: formData.get('locationAddress'),
@@ -80,7 +77,7 @@ export async function createEventAction(
   try {
     const slug = createSlug(validatedFields.data.name);
 
-    // Format the validated date object into a string for Firestore
+    // Format the validated Date object into a string for Firestore
     const eventData = {
       ...validatedFields.data,
       slug,
@@ -117,12 +114,9 @@ export async function updateEventAction(
   formData: FormData
 ): Promise<EventFormState> {
 
-  const dateEntry = formData.get('date');
-  const dateObject = typeof dateEntry === 'string' && dateEntry ? new Date(dateEntry) : null;
-
   const validatedFields = eventSchema.safeParse({
     name: formData.get('name'),
-    date: dateObject,
+    date: formData.get('date'), // Pass the string directly to be coerced
     time: formData.get('time'),
     locationName: formData.get('locationName'),
     locationAddress: formData.get('locationAddress'),
@@ -143,6 +137,7 @@ export async function updateEventAction(
   try {
     const slug = createSlug(validatedFields.data.name);
 
+    // Format the validated Date object into a string for Firestore
     const eventData = {
       ...validatedFields.data,
       slug,

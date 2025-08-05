@@ -29,6 +29,7 @@ interface EventFormProps {
 
 export function EventForm({ event, formAction, formState }: EventFormProps) {
   const isEditing = !!event;
+  // Initialize date state from event data if it exists
   const [date, setDate] = useState<Date | undefined>(
     event?.date ? parse(event.date, 'MMMM dd, yyyy', new Date()) : undefined
   );
@@ -37,7 +38,7 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationError, setGenerationError] = useState<string | null>(null);
 
-  // Use simple state for AI-populated fields to avoid complexity with react-hook-form
+  // Use simple state for AI-populated fields
   const [description, setDescription] = useState(event?.description || '');
   const [fullDescription, setFullDescription] = useState(event?.fullDescription || '');
 
@@ -71,7 +72,9 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
 
   return (
     <form action={formAction} className="space-y-6">
+      {/* Hidden input to correctly submit the date to the server action */}
       <input type="hidden" name="date" value={date?.toISOString() ?? ''} />
+      
       <div>
         <Label htmlFor="name">Event Name</Label>
         <Input id="name" name="name" defaultValue={event?.name} />
