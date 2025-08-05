@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import { Instagram, Twitter, Facebook, Mail, Youtube, Lock } from 'lucide-react';
