@@ -101,16 +101,17 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
       <div className="grid md:grid-cols-2 gap-4">
          <div>
             <Label htmlFor="date-popover">Date</Label>
-            <Input type="hidden" id="date" name="date" value={date ? date.toISOString() : ''} />
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   id="date-popover"
+                  name="date"
                   variant="outline"
                   className={cn(
                     'w-full justify-start text-left font-normal',
                     !date && 'text-muted-foreground'
                   )}
+                  value={date?.toISOString()}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {date && isValid(date) ? format(date, 'PPP') : <span>Pick a date</span>}

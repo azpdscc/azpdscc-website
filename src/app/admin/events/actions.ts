@@ -52,8 +52,8 @@ export async function createEventAction(
   formData: FormData
 ): Promise<EventFormState> {
   
-  const dateEntry = formData.get('date');
-  const dateObject = dateEntry ? new Date(dateEntry.toString()) : null;
+  const dateEntry = formData.get('date') as string | null;
+  const dateObject = dateEntry ? new Date(dateEntry) : null;
 
   const validatedFields = eventSchema.safeParse({
     name: formData.get('name'),
@@ -115,8 +115,8 @@ export async function updateEventAction(
   formData: FormData
 ): Promise<EventFormState> {
 
-  const dateEntry = formData.get('date');
-  const dateObject = dateEntry ? new Date(dateEntry.toString()) : null;
+  const dateEntry = formData.get('date') as string | null;
+  const dateObject = dateEntry ? new Date(dateEntry) : null;
 
   const validatedFields = eventSchema.safeParse({
     name: formData.get('name'),
