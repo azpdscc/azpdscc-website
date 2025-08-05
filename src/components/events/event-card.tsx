@@ -33,7 +33,7 @@ export function EventCard({ event }: EventCardProps) {
           {isPast && (
              <Badge variant="secondary" className="absolute top-2 left-2">Past Event</Badge>
           )}
-           <Badge className="absolute top-2 right-2 bg-accent text-accent-foreground">{event.category}</Badge>
+           <Badge className="absolute top-2 right-2">{event.category}</Badge>
         </div>
       </CardHeader>
       <CardContent className="p-4 flex-grow">

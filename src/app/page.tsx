@@ -52,7 +52,7 @@ export default async function Home() {
             <Button asChild size="lg" variant="secondary">
               <Link href="/vendors">Become a Vendor</Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="!text-primary-foreground border-primary-foreground hover:bg-primary-foreground/10">
+            <Button asChild size="lg" variant="outline">
               <Link href="/donate">Donate/Volunteer</Link>
             </Button>
           </div>
