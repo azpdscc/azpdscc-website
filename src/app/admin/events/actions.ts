@@ -24,18 +24,16 @@ export type EventFormState = {
   message: string;
 };
 
-// Use a consistent, simple time format validation.
-const timeRegex = /^\d{1,2}:\d{2}\s(AM|PM)\s-\s\d{1,2}:\d{2}\s(AM|PM)$/;
-
+// Simplified validation
 const eventSchema = z.object({
-  name: z.string().min(5, "Name must be at least 5 characters"),
+  name: z.string().min(1, "Name is required"),
   date: z.date({ required_error: 'Please select a date.'}),
-  time: z.string().regex(timeRegex, "Time must be in 'H:MM AM/PM - H:MM AM/PM' format"),
-  locationName: z.string().min(3, "Location name is required"),
-  locationAddress: z.string().min(10, "Full address is required"),
+  time: z.string().min(1, "Time is required"),
+  locationName: z.string().min(1, "Location name is required"),
+  locationAddress: z.string().min(1, "Address is required"),
   image: z.string().url("Must be a valid URL"),
-  description: z.string().min(20, "Short description must be at least 20 characters").max(150, "Short description cannot exceed 150 characters"),
-  fullDescription: z.string().min(50, "Full description must be at least 50 words"),
+  description: z.string().min(1, "Short description is required").max(150, "Short description cannot exceed 150 characters"),
+  fullDescription: z.string().min(1, "Full description is required"),
   category: z.enum(['Cultural', 'Food', 'Music', 'Dance']),
 });
 
@@ -93,6 +91,7 @@ export async function createEventAction(
     revalidatePath('/events');
     revalidatePath('/admin/events');
     revalidatePath('/');
+    redirect('/admin/events');
   } catch (err) {
     return {
       errors: {
@@ -102,7 +101,6 @@ export async function createEventAction(
       message: 'An unexpected error occurred while creating the event.',
     };
   }
-  redirect('/admin/events');
 }
 
 
@@ -151,6 +149,7 @@ export async function updateEventAction(
     revalidatePath('/events');
     revalidatePath(`/events/${validatedFields.data.slug}`);
     revalidatePath('/admin/events');
+    redirect('/admin/events');
   } catch (err) {
      return {
       errors: {
@@ -160,7 +159,6 @@ export async function updateEventAction(
       message: 'An unexpected error occurred while updating the event.',
     };
   }
-   redirect('/admin/events');
 }
 
 export async function deleteEventAction(id: string) {

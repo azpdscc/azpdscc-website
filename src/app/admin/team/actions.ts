@@ -19,9 +19,9 @@ export type TeamMemberFormState = {
 };
 
 const teamMemberSchema = z.object({
-  name: z.string().min(2, "Name is required"),
-  role: z.string().min(2, "Role is required"),
-  bio: z.string().min(10, "Bio must be at least 10 characters").max(200, "Bio cannot exceed 200 characters"),
+  name: z.string().min(1, "Name is required"),
+  role: z.string().min(1, "Role is required"),
+  bio: z.string().min(1, "Bio is required").max(200, "Bio cannot exceed 200 characters"),
   image: z.string().url("A valid image URL is required"),
 });
 
@@ -46,7 +46,6 @@ export async function createTeamMemberAction(
 
   try {
     await createTeamMember(validatedFields.data);
-    // Moved redirect into the try block to ensure it only runs on success
     revalidatePath('/about');
     revalidatePath('/admin/team');
     redirect('/admin/team');
@@ -81,7 +80,6 @@ export async function updateTeamMemberAction(
 
   try {
     await updateTeamMember(id, validatedFields.data);
-    // Moved redirect into the try block to ensure it only runs on success
     revalidatePath('/about');
     revalidatePath('/admin/team');
     redirect('/admin/team');
