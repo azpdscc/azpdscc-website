@@ -26,7 +26,6 @@ import { SubmitButton } from './submit-button';
 // Schema for the form fields
 const eventFormSchema = z.object({
   name: z.string().min(5, "Name must be at least 5 characters"),
-  slug: z.string().min(3, "Slug must be at least 3 characters").regex(/^[a-z0-9-]+$/, "Slug can only contain lowercase letters, numbers, and hyphens"),
   date: z.date({ required_error: 'Please select a date.'}),
   time: z.string().regex(/^\d{1,2}:\d{2}\s(AM|PM)\s-\s\d{1,2}:\d{2}\s(AM|PM)$/, "Time must be in 'H:MM AM/PM - H:MM AM/PM' format"),
   locationName: z.string().min(3, "Location name is required"),
@@ -92,20 +91,12 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
 
   return (
     <form action={formAction} className="space-y-6">
-      {/* Name and Slug */}
-      <div className="grid md:grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="name">Event Name</Label>
-          <Input id="name" name="name" defaultValue={event?.name} />
-          {formState.errors?.name && <p className="text-sm text-destructive mt-1">{formState.errors.name[0]}</p>}
-        </div>
-        <div>
-          <Label htmlFor="slug">URL Slug</Label>
-          <Input id="slug" name="slug" defaultValue={event?.slug} />
-           {formState.errors?.slug && <p className="text-sm text-destructive mt-1">{formState.errors.slug[0]}</p>}
-        </div>
+      <div>
+        <Label htmlFor="name">Event Name</Label>
+        <Input id="name" name="name" defaultValue={event?.name} />
+        {formState.errors?.name && <p className="text-sm text-destructive mt-1">{formState.errors.name[0]}</p>}
       </div>
-
+      
       {/* Date and Time */}
       <div className="grid md:grid-cols-2 gap-4">
          <div>

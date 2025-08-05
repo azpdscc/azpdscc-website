@@ -10,7 +10,6 @@ import { format } from 'date-fns';
 export type EventFormState = {
   errors: {
     name?: string[];
-    slug?: string[];
     date?: string[];
     time?: string[];
     locationName?: string[];
@@ -30,7 +29,6 @@ const timeRegex = /^\d{1,2}:\d{2}\s(AM|PM)\s-\s\d{1,2}:\d{2}\s(AM|PM)$/;
 
 const eventSchema = z.object({
   name: z.string().min(5, "Name must be at least 5 characters"),
-  slug: z.string().min(3, "Slug must be at least 3 characters").regex(/^[a-z0-9-]+$/, "Slug can only contain lowercase letters, numbers, and hyphens"),
   date: z.date({ required_error: 'Please select a date.'}),
   time: z.string().regex(timeRegex, "Time must be in 'H:MM AM/PM - H:MM AM/PM' format"),
   locationName: z.string().min(3, "Location name is required"),
@@ -41,6 +39,15 @@ const eventSchema = z.object({
   category: z.enum(['Cultural', 'Food', 'Music', 'Dance']),
 });
 
+const createSlug = (name: string) => {
+    return name
+        .toLowerCase()
+        .replace(/\s+/g, '-') // Replace spaces with -
+        .replace(/[^\w-]+/g, '') // Remove all non-word chars
+        .replace(/--+/g, '-') // Replace multiple - with single -
+        .replace(/^-+/, '') // Trim - from start of text
+        .replace(/-+$/, ''); // Trim - from end of text
+}
 
 export async function createEventAction(
   prevState: EventFormState,
@@ -52,7 +59,6 @@ export async function createEventAction(
 
   const validatedFields = eventSchema.safeParse({
     name: formData.get('name'),
-    slug: formData.get('slug'),
     date: dateObject,
     time: formData.get('time'),
     locationName: formData.get('locationName'),
@@ -70,9 +76,12 @@ export async function createEventAction(
       message: 'Failed to create event. Please check the errors below.',
     };
   }
+  
+  const slug = createSlug(validatedFields.data.name);
 
   const eventData = {
     ...validatedFields.data,
+    slug,
     date: format(validatedFields.data.date, 'MMMM dd, yyyy')
   };
 
@@ -81,11 +90,9 @@ export async function createEventAction(
     if (!newEventId) {
       throw new Error('Database operation failed.');
     }
-    // Moved redirect into the try block to ensure it only runs on success
     revalidatePath('/events');
     revalidatePath('/admin/events');
     revalidatePath('/');
-    redirect('/admin/events');
   } catch (err) {
     return {
       errors: {
@@ -95,6 +102,7 @@ export async function createEventAction(
       message: 'An unexpected error occurred while creating the event.',
     };
   }
+  redirect('/admin/events');
 }
 
 
@@ -109,7 +117,6 @@ export async function updateEventAction(
 
   const validatedFields = eventSchema.safeParse({
     name: formData.get('name'),
-    slug: formData.get('slug'),
     date: dateObject,
     time: formData.get('time'),
     locationName: formData.get('locationName'),
@@ -128,8 +135,11 @@ export async function updateEventAction(
     };
   }
 
+  const slug = createSlug(validatedFields.data.name);
+
   const eventData = {
     ...validatedFields.data,
+    slug,
     date: format(validatedFields.data.date, 'MMMM dd, yyyy')
   };
 
@@ -138,11 +148,9 @@ export async function updateEventAction(
     if (!success) {
       throw new Error('Database update failed.');
     }
-    // Moved redirect into the try block to ensure it only runs on success
     revalidatePath('/events');
     revalidatePath(`/events/${validatedFields.data.slug}`);
     revalidatePath('/admin/events');
-    redirect('/admin/events');
   } catch (err) {
      return {
       errors: {
@@ -152,6 +160,7 @@ export async function updateEventAction(
       message: 'An unexpected error occurred while updating the event.',
     };
   }
+   redirect('/admin/events');
 }
 
 export async function deleteEventAction(id: string) {
