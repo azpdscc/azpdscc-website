@@ -1,0 +1,278 @@
+
+'use client';
+
+import { useState } from 'react';
+import { useForm, type SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { generateNewEventCode } from '@/ai/flows/generate-new-event-code-flow';
+import { getEvents } from '@/services/events';
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { Loader2, Sparkles, Copy, Check, Lock, Shield } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+
+const ADMIN_PASSWORD = "azpdscc-admin-2024";
+
+const formSchema = z.object({
+  name: z.string().min(3, 'Event name is required'),
+  date: z.string().min(1, "Date is required."),
+  time: z.string().min(1, 'Time is required'),
+  locationName: z.string().min(1, 'Location name is required'),
+  locationAddress: z.string().min(1, 'Location address is required'),
+  category: z.enum(['Cultural', 'Food', 'Music', 'Dance']),
+  description: z.string().min(1, 'Short description is required'),
+  fullDescription: z.string().min(1, 'Full description is required'),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
+export function EventCodeGenerator() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [generatedContent, setGeneratedContent] = useState({ fileContent: '', socialPosts: '' });
+  const [isCopied, setIsCopied] = useState({ file: false, social: false });
+  const { toast } = useToast();
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+        name: 'Diwali Festival of Lights 2024',
+        date: 'November 2, 2024',
+        time: '5:00 PM - 10:00 PM',
+        locationName: 'Goodyear Ballpark',
+        locationAddress: '1933 S Ballpark Way, Goodyear, AZ 85338',
+        category: 'Cultural',
+        description: 'Celebrate the festival of lights with our community! Enjoy spectacular fireworks, delicious food, and vibrant cultural performances under the stars.',
+        fullDescription: 'Join PDSCC for our grandest event of the year, the Diwali Festival of Lights! Immerse yourself in the joyous atmosphere with mesmerizing performances, an array of authentic Indian cuisine from local vendors, and a breathtaking fireworks display. This family-friendly event is a wonderful opportunity to experience the rich traditions of Diwali. Let\'s celebrate light, hope, and the triumph of good over evil together as a community.'
+    },
+  });
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === ADMIN_PASSWORD) {
+      setIsAuthenticated(true);
+      setError('');
+    } else {
+      setError('Incorrect password. Please try again.');
+    }
+  };
+
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    setIsLoading(true);
+    setGeneratedContent({ fileContent: '', socialPosts: '' });
+    try {
+        const existingEvents = await getEvents();
+        const response = await generateNewEventCode({
+            newEvent: data,
+            existingEvents,
+        });
+
+      if (response.fileContent && response.socialPosts) {
+        setGeneratedContent(response);
+        toast({
+          title: 'Content Generated!',
+          description: 'Your file content and social media posts are ready.',
+        });
+      } else {
+        throw new Error('AI response was missing content.');
+      }
+    } catch (err) {
+      console.error(err);
+      toast({
+        variant: 'destructive',
+        title: 'An error occurred',
+        description: 'Failed to generate content. Please try again later.',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const copyToClipboard = (text: string, type: 'file' | 'social') => {
+    navigator.clipboard.writeText(text);
+    setIsCopied({ ...isCopied, [type]: true });
+    setTimeout(() => setIsCopied({ ...isCopied, [type]: false }), 2000);
+  };
+  
+  if (!isAuthenticated) {
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-background p-4">
+            <Card className="max-w-md w-full">
+                <CardHeader>
+                    <div className="flex justify-center mb-4">
+                        <Shield className="h-12 w-12 text-primary" strokeWidth={1.5} />
+                    </div>
+                    <CardTitle className="text-center font-headline text-2xl">Admin Access Required</CardTitle>
+                    <CardDescription className="text-center">
+                        This tool is for authorized administrators only.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handlePasswordSubmit} className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="password">Password</Label>
+                            <Input
+                                id="password"
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Enter admin password"
+                            />
+                            {error && <p className="text-sm text-destructive">{error}</p>}
+                        </div>
+                        <Button type="submit" className="w-full">
+                            <Lock className="mr-2 h-4 w-4" />
+                            Unlock
+                        </Button>
+                    </form>
+                </CardContent>
+            </Card>
+        </div>
+    );
+  }
+
+
+  return (
+    <div className="min-h-screen p-4 md:p-8">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-8">
+            <Sparkles className="mx-auto h-12 w-12 text-primary" strokeWidth={1.5} />
+            <h1 className="font-headline text-4xl mt-4">Event Code Generator</h1>
+            <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
+                Fill in the details for your new event. The AI will generate the complete, formatted code for the `data.ts` file, including your new event.
+            </p>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-8">
+            <Card>
+                <CardHeader>
+                    <CardTitle>1. Enter New Event Details</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                             <FormField name="name" control={form.control} render={({ field }) => (
+                                <FormItem><FormLabel>Event Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                            )} />
+                             <div className="grid md:grid-cols-2 gap-4">
+                                <FormField name="date" control={form.control} render={({ field }) => (
+                                    <FormItem><FormLabel>Date</FormLabel><FormControl><Input placeholder="Month Day, YYYY" {...field} /></FormControl><FormMessage /></FormItem>
+                                )} />
+                                <FormField name="time" control={form.control} render={({ field }) => (
+                                    <FormItem><FormLabel>Time</FormLabel><FormControl><Input placeholder="e.g. 5:00 PM - 10:00 PM" {...field} /></FormControl><FormMessage /></FormItem>
+                                )} />
+                             </div>
+                             <FormField name="locationName" control={form.control} render={({ field }) => (
+                                <FormItem><FormLabel>Location Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                            )} />
+                            <FormField name="locationAddress" control={form.control} render={({ field }) => (
+                                <FormItem><FormLabel>Location Address</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                            )} />
+                             <FormField name="category" control={form.control} render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Category</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl><SelectTrigger><SelectValue placeholder="Select a category" /></SelectTrigger></FormControl>
+                                        <SelectContent>
+                                            <SelectItem value="Cultural">Cultural</SelectItem>
+                                            <SelectItem value="Food">Food</SelectItem>
+                                            <SelectItem value="Music">Music</SelectItem>
+                                            <SelectItem value="Dance">Dance</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                             <FormField name="description" control={form.control} render={({ field }) => (
+                                <FormItem><FormLabel>Short Description</FormLabel><FormControl><Textarea rows={2} {...field} /></FormControl><FormMessage /></FormItem>
+                            )} />
+                             <FormField name="fullDescription" control={form.control} render={({ field }) => (
+                                <FormItem><FormLabel>Full Description</FormLabel><FormControl><Textarea rows={5} {...field} /></FormControl><FormMessage /></FormItem>
+                            )} />
+
+                            <Button type="submit" disabled={isLoading}>
+                                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                                Generate Content
+                            </Button>
+                        </form>
+                    </Form>
+                </CardContent>
+            </Card>
+
+            <div className="space-y-8">
+                 <Card>
+                    <CardHeader>
+                        <CardTitle>2. Generated `data.ts` File Content</CardTitle>
+                        <CardDescription>
+                            Copy this entire block of code and paste it into the `src/lib/data.ts` file, replacing all existing content.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="relative">
+                            <pre className="p-4 bg-muted rounded-md text-sm overflow-x-auto max-h-[400px]">
+                                {isLoading ? <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /> : generatedContent.fileContent || "Generated code will appear here..."}
+                            </pre>
+                             {generatedContent.fileContent && (
+                                <Button
+                                    variant="secondary"
+                                    size="icon"
+                                    className="absolute top-2 right-2 h-8 w-8"
+                                    onClick={() => copyToClipboard(generatedContent.fileContent, 'file')}
+                                >
+                                    {isCopied.file ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                                </Button>
+                             )}
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>3. Generated Social Media Posts</CardTitle>
+                        <CardDescription>
+                            Use these posts for promoting the event on your social channels.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                       <div className="relative">
+                            <pre className="p-4 bg-muted rounded-md text-sm overflow-x-auto max-h-[400px] whitespace-pre-wrap">
+                                {isLoading ? <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /> : generatedContent.socialPosts || "Generated posts will appear here..."}
+                            </pre>
+                             {generatedContent.socialPosts && (
+                                <Button
+                                    variant="secondary"
+                                    size="icon"
+                                    className="absolute top-2 right-2 h-8 w-8"
+                                    onClick={() => copyToClipboard(generatedContent.socialPosts, 'social')}
+                                >
+                                    {isCopied.social ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                                </Button>
+                             )}
+                        </div>
+                    </CardContent>
+                </Card>
+                 <Alert>
+                    <AlertTitle>How to Update the Website</AlertTitle>
+                    <AlertDescription>
+                        1. Click the 'Copy' button on the 'Generated data.ts File Content' card.<br/>
+                        2. Open the file `src/lib/data.ts` in your code editor.<br/>
+                        3. Select ALL the text in the file and PASTE to replace it with the copied code.<br/>
+                        4. Save the file. The new event will now appear on the website.
+                    </AlertDescription>
+                </Alert>
+            </div>
+        </div>
+      </div>
+    </div>
+  );
+}

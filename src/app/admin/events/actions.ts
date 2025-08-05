@@ -2,7 +2,7 @@
 'use server';
 
 import { z } from 'zod';
-import { createEvent, updateEvent, deleteEvent } from '@/services/events';
+import { updateEvent, deleteEvent } from '@/services/events';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { format } from 'date-fns';
@@ -37,7 +37,6 @@ const createSlug = (name: string) => {
 // Zod schema for validating form data
 const eventSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  // Use z.coerce.date() to automatically convert the string from FormData into a Date object
   date: z.coerce.date({ required_error: 'Please select a date.'}),
   time: z.string().min(1, "Time is required"),
   locationName: z.string().min(1, "Location name is required"),
@@ -49,65 +48,6 @@ const eventSchema = z.object({
 });
 
 
-export async function createEventAction(
-  prevState: EventFormState,
-  formData: FormData
-): Promise<EventFormState> {
-  
-  const validatedFields = eventSchema.safeParse({
-    name: formData.get('name'),
-    date: formData.get('date'), // Pass the string directly to be coerced
-    time: formData.get('time'),
-    locationName: formData.get('locationName'),
-    locationAddress: formData.get('locationAddress'),
-    image: formData.get('image'),
-    description: formData.get('description'),
-    fullDescription: formData.get('fullDescription'),
-    category: formData.get('category'),
-  });
-
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      success: false,
-      message: 'Failed to create event. Please check the errors below.',
-    };
-  }
-  
-  try {
-    const slug = createSlug(validatedFields.data.name);
-
-    // Format the validated Date object into a string for Firestore
-    const eventData = {
-      ...validatedFields.data,
-      slug,
-      date: format(validatedFields.data.date, 'MMMM dd, yyyy')
-    };
-
-    const newEventId = await createEvent(eventData);
-    if (!newEventId) {
-      throw new Error('Database operation failed to return an ID.');
-    }
-
-    revalidatePath('/events');
-    revalidatePath('/admin/events');
-    revalidatePath('/');
-    redirect('/admin/events');
-    
-  } catch (err) {
-    console.error(err);
-    const message = err instanceof Error ? err.message : 'An unknown error occurred.';
-    return {
-      errors: {
-        _form: ['An unexpected error occurred while creating the event.', message],
-      },
-      success: false,
-      message: `An unexpected error occurred while creating the event: ${message}`,
-    };
-  }
-}
-
-
 export async function updateEventAction(
   id: string,
   prevState: EventFormState,
@@ -116,7 +56,7 @@ export async function updateEventAction(
 
   const validatedFields = eventSchema.safeParse({
     name: formData.get('name'),
-    date: formData.get('date'), // Pass the string directly to be coerced
+    date: formData.get('date'),
     time: formData.get('time'),
     locationName: formData.get('locationName'),
     locationAddress: formData.get('locationAddress'),
@@ -144,10 +84,7 @@ export async function updateEventAction(
       date: format(validatedFields.data.date, 'MMMM dd, yyyy')
     };
 
-    const success = await updateEvent(id, eventData);
-    if (!success) {
-      throw new Error('Database update failed.');
-    }
+    await updateEvent(id, eventData);
     
     revalidatePath('/events');
     revalidatePath(`/events/${slug}`);

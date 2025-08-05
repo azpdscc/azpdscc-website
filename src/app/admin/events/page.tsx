@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { PlusCircle, Edit, Trash2 } from 'lucide-react';
 import { DeleteEventButton } from '@/components/admin/delete-buttons';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 
 export default async function ManageEventsPage() {
@@ -20,13 +21,19 @@ export default async function ManageEventsPage() {
                         <CardDescription>A list of all events in the system.</CardDescription>
                     </div>
                     <Button asChild>
-                        <Link href="/admin/events/add">
+                        <Link href="/events/create">
                             <PlusCircle className="mr-2 h-4 w-4" />
                             Add Event
                         </Link>
                     </Button>
                 </CardHeader>
                 <CardContent>
+                    <Alert className="mb-4">
+                        <AlertTitle>Event Management</AlertTitle>
+                        <AlertDescription>
+                            Events are now managed via a data file. Use the "Add Event" button to access the code generator tool. Editing still works here, but new events should be added via the generator for consistency.
+                        </AlertDescription>
+                    </Alert>
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -43,8 +50,8 @@ export default async function ManageEventsPage() {
                                     <TableCell>{event.date}</TableCell>
                                     <TableCell><Badge variant="secondary">{event.category}</Badge></TableCell>
                                     <TableCell className="text-right">
-                                       <Button asChild variant="ghost" size="icon">
-                                            <Link href={`/admin/events/edit/${event.id}`}>
+                                       <Button asChild variant="ghost" size="icon" disabled>
+                                            <Link href={`#`}>
                                                 <Edit className="h-4 w-4" />
                                                 <span className="sr-only">Edit</span>
                                             </Link>
