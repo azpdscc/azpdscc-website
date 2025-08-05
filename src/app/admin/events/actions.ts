@@ -86,16 +86,17 @@ export async function createEventAction(
   try {
     const newEventId = await createEvent(eventData);
     if (!newEventId) {
-      throw new Error('Database operation failed.');
+      throw new Error('Database operation failed to return an ID.');
     }
     revalidatePath('/events');
     revalidatePath('/admin/events');
     revalidatePath('/');
     redirect('/admin/events');
   } catch (err) {
+    const message = err instanceof Error ? err.message : 'An unknown error occurred.';
     return {
       errors: {
-        _form: ['An unexpected error occurred while creating the event.'],
+        _form: ['An unexpected error occurred while creating the event.', message],
       },
       success: false,
       message: 'An unexpected error occurred while creating the event.',
@@ -151,9 +152,10 @@ export async function updateEventAction(
     revalidatePath('/admin/events');
     redirect('/admin/events');
   } catch (err) {
+     const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {
       errors: {
-        _form: ['An unexpected error occurred while updating the event.'],
+        _form: ['An unexpected error occurred while updating the event.', message],
       },
       success: false,
       message: 'An unexpected error occurred while updating the event.',
