@@ -1,11 +1,12 @@
 
 'use client';
 
+import { useFormState } from 'react-dom';
 import { getEventById } from '@/services/events';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { EventForm } from "@/components/admin/event-form";
-import { updateEventAction } from '../../actions';
+import { updateEventAction, type EventFormState } from '../../actions';
 import { useEffect, useState } from 'react';
 import type { Event } from '@/lib/types';
 
@@ -13,6 +14,10 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
   const id = params.id;
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const initialState: EventFormState = { errors: {}, success: false, message: '' };
+  const updateEventWithId = updateEventAction.bind(null, id);
+  const [formState, action] = useFormState(updateEventWithId, initialState);
 
   useEffect(() => {
     async function fetchEvent() {
@@ -45,8 +50,6 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
     return null; // notFound() would have been called
   }
 
-  const updateEventWithId = updateEventAction.bind(null, id);
-
   return (
     <div className="container mx-auto p-4 md:p-8">
         <Card>
@@ -58,7 +61,8 @@ export default function EditEventPage({ params }: { params: { id: string } }) {
                 <EventForm 
                     type="Edit"
                     event={event}
-                    action={updateEventWithId}
+                    action={action}
+                    formState={formState}
                 />
             </CardContent>
         </Card>

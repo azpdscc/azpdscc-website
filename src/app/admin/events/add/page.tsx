@@ -1,9 +1,15 @@
 
+'use client';
+
+import { useFormState } from 'react-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { EventForm } from "@/components/admin/event-form";
-import { createEventAction } from "../actions";
+import { createEventAction, type EventFormState } from "../actions";
 
 export default function AddEventPage() {
+  const initialState: EventFormState = { errors: {}, success: false, message: '' };
+  const [formState, action] = useFormState(createEventAction, initialState);
+
   return (
     <div className="container mx-auto p-4 md:p-8">
         <Card>
@@ -14,7 +20,8 @@ export default function AddEventPage() {
             <CardContent>
                 <EventForm 
                     type="Add"
-                    action={createEventAction}
+                    action={action}
+                    formState={formState}
                 />
             </CardContent>
         </Card>

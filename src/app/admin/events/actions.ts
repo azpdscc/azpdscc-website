@@ -4,7 +4,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createEvent, updateEvent, deleteEvent, batchCreateEvents } from '@/services/events';
-import type { EventFormData, Event } from '@/lib/types';
+import type { Event } from '@/lib/types';
 import { z } from 'zod';
 import { format } from 'date-fns';
 
@@ -17,7 +17,7 @@ const generateSlug = (name: string) => {
 };
 
 const eventSchema = z.object({
-  name: z.string().min(3, "Event name is required."),
+  name: z.string().min(3, "Event name must be at least 3 characters."),
   date: z.string().min(1, "Date is required."),
   time: z.string().regex(/^\d{1,2}:\d{2}\s(AM|PM)\s-\s\d{1,2}:\d{2}\s(AM|PM)$/, "Time must be in 'H:MM AM/PM - H:MM AM/PM' format (e.g., 2:00 PM - 7:00 PM)."),
   locationName: z.string().min(3, "Location name is required."),
@@ -25,11 +25,34 @@ const eventSchema = z.object({
   image: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
   description: z.string().min(20, "Short description must be at least 20 characters."),
   fullDescription: z.string().min(50, "Full description must be at least 50 characters."),
-  category: z.enum(['Cultural', 'Food', 'Music', 'Dance']),
+  category: z.enum(['Cultural', 'Food', 'Music', 'Dance'], {
+    errorMap: () => ({ message: "Please select a valid category." })
+  }),
 });
 
 
-export async function createEventAction(formData: FormData) {
+export interface EventFormState {
+    errors: {
+        _form?: string[];
+        name?: string[];
+        date?: string[];
+        time?: string[];
+        locationName?: string[];
+        locationAddress?: string[];
+        image?: string[];
+        description?: string[];
+        fullDescription?: string[];
+        category?: string[];
+    };
+    success: boolean;
+    message: string;
+}
+
+
+export async function createEventAction(
+    formState: EventFormState,
+    formData: FormData
+): Promise<EventFormState> {
   const validatedFields = eventSchema.safeParse({
     name: formData.get('name'),
     date: formData.get('date'),
@@ -43,10 +66,11 @@ export async function createEventAction(formData: FormData) {
   });
 
   if (!validatedFields.success) {
-    // Handle validation errors
-    // In a real app, you would return this to the form to display errors
-    console.error("Validation failed:", validatedFields.error.flatten().fieldErrors);
-    return;
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      success: false,
+      message: "Validation failed. Please check the fields.",
+    };
   }
   
   const slug = generateSlug(validatedFields.data.name);
@@ -56,17 +80,30 @@ export async function createEventAction(formData: FormData) {
     image: validatedFields.data.image || 'https://placehold.co/600x400.png',
   };
   
-  const result = await createEvent(dataWithSlug);
+  try {
+    const result = await createEvent(dataWithSlug);
+    if (!result) {
+        throw new Error("Database operation failed.");
+    }
+  } catch (error) {
+    return {
+        errors: { _form: ["An unexpected error occurred while creating the event."] },
+        success: false,
+        message: "Failed to create event."
+    }
+  }
 
-  if (result) {
-    revalidatePath('/events');
-    revalidatePath('/admin/events');
-    revalidatePath('/');
-    redirect('/admin/events');
-  } 
+  revalidatePath('/events');
+  revalidatePath('/admin/events');
+  revalidatePath('/');
+  redirect('/admin/events');
 }
 
-export async function updateEventAction(id: string, formData: FormData) {
+export async function updateEventAction(
+    id: string,
+    formState: EventFormState,
+    formData: FormData
+): Promise<EventFormState> {
   const validatedFields = eventSchema.safeParse({
     name: formData.get('name'),
     date: formData.get('date'),
@@ -80,8 +117,11 @@ export async function updateEventAction(id: string, formData: FormData) {
   });
 
    if (!validatedFields.success) {
-    console.error("Validation failed:", validatedFields.error.flatten().fieldErrors);
-    return;
+    return {
+        errors: validatedFields.error.flatten().fieldErrors,
+        success: false,
+        message: "Validation failed. Please check the fields."
+    };
   }
   
   const slug = generateSlug(validatedFields.data.name);
@@ -91,15 +131,24 @@ export async function updateEventAction(id: string, formData: FormData) {
     image: validatedFields.data.image || 'https://placehold.co/600x400.png',
   };
 
-  const result = await updateEvent(id, dataWithSlug);
-
-  if (result) {
-    revalidatePath('/events');
-    revalidatePath(`/events/${slug}`);
-    revalidatePath('/admin/events');
-    revalidatePath('/');
-    redirect('/admin/events');
+  try {
+    const result = await updateEvent(id, dataWithSlug);
+    if (!result) {
+        throw new Error("Database update failed.");
+    }
+  } catch (error) {
+     return {
+        errors: { _form: ["An unexpected error occurred while updating the event."] },
+        success: false,
+        message: "Failed to update event."
+    }
   }
+
+  revalidatePath('/events');
+  revalidatePath(`/events/${slug}`);
+  revalidatePath('/admin/events');
+  revalidatePath('/');
+  redirect('/admin/events');
 }
 
 const DeleteFormSchema = z.object({
