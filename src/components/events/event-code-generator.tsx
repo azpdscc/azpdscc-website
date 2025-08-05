@@ -7,24 +7,31 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { generateNewEventCode } from '@/ai/flows/generate-new-event-code-flow';
 import { getEvents } from '@/services/events';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Sparkles, Copy, Check, Lock, Shield } from 'lucide-react';
+import { Loader2, Sparkles, Copy, Check, Lock, Shield, CalendarIcon } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { TimePicker } from '@/components/ui/time-picker';
+
 
 const ADMIN_PASSWORD = "azpdscc-admin-2024";
 
 const formSchema = z.object({
   name: z.string().min(3, 'Event name is required'),
-  date: z.string().min(1, "Date is required."),
-  time: z.string().min(1, 'Time is required'),
+  date: z.date({ required_error: 'A date is required.'}),
+  startTime: z.date({ required_error: 'A start time is required.'}),
+  endTime: z.date({ required_error: 'An end time is required.'}),
   locationName: z.string().min(1, 'Location name is required'),
   locationAddress: z.string().min(1, 'Location address is required'),
   category: z.enum(['Cultural', 'Food', 'Music', 'Dance']),
@@ -48,8 +55,9 @@ export function EventCodeGenerator() {
     resolver: zodResolver(formSchema),
     defaultValues: {
         name: 'Diwali Festival of Lights 2024',
-        date: 'November 2, 2024',
-        time: '5:00 PM - 10:00 PM',
+        date: new Date('2024-11-02T12:00:00'),
+        startTime: new Date('2024-11-02T17:00:00'),
+        endTime: new Date('2024-11-02T22:00:00'),
         locationName: 'Goodyear Ballpark',
         locationAddress: '1933 S Ballpark Way, Goodyear, AZ 85338',
         category: 'Cultural',
@@ -73,8 +81,24 @@ export function EventCodeGenerator() {
     setGeneratedContent({ fileContent: '', socialPosts: '' });
     try {
         const existingEvents = await getEvents();
+        
+        const formattedData = {
+            ...data,
+            date: format(data.date, 'MMMM dd, yyyy'),
+            time: `${format(data.startTime, 'h:mm a')} - ${format(data.endTime, 'h:mm a')}`
+        }
+
         const response = await generateNewEventCode({
-            newEvent: data,
+            newEvent: {
+                name: formattedData.name,
+                date: formattedData.date,
+                time: formattedData.time,
+                locationName: formattedData.locationName,
+                locationAddress: formattedData.locationAddress,
+                category: formattedData.category,
+                description: formattedData.description,
+                fullDescription: formattedData.fullDescription,
+            },
             existingEvents,
         });
 
@@ -165,14 +189,41 @@ export function EventCodeGenerator() {
                              <FormField name="name" control={form.control} render={({ field }) => (
                                 <FormItem><FormLabel>Event Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                             )} />
-                             <div className="grid md:grid-cols-2 gap-4">
-                                <FormField name="date" control={form.control} render={({ field }) => (
-                                    <FormItem><FormLabel>Date</FormLabel><FormControl><Input placeholder="Month Day, YYYY" {...field} /></FormControl><FormMessage /></FormItem>
+                            <div className="grid md:grid-cols-3 gap-4">
+                                <FormField control={form.control} name="date" render={({ field }) => (
+                                    <FormItem className="flex flex-col md:col-span-1">
+                                        <FormLabel>Date</FormLabel>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <FormControl>
+                                                    <Button variant={"outline"} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
+                                                        {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                    </Button>
+                                                </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0" align="start">
+                                                <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                                            </PopoverContent>
+                                        </Popover>
+                                        <FormMessage />
+                                    </FormItem>
                                 )} />
-                                <FormField name="time" control={form.control} render={({ field }) => (
-                                    <FormItem><FormLabel>Time</FormLabel><FormControl><Input placeholder="e.g. 5:00 PM - 10:00 PM" {...field} /></FormControl><FormMessage /></FormItem>
-                                )} />
-                             </div>
+                                <FormField control={form.control} name="startTime" render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>Start Time</FormLabel>
+                                        <TimePicker setDate={field.onChange} date={field.value} />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}/>
+                                <FormField control={form.control} name="endTime" render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>End Time</FormLabel>
+                                        <TimePicker setDate={field.onChange} date={field.value} />
+                                        <FormMessage />
+                                    </FormItem>
+                                )}/>
+                            </div>
                              <FormField name="locationName" control={form.control} render={({ field }) => (
                                 <FormItem><FormLabel>Location Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                             )} />
