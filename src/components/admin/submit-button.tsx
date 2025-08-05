@@ -9,13 +9,14 @@ interface SubmitButtonProps {
   isEditing: boolean;
   createText?: string;
   updateText?: string;
+  className?: string;
 }
 
-export function SubmitButton({ isEditing, createText = "Create Event", updateText = "Update Event" }: SubmitButtonProps) {
+export function SubmitButton({ isEditing, createText = "Create", updateText = "Update", className }: SubmitButtonProps) {
   const { pending } = useFormStatus();
 
   return (
-    <Button type="submit" disabled={pending}>
+    <Button type="submit" disabled={pending} className={className}>
       {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
       {isEditing ? updateText : createText}
     </Button>

@@ -2,8 +2,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useFormState } from 'react-dom';
 import type { Event } from '@/lib/types';
-import type { EventFormState } from '@/app/admin/events/actions';
+import type { FormState } from '@/app/admin/events/actions';
+import { createEventAction, updateEventAction } from '@/app/admin/events/actions';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -22,12 +24,15 @@ import { SubmitButton } from './submit-button';
 
 interface EventFormProps {
   event?: Event;
-  formAction: (payload: FormData) => void;
-  formState: EventFormState;
 }
 
-export function EventForm({ event, formAction, formState }: EventFormProps) {
+export function EventForm({ event }: EventFormProps) {
   const isEditing = !!event;
+
+  const action = isEditing ? updateEventAction.bind(null, event.id) : createEventAction;
+  const initialState: FormState = { errors: {}, message: '' };
+  const [formState, formAction] = useFormState(action, initialState);
+
   const [isGenerating, setIsGenerating] = useState(false);
   const [description, setDescription] = useState(event?.description || '');
   const [fullDescription, setFullDescription] = useState(event?.fullDescription || '');
@@ -36,7 +41,6 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
 
   const handleGenerateDescriptions = async () => {
     if (!name) {
-        // In a real app, you'd want better error handling
         alert("Please enter an event name first.");
         return;
     }
@@ -60,7 +64,7 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
     <form action={formAction} className="space-y-6">
         <div>
             <Label htmlFor="name">Event Name</Label>
-            <Input id="name" name="name" value={name} onChange={(e) => setName(e.target.value)} />
+            <Input id="name" name="name" value={name} onChange={(e) => setName(e.target.value)} required />
             {formState.errors?.name && <p className="text-destructive text-sm mt-1">{formState.errors.name.join(', ')}</p>}
         </div>
         
@@ -89,7 +93,7 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
             </div>
             <div>
                 <Label htmlFor="time">Time</Label>
-                <Input id="time" name="time" defaultValue={event?.time} placeholder="e.g., 5:00 PM - 10:00 PM" />
+                <Input id="time" name="time" defaultValue={event?.time} placeholder="e.g., 5:00 PM - 10:00 PM" required />
                 {formState.errors?.time && <p className="text-destructive text-sm mt-1">{formState.errors.time.join(', ')}</p>}
             </div>
         </div>
@@ -103,28 +107,27 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
             </Button>
         </div>
 
-
         <div>
             <Label htmlFor="description">Short Description</Label>
-            <Textarea id="description" name="description" value={description} onChange={(e) => setDescription(e.target.value)} rows={2} />
+            <Textarea id="description" name="description" value={description} onChange={(e) => setDescription(e.target.value)} rows={2} required />
             {formState.errors?.description && <p className="text-destructive text-sm mt-1">{formState.errors.description.join(', ')}</p>}
         </div>
         
         <div>
             <Label htmlFor="fullDescription">Full Description</Label>
-            <Textarea id="fullDescription" name="fullDescription" value={fullDescription} onChange={(e) => setFullDescription(e.target.value)} rows={5} />
+            <Textarea id="fullDescription" name="fullDescription" value={fullDescription} onChange={(e) => setFullDescription(e.target.value)} rows={5} required />
             {formState.errors?.fullDescription && <p className="text-destructive text-sm mt-1">{formState.errors.fullDescription.join(', ')}</p>}
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
             <div>
                 <Label htmlFor="locationName">Location Name</Label>
-                <Input id="locationName" name="locationName" defaultValue={event?.locationName} />
+                <Input id="locationName" name="locationName" defaultValue={event?.locationName} required />
                 {formState.errors?.locationName && <p className="text-destructive text-sm mt-1">{formState.errors.locationName.join(', ')}</p>}
             </div>
             <div>
                 <Label htmlFor="locationAddress">Location Address</Label>
-                <Input id="locationAddress" name="locationAddress" defaultValue={event?.locationAddress} />
+                <Input id="locationAddress" name="locationAddress" defaultValue={event?.locationAddress} required />
                 {formState.errors?.locationAddress && <p className="text-destructive text-sm mt-1">{formState.errors.locationAddress.join(', ')}</p>}
             </div>
         </div>
@@ -132,7 +135,7 @@ export function EventForm({ event, formAction, formState }: EventFormProps) {
         <div className="grid md:grid-cols-2 gap-4">
             <div>
                 <Label htmlFor="image">Image URL</Label>
-                <Input id="image" name="image" defaultValue={event?.image} />
+                <Input id="image" name="image" defaultValue={event?.image} required />
                 {formState.errors?.image && <p className="text-destructive text-sm mt-1">{formState.errors.image.join(', ')}</p>}
             </div>
             <div>

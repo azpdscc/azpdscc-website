@@ -7,8 +7,8 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { format } from 'date-fns';
 
-export type EventFormState = {
-  errors: {
+export type FormState = {
+  errors?: {
     name?: string[];
     date?: string[];
     time?: string[];
@@ -20,21 +20,19 @@ export type EventFormState = {
     category?: string[];
     _form?: string[];
   };
-  success: boolean;
-  message: string;
+  message?: string;
 };
 
 const createSlug = (name: string) => {
     return name
         .toLowerCase()
-        .replace(/\s+/g, '-') // Replace spaces with -
-        .replace(/[^\w-]+/g, '') // Remove all non-word chars
-        .replace(/--+/g, '-') // Replace multiple - with single -
-        .replace(/^-+/, '') // Trim - from start of text
-        .replace(/-+$/, ''); // Trim - from end of text
+        .replace(/\s+/g, '-') 
+        .replace(/[^\w-]+/g, '')
+        .replace(/--+/g, '-')
+        .replace(/^-+/, '')
+        .replace(/-+$/, '');
 }
 
-// Zod schema for validating form data
 const eventSchema = z.object({
   name: z.string().min(1, "Name is required"),
   date: z.coerce.date({ required_error: 'Please select a date.'}),
@@ -48,9 +46,9 @@ const eventSchema = z.object({
 });
 
 export async function createEventAction(
-  prevState: EventFormState,
+  prevState: FormState,
   formData: FormData
-): Promise<EventFormState> {
+): Promise<FormState> {
   const validatedFields = eventSchema.safeParse({
     name: formData.get('name'),
     date: formData.get('date'),
@@ -66,29 +64,24 @@ export async function createEventAction(
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      success: false,
       message: 'Failed to create event. Please check the errors below.',
     };
   }
 
-  try {
-    const slug = createSlug(validatedFields.data.name);
-
-    const eventData = {
+  const slug = createSlug(validatedFields.data.name);
+  
+  const eventData = {
       ...validatedFields.data,
       slug,
       date: format(validatedFields.data.date, 'MMMM dd, yyyy')
-    };
-    
+  };
+
+  try {
     const newEventId = await createEvent(eventData);
 
     if (!newEventId) {
        throw new Error('Database operation failed to return an ID.');
     }
-
-    revalidatePath('/events');
-    revalidatePath(`/events/${slug}`);
-    revalidatePath('/');
     
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
@@ -96,19 +89,20 @@ export async function createEventAction(
       errors: {
         _form: ['An unexpected error occurred while creating the event.', message],
       },
-      success: false,
-      message: `An unexpected error occurred while creating the event. ${message}`,
     };
   }
 
+  revalidatePath('/events');
+  revalidatePath('/admin/events');
+  revalidatePath('/');
   redirect('/admin/events');
 }
 
 export async function updateEventAction(
   id: string,
-  prevState: EventFormState,
+  prevState: FormState,
   formData: FormData
-): Promise<EventFormState> {
+): Promise<FormState> {
 
   const validatedFields = eventSchema.safeParse({
     name: formData.get('name'),
@@ -125,38 +119,32 @@ export async function updateEventAction(
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      success: false,
-      message: 'Failed to update event. Please check the errors below.',
     };
   }
 
-  try {
-    const slug = createSlug(validatedFields.data.name);
+  const slug = createSlug(validatedFields.data.name);
 
-    // Format the validated Date object into a string for Firestore
-    const eventData = {
+  const eventData = {
       ...validatedFields.data,
       slug,
       date: format(validatedFields.data.date, 'MMMM dd, yyyy')
-    };
+  };
 
+  try {
     await updateEvent(id, eventData);
     
-    revalidatePath('/events');
-    revalidatePath(`/events/${slug}`);
-    revalidatePath('/admin/events');
-    
   } catch (err) {
-     console.error(err);
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {
       errors: {
         _form: ['An unexpected error occurred while updating the event.', message],
       },
-      success: false,
-      message: `An unexpected error occurred while updating the event: ${message}`,
     };
   }
+  
+  revalidatePath('/events');
+  revalidatePath(`/events/${slug}`);
+  revalidatePath('/admin/events');
   redirect('/admin/events');
 }
 
