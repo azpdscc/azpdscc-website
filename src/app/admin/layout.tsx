@@ -11,7 +11,6 @@ import { Shield } from 'lucide-react';
 import { Header } from '@/components/layout/header';
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
-import { Footer } from '@/components/layout/footer';
 
 const CORRECT_PASSWORD = 'azpdscc-admin-2024';
 const AUTH_KEY = 'admin-auth';
@@ -25,7 +24,6 @@ function AdminHeader() {
                 <nav className="hidden md:flex items-center gap-6 text-sm">
                      <Link href="/admin" className="font-bold transition-colors hover:text-primary hover:underline underline-offset-4 text-muted-foreground">Dashboard</Link>
                      <Link href="/admin/events" className="font-bold transition-colors hover:text-primary hover:underline underline-offset-4 text-muted-foreground">Events</Link>
-                     <Link href="/admin/team" className="font-bold transition-colors hover:text-primary hover:underline underline-offset-4 text-muted-foreground">Team</Link>
                 </nav>
                 </div>
                  <Button asChild variant="outline">
@@ -117,7 +115,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     <div className="flex flex-col min-h-screen">
       <AdminHeader />
       <main className="flex-1 py-8">{children}</main>
-      <Footer />
     </div>
   );
 }
