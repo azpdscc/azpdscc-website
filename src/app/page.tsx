@@ -73,7 +73,7 @@ export default async function Home() {
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="text-center shadow-lg">
+            <Card className="text-center shadow-lg bg-card">
               <CardHeader>
                 <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit">
                   <Handshake className="h-8 w-8 text-primary" strokeWidth={1.5} />
@@ -88,7 +88,7 @@ export default async function Home() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="text-center shadow-lg">
+            <Card className="text-center shadow-lg bg-card">
               <CardHeader>
                 <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit">
                   <Sprout className="h-8 w-8 text-primary" strokeWidth={1.5} />
@@ -103,7 +103,7 @@ export default async function Home() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="text-center shadow-lg">
+            <Card className="text-center shadow-lg bg-card">
               <CardHeader>
                 <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit">
                   <CircleDollarSign className="h-8 w-8 text-primary" strokeWidth={1.5} />
