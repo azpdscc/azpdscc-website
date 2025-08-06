@@ -1,4 +1,6 @@
 
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -9,9 +11,23 @@ import { HolidayBanner } from '@/components/holiday-banner';
 import { getEvents } from '@/services/events';
 import { ArrowRight, CircleDollarSign, Handshake, Sprout, Calendar, Ticket } from 'lucide-react';
 import { PastEventBanner } from '@/components/past-event-banner';
+import { useEffect, useState, useRef } from 'react';
+import type { Event } from '@/lib/types';
+import Autoplay from 'embla-carousel-autoplay';
 
-export default async function Home() {
-  const allEvents = await getEvents();
+export default function Home() {
+  const [allEvents, setAllEvents] = useState<Event[]>([]);
+  const plugin = useRef(
+    Autoplay({ delay: 5000, stopOnInteraction: true })
+  );
+
+  useEffect(() => {
+    async function fetchEvents() {
+        const fetchedEvents = await getEvents();
+        setAllEvents(fetchedEvents);
+    }
+    fetchEvents();
+  }, []);
   
   // Find upcoming events and sort them
   const now = new Date();
@@ -37,10 +53,13 @@ export default async function Home() {
     <div className="flex flex-col">
       <section className="relative w-full">
          <Carousel
+            plugins={[plugin.current]}
             opts={{
               loop: true,
             }}
             className="w-full"
+            onMouseEnter={plugin.current.stop}
+            onMouseLeave={plugin.current.reset}
           >
             <CarouselContent>
               <CarouselItem>
@@ -87,7 +106,7 @@ export default async function Home() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                     <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4">
-                      <p className="font-bold uppercase tracking-widest text-accent drop-shadow-md">Coming Soon</p>
+                      <p className="font-bold uppercase tracking-widest text-primary-foreground drop-shadow-md">Coming Soon</p>
                       <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold !text-primary-foreground drop-shadow-lg">
                         {nextEvent.name}
                       </h1>
@@ -276,5 +295,3 @@ export default async function Home() {
     </div>
   );
 }
-
-    
