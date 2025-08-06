@@ -17,7 +17,7 @@ const teamCollectionRef = collection(db, 'teamMembers');
  */
 export async function getTeamMembers(): Promise<TeamMember[]> {
   try {
-    const q = query(teamCollectionRef, orderBy('order', 'asc'), orderBy('name', 'asc'));
+    const q = query(teamCollectionRef, orderBy('order', 'asc'));
     const querySnapshot = await getDocs(q);
     const members = querySnapshot.docs.map(doc => ({
       id: doc.id,
