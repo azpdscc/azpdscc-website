@@ -24,7 +24,7 @@ const GenerateBlogPostOutputSchema = z.object({
   title: z.string().describe("A compelling, SEO-friendly title for the blog post. Max 70 characters."),
   slug: z.string().describe("A URL-friendly slug for the blog post (e.g., 'my-new-post')."),
   excerpt: z.string().describe("A short, engaging summary of the post for social media and previews. Max 160 characters."),
-  content: z.string().describe("The full content of the blog post, written in a warm, informative, and community-focused tone. It should be at least 300 words long and formatted with paragraphs."),
+  content: z.string().describe("The full content of the blog post, written in a warm, informative, and community-focused tone. It should be at least 300 words long and formatted with paragraphs using HTML tags like <p> and <h2>."),
 });
 export type GenerateBlogPostOutput = z.infer<
   typeof GenerateBlogPostOutputSchema
@@ -58,8 +58,8 @@ Your task is to write a complete, engaging, and SEO-friendly blog post based on 
 3.  **Title:** Create a catchy title (max 70 characters).
 4.  **Slug:** Generate a URL-friendly slug from the title.
 5.  **Excerpt:** Write a concise summary (max 160 characters).
-6.  **Content:** Write the full blog post (minimum 300 words). Structure it with a clear introduction, body paragraphs, and a conclusion. The content should be insightful and valuable to members of the Phoenix Indian community.
-7.  **PDSCC Connection:** Ensure the post always connects back to the mission or activities of PDSCC, reinforcing the organization's role in the community. For example, if the topic is a festival, mention how PDSCC celebrates it.
+6.  **Content:** Write the full blog post (minimum 300 words). The content should be well-structured with an introduction, multiple body paragraphs, and a conclusion. **Format the content using HTML tags** such as \`<p>\` for paragraphs and \`<h2>\` for subheadings to ensure it's web-ready.
+7.  **PDSCC Connection:** Ensure the post always connects back to the mission or activities of PDSCC, reinforcing the organization's role in the community. For example, if the topic is a festival, mention how PDSCC celebrates it or is involved.
 
 Return the output in the requested JSON format.`,
 });
