@@ -13,7 +13,7 @@ export default function VolunteerPage() {
   return (
     <>
       <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground bg-primary">
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20 bg-hero-pattern" />
+        <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20 bg-hero-pattern opacity-10" />
         <div className="relative z-10 p-4 container mx-auto">
           <div className="mx-auto bg-primary/20 rounded-full p-4 w-fit mb-4 border border-primary-foreground/20">
               <HandHeart className="h-12 w-12 text-primary-foreground" strokeWidth={1.5} />
