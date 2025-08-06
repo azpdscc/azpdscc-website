@@ -157,10 +157,6 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
         {isPast && (
           <Card className="mb-8 border-primary/20 bg-primary/5 shadow-lg">
             <div className="p-6 text-center">
-              <div className="flex justify-center items-center gap-4 mb-3">
-                <Youtube className="h-12 w-12 mx-auto text-primary" strokeWidth={1.5} />
-                <Facebook className="h-12 w-12 mx-auto text-primary" strokeWidth={1.5} />
-              </div>
               <h2 className="font-headline text-2xl font-bold text-primary">This Event Has Ended</h2>
               <p className="mt-2 text-muted-foreground text-base">
                 Relive the moments! Check out the recordings and photos from {event.name}.
@@ -171,7 +167,7 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
                     <Youtube className="mr-2"/> Watch on YouTube
                   </Link>
                 </Button>
-                 <Button asChild variant="secondary">
+                 <Button asChild>
                   <Link href="https://www.facebook.com/pdscc/photos_albums" target="_blank" rel="noopener noreferrer">
                     <Facebook className="mr-2"/> View Photos
                   </Link>
