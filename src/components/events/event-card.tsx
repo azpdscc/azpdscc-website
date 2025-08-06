@@ -55,7 +55,7 @@ export function EventCard({ event }: EventCardProps) {
       <CardFooter className="p-4 bg-secondary/80 flex items-center justify-center gap-2">
         {isPast ? (
             <>
-                <Button asChild className="w-full" variant="secondary">
+                <Button asChild className="w-full">
                     <Link href={`/events/${event.slug}`}>View Details</Link>
                 </Button>
                 <Button asChild className="w-full">
