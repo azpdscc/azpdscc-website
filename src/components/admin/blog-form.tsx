@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useActionState } from 'react';
+import { useState, useActionState, useEffect } from 'react';
 import type { BlogPost } from '@/lib/types';
 import type { BlogFormState } from '@/app/admin/blog/actions';
 import { createBlogPostAction, updateBlogPostAction } from '@/app/admin/blog/actions';
@@ -41,7 +41,15 @@ export function BlogForm({ post }: BlogFormProps) {
   const [image, setImage] = useState(post?.image || 'https://placehold.co/800x400.png');
   const [excerpt, setExcerpt] = useState(post?.excerpt || '');
   const [content, setContent] = useState(post?.content || '');
-  const [date, setDate] = useState<Date | undefined>(post?.date ? new Date(post.date) : new Date());
+  const [date, setDate] = useState<Date | undefined>(post?.date ? new Date(post.date) : undefined);
+  
+  useEffect(() => {
+    // To avoid hydration mismatch, only set the default date on the client
+    if (!post?.date) {
+      setDate(new Date());
+    }
+  }, [post?.date]);
+
 
   const handleGeneratePost = async () => {
     if (!topic) {
