@@ -42,7 +42,7 @@ export function TeamForm({ member }: TeamFormProps) {
         
         <div>
             <Label htmlFor="image">Image URL</Label>
-            <Input id="image" name="image" defaultValue={member?.image} required />
+            <Input id="image" name="image" defaultValue={member?.image || 'https://placehold.co/400x400.png'} />
             {formState.errors?.image && <p className="text-destructive text-sm mt-1">{formState.errors.image.join(', ')}</p>}
         </div>
 

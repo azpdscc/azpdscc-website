@@ -20,9 +20,11 @@ export type TeamFormState = {
 const teamMemberSchema = z.object({
   name: z.string().min(1, "Name is required"),
   role: z.string().min(1, "Role is required"),
-  image: z.string().url("Must be a valid image URL"),
+  image: z.string().url("Must be a valid image URL").optional().or(z.literal('')),
   bio: z.string().min(1, "Bio is required"),
 });
+
+const placeholderImage = 'https://placehold.co/400x400.png';
 
 export async function createTeamMemberAction(
   prevState: TeamFormState,
@@ -42,8 +44,13 @@ export async function createTeamMemberAction(
     };
   }
 
+  const memberData = {
+    ...validatedFields.data,
+    image: validatedFields.data.image || placeholderImage,
+  }
+
   try {
-    await createTeamMember(validatedFields.data);
+    await createTeamMember(memberData);
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {
@@ -76,8 +83,13 @@ export async function updateTeamMemberAction(
     };
   }
 
+  const memberData = {
+    ...validatedFields.data,
+    image: validatedFields.data.image || placeholderImage,
+  }
+
   try {
-    await updateTeamMember(id, validatedFields.data);
+    await updateTeamMember(id, memberData);
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {

@@ -42,7 +42,7 @@ export default async function AboutPage() {
               </p>
             </div>
             <div className="w-full h-full">
-              <Image src="https://placehold.co/600x400.png" data-ai-hint="team meeting" alt="Founding members of PDSCC" width={600} height={400} className="rounded-lg shadow-xl w-full" />
+              <Image src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/About+Us/_R1_4736.JPG" data-ai-hint="team meeting" alt="Founding members of PDSCC" width={600} height={400} className="rounded-lg shadow-xl w-full" />
             </div>
           </div>
         </div>
