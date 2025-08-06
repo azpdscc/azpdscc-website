@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
-import { Home } from 'lucide-react';
+import { Home, LayoutDashboard } from 'lucide-react';
 import { Footer } from '@/components/layout/footer';
 
 export const metadata: Metadata = {
@@ -27,12 +27,20 @@ export default function AdminLayout({
             <Logo />
             <span className="font-bold text-muted-foreground">Admin</span>
           </div>
-          <Button asChild variant="outline" size="sm">
-            <Link href="/">
-              <Home className="mr-2 h-4 w-4" />
-              Back to Site
-            </Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button asChild variant="outline" size="sm">
+                <Link href="/admin">
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    Dashboard
+                </Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link href="/">
+                <Home className="mr-2 h-4 w-4" />
+                Back to Site
+              </Link>
+            </Button>
+          </div>
         </div>
       </header>
       <main className="flex-grow">

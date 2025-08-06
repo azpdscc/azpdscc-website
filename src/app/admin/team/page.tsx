@@ -3,7 +3,7 @@ import { getTeamMembers } from '@/services/team';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { PlusCircle, Edit, Trash2, LayoutDashboard } from 'lucide-react';
+import { PlusCircle, Edit } from 'lucide-react';
 import { DeleteTeamMemberButton } from '@/components/admin/delete-buttons';
 import Image from 'next/image';
 
@@ -19,12 +19,6 @@ export default async function ManageTeamPage() {
                         <CardDescription>A list of all team members.</CardDescription>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Button asChild variant="outline">
-                            <Link href="/admin">
-                                <LayoutDashboard className="mr-2 h-4 w-4" />
-                                Admin Dashboard
-                            </Link>
-                        </Button>
                         <Button asChild>
                             <Link href="/admin/team/add">
                                 <PlusCircle className="mr-2 h-4 w-4" />
