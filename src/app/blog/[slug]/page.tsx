@@ -1,9 +1,13 @@
 
 import type { Metadata, ResolvingMetadata } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getBlogPosts, getBlogPostBySlug } from '@/services/blog';
-import { Calendar, User } from 'lucide-react';
+import { getEvents } from '@/services/events';
+import { Button } from '@/components/ui/button';
+import { Calendar, User, Ticket } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 
 type Props = {
   params: { slug: string }
@@ -42,6 +46,28 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
     notFound();
   }
 
+  // Check if post is about a specific event and find that event
+  let relatedEvent = null;
+  const postTitleLower = post.title.toLowerCase();
+  const eventKeywords = ['vaisakhi', 'teeyan'];
+
+  const keywordInTitle = eventKeywords.find(keyword => postTitleLower.includes(keyword));
+
+  if (keywordInTitle) {
+      const allEvents = await getEvents();
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+
+      const upcomingMatchingEvents = allEvents
+        .filter(e => e.name.toLowerCase().includes(keywordInTitle) && new Date(e.date) >= now)
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      
+      if (upcomingMatchingEvents.length > 0) {
+        relatedEvent = upcomingMatchingEvents[0];
+      }
+  }
+
+
   return (
     <article>
       <header className="relative h-[50vh] min-h-[400px] w-full">
@@ -75,9 +101,28 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-3xl mx-auto">
           <div 
-            className="prose prose-lg dark:prose-invert max-w-none text-muted-foreground text-lg"
+            className="prose prose-lg dark:prose-invert max-w-none"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
+
+          {relatedEvent && (
+              <Card className="mt-12 bg-primary/10 border-primary/20">
+                <CardContent className="p-6 text-center">
+                    <h2 className="font-headline text-2xl font-bold text-primary mb-2">
+                        Experience It Live!
+                    </h2>
+                    <p className="text-muted-foreground mb-4">
+                        Excited about {relatedEvent.name.split(' ')[0]}? Join us for our upcoming celebration!
+                    </p>
+                    <Button asChild size="lg">
+                        <Link href={`/events/${relatedEvent.slug}`}>
+                            <Ticket className="mr-2 h-5 w-5" />
+                            View {relatedEvent.name}
+                        </Link>
+                    </Button>
+                </CardContent>
+              </Card>
+          )}
         </div>
       </div>
     </article>
