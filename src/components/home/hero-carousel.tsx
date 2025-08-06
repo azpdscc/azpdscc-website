@@ -16,7 +16,7 @@ interface HeroCarouselProps {
 
 export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
   const plugin = useRef(
-    Autoplay({ delay: 5000, stopOnInteraction: true })
+    Autoplay({ delay: 5000, stopOnInteraction: false, stopOnMouseEnter: true })
   );
 
   return (
@@ -28,7 +28,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
         }}
         className="w-full"
         onMouseEnter={plugin.current.stop}
-        onMouseLeave={plugin.current.reset}
+        onMouseLeave={plugin.current.play}
       >
         <CarouselContent>
           <CarouselItem>
