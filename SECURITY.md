@@ -71,6 +71,11 @@ service cloud.firestore {
       allow read: if true;
       allow write: if request.auth != null; // ONLY allows logged-in users to write
     }
+
+    match /sponsors/{sponsorId} {
+      allow read: if true;
+      allow write: if request.auth != null; // ONLY allows logged-in users to write
+    }
   }
 }
 ```
