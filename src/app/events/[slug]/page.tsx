@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 import { getEvents, getEventBySlug } from '@/services/events';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, Clock, MapPin, Youtube } from 'lucide-react';
+import { Calendar, Clock, MapPin, Youtube, Facebook } from 'lucide-react';
 import type { Event } from '@/lib/types';
 import { format, parse } from 'date-fns';
 import { Card } from '@/components/ui/card';
@@ -20,9 +20,10 @@ export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const event = await getEventBySlug(params.slug);
+  const slug = params.slug;
+  const post = await getEventBySlug(slug);
  
-  if (!event) {
+  if (!post) {
     return {
         title: 'Event Not Found | PDSCC Hub',
         description: 'The event you are looking for could not be found. Please check our main events page for upcoming Arizona Indian festivals.',
@@ -30,8 +31,8 @@ export async function generateMetadata(
   }
 
   return {
-    title: `${event.name} | PDSCC Phoenix Indian Community`,
-    description: `Get details for ${event.name}, a premier event for the AZ India community. Find date, time, location, and RSVP info for this top Arizona Indian festival.`,
+    title: `${post.name} | PDSCC Phoenix Indian Community`,
+    description: `Get details for ${post.name}, a premier event for the AZ India community. Find date, time, location, and RSVP info for this top Arizona Indian festival.`,
   }
 }
 
@@ -143,7 +144,7 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
           priority
           className="z-0 object-cover"
         />
-        <div className="absolute inset-0 bg-black/50 bg-hero-pattern" />
+        <div className="absolute inset-0 bg-black/50 bg-hero-pattern opacity-10" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4">
           <Badge className="mb-4 bg-accent text-accent-foreground">{event.category}</Badge>
           <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">
@@ -156,16 +157,26 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
         {isPast && (
           <Card className="mb-8 border-primary/20 bg-primary/5 shadow-lg">
             <div className="p-6 text-center">
-              <Youtube className="h-12 w-12 mx-auto text-primary mb-3" strokeWidth={1.5} />
+              <div className="flex justify-center items-center gap-4 mb-3">
+                <Youtube className="h-12 w-12 mx-auto text-primary" strokeWidth={1.5} />
+                <Facebook className="h-12 w-12 mx-auto text-primary" strokeWidth={1.5} />
+              </div>
               <h2 className="font-headline text-2xl font-bold text-primary">This Event Has Ended</h2>
               <p className="mt-2 text-muted-foreground text-base">
-                You can watch the full recording of {event.name} on our official YouTube channel.
+                Relive the moments! Check out the recordings and photos from {event.name}.
               </p>
-              <Button asChild className="mt-4">
-                <Link href="https://www.youtube.com/@AZPDSCC" target="_blank" rel="noopener noreferrer">
-                  Watch on YouTube
-                </Link>
-              </Button>
+              <div className="mt-4 flex flex-col sm:flex-row gap-2 justify-center">
+                <Button asChild>
+                  <Link href="https://www.youtube.com/@AZPDSCC" target="_blank" rel="noopener noreferrer">
+                    <Youtube className="mr-2"/> Watch on YouTube
+                  </Link>
+                </Button>
+                 <Button asChild variant="secondary">
+                  <Link href="https://www.facebook.com/pdscc/photos_albums" target="_blank" rel="noopener noreferrer">
+                    <Facebook className="mr-2"/> View Photos
+                  </Link>
+                </Button>
+              </div>
             </div>
           </Card>
         )}
