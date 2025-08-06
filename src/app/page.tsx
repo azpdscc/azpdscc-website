@@ -20,12 +20,20 @@ export default async function Home() {
   
   const now = new Date();
   now.setHours(0, 0, 0, 0);
+
+  // Separate and sort upcoming and past events
   const upcomingEvents = allEvents
     .filter(e => new Date(e.date) >= now)
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
+  const pastEvents = allEvents
+    .filter(e => new Date(e.date) < now)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  // Combine lists and take the first 4 for the homepage display
+  const homePageEvents = [...upcomingEvents, ...pastEvents].slice(0, 4);
+
   const nextEvent = upcomingEvents.length > 0 ? upcomingEvents[0] : null;
-  const nextFiveEvents = upcomingEvents.slice(0, 5);
 
   return (
     <div className="flex flex-col">
@@ -94,16 +102,16 @@ export default async function Home() {
         </div>
       </section>
       
-      {nextFiveEvents.length > 0 && (
+      {homePageEvents.length > 0 && (
         <section id="events" className="py-16 md:py-24 bg-card">
           <div className="container mx-auto px-4">
             <div className="flex justify-between items-center mb-12">
-              <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">Upcoming Arizona Indian Festivals</h2>
+              <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">Our Events</h2>
               <Button asChild variant="link" className="text-primary">
                 <Link href="/events">View All <ArrowRight className="ml-2 h-4 w-4" strokeWidth={1.5} /></Link>
               </Button>
             </div>
-            <EventsCarousel events={nextFiveEvents} />
+            <EventsCarousel events={homePageEvents} />
           </div>
         </section>
       )}
