@@ -74,9 +74,10 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-3xl mx-auto">
-          <div className="prose prose-lg dark:prose-invert max-w-none text-muted-foreground whitespace-pre-line text-lg">
-            {post.content}
-          </div>
+          <div 
+            className="prose prose-lg dark:prose-invert max-w-none text-muted-foreground text-lg"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
         </div>
       </div>
     </article>
