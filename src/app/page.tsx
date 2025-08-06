@@ -308,7 +308,7 @@ export default function Home() {
               </div>
             </div>
             <div className="w-full h-full">
-               <Image src="https://placehold.co/600x400.png" alt="Community gathering" data-ai-hint="community gathering" width={600} height={400} className="rounded-lg shadow-xl w-full" />
+               <Image src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/Home+Page/_R1_4738.JPG" alt="PDSCC Community gathering" data-ai-hint="PDSCC community gathering" width={600} height={400} className="rounded-lg shadow-xl w-full" />
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 
 
+
 export type EventCategory = 'Music' | 'Food' | 'Dance' | 'Cultural';
 
 export type Event = {
@@ -73,7 +74,7 @@ export type DonationFormValues = {
 };
 
 export type BlogPost = {
-  id: number;
+  id: string;
   slug: string;
   title: string;
   author: string;
@@ -83,4 +84,4 @@ export type BlogPost = {
   content: string;
 };
 
-
+export type BlogPostFormData = Omit<BlogPost, 'id'>;

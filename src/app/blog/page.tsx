@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { blogPosts } from '@/lib/blog-data';
+import { getBlogPosts } from '@/services/blog';
 import { ArrowRight, User, Calendar } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -11,7 +11,8 @@ export const metadata: Metadata = {
   description: 'Explore articles about Indian festivals, culture, food, and community stories from the PDSCC Hub for AZ Desis and the Phoenix Indian community.',
 };
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const blogPosts = await getBlogPosts();
   return (
     <div className="bg-background">
       <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground bg-primary">

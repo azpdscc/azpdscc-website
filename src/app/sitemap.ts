@@ -1,6 +1,7 @@
+
 import type { MetadataRoute } from 'next';
 import { getEvents } from '@/services/events';
-import { blogPosts } from '@/lib/blog-data';
+import { getBlogPosts } from '@/services/blog';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.azpdscc.org';
@@ -32,6 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Dynamic blog post routes
+  const blogPosts = await getBlogPosts();
   const blogRoutes = blogPosts.map(post => ({
     url: `${baseUrl}/blog/${post.slug}`,
     lastModified: new Date(),

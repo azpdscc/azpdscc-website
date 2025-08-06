@@ -1,3 +1,4 @@
+
 # Application Security Instructions
 
 This document provides instructions for securing your PDSCC website admin panel.
@@ -73,6 +74,11 @@ service cloud.firestore {
     }
 
     match /sponsors/{sponsorId} {
+      allow read: if true;
+      allow write: if request.auth != null; // ONLY allows logged-in users to write
+    }
+
+    match /blogPosts/{postId} {
       allow read: if true;
       allow write: if request.auth != null; // ONLY allows logged-in users to write
     }

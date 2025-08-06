@@ -1,0 +1,159 @@
+
+'use client';
+
+import { useState, useActionState } from 'react';
+import type { BlogPost } from '@/lib/types';
+import type { BlogFormState } from '@/app/admin/blog/actions';
+import { createBlogPostAction, updateBlogPostAction } from '@/app/admin/blog/actions';
+import Link from 'next/link';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
+import { generateBlogPost } from '@/ai/flows/generate-blog-post-flow';
+
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Label } from '@/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { AlertCircle, CalendarIcon, Loader2, Sparkles } from 'lucide-react';
+import { SubmitButton } from './submit-button';
+
+interface BlogFormProps {
+  post?: BlogPost;
+}
+
+export function BlogForm({ post }: BlogFormProps) {
+  const isEditing = !!post;
+
+  const action = isEditing ? updateBlogPostAction.bind(null, post.id) : createBlogPostAction;
+  const initialState: BlogFormState = { errors: {}, message: '' };
+  const [formState, formAction] = useActionState(action, initialState);
+
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [topic, setTopic] = useState('');
+  
+  // Form fields state
+  const [title, setTitle] = useState(post?.title || '');
+  const [slug, setSlug] = useState(post?.slug || '');
+  const [author, setAuthor] = useState(post?.author || 'PDSCC Team');
+  const [image, setImage] = useState(post?.image || 'https://placehold.co/800x400.png');
+  const [excerpt, setExcerpt] = useState(post?.excerpt || '');
+  const [content, setContent] = useState(post?.content || '');
+  const [date, setDate] = useState<Date | undefined>(post?.date ? new Date(post.date) : new Date());
+
+  const handleGeneratePost = async () => {
+    if (!topic) {
+        alert("Please enter a topic first.");
+        return;
+    }
+
+    setIsGenerating(true);
+    try {
+        const result = await generateBlogPost({ topic });
+        if (result) {
+            setTitle(result.title);
+            setSlug(result.slug);
+            setExcerpt(result.excerpt);
+            setContent(result.content);
+        }
+    } catch (error) {
+        console.error("Failed to generate blog post:", error);
+        alert("Failed to generate blog post. Please try again.");
+    } finally {
+        setIsGenerating(false);
+    }
+  };
+
+  return (
+    <>
+      {!isEditing && (
+        <div className="space-y-4 p-4 border rounded-lg bg-secondary/50 mb-6">
+            <Label htmlFor="topic" className="text-lg font-semibold">Blog Post Topic</Label>
+            <p className="text-sm text-muted-foreground">Enter a topic and let AI create a draft for you. Remember to review and edit the generated content before saving.</p>
+            <div className="flex items-center gap-2">
+                <Input id="topic" value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="e.g., The importance of Vaisakhi" />
+                <Button type="button" variant="secondary" onClick={handleGeneratePost} disabled={isGenerating || !topic}>
+                    {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                    Generate Post
+                </Button>
+            </div>
+        </div>
+      )}
+
+      <form action={formAction} className="space-y-6">
+          <input type="hidden" name="slug" value={slug} />
+          
+          <div>
+              <Label htmlFor="title">Post Title</Label>
+              <Input id="title" name="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+              {formState.errors?.title && <p className="text-destructive text-sm mt-1">{formState.errors.title.join(', ')}</p>}
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+                <Label htmlFor="author">Author</Label>
+                <Input id="author" name="author" value={author} onChange={(e) => setAuthor(e.target.value)} required />
+                {formState.errors?.author && <p className="text-destructive text-sm mt-1">{formState.errors.author.join(', ')}</p>}
+            </div>
+            <div>
+                <Label htmlFor="date">Publication Date</Label>
+                 <Popover>
+                    <PopoverTrigger asChild>
+                        <Button
+                            variant={"outline"}
+                            className={cn(
+                                "w-full pl-3 text-left font-normal",
+                                !date && "text-muted-foreground"
+                            )}
+                        >
+                            {date ? format(date, "PPP") : <span>Pick a date</span>}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+                    </PopoverContent>
+                </Popover>
+                <input type="hidden" name="date" value={date ? date.toISOString() : ''} />
+                {formState.errors?.date && <p className="text-destructive text-sm mt-1">{formState.errors.date.join(', ')}</p>}
+            </div>
+          </div>
+          
+          <div>
+              <Label htmlFor="image">Image URL</Label>
+              <Input id="image" name="image" value={image} onChange={(e) => setImage(e.target.value)} required />
+              {formState.errors?.image && <p className="text-destructive text-sm mt-1">{formState.errors.image.join(', ')}</p>}
+          </div>
+
+          <div>
+              <Label htmlFor="excerpt">Excerpt / Short Summary</Label>
+              <Textarea id="excerpt" name="excerpt" value={excerpt} onChange={(e) => setExcerpt(e.target.value)} rows={3} required />
+              {formState.errors?.excerpt && <p className="text-destructive text-sm mt-1">{formState.errors.excerpt.join(', ')}</p>}
+          </div>
+          
+          <div>
+              <Label htmlFor="content">Full Content</Label>
+              <Textarea id="content" name="content" value={content} onChange={(e) => setContent(e.target.value)} rows={15} required />
+              {formState.errors?.content && <p className="text-destructive text-sm mt-1">{formState.errors.content.join(', ')}</p>}
+          </div>
+
+          {formState.errors?._form && (
+              <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{formState.errors._form.join(', ')}</AlertDescription>
+              </Alert>
+          )}
+
+          <div className="flex items-center gap-4">
+              <SubmitButton isEditing={isEditing} createText="Save Post" />
+              <Button variant="outline" asChild>
+                  <Link href="/admin/blog">Cancel</Link>
+              </Button>
+          </div>
+      </form>
+    </>
+  );
+}
