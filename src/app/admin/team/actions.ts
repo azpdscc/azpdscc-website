@@ -12,6 +12,7 @@ export type TeamFormState = {
     role?: string[];
     image?: string[];
     bio?: string[];
+    order?: string[];
     _form?: string[];
   };
   message?: string;
@@ -22,6 +23,7 @@ const teamMemberSchema = z.object({
   role: z.string().min(1, "Role is required"),
   image: z.string().url("Must be a valid image URL").optional().or(z.literal('')),
   bio: z.string().min(1, "Bio is required"),
+  order: z.coerce.number().default(99),
 });
 
 const placeholderImage = 'https://placehold.co/400x400.png';
@@ -35,6 +37,7 @@ export async function createTeamMemberAction(
     role: formData.get('role'),
     image: formData.get('image'),
     bio: formData.get('bio'),
+    order: formData.get('order'),
   });
 
   if (!validatedFields.success) {
@@ -75,6 +78,7 @@ export async function updateTeamMemberAction(
     role: formData.get('role'),
     image: formData.get('image'),
     bio: formData.get('bio'),
+    order: formData.get('order'),
   });
 
   if (!validatedFields.success) {

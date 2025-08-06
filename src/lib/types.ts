@@ -1,6 +1,7 @@
 
 
 
+
 export type EventCategory = 'Music' | 'Food' | 'Dance' | 'Cultural';
 
 export type Event = {
@@ -36,6 +37,7 @@ export type TeamMember = {
   role: string;
   image: string;
   bio: string;
+  order: number;
 };
 
 export type Sponsor = {

@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { getTeamMembers } from '@/services/team';
 import { Button } from '@/components/ui/button';
@@ -16,7 +17,7 @@ export default async function ManageTeamPage() {
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
                         <CardTitle className="font-headline text-2xl">Manage Team Members</CardTitle>
-                        <CardDescription>A list of all team members.</CardDescription>
+                        <CardDescription>A list of all team members. Use the 'Order' to change the display sequence.</CardDescription>
                     </div>
                     <div className="flex items-center gap-2">
                         <Button asChild>
@@ -31,6 +32,7 @@ export default async function ManageTeamPage() {
                     <Table>
                         <TableHeader>
                             <TableRow>
+                                <TableHead className="w-[50px]">Order</TableHead>
                                 <TableHead>Image</TableHead>
                                 <TableHead>Name</TableHead>
                                 <TableHead>Role</TableHead>
@@ -40,6 +42,7 @@ export default async function ManageTeamPage() {
                         <TableBody>
                             {teamMembers.map((member) => (
                                 <TableRow key={member.id}>
+                                    <TableCell className="font-medium text-center">{member.order}</TableCell>
                                     <TableCell>
                                         <Image src={member.image} alt={member.name} width={40} height={40} className="rounded-full" />
                                     </TableCell>

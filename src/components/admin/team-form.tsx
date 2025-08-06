@@ -28,12 +28,19 @@ export function TeamForm({ member }: TeamFormProps) {
 
   return (
     <form action={formAction} className="space-y-6">
-        <div>
-            <Label htmlFor="name">Full Name</Label>
-            <Input id="name" name="name" defaultValue={member?.name} required />
-            {formState.errors?.name && <p className="text-destructive text-sm mt-1">{formState.errors.name.join(', ')}</p>}
+        <div className="grid md:grid-cols-3 gap-6">
+            <div className="md:col-span-2">
+                <Label htmlFor="name">Full Name</Label>
+                <Input id="name" name="name" defaultValue={member?.name} required />
+                {formState.errors?.name && <p className="text-destructive text-sm mt-1">{formState.errors.name.join(', ')}</p>}
+            </div>
+            <div>
+                 <Label htmlFor="order">Display Order</Label>
+                <Input id="order" name="order" type="number" defaultValue={member?.order ?? 99} required />
+                {formState.errors?.order && <p className="text-destructive text-sm mt-1">{formState.errors.order.join(', ')}</p>}
+            </div>
         </div>
-        
+
         <div>
             <Label htmlFor="role">Role / Title</Label>
             <Input id="role" name="role" defaultValue={member?.role} required />

@@ -11,12 +11,13 @@ import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, 
 const teamCollectionRef = collection(db, 'teamMembers');
 
 /**
- * Fetches all team members from the Firestore database, ordered by name.
+ * Fetches all team members from the Firestore database, ordered by the 'order' field,
+ * then by name.
  * @returns {Promise<TeamMember[]>} A promise that resolves to an array of team members.
  */
 export async function getTeamMembers(): Promise<TeamMember[]> {
   try {
-    const q = query(teamCollectionRef, orderBy('name'));
+    const q = query(teamCollectionRef, orderBy('order', 'asc'), orderBy('name', 'asc'));
     const querySnapshot = await getDocs(q);
     const members = querySnapshot.docs.map(doc => ({
       id: doc.id,
