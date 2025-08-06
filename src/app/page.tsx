@@ -19,9 +19,14 @@ import Autoplay from 'embla-carousel-autoplay';
 export default function Home() {
   const [allEvents, setAllEvents] = useState<Event[]>([]);
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
-  const plugin = useRef(
+  
+  const heroPlugin = useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
   );
+
+  const eventsPlugin = useRef(
+      Autoplay({ delay: 3000, stopOnInteraction: true })
+  )
 
   useEffect(() => {
     async function fetchData() {
@@ -56,13 +61,13 @@ export default function Home() {
     <div className="flex flex-col">
       <section className="relative w-full">
          <Carousel
-            plugins={[plugin.current]}
+            plugins={[heroPlugin.current]}
             opts={{
               loop: true,
             }}
             className="w-full"
-            onMouseEnter={plugin.current.stop}
-            onMouseLeave={plugin.current.reset}
+            onMouseEnter={heroPlugin.current.stop}
+            onMouseLeave={heroPlugin.current.reset}
           >
             <CarouselContent>
               <CarouselItem>
@@ -109,7 +114,7 @@ export default function Home() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                     <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4">
-                      <p className="font-bold uppercase tracking-widest text-primary-foreground drop-shadow-md">Coming Soon</p>
+                      <p className="font-bold uppercase tracking-widest !text-primary-foreground drop-shadow-md">Coming Soon</p>
                       <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold !text-primary-foreground drop-shadow-lg">
                         {nextEvent.name}
                       </h1>
@@ -209,11 +214,14 @@ export default function Home() {
             </Button>
           </div>
           <Carousel
+            plugins={[eventsPlugin.current]}
             opts={{
               align: 'start',
               loop: true,
             }}
             className="w-full"
+            onMouseEnter={eventsPlugin.current.stop}
+            onMouseLeave={eventsPlugin.current.reset}
           >
             <CarouselContent>
               {nextFiveEvents.map((event) => (
@@ -308,3 +316,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
