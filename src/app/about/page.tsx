@@ -90,7 +90,7 @@ export default async function AboutPage() {
           <p className="text-center mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
             We are a group of dedicated volunteers committed to serving the AZ India community.
           </p>
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
             {teamMembers.map((member) => (
               <Card key={member.id} className="text-center shadow-lg overflow-hidden">
                 <CardHeader className="p-0">
