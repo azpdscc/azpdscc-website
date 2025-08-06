@@ -1,15 +1,10 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /events/{eventId} {
-      allow read, write: if true;
-    }
-
-    match /teamMembers/{memberId} {
-      allow read, write: if true;
-    }
-
-    match /sponsors/{sponsorId} {
+    // Allow public read and write access for everyone.
+    // IMPORTANT: This is insecure and for development purposes only.
+    // Follow the instructions in SECURITY.md to lock this down before launch.
+    match /{document=**} {
       allow read, write: if true;
     }
   }

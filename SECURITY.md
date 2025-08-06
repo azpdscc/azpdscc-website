@@ -62,7 +62,7 @@ Replace the content of `firestore.rules` with the following:
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow public read access to everyone
+    // Allow public read access to everyone for collections that need to be public
     match /events/{eventId} {
       allow read: if true;
       allow write: if request.auth != null; // ONLY allows logged-in users to write
