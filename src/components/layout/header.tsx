@@ -12,11 +12,11 @@ import { TopBar } from '@/components/layout/top-bar';
 
 const navLinks = [
   { href: '/', label: 'Home' },
-  { href: '/about', label: 'About Us' },
   { href: '/events', label: 'Events' },
   { href: '/vendors', label: 'Vendors' },
   { href: '/sponsorship', label: 'Sponsorship' },
   { href: '/blog', label: 'Blog' },
+  { href: '/about', label: 'About Us' },
 ];
 
 export function Header() {
