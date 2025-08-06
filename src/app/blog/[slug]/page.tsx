@@ -81,7 +81,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           priority
           className="z-0 object-cover"
         />
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-black/60 bg-hero-pattern" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4 container mx-auto">
           <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">
             {post.title}

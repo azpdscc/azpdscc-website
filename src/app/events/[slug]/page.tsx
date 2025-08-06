@@ -143,7 +143,7 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
           priority
           className="z-0 object-cover"
         />
-        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-black/50 bg-hero-pattern" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4">
           <Badge className="mb-4 bg-accent text-accent-foreground">{event.category}</Badge>
           <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">
