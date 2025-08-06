@@ -1,8 +1,10 @@
+
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Home } from 'lucide-react';
+import { Footer } from '@/components/layout/footer';
 
 export const metadata: Metadata = {
   title: 'PDSCC Admin',
@@ -18,7 +20,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-secondary/50">
+    <div className="flex flex-col min-h-screen bg-secondary/50">
       <header className="bg-background border-b sticky top-0 z-10">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -33,9 +35,10 @@ export default function AdminLayout({
           </Button>
         </div>
       </header>
-      <main>
+      <main className="flex-grow">
         {children}
       </main>
+      <Footer />
     </div>
   );
 }

@@ -13,11 +13,7 @@ export function ConditionalLayout({ children }: { children: ReactNode }) {
     const isAdminPage = pathname.startsWith('/admin');
 
     if (isAdminPage) {
-        return (
-            <>
-                {children}
-            </>
-        )
+        return <>{children}</>;
     }
 
     return (
