@@ -23,8 +23,9 @@ export default function VendorsPage() {
         </div>
       </section>
       
-      <section className="py-16 bg-background">
+      <main className="py-16 bg-background">
         <div className="container mx-auto px-4">
+          <h2 className="sr-only">Vendor Options</h2>
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             <Card className="shadow-lg flex flex-col">
               <CardHeader>
@@ -74,7 +75,7 @@ export default function VendorsPage() {
             </div>
           </div>
         </div>
-      </section>
+      </main>
     </div>
   );
 }

@@ -31,7 +31,7 @@ export default function ContactPage() {
             </div>
             <div className="lg:col-span-1">
                <div className="p-8 border rounded-lg bg-card shadow-md h-full">
-                <h3 className="font-headline text-2xl font-bold mb-6">Our Contact Info</h3>
+                <h2 className="font-headline text-2xl font-bold mb-6">Our Contact Info</h2>
                 <div className="space-y-6 text-muted-foreground">
                     <div className="flex items-start gap-4">
                         <Mail className="h-6 w-6 mt-1 text-primary shrink-0" strokeWidth={1.5} />
@@ -51,7 +51,9 @@ export default function ContactPage() {
                         <MapPin className="h-6 w-6 mt-1 text-primary shrink-0" strokeWidth={1.5} />
                         <div>
                             <p className="font-semibold text-foreground">Address</p>
-                            <p>AZPDSCC Community Lane<br />Buckeye, AZ 85326</p>
+                            <address className="not-italic">
+                                AZPDSCC Community Lane<br />Buckeye, AZ 85326
+                            </address>
                         </div>
                     </div>
                 </div>

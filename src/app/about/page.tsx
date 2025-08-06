@@ -42,7 +42,7 @@ export default async function AboutPage() {
               </p>
             </div>
             <div className="w-full h-full">
-              <Image src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/About+Us/_R1_4736.JPG" data-ai-hint="team meeting" alt="Founding members of PDSCC" width={600} height={400} className="rounded-lg shadow-xl w-full" />
+              <Image src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/About+Us/_R1_4736.JPG" data-ai-hint="team meeting" alt="Founding members of PDSCC planning an event" width={600} height={400} className="rounded-lg shadow-xl w-full" />
             </div>
           </div>
         </div>
@@ -94,7 +94,7 @@ export default async function AboutPage() {
             {teamMembers.map((member) => (
               <Card key={member.id} className="text-center shadow-lg overflow-hidden">
                 <CardHeader className="p-0">
-                    <Image src={member.image} data-ai-hint="person portrait" alt={`Portrait of ${member.name}`} width={400} height={400} className="w-full h-auto" />
+                    <Image src={member.image} data-ai-hint="person portrait" alt={`Portrait of ${member.name}, ${member.role} at PDSCC`} width={400} height={400} className="w-full h-auto" />
                 </CardHeader>
                 <CardContent className="p-4">
                   <CardTitle className="font-headline text-lg">{member.name}</CardTitle>

@@ -26,11 +26,35 @@ const openSans = Open_Sans({
 
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://www.azpdscc.org'),
   title: {
     template: '%s | PDSCC Hub',
     default: 'PDSCC | Arizona Indian Community & Festivals Hub',
   },
   description: "Your hub for Arizona Indian festivals, community events, and culture. Connect with the Phoenix Indian community, AZ Desis, and find vendor booths in Arizona.",
+  openGraph: {
+      title: 'PDSCC | Arizona Indian Community & Festivals Hub',
+      description: "Your hub for Arizona Indian festivals, community events, and culture.",
+      url: 'https://www.azpdscc.org',
+      siteName: 'PDSCC Hub',
+      images: [
+        {
+          url: 'https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/og-image.png',
+          width: 1200,
+          height: 630,
+          alt: 'A collage of vibrant PDSCC community events',
+        },
+      ],
+      locale: 'en_US',
+      type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'PDSCC | Arizona Indian Community & Festivals Hub',
+    description: "Your hub for Arizona Indian festivals, community events, and culture.",
+    creator: '@azpdscc',
+    images: ['https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/og-image.png'],
+  },
 };
 
 export default function RootLayout({
@@ -43,6 +67,7 @@ export default function RootLayout({
     '@type': 'Organization',
     name: 'PDSCC',
     url: 'https://www.azpdscc.org',
+    logo: 'https://www.azpdscc.org/logo.png', // Assuming you will have a logo at this path
     address: {
       '@type': 'PostalAddress',
       streetAddress: 'AZPDSCC Community Lane',
@@ -59,7 +84,7 @@ export default function RootLayout({
     },
     sameAs: [
       "https://twitter.com/azpdscc",
-      "https://facebook.com/azpdscc",
+      "https://facebook.com/pdscc",
       "https://instagram.com/azpdscc",
       "https://www.youtube.com/@AZPDSCC",
     ],

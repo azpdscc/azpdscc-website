@@ -27,9 +27,17 @@ export async function generateMetadata(
     }
   }
 
+  // Fallback to parent metadata for OpenGraph images if post image doesn't exist
+  const previousImages = (await parent).openGraph?.images || [];
+
   return {
     title: `${post.title} | PDSCC Blog`,
     description: post.excerpt,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      images: [post.image, ...previousImages],
+    },
   }
 }
 

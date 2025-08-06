@@ -21,18 +21,27 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const slug = params.slug;
-  const post = await getEventBySlug(slug);
+  const event = await getEventBySlug(slug);
  
-  if (!post) {
+  if (!event) {
     return {
         title: 'Event Not Found | PDSCC Hub',
         description: 'The event you are looking for could not be found. Please check our main events page for upcoming Arizona Indian festivals.',
     }
   }
 
+  // Fallback to parent metadata for OpenGraph images if event image doesn't exist
+  const previousImages = (await parent).openGraph?.images || [];
+
   return {
-    title: `${post.name} | PDSCC Phoenix Indian Community`,
-    description: `Get details for ${post.name}, a premier event for the AZ India community. Find date, time, location, and RSVP info for this top Arizona Indian festival.`,
+    title: `${event.name} | PDSCC Phoenix Indian Community`,
+    description: `Get details for ${event.name}, a premier event for the AZ India community. Find date, time, location, and RSVP info for this top Arizona Indian festival.`,
+    openGraph: {
+      title: event.name,
+      description: event.description,
+      images: [event.image, ...previousImages],
+      type: 'article',
+    },
   }
 }
 
@@ -46,8 +55,17 @@ export async function generateStaticParams() {
 
 const createEventSchema = (event: Event) => {
   const [startTime, endTime] = event.time.split(' - ');
-  const startDate = new Date(`${event.date} ${startTime || '12:00 AM'}`);
-  const endDate = new Date(`${event.date} ${endTime || '11:59 PM'}`);
+  // A helper to safely parse time strings like "5:00 PM"
+  const parseTime = (timeStr: string, date: Date): Date => {
+      try {
+          return parse(timeStr.trim(), 'h:mm a', date);
+      } catch {
+          // Fallback if time format is unexpected
+          return date;
+      }
+  };
+  const startDate = parseTime(startTime, new Date(event.date));
+  const endDate = parseTime(endTime, new Date(event.date));
 
   return {
     '@context': 'https://schema.org',
@@ -129,12 +147,12 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
   const calendarLink = createGoogleCalendarLink(event);
 
   return (
-    <div>
+    <article>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(eventSchema) }}
       />
-      <section className="relative h-[50vh] min-h-[300px] w-full">
+      <header className="relative h-[50vh] min-h-[300px] w-full">
         <Image
           src={event.image}
           alt={event.name}
@@ -151,7 +169,7 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
             {event.name}
           </h1>
         </div>
-      </section>
+      </header>
 
       <div className="container mx-auto px-4 py-12">
         {isPast && (
@@ -230,6 +248,6 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
           </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
