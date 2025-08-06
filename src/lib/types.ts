@@ -37,6 +37,14 @@ export type TeamMember = {
   bio: string;
 };
 
+export type Sponsor = {
+  id: string;
+  name: string;
+  logo: string;
+  level: 'Diamond' | 'Gold' | 'Silver' | 'Bronze' | 'Other';
+  website?: string;
+};
+
 export type VendorApplication = {
   name: string;
   organization?: string;
@@ -74,3 +82,4 @@ export type BlogPost = {
   excerpt: string;
   content: string;
 };
+

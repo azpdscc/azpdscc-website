@@ -9,24 +9,30 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { EventCard } from '@/components/events/event-card';
 import { HolidayBanner } from '@/components/holiday-banner';
 import { getEvents } from '@/services/events';
+import { getSponsors } from '@/services/sponsors';
 import { ArrowRight, CircleDollarSign, Handshake, Sprout, Calendar, Ticket } from 'lucide-react';
 import { PastEventBanner } from '@/components/past-event-banner';
 import { useEffect, useState, useRef } from 'react';
-import type { Event } from '@/lib/types';
+import type { Event, Sponsor } from '@/lib/types';
 import Autoplay from 'embla-carousel-autoplay';
 
 export default function Home() {
   const [allEvents, setAllEvents] = useState<Event[]>([]);
+  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
   const plugin = useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
   );
 
   useEffect(() => {
-    async function fetchEvents() {
-        const fetchedEvents = await getEvents();
+    async function fetchData() {
+        const [fetchedEvents, fetchedSponsors] = await Promise.all([
+            getEvents(),
+            getSponsors()
+        ]);
         setAllEvents(fetchedEvents);
+        setSponsors(fetchedSponsors);
     }
-    fetchEvents();
+    fetchData();
   }, []);
   
   // Find upcoming events and sort them
@@ -39,15 +45,6 @@ export default function Home() {
   // Get the next 5 for the carousel, and the very next one for the hero
   const nextFiveEvents = upcomingEvents.slice(0, 5);
   const nextEvent = upcomingEvents.length > 0 ? upcomingEvents[0] : null;
-
-  const sponsors = [
-    { name: 'Sponsor 1', logo: 'https://placehold.co/150x75.png' },
-    { name: 'Sponsor 2', logo: 'https://placehold.co/150x75.png' },
-    { name: 'Sponsor 3', logo: 'https://placehold.co/150x75.png' },
-    { name: 'Sponsor 4', logo: 'https://placehold.co/150x75.png' },
-    { name: 'Sponsor 5', logo: 'https://placehold.co/150x75.png' },
-    { name: 'Sponsor 6', logo: 'https://placehold.co/150x75.png' },
-  ];
 
   return (
     <div className="flex flex-col">
@@ -240,8 +237,10 @@ export default function Home() {
           <div className="mt-12">
             <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-6">
               {sponsors.map((sponsor) => (
-                <div key={sponsor.name} className="flex items-center justify-center" title={sponsor.name}>
-                  <Image src={sponsor.logo} alt={sponsor.name} width={150} height={75} data-ai-hint="company logo" className="grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all" />
+                <div key={sponsor.id} className="flex items-center justify-center" title={sponsor.name}>
+                    <Link href={sponsor.website || '#'} target="_blank" rel="noopener noreferrer">
+                      <Image src={sponsor.logo} alt={sponsor.name} width={150} height={75} data-ai-hint="company logo" className="grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all" />
+                    </Link>
                 </div>
               ))}
             </div>
