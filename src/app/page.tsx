@@ -251,9 +251,7 @@ export default function Home() {
                   <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-6">
                     {sponsorsForLevel.map((sponsor) => (
                       <div key={sponsor.id} className="flex items-center justify-center" title={sponsor.name}>
-                        <Link href={sponsor.website || '#'} target="_blank" rel="noopener noreferrer">
-                          <Image src={sponsor.logo} alt={sponsor.name} width={150} height={75} data-ai-hint="company logo" className="grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all" />
-                        </Link>
+                        <Image src={sponsor.logo} alt={sponsor.name} width={150} height={75} data-ai-hint="company logo" className="grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all" />
                       </div>
                     ))}
                   </div>

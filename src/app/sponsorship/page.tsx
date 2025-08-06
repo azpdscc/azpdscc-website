@@ -1,9 +1,13 @@
 
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, Diamond, Medal, Award, Shield } from 'lucide-react';
 import { SponsorshipForm } from '@/components/sponsorship/sponsorship-form';
+import { getSponsors } from '@/services/sponsors';
+import type { Sponsor } from '@/lib/types';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Sponsor PDSCC | Partner with the Phoenix Indian Community',
@@ -58,7 +62,15 @@ const sponsorshipTiers = [
   },
 ];
 
-export default function SponsorshipPage() {
+export default async function SponsorshipPage() {
+  const sponsors = await getSponsors();
+  const sponsorLevels: Array<Sponsor['level']> = ['Diamond', 'Gold', 'Silver', 'Bronze', 'Other'];
+  const groupedSponsors = sponsors.reduce((acc, sponsor) => {
+    (acc[sponsor.level] = acc[sponsor.level] || []).push(sponsor);
+    return acc;
+  }, {} as Record<Sponsor['level'], Sponsor[]>);
+
+
   return (
     <div className="bg-background">
       <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground bg-primary">
@@ -108,6 +120,38 @@ export default function SponsorshipPage() {
                 </CardFooter>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="sponsors" className="py-16 md:py-24 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">
+              Our Valued Sponsors
+            </h2>
+            <p className="mt-4 max-w-3xl mx-auto text-lg text-muted-foreground">
+              We are grateful for the generous support of our sponsors who help make our events possible.
+            </p>
+          </div>
+          <div className="mt-12 space-y-12">
+            {sponsorLevels.map(level => {
+              const sponsorsForLevel = groupedSponsors[level];
+              if (!sponsorsForLevel || sponsorsForLevel.length === 0) return null;
+
+              return (
+                <div key={level}>
+                  <h3 className="font-headline text-2xl font-bold text-center mb-6">{level} Sponsors</h3>
+                  <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-6">
+                    {sponsorsForLevel.map((sponsor) => (
+                      <div key={sponsor.id} className="flex items-center justify-center" title={sponsor.name}>
+                          <Image src={sponsor.logo} alt={sponsor.name} width={150} height={75} data-ai-hint="company logo" className="grayscale opacity-60" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>
