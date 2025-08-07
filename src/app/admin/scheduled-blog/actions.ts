@@ -2,12 +2,12 @@
 'use server';
 
 import { z } from 'zod';
-import { createScheduledBlogPost, updateScheduledBlogPost, deleteScheduledBlogPost } from '@/services/scheduled-blog';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { format } from 'date-fns';
 import { generateBlogPost } from '@/ai/flows/generate-blog-post-flow';
 import { createBlogPost } from '@/services/blog';
+import { deleteScheduledBlogPost } from '@/services/scheduled-blog';
 
 export type ScheduledBlogFormState = {
   errors?: {
@@ -18,7 +18,7 @@ export type ScheduledBlogFormState = {
   message?: string;
 };
 
-// Simplified schema: we only need the topic and author to generate a draft.
+// This schema must match the one in the form component
 const scheduledBlogPostSchema = z.object({
   topic: z.string().min(3, "Topic must be at least 3 characters long."),
   author: z.string().min(1, "Author is required"),
