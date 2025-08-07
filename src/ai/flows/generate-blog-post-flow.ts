@@ -41,8 +41,16 @@ export async function generateBlogPost(
   return generateBlogPostFlow(input);
 }
 
-// AI prompt for generating the blog post
-const blogPostPromptTemplate = `You are an expert content creator for PDSCC (Phoenix Desi Sports and Cultural Club), a non-profit organization that serves the Phoenix Indian community and AZ Desis.
+// The main Genkit flow
+const generateBlogPostFlow = ai.defineFlow(
+  {
+    name: 'generateBlogPostFlow',
+    inputSchema: GenerateBlogPostInputSchema,
+    outputSchema: GenerateBlogPostOutputSchema,
+  },
+  async (input) => {
+    
+    const blogPostPromptTemplate = `You are an expert content creator for PDSCC (Phoenix Desi Sports and Cultural Club), a non-profit organization that serves the Phoenix Indian community and AZ Desis.
 
 Your task is to write a complete, engaging, and SEO-friendly blog post based on the provided topic.
 
@@ -60,15 +68,6 @@ Your task is to write a complete, engaging, and SEO-friendly blog post based on 
 
 Return the output in the requested JSON format.`;
 
-
-// The main Genkit flow
-const generateBlogPostFlow = ai.defineFlow(
-  {
-    name: 'generateBlogPostFlow',
-    inputSchema: GenerateBlogPostInputSchema,
-    outputSchema: GenerateBlogPostOutputSchema,
-  },
-  async (input) => {
     const { output } = await ai.generate({
       prompt: blogPostPromptTemplate,
       input: input,
