@@ -67,7 +67,7 @@ export default function RootLayout({
     '@type': 'Organization',
     name: 'PDSCC',
     url: 'https://www.azpdscc.org',
-    logo: 'https://www.azpdscc.org/logo.png', // Assuming you will have a logo at this path
+    logo: 'https://www.azpdscc.org/logo.png',
     address: {
       '@type': 'PostalAddress',
       streetAddress: 'AZPDSCC Community Lane',
