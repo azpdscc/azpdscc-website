@@ -8,6 +8,8 @@ import { createScheduledBlogPostAction, updateScheduledBlogPostAction } from '@/
 import Link from 'next/link';
 import { format, parse } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { generateBlogPost } from '@/ai/flows/generate-blog-post-flow';
+import type { GenerateBlogPostOutput } from '@/ai/flows/generate-blog-post-flow';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -16,7 +18,16 @@ import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AlertCircle, CalendarIcon } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { AlertCircle, CalendarIcon, Loader2, Sparkles } from 'lucide-react';
 import { SubmitButton } from './submit-button';
 
 interface ScheduledBlogFormProps {
@@ -34,12 +45,65 @@ export function ScheduledBlogForm({ post }: ScheduledBlogFormProps) {
   const [date, setDate] = useState<Date | undefined>(
       post?.scheduledDate ? parse(post.scheduledDate, 'yyyy-MM-dd', new Date()) : new Date()
   );
+  const [topic, setTopic] = useState(post?.topic || '');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [previewContent, setPreviewContent] = useState<GenerateBlogPostOutput | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
+
+
+  const handleGeneratePreview = async () => {
+    if (!topic) {
+        alert("Please enter a topic first to generate a preview.");
+        return;
+    }
+
+    setIsGenerating(true);
+    try {
+        const result = await generateBlogPost({ topic });
+        setPreviewContent(result);
+        setShowPreview(true);
+    } catch (error) {
+        console.error("Failed to generate blog post preview:", error);
+        alert("Failed to generate blog post preview. Please try again.");
+    } finally {
+        setIsGenerating(false);
+    }
+  };
+
 
   return (
+    <>
       <form action={formAction} className="space-y-6">
           <div>
               <Label htmlFor="topic">Blog Post Topic</Label>
-              <Input id="topic" name="topic" defaultValue={post?.topic} required placeholder="e.g., The history of Diwali" />
+              <div className="flex items-center gap-2">
+                 <Input id="topic" name="topic" value={topic} onChange={(e) => setTopic(e.target.value)} required placeholder="e.g., The history of Diwali" />
+                 <AlertDialog open={showPreview} onOpenChange={setShowPreview}>
+                    <AlertDialogTrigger asChild>
+                        <Button type="button" variant="secondary" onClick={handleGeneratePreview} disabled={isGenerating || !topic}>
+                            {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                            Preview Post
+                        </Button>
+                    </AlertDialogTrigger>
+                    {previewContent && (
+                        <AlertDialogContent className="max-w-3xl">
+                            <AlertDialogHeader>
+                                <AlertDialogTitle className="font-headline text-2xl">{previewContent.title}</AlertDialogTitle>
+                                <AlertDialogDescription className="text-left">
+                                   This is a preview of the content that will be generated for your topic. You can close this window and refine your topic for a different result.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                             <div className="mt-4 text-sm max-h-[60vh] overflow-y-auto pr-4">
+                                <p className="font-bold">Excerpt:</p>
+                                <p className="italic text-muted-foreground mb-4">{previewContent.excerpt}</p>
+                                <p className="font-bold">Full Content:</p>
+                                <div className="prose prose-sm dark:prose-invert" dangerouslySetInnerHTML={{ __html: previewContent.content }} />
+                            </div>
+                            <AlertDialogAction>Close</AlertDialogAction>
+                        </AlertDialogContent>
+                    )}
+                 </AlertDialog>
+              </div>
               {formState.errors?.topic && <p className="text-destructive text-sm mt-1">{formState.errors.topic.join(', ')}</p>}
           </div>
           
@@ -108,5 +172,6 @@ export function ScheduledBlogForm({ post }: ScheduledBlogFormProps) {
               </Button>
           </div>
       </form>
+    </>
   );
 }
