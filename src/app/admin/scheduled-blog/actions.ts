@@ -6,105 +6,69 @@ import { createScheduledBlogPost, updateScheduledBlogPost, deleteScheduledBlogPo
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { format } from 'date-fns';
+import { generateBlogPost } from '@/ai/flows/generate-blog-post-flow';
+import { createBlogPost } from '@/services/blog';
 
 export type ScheduledBlogFormState = {
   errors?: {
     topic?: string[];
-    image?: string[];
-    scheduledDate?: string[];
-    status?: string[];
     author?: string[];
     _form?: string[];
   };
   message?: string;
 };
 
+// Simplified schema: we only need the topic and author to generate a draft.
 const scheduledBlogPostSchema = z.object({
-  topic: z.string().min(1, "Topic is required"),
-  image: z.string().url("Must be a valid URL"),
-  scheduledDate: z.coerce.date({ required_error: 'Please select a date.'}),
-  status: z.enum(['Pending', 'Published']),
+  topic: z.string().min(3, "Topic must be at least 3 characters long."),
   author: z.string().min(1, "Author is required"),
 });
 
-export async function createScheduledBlogPostAction(
+export async function createDraftBlogPostAction(
   prevState: ScheduledBlogFormState,
   formData: FormData
 ): Promise<ScheduledBlogFormState> {
   const validatedFields = scheduledBlogPostSchema.safeParse({
     topic: formData.get('topic'),
-    image: formData.get('image'),
-    scheduledDate: formData.get('scheduledDate'),
-    status: formData.get('status'),
     author: formData.get('author'),
   });
 
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Failed to schedule post. Please check the errors below.',
+      message: 'Failed to generate draft. Please check the errors below.',
     };
   }
-  
-  const postData = {
-      ...validatedFields.data,
-      scheduledDate: format(validatedFields.data.scheduledDate, 'yyyy-MM-dd')
-  };
 
   try {
-    await createScheduledBlogPost(postData);
-  } catch (err) {
-     const message = err instanceof Error ? err.message : 'An unknown error occurred.';
-     return {
-      errors: {
-        _form: ['An unexpected error occurred.', message],
-      },
+    // 1. Generate the blog post content from the topic
+    const generatedContent = await generateBlogPost({ topic: validatedFields.data.topic });
+
+    // 2. Create the new blog post in the database with "Draft" status
+    const newPostData = {
+      ...generatedContent,
+      author: validatedFields.data.author,
+      date: format(new Date(), 'MMMM dd, yyyy'), // Set creation date
+      image: 'https://placehold.co/800x400.png', // Default placeholder
+      status: 'Draft' as const, // Set status to Draft
     };
-  }
 
-  revalidatePath('/admin/scheduled-blog');
-  redirect('/admin/scheduled-blog');
-}
+    await createBlogPost(newPostData);
 
-export async function updateScheduledBlogPostAction(
-  id: string,
-  prevState: ScheduledBlogFormState,
-  formData: FormData
-): Promise<ScheduledBlogFormState> {
-
-  const validatedFields = scheduledBlogPostSchema.safeParse({
-    topic: formData.get('topic'),
-    image: formData.get('image'),
-    scheduledDate: formData.get('scheduledDate'),
-    status: formData.get('status'),
-    author: formData.get('author'),
-  });
-
-  if (!validatedFields.success) {
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'An unknown error occurred.';
     return {
-      errors: validatedFields.error.flatten().fieldErrors,
-    };
-  }
-
-  const postData = {
-      ...validatedFields.data,
-      scheduledDate: format(validatedFields.data.scheduledDate, 'yyyy-MM-dd')
-  };
-
-  try {
-    await updateScheduledBlogPost(id, postData);
-  } catch (err) {
-     const message = err instanceof Error ? err.message : 'An unknown error occurred.';
-     return {
       errors: {
-        _form: ['An unexpected error occurred.', message],
+        _form: ['An unexpected error occurred while generating the draft.', message],
       },
     };
   }
-  
-  revalidatePath('/admin/scheduled-blog');
-  redirect('/admin/scheduled-blog');
+
+  // Redirect to the main blog admin page where the new draft will be visible
+  revalidatePath('/admin/blog');
+  redirect('/admin/blog');
 }
+
 
 export async function deleteScheduledBlogPostAction(id: string) {
     try {

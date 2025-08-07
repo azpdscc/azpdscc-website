@@ -12,7 +12,10 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-  const blogPosts = await getBlogPosts();
+  const allPosts = await getBlogPosts();
+  // Filter out drafts from the public-facing blog page
+  const blogPosts = allPosts.filter(post => post.status === 'Published');
+
   return (
     <div className="bg-background">
       <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground bg-primary">

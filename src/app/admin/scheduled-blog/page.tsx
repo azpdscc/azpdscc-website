@@ -5,36 +5,35 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { PlusCircle, Edit } from 'lucide-react';
+import { PlusCircle, Edit, Info, Newspaper } from 'lucide-react';
 import { DeleteScheduledBlogPostButton } from '@/components/admin/delete-buttons';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { Terminal } from 'lucide-react';
 
 export default async function ManageScheduledBlogPage() {
     const posts = await getScheduledBlogPosts();
 
     return (
         <div className="container mx-auto p-4 md:p-8">
+             <div className="flex items-center gap-4 mb-8">
+                <Button asChild>
+                    <Link href="/admin/scheduled-blog/add">
+                        <Newspaper className="mr-2 h-4 w-4" />
+                        Generate New Blog Draft
+                    </Link>
+                </Button>
+            </div>
             <Alert className="mb-8">
-                <Terminal className="h-4 w-4" />
-                <AlertTitle>Automation Hub</AlertTitle>
+                <Info className="h-4 w-4" />
+                <AlertTitle>This page is for legacy scheduled posts only.</AlertTitle>
                 <AlertDescription>
-                   This page lists all your pre-scheduled blog posts. The system will automatically pick the next "Pending" post on its scheduled date, generate the content, and publish it. To trigger this process, you need to set up a scheduler (cron job) to run the `runAutomatedWeeklyPost` flow.
+                   Use the "Generate New Blog Draft" button above for the new, improved workflow. The table below shows posts from the previous automation system. This system is still functional but the new draft-based workflow is recommended.
                 </AlertDescription>
             </Alert>
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
-                        <CardTitle className="font-headline text-2xl">Manage Scheduled Blog Posts</CardTitle>
-                        <CardDescription>A list of all scheduled blog posts for automated publication.</CardDescription>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Button asChild>
-                            <Link href="/admin/scheduled-blog/add">
-                                <PlusCircle className="mr-2 h-4 w-4" />
-                                Schedule Post
-                            </Link>
-                        </Button>
+                        <CardTitle className="font-headline text-2xl">Legacy Automated Posts</CardTitle>
+                        <CardDescription>Posts scheduled for automated cron-job based publication.</CardDescription>
                     </div>
                 </CardHeader>
                 <CardContent>

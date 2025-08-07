@@ -19,6 +19,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { AlertCircle, CalendarIcon, Loader2, Sparkles } from 'lucide-react';
 import { SubmitButton } from './submit-button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface BlogFormProps {
   post?: BlogPost;
@@ -99,13 +100,13 @@ export function BlogForm({ post }: BlogFormProps) {
               {formState.errors?.title && <p className="text-destructive text-sm mt-1">{formState.errors.title.join(', ')}</p>}
           </div>
           
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
+          <div className="grid md:grid-cols-3 gap-4">
+            <div className="md:col-span-1">
                 <Label htmlFor="author">Author</Label>
                 <Input id="author" name="author" value={author} onChange={(e) => setAuthor(e.target.value)} required />
                 {formState.errors?.author && <p className="text-destructive text-sm mt-1">{formState.errors.author.join(', ')}</p>}
             </div>
-            <div>
+            <div className="md:col-span-1">
                 <Label htmlFor="date">Publication Date</Label>
                  <Popover>
                     <PopoverTrigger asChild>
@@ -126,6 +127,19 @@ export function BlogForm({ post }: BlogFormProps) {
                 </Popover>
                 <input type="hidden" name="date" value={date ? date.toISOString() : ''} />
                 {formState.errors?.date && <p className="text-destructive text-sm mt-1">{formState.errors.date.join(', ')}</p>}
+            </div>
+            <div className="md:col-span-1">
+                 <Label htmlFor="status">Status</Label>
+                <Select name="status" defaultValue={post?.status || 'Draft'}>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select a status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="Draft">Draft</SelectItem>
+                        <SelectItem value="Published">Published</SelectItem>
+                    </SelectContent>
+                </Select>
+                {formState.errors?.status && <p className="text-destructive text-sm mt-1">{formState.errors.status.join(', ')}</p>}
             </div>
           </div>
           

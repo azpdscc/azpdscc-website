@@ -1,5 +1,4 @@
 
-
 export type EventCategory = 'Music' | 'Food' | 'Dance' | 'Cultural';
 
 export type Event = {
@@ -82,6 +81,7 @@ export type BlogPost = {
   image: string;
   excerpt: string;
   content: string;
+  status: 'Draft' | 'Published';
 };
 
 export type BlogPostFormData = Omit<BlogPost, 'id'>;
@@ -103,4 +103,3 @@ export type GenerateBlogPostOutput = {
   excerpt: string;
   content: string;
 };
-

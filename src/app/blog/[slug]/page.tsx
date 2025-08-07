@@ -8,6 +8,7 @@ import { getEvents } from '@/services/events';
 import { Button } from '@/components/ui/button';
 import { Calendar, User, Ticket } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 type Props = {
   params: { slug: string }
@@ -43,7 +44,8 @@ export async function generateMetadata(
 
 export async function generateStaticParams() {
   const posts = await getBlogPosts();
-  return posts.map((post) => ({
+  // Only generate static pages for published posts
+  return posts.filter(p => p.status === 'Published').map((post) => ({
     slug: post.slug,
   }));
 }
@@ -53,6 +55,11 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
   if (!post) {
     notFound();
+  }
+  
+  // Do not show drafts on the public site
+  if (post.status === 'Draft') {
+      notFound();
   }
 
   // Check if post is about a specific event and find that event

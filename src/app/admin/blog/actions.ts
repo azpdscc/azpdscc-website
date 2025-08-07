@@ -16,6 +16,7 @@ export type BlogFormState = {
     image?: string[];
     excerpt?: string[];
     content?: string[];
+    status?: string[];
     _form?: string[];
   };
   message?: string;
@@ -29,6 +30,7 @@ const blogPostSchema = z.object({
   image: z.string().url("Must be a valid URL"),
   excerpt: z.string().min(1, "Excerpt is required"),
   content: z.string().min(1, "Content is required"),
+  status: z.enum(['Draft', 'Published']),
 });
 
 export async function createBlogPostAction(
@@ -43,6 +45,7 @@ export async function createBlogPostAction(
     image: formData.get('image'),
     excerpt: formData.get('excerpt'),
     content: formData.get('content'),
+    status: formData.get('status'),
   });
 
   if (!validatedFields.success) {
@@ -87,6 +90,7 @@ export async function updateBlogPostAction(
     image: formData.get('image'),
     excerpt: formData.get('excerpt'),
     content: formData.get('content'),
+    status: formData.get('status'),
   });
 
   if (!validatedFields.success) {

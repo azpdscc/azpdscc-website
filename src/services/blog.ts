@@ -6,7 +6,7 @@
 
 import { db } from '@/lib/firebase';
 import type { BlogPost, BlogPostFormData } from '@/lib/types';
-import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, orderBy } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, orderBy, Timestamp } from 'firebase/firestore';
 
 const blogCollectionRef = collection(db, 'blogPosts');
 
@@ -16,6 +16,9 @@ const blogCollectionRef = collection(db, 'blogPosts');
  */
 export async function getBlogPosts(): Promise<BlogPost[]> {
   try {
+    // Note: Firestore queries require a composite index for ordering by one field
+    // and filtering by another if you add a where clause. For now, order by date.
+    // To sort by status and then date, a composite index on (status, date) is needed.
     const q = query(blogCollectionRef, orderBy('date', 'desc'));
     const querySnapshot = await getDocs(q);
     const posts = querySnapshot.docs.map(doc => ({
@@ -66,8 +69,11 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
             return null;
         }
         
-        const doc = querySnapshot.docs[0];
-        return { id: doc.id, ...doc.data() } as BlogPost;
+        const docSnap = querySnapshot.docs[0];
+        const post = { id: docSnap.id, ...docSnap.data() } as BlogPost;
+        
+        return post;
+
     } catch (error) {
         console.error("Error fetching blog post by slug:", error);
         return null;
@@ -81,7 +87,10 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
  * @returns {Promise<string>} The ID of the newly created document.
  */
 export async function createBlogPost(postData: BlogPostFormData): Promise<string> {
-    const docRef = await addDoc(blogCollectionRef, postData);
+    const docRef = await addDoc(blogCollectionRef, {
+        ...postData,
+        date: Timestamp.fromDate(new Date(postData.date))
+    });
     return docRef.id;
 }
 
@@ -94,7 +103,11 @@ export async function createBlogPost(postData: BlogPostFormData): Promise<string
  */
 export async function updateBlogPost(id: string, postData: Partial<BlogPostFormData>): Promise<void> {
     const postDoc = doc(db, 'blogPosts', id);
-    await updateDoc(postDoc, postData);
+    const dataToUpdate: Record<string, any> = {...postData};
+    if (postData.date) {
+        dataToUpdate.date = Timestamp.fromDate(new Date(postData.date));
+    }
+    await updateDoc(postDoc, dataToUpdate);
 }
 
 /**

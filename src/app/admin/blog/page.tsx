@@ -4,6 +4,7 @@ import { getBlogPosts } from '@/services/blog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
 import { PlusCircle, Edit } from 'lucide-react';
 import { DeleteBlogPostButton } from '@/components/admin/delete-buttons';
 
@@ -16,7 +17,7 @@ export default async function ManageBlogPage() {
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
                         <CardTitle className="font-headline text-2xl">Manage Blog Posts</CardTitle>
-                        <CardDescription>A list of all blog posts.</CardDescription>
+                        <CardDescription>A list of all blog posts, including drafts and published articles.</CardDescription>
                     </div>
                     <div className="flex items-center gap-2">
                         <Button asChild>
@@ -32,6 +33,7 @@ export default async function ManageBlogPage() {
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Title</TableHead>
+                                <TableHead>Status</TableHead>
                                 <TableHead>Author</TableHead>
                                 <TableHead>Date</TableHead>
                                 <TableHead className="text-right">Actions</TableHead>
@@ -41,6 +43,11 @@ export default async function ManageBlogPage() {
                             {posts.map((post) => (
                                 <TableRow key={post.id}>
                                     <TableCell className="font-medium">{post.title}</TableCell>
+                                    <TableCell>
+                                        <Badge variant={post.status === 'Published' ? 'default' : 'secondary'}>
+                                            {post.status}
+                                        </Badge>
+                                    </TableCell>
                                     <TableCell>{post.author}</TableCell>
                                     <TableCell>{post.date}</TableCell>
                                     <TableCell className="text-right">
