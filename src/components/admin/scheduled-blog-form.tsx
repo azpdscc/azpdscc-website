@@ -8,8 +8,6 @@ import { createScheduledBlogPostAction, updateScheduledBlogPostAction } from '@/
 import Link from 'next/link';
 import { format, parse } from 'date-fns';
 import { cn } from '@/lib/utils';
-import { generateBlogPost } from '@/ai/flows/generate-blog-post-flow';
-import type { GenerateBlogPostOutput } from '@/ai/flows/generate-blog-post-flow';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -18,17 +16,7 @@ import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-  AlertDialogCancel,
-} from "@/components/ui/alert-dialog"
-import { AlertCircle, CalendarIcon, Loader2, Sparkles } from 'lucide-react';
+import { AlertCircle, CalendarIcon } from 'lucide-react';
 import { SubmitButton } from './submit-button';
 
 interface ScheduledBlogFormProps {
@@ -44,11 +32,7 @@ export function ScheduledBlogForm({ post }: ScheduledBlogFormProps) {
 
   // The scheduledDate is a 'yyyy-MM-dd' string. We need to parse it for the calendar.
   const [date, setDate] = useState<Date | undefined>(undefined);
-  const [topic, setTopic] = useState(post?.topic || '');
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [previewContent, setPreviewContent] = useState<GenerateBlogPostOutput | null>(null);
-  const [showPreview, setShowPreview] = useState(false);
-
+  
   useEffect(() => {
     // To avoid hydration mismatch, only set the default date on the client
     if (post?.scheduledDate) {
@@ -58,67 +42,12 @@ export function ScheduledBlogForm({ post }: ScheduledBlogFormProps) {
     }
   }, [post?.scheduledDate]);
 
-
-  const handleGeneratePreview = async () => {
-    if (!topic) {
-        alert("Please enter a topic first to generate a preview.");
-        return;
-    }
-
-    setIsGenerating(true);
-    setPreviewContent(null); // Clear previous content
-    try {
-        const result = await generateBlogPost({ topic });
-        setPreviewContent(result);
-        setShowPreview(true);
-    } catch (error) {
-        console.error("Failed to generate blog post preview:", error);
-        alert("Failed to generate blog post preview. Please try again.");
-    } finally {
-        setIsGenerating(false);
-    }
-  };
-
-
   return (
     <>
       <form action={formAction} className="space-y-6">
           <div>
               <Label htmlFor="topic">Blog Post Topic</Label>
-              <div className="flex items-center gap-2">
-                 <Input id="topic" name="topic" value={topic} onChange={(e) => setTopic(e.target.value)} required placeholder="e.g., The history of Diwali" />
-                 <AlertDialog open={showPreview} onOpenChange={setShowPreview}>
-                    <AlertDialogTrigger asChild>
-                        <Button type="button" variant="secondary" onClick={handleGeneratePreview} disabled={isGenerating || !topic}>
-                            {isGenerating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
-                            Preview Post
-                        </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent className="max-w-3xl">
-                        <AlertDialogHeader>
-                            <AlertDialogTitle className="font-headline text-2xl">{previewContent?.title || 'Generating...'}</AlertDialogTitle>
-                            <AlertDialogDescription className="text-left">
-                               This is a preview of the content that will be generated for your topic. You can close this window and refine your topic for a different result.
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                         <div className="mt-4 text-sm max-h-[60vh] overflow-y-auto pr-4">
-                            {previewContent ? (
-                                <>
-                                    <p className="font-bold">Excerpt:</p>
-                                    <p className="italic text-muted-foreground mb-4">{previewContent.excerpt}</p>
-                                    <p className="font-bold">Full Content:</p>
-                                    <div className="prose prose-sm dark:prose-invert" dangerouslySetInnerHTML={{ __html: previewContent.content }} />
-                                </>
-                            ): (
-                                <div className="flex items-center justify-center p-8">
-                                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                                </div>
-                            )}
-                        </div>
-                        <AlertDialogCancel>Close</AlertDialogCancel>
-                    </AlertDialogContent>
-                 </AlertDialog>
-              </div>
+              <Input id="topic" name="topic" defaultValue={post?.topic} required placeholder="e.g., The history of Diwali" />
               {formState.errors?.topic && <p className="text-destructive text-sm mt-1">{formState.errors.topic.join(', ')}</p>}
           </div>
           
