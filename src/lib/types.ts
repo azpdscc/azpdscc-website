@@ -2,6 +2,7 @@
 
 
 
+
 export type EventCategory = 'Music' | 'Food' | 'Dance' | 'Cultural';
 
 export type Event = {
@@ -87,3 +88,14 @@ export type BlogPost = {
 };
 
 export type BlogPostFormData = Omit<BlogPost, 'id'>;
+
+export type ScheduledBlogPost = {
+    id: string;
+    topic: string;
+    image: string;
+    scheduledDate: string; // ISO 8601 format (YYYY-MM-DD)
+    status: 'Pending' | 'Published';
+    author: string;
+};
+
+export type ScheduledBlogPostFormData = Omit<ScheduledBlogPost, 'id'>;

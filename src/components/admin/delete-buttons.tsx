@@ -20,6 +20,7 @@ import { deleteEventAction } from '@/app/admin/events/actions';
 import { deleteTeamMemberAction } from '@/app/admin/team/actions';
 import { deleteSponsorAction } from '@/app/admin/sponsors/actions';
 import { deleteBlogPostAction } from '@/app/admin/blog/actions';
+import { deleteScheduledBlogPostAction } from '@/app/admin/scheduled-blog/actions';
 
 interface DeleteButtonProps {
     id: string;
@@ -182,6 +183,48 @@ export function DeleteBlogPostButton({ id }: DeleteButtonProps) {
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete this blog post.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={handleDelete} disabled={isPending}>
+            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Continue
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
+export function DeleteScheduledBlogPostButton({ id }: DeleteButtonProps) {
+  const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
+
+  const handleDelete = () => {
+    startTransition(async () => {
+      const result = await deleteScheduledBlogPostAction(id);
+      if (result.success) {
+        toast({ title: "Success", description: result.message });
+      } else {
+        toast({ variant: 'destructive', title: "Error", description: result.message });
+      }
+    });
+  };
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="ghost" size="icon" disabled={isPending}>
+            {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+            <span className="sr-only">Delete</span>
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete this scheduled post.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

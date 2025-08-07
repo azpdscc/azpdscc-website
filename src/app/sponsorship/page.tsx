@@ -144,8 +144,8 @@ export default async function SponsorshipPage() {
                   <h3 className="font-headline text-2xl font-bold text-center mb-6">{level} Sponsors</h3>
                   <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-6">
                     {sponsorsForLevel.map((sponsor) => (
-                      <Link key={sponsor.id} href={sponsor.website || '#'} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center" title={sponsor.name}>
-                          <Image src={sponsor.logo} alt={`${sponsor.name} logo`} width={150} height={75} data-ai-hint="company logo" className="grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all" />
+                      <Link key={sponsor.id} href={sponsor.website || '#'} target="_blank" rel="noopener noreferrer" title={sponsor.name}>
+                          <Image src={sponsor.logo} alt={`${sponsor.name} logo`} width={150} height={75} data-ai-hint="company logo" className="grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all object-contain" />
                       </Link>
                     ))}
                   </div>
