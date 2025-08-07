@@ -9,8 +9,8 @@ export function Logo({ className }: { className?: string }) {
        <Image 
         src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/Home+Page/SIte++Logo.svg"
         alt="PDSCC Logo" 
-        width={32}
-        height={32}
+        width={40}
+        height={40}
       />
       <span className="font-headline font-bold text-2xl text-primary">
         PDSCC
