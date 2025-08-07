@@ -41,16 +41,17 @@ export async function generateBlogPost(
   return generateBlogPostFlow(input);
 }
 
-// The main Genkit flow
-const generateBlogPostFlow = ai.defineFlow(
-  {
-    name: 'generateBlogPostFlow',
-    inputSchema: GenerateBlogPostInputSchema,
-    outputSchema: GenerateBlogPostOutputSchema,
+
+// Define the complete prompt with its configuration
+const generateBlogPostPrompt = ai.definePrompt({
+  name: 'generateBlogPostPrompt',
+  input: { schema: GenerateBlogPostInputSchema },
+  output: { schema: GenerateBlogPostOutputSchema },
+  tools: [ai.googleSearch],
+  config: {
+      temperature: 0.9,
   },
-  async (input) => {
-    
-    const blogPostPromptTemplate = `You are an expert content creator for PDSCC (Phoenix Desi Sports and Cultural Club), a non-profit organization that serves the Phoenix Indian community and AZ Desis.
+  prompt: `You are an expert content creator for PDSCC (Phoenix Desi Sports and Cultural Club), a non-profit organization that serves the Phoenix Indian community and AZ Desis.
 
 Your task is to write a complete, engaging, and SEO-friendly blog post based on the provided topic.
 
@@ -66,21 +67,20 @@ Your task is to write a complete, engaging, and SEO-friendly blog post based on 
 7.  **Content**: Write the full blog post (minimum 300 words). The content should be well-researched, well-structured with an introduction, multiple body paragraphs, and a conclusion. **Format the content using HTML tags** such as \`<p>\` for paragraphs and \`<h2>\` for subheadings to ensure it's web-ready.
 8.  **PDSCC Connection**: Ensure the post always connects back to the mission or activities of PDSCC, reinforcing the organization's role in the community. For example, if the topic is a festival, mention how PDSCC celebrates it or is involved.
 
-Return the output in the requested JSON format.`;
+Return the output in the requested JSON format.`,
+});
 
-    const finalPrompt = blogPostPromptTemplate.replace('{{{topic}}}', input.topic);
 
-    const { output } = await ai.generate({
-      prompt: finalPrompt,
-      output: {
-        format: 'json',
-        schema: GenerateBlogPostOutputSchema,
-      },
-      tools: [ai.googleSearch],
-      config: {
-          temperature: 0.9,
-      },
-    });
+// The main Genkit flow
+const generateBlogPostFlow = ai.defineFlow(
+  {
+    name: 'generateBlogPostFlow',
+    inputSchema: GenerateBlogPostInputSchema,
+    outputSchema: GenerateBlogPostOutputSchema,
+  },
+  async (input) => {
+    // Call the defined prompt object directly as a function
+    const { output } = await generateBlogPostPrompt(input);
 
     if (!output) {
       throw new Error('AI failed to generate the blog post.');
