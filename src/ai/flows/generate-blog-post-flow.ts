@@ -46,6 +46,7 @@ const prompt = ai.definePrompt({
   name: 'generateBlogPostPrompt',
   input: { schema: GenerateBlogPostInputSchema },
   output: { schema: GenerateBlogPostOutputSchema },
+  tools: [ai.googleSearch],
   prompt: `You are an expert content creator for PDSCC (Phoenix Desi Sports and Cultural Club), a non-profit organization that serves the Phoenix Indian community and AZ Desis.
 
 Your task is to write a complete, engaging, and SEO-friendly blog post based on the provided topic.
@@ -53,13 +54,14 @@ Your task is to write a complete, engaging, and SEO-friendly blog post based on 
 **Topic:** "{{{topic}}}"
 
 **Instructions:**
-1.  **Tone:** The tone must be warm, welcoming, informative, and community-focused.
-2.  **Keywords:** Naturally incorporate the following keywords throughout the post where relevant: "PDSCC", "Phoenix Indian community", "AZ Desis", "Arizona Indian festivals". This is crucial for SEO.
-3.  **Title:** Create a catchy title (max 70 characters).
-4.  **Slug:** Generate a URL-friendly slug from the title.
-5.  **Excerpt:** Write a concise summary (max 160 characters).
-6.  **Content:** Write the full blog post (minimum 300 words). The content should be well-structured with an introduction, multiple body paragraphs, and a conclusion. **Format the content using HTML tags** such as \`<p>\` for paragraphs and \`<h2>\` for subheadings to ensure it's web-ready.
-7.  **PDSCC Connection:** Ensure the post always connects back to the mission or activities of PDSCC, reinforcing the organization's role in the community. For example, if the topic is a festival, mention how PDSCC celebrates it or is involved.
+1.  **Research**: Use your search tool to find relevant, up-to-date information on the topic. Prioritize sources and articles from the last year to ensure the content is current and factual.
+2.  **Tone**: The tone must be warm, welcoming, informative, and community-focused.
+3.  **Keywords**: Naturally incorporate the following keywords throughout the post where relevant: "PDSCC", "Phoenix Indian community", "AZ Desis", "Arizona Indian festivals". This is crucial for SEO.
+4.  **Title**: Create a catchy title (max 70 characters).
+5.  **Slug**: Generate a URL-friendly slug from the title.
+6.  **Excerpt**: Write a concise summary (max 160 characters).
+7.  **Content**: Write the full blog post (minimum 300 words). The content should be well-researched, well-structured with an introduction, multiple body paragraphs, and a conclusion. **Format the content using HTML tags** such as \`<p>\` for paragraphs and \`<h2>\` for subheadings to ensure it's web-ready.
+8.  **PDSCC Connection**: Ensure the post always connects back to the mission or activities of PDSCC, reinforcing the organization's role in the community. For example, if the topic is a festival, mention how PDSCC celebrates it or is involved.
 
 Return the output in the requested JSON format.`,
 });
