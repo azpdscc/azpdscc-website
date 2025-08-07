@@ -79,8 +79,13 @@ const generateBlogPostFlow = ai.defineFlow(
   async (input) => {
     
     const { output } = await ai.generate({
-      prompt: prompt,
-      input: input,
+        prompt: prompt.prompt,
+        input: input,
+        output: {
+            schema: prompt.output.schema,
+        },
+        tools: prompt.tools,
+        config: prompt.config,
     });
 
     if (!output) {
@@ -90,4 +95,3 @@ const generateBlogPostFlow = ai.defineFlow(
     return output;
   }
 );
-
