@@ -7,7 +7,7 @@ export function Logo({ className }: { className?: string }) {
   return (
     <Link href="/" className={cn("flex items-center gap-2", className)}>
        <Image 
-        src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/logo.svg"
+        src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/Home+Page/SIte++Logo.svg"
         alt="PDSCC Logo" 
         width={32}
         height={32}
