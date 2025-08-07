@@ -59,7 +59,7 @@ export async function generateBlogPost(
   return generateBlogPostFlow(input);
 }
 
-// STEP 1: Define the text for the research prompt.
+// STEP 1: Define the text for the research prompt. This prompt uses a tool.
 const researchPromptText = `You are a research assistant. Your goal is to gather relevant, up-to-date information on a given topic to help a writer create a blog post.
   
 Please research the following topic: "{{{topic}}}"
@@ -109,7 +109,8 @@ const generateBlogPostFlow = ai.defineFlow(
     outputSchema: GenerateBlogPostOutputSchema,
   },
   async (input) => {
-    // Step 1: Run the research prompt using ai.generate() directly
+    // Step 1: Run the research prompt using ai.generate() directly because it has tools.
+    // This is the correct pattern for tool-based generation within a flow.
     const researchResult = await ai.generate({
       prompt: researchPromptText,
       input: input,
@@ -122,7 +123,7 @@ const generateBlogPostFlow = ai.defineFlow(
         throw new Error("AI failed to conduct research.");
     }
 
-    // Step 2: Run the writing prompt with the research results
+    // Step 2: Run the writing prompt, which has no tools and can be called directly.
     const { output } = await writingPrompt({
       topic: input.topic,
       research: researchText,
