@@ -7,7 +7,7 @@
 
 import { db } from '@/lib/firebase';
 import type { Event, EventFormData } from '@/lib/types';
-import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, orderBy } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, orderBy, Timestamp } from 'firebase/firestore';
 
 const eventsCollectionRef = collection(db, 'events');
 
@@ -19,10 +19,17 @@ export async function getEvents(): Promise<Event[]> {
   try {
     const q = query(eventsCollectionRef, orderBy('date', 'desc'));
     const querySnapshot = await getDocs(q);
-    const events = querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    } as Event));
+    const events = querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      // Firestore returns a Timestamp for dates, so we convert it to a string.
+      // This ensures consistency with how we handle dates elsewhere.
+      const date = data.date instanceof Timestamp ? data.date.toDate().toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' }) : data.date;
+      return {
+        id: doc.id,
+        ...data,
+        date: date
+      } as Event;
+    });
     return events;
   } catch (error) {
     console.error("Error fetching events from Firestore:", error);
@@ -45,8 +52,11 @@ export async function getEventById(id: string): Promise<Event | null> {
             console.warn(`No event found with id: ${id}.`);
             return null;
         }
-
-        return { id: docSnap.id, ...docSnap.data() } as Event;
+        
+        const data = docSnap.data();
+        const date = data.date instanceof Timestamp ? data.date.toDate().toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' }) : data.date;
+        
+        return { id: docSnap.id, ...data, date } as Event;
     } catch (error) {
         console.error("Error fetching event by id:", error);
         return null;
@@ -68,8 +78,11 @@ export async function getEventBySlug(slug: string): Promise<Event | null> {
             return null;
         }
         
-        const doc = querySnapshot.docs[0];
-        return { id: doc.id, ...doc.data() } as Event;
+        const docSnap = querySnapshot.docs[0];
+        const data = docSnap.data();
+        const date = data.date instanceof Timestamp ? data.date.toDate().toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' }) : data.date;
+
+        return { id: docSnap.id, ...data, date } as Event;
     } catch (error) {
         console.error("Error fetching event by slug:", error);
         return null;

@@ -21,10 +21,16 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
     // To sort by status and then date, a composite index on (status, date) is needed.
     const q = query(blogCollectionRef, orderBy('date', 'desc'));
     const querySnapshot = await getDocs(q);
-    const posts = querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    } as BlogPost));
+    const posts = querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      // Firestore returns a Timestamp, convert it to a string date format
+      const date = data.date instanceof Timestamp ? data.date.toDate().toISOString() : data.date;
+      return {
+        id: doc.id,
+        ...data,
+        date: date,
+      } as BlogPost;
+    });
     return posts;
   } catch (error) {
     console.error("Error fetching blog posts from Firestore:", error);
@@ -47,7 +53,10 @@ export async function getBlogPostById(id: string): Promise<BlogPost | null> {
             return null;
         }
 
-        return { id: docSnap.id, ...docSnap.data() } as BlogPost;
+        const data = docSnap.data();
+        const date = data.date instanceof Timestamp ? data.date.toDate().toISOString() : data.date;
+
+        return { id: docSnap.id, ...data, date } as BlogPost;
     } catch (error) {
         console.error("Error fetching blog post by id:", error);
         return null;
@@ -70,9 +79,10 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
         }
         
         const docSnap = querySnapshot.docs[0];
-        const post = { id: docSnap.id, ...docSnap.data() } as BlogPost;
+        const data = docSnap.data();
+        const date = data.date instanceof Timestamp ? data.date.toDate().toISOString() : data.date;
         
-        return post;
+        return { id: docSnap.id, ...data, date } as BlogPost;
 
     } catch (error) {
         console.error("Error fetching blog post by slug:", error);
@@ -87,10 +97,7 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
  * @returns {Promise<string>} The ID of the newly created document.
  */
 export async function createBlogPost(postData: BlogPostFormData): Promise<string> {
-    const docRef = await addDoc(blogCollectionRef, {
-        ...postData,
-        date: Timestamp.fromDate(new Date(postData.date))
-    });
+    const docRef = await addDoc(blogCollectionRef, postData);
     return docRef.id;
 }
 
@@ -103,11 +110,7 @@ export async function createBlogPost(postData: BlogPostFormData): Promise<string
  */
 export async function updateBlogPost(id: string, postData: Partial<BlogPostFormData>): Promise<void> {
     const postDoc = doc(db, 'blogPosts', id);
-    const dataToUpdate: Record<string, any> = {...postData};
-    if (postData.date) {
-        dataToUpdate.date = Timestamp.fromDate(new Date(postData.date));
-    }
-    await updateDoc(postDoc, dataToUpdate);
+    await updateDoc(postDoc, postData);
 }
 
 /**
