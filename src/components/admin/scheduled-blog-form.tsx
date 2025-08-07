@@ -26,6 +26,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
+  AlertDialogCancel,
 } from "@/components/ui/alert-dialog"
 import { AlertCircle, CalendarIcon, Loader2, Sparkles } from 'lucide-react';
 import { SubmitButton } from './submit-button';
@@ -42,9 +43,7 @@ export function ScheduledBlogForm({ post }: ScheduledBlogFormProps) {
   const [formState, formAction] = useActionState(action, initialState);
 
   // The scheduledDate is a 'yyyy-MM-dd' string. We need to parse it for the calendar.
-  const [date, setDate] = useState<Date | undefined>(
-      post?.scheduledDate ? parse(post.scheduledDate, 'yyyy-MM-dd', new Date()) : undefined
-  );
+  const [date, setDate] = useState<Date | undefined>(undefined);
   const [topic, setTopic] = useState(post?.topic || '');
   const [isGenerating, setIsGenerating] = useState(false);
   const [previewContent, setPreviewContent] = useState<GenerateBlogPostOutput | null>(null);
@@ -52,7 +51,9 @@ export function ScheduledBlogForm({ post }: ScheduledBlogFormProps) {
 
   useEffect(() => {
     // To avoid hydration mismatch, only set the default date on the client
-    if (!post?.scheduledDate) {
+    if (post?.scheduledDate) {
+      setDate(parse(post.scheduledDate, 'yyyy-MM-dd', new Date()));
+    } else {
       setDate(new Date());
     }
   }, [post?.scheduledDate]);
@@ -65,6 +66,7 @@ export function ScheduledBlogForm({ post }: ScheduledBlogFormProps) {
     }
 
     setIsGenerating(true);
+    setPreviewContent(null); // Clear previous content
     try {
         const result = await generateBlogPost({ topic });
         setPreviewContent(result);
@@ -92,23 +94,29 @@ export function ScheduledBlogForm({ post }: ScheduledBlogFormProps) {
                             Preview Post
                         </Button>
                     </AlertDialogTrigger>
-                    {previewContent && (
-                        <AlertDialogContent className="max-w-3xl">
-                            <AlertDialogHeader>
-                                <AlertDialogTitle className="font-headline text-2xl">{previewContent.title}</AlertDialogTitle>
-                                <AlertDialogDescription className="text-left">
-                                   This is a preview of the content that will be generated for your topic. You can close this window and refine your topic for a different result.
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                             <div className="mt-4 text-sm max-h-[60vh] overflow-y-auto pr-4">
-                                <p className="font-bold">Excerpt:</p>
-                                <p className="italic text-muted-foreground mb-4">{previewContent.excerpt}</p>
-                                <p className="font-bold">Full Content:</p>
-                                <div className="prose prose-sm dark:prose-invert" dangerouslySetInnerHTML={{ __html: previewContent.content }} />
-                            </div>
-                            <AlertDialogAction>Close</AlertDialogAction>
-                        </AlertDialogContent>
-                    )}
+                    <AlertDialogContent className="max-w-3xl">
+                        <AlertDialogHeader>
+                            <AlertDialogTitle className="font-headline text-2xl">{previewContent?.title || 'Generating...'}</AlertDialogTitle>
+                            <AlertDialogDescription className="text-left">
+                               This is a preview of the content that will be generated for your topic. You can close this window and refine your topic for a different result.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                         <div className="mt-4 text-sm max-h-[60vh] overflow-y-auto pr-4">
+                            {previewContent ? (
+                                <>
+                                    <p className="font-bold">Excerpt:</p>
+                                    <p className="italic text-muted-foreground mb-4">{previewContent.excerpt}</p>
+                                    <p className="font-bold">Full Content:</p>
+                                    <div className="prose prose-sm dark:prose-invert" dangerouslySetInnerHTML={{ __html: previewContent.content }} />
+                                </>
+                            ): (
+                                <div className="flex items-center justify-center p-8">
+                                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                                </div>
+                            )}
+                        </div>
+                        <AlertDialogCancel>Close</AlertDialogCancel>
+                    </AlertDialogContent>
                  </AlertDialog>
               </div>
               {formState.errors?.topic && <p className="text-destructive text-sm mt-1">{formState.errors.topic.join(', ')}</p>}

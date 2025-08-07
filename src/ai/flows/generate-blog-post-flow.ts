@@ -64,6 +64,9 @@ Your task is to write a complete, engaging, and SEO-friendly blog post based on 
 8.  **PDSCC Connection**: Ensure the post always connects back to the mission or activities of PDSCC, reinforcing the organization's role in the community. For example, if the topic is a festival, mention how PDSCC celebrates it or is involved.
 
 Return the output in the requested JSON format.`,
+  config: {
+      temperature: 0.9, // Increase creativity for varied results on each run
+  },
 });
 
 // The main Genkit flow
