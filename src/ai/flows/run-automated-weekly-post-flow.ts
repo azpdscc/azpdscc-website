@@ -7,7 +7,7 @@
  * - runAutomatedWeeklyPost: Fetches a pending topic, generates a blog post,
  *   saves it, and updates the topic's status.
  */
-
+import 'dotenv/config';
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 import { generateBlogPost } from './generate-blog-post-flow';

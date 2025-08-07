@@ -5,7 +5,7 @@
  *
  * - generateEventsFile: Creates a JSON string with a list of past event objects.
  */
-
+import 'dotenv/config';
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 
