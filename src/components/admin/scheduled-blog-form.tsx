@@ -6,9 +6,11 @@ import type { ScheduledBlogPost, GenerateBlogPostOutput } from '@/lib/types';
 import type { ScheduledBlogFormState } from '@/app/admin/scheduled-blog/actions';
 import { createScheduledBlogPostAction, updateScheduledBlogPostAction } from '@/app/admin/scheduled-blog/actions';
 import Link from 'next/link';
+import { useForm } from 'react-hook-form';
 import { format, parse } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { generateBlogPost } from '@/ai/flows/generate-blog-post-flow';
+import { useToast } from '@/hooks/use-toast';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -33,17 +35,31 @@ interface ScheduledBlogFormProps {
   post?: ScheduledBlogPost;
 }
 
+type ScheduledBlogPostFormData = Omit<ScheduledBlogPost, 'id' | 'scheduledDate'> & { scheduledDate: Date };
+
+
 export function ScheduledBlogForm({ post }: ScheduledBlogFormProps) {
   const isEditing = !!post;
   const action = isEditing ? updateScheduledBlogPostAction.bind(null, post.id) : createScheduledBlogPostAction;
   const initialState: ScheduledBlogFormState = { errors: {}, message: '' };
   const [formState, formAction] = useActionState(action, initialState);
+  const { toast } = useToast();
 
   const [date, setDate] = useState<Date | undefined>(undefined);
   
   const [isPreviewing, setIsPreviewing] = useState(false);
   const [previewContent, setPreviewContent] = useState<GenerateBlogPostOutput | null>(null);
   const [showPreviewDialog, setShowPreviewDialog] = useState(false);
+
+  const form = useForm<ScheduledBlogPostFormData>({
+    defaultValues: {
+      topic: post?.topic || '',
+      image: post?.image || 'https://placehold.co/800x400.png',
+      author: post?.author || 'PDSCC Team',
+      status: post?.status || 'Pending',
+    }
+  });
+
 
   useEffect(() => {
     if (post?.scheduledDate) {
@@ -80,15 +96,6 @@ export function ScheduledBlogForm({ post }: ScheduledBlogFormProps) {
         setIsPreviewing(false);
     }
   };
-
-  const form = useForm<ScheduledBlogPostFormData>({
-    defaultValues: {
-      topic: post?.topic || '',
-      image: post?.image || 'https://placehold.co/800x400.png',
-      author: post?.author || 'PDSCC Team',
-      status: post?.status || 'Pending',
-    }
-  });
 
 
   return (
