@@ -3,6 +3,10 @@
 /**
  * @fileOverview An AI flow to generate a full blog post from a topic.
  *
+ * This flow uses a two-step process:
+ * 1. Research: Gathers up-to-date information on a topic using Google Search.
+ * 2. Write: Uses the research to write a complete, formatted blog post.
+ *
  * - generateBlogPost: Takes a topic and generates a title, slug, excerpt, and content.
  * - GenerateBlogPostInput: The input type for the flow.
  * - GenerateBlogPostOutput: The return type for the flow.
@@ -55,20 +59,16 @@ export async function generateBlogPost(
   return generateBlogPostFlow(input);
 }
 
-// STEP 1: A simple research prompt that uses the search tool.
-const researchPrompt = ai.definePrompt({
-  name: 'blogPostResearchPrompt',
-  input: { schema: GenerateBlogPostInputSchema },
-  tools: [ai.googleSearch],
-  prompt: `You are a research assistant. Your goal is to gather relevant, up-to-date information on a given topic to help a writer create a blog post.
+// STEP 1: Define the text for the research prompt.
+const researchPromptText = `You are a research assistant. Your goal is to gather relevant, up-to-date information on a given topic to help a writer create a blog post.
   
-  Please research the following topic: "{{{topic}}}"
-  
-  Provide a summary of your findings as a block of text. Focus on information from the last year to ensure the content is current.`,
-});
+Please research the following topic: "{{{topic}}}"
+
+Provide a summary of your findings as a block of text. Focus on information from the last year to ensure the content is current.`;
+
 
 // STEP 2: A writing prompt that takes the research and formats the output.
-// It does NOT use tools, which avoids the conflict.
+// It does NOT use tools, so it can be defined and called directly.
 const writingPrompt = ai.definePrompt({
   name: 'blogPostWritingPrompt',
   input: {
@@ -101,7 +101,7 @@ Your task is to write a complete, engaging, and SEO-friendly blog post based on 
 Return the output in the requested JSON format.`,
 });
 
-// The main Genkit flow that chains the two prompts together.
+// The main Genkit flow that chains the two steps together.
 const generateBlogPostFlow = ai.defineFlow(
   {
     name: 'generateBlogPostFlow',
@@ -109,8 +109,13 @@ const generateBlogPostFlow = ai.defineFlow(
     outputSchema: GenerateBlogPostOutputSchema,
   },
   async (input) => {
-    // Step 1: Run the research prompt
-    const researchResult = await researchPrompt(input);
+    // Step 1: Run the research prompt using ai.generate() directly
+    const researchResult = await ai.generate({
+      prompt: researchPromptText,
+      input: input,
+      tools: [ai.googleSearch],
+    });
+    
     const researchText = researchResult.text;
 
     if (!researchText) {
