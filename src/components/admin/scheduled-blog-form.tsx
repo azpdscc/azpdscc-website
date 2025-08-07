@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useActionState, useState } from 'react';
+import { useActionState, useState, useEffect } from 'react';
 import type { ScheduledBlogPost } from '@/lib/types';
 import type { ScheduledBlogFormState } from '@/app/admin/scheduled-blog/actions';
 import { createScheduledBlogPostAction, updateScheduledBlogPostAction } from '@/app/admin/scheduled-blog/actions';
@@ -43,12 +43,19 @@ export function ScheduledBlogForm({ post }: ScheduledBlogFormProps) {
 
   // The scheduledDate is a 'yyyy-MM-dd' string. We need to parse it for the calendar.
   const [date, setDate] = useState<Date | undefined>(
-      post?.scheduledDate ? parse(post.scheduledDate, 'yyyy-MM-dd', new Date()) : new Date()
+      post?.scheduledDate ? parse(post.scheduledDate, 'yyyy-MM-dd', new Date()) : undefined
   );
   const [topic, setTopic] = useState(post?.topic || '');
   const [isGenerating, setIsGenerating] = useState(false);
   const [previewContent, setPreviewContent] = useState<GenerateBlogPostOutput | null>(null);
   const [showPreview, setShowPreview] = useState(false);
+
+  useEffect(() => {
+    // To avoid hydration mismatch, only set the default date on the client
+    if (!post?.scheduledDate) {
+      setDate(new Date());
+    }
+  }, [post?.scheduledDate]);
 
 
   const handleGeneratePreview = async () => {
