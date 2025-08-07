@@ -1,8 +1,5 @@
 
 
-
-
-
 export type EventCategory = 'Music' | 'Food' | 'Dance' | 'Cultural';
 
 export type Event = {
@@ -99,3 +96,11 @@ export type ScheduledBlogPost = {
 };
 
 export type ScheduledBlogPostFormData = Omit<ScheduledBlogPost, 'id'>;
+
+export type GenerateBlogPostOutput = {
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+};
+
