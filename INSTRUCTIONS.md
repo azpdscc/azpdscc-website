@@ -1,3 +1,4 @@
+
 # Application Management Instructions
 
 This document provides instructions for managing the content and configuration of your PDSCC website.
@@ -40,40 +41,7 @@ To add, edit, or delete events, use the secure admin panel.
 
 You can also edit or delete existing events from this same page.
 
-## 3. How to Set Up Automated Blog Posting
-
-The website can automatically generate and publish blog posts based on the topics you schedule in the Admin Panel (`/admin/scheduled-blog`). To make this work, you need to set up a "cron job" (a scheduled task) that runs periodically (e.g., once a day).
-
-### A. Set Your Cron Secret Key
-
-1.  In the root directory of your project, find or create a file named `.env.local` (this file is for secret keys and is ignored by source control).
-2.  Generate a long, random, and secret string. You can use a password generator for this.
-3.  Add this secret key to your `.env.local` file:
-    ```
-    CRON_SECRET=your_super_secret_key_here
-    ```
-    If you deploy your site, you must add this as an environment variable in your hosting provider's settings.
-
-### B. Configure the Scheduler
-
-You need to schedule a task to send an HTTP GET request to a specific URL once per day. Most hosting providers (like Vercel, Netlify, or Google Cloud) offer a way to set up cron jobs.
-
--   **URL to Request:** `https://your-website-url.com/api/cron/run-weekly-post?secret=your_super_secret_key_here`
-    (Replace `your-website-url.com` with your actual domain and `your_super_secret_key_here` with the secret you just created).
-
--   **Method:** `GET`
-
--   **Schedule:** Run once per day (e.g., at midnight).
-
-**Example using `curl`:**
-You would configure your scheduler to execute a command similar to this:
-```bash
-curl "https://your-website-url.com/api/cron/run-weekly-post?secret=your_super_secret_key_here"
-```
-
-When this runs, the system will check for any "Pending" blog posts whose scheduled date has arrived, generate the content, and publish it.
-
-## 4. How to Configure Email Delivery
+## 3. How to Configure Email Delivery
 
 The website's forms (Contact, Donations, Vendor Applications, etc.) use a service called **Resend** to send emails. To make this work in your live environment, you need to configure two things:
 
@@ -116,7 +84,7 @@ The email addresses that receive the form submissions are currently set to place
     -   File: `srcai/flows/send-volunteer-inquiry-flow.ts`
     -   Find the line `to: 'admin@azpdscc.org'` and change the email address.
 
-## 5. How to Update Social Media Links
+## 4. How to Update Social Media Links
 
 The header and footer contain social media icons. You need to update them to point to your organization's profiles.
 
@@ -129,7 +97,7 @@ The header and footer contain social media icons. You need to update them to poi
     ```
 -   **Change the `href` attribute:** Replace the placeholder URL with the full URL to your social media page.
 
-## 6. How to Update Contact Information
+## 5. How to Update Contact Information
 
 Your organization's phone number and physical address are displayed in a few places.
 
@@ -138,10 +106,10 @@ Your organization's phone number and physical address are displayed in a few pla
     -   `src/components/layout/footer.tsx`
 -   **What to do:** Open these files and find the placeholder phone number `(602) 317-2239` and address `AZPDSCC Community Lane, Buckeye, AZ 85326`. Replace them with your correct information.
 
-## 7. How to Manage Other Content (Team & Blog)
+## 6. How to Manage Other Content (Team & Blog)
 
 -   **For Team Members:** Use the admin panel at `/admin/team` to add, edit, or delete team members. Their information will automatically update on the "About Us" page.
 
 -   **For Sponsors:** Use the admin panel at `/admin/sponsors` to manage your sponsors. They will automatically appear on the homepage and sponsorship page.
 
--   **For Blog Posts:** Use the admin panel at `/admin/blog` to add, edit, or delete blog posts.
+-   **For Blog Posts:** Use the admin panel at `/admin/blog` to add, edit, or delete blog posts. You can use the AI-powered content generator to help create new posts.
