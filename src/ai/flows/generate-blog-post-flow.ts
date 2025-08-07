@@ -42,12 +42,7 @@ export async function generateBlogPost(
 }
 
 // AI prompt for generating the blog post
-const prompt = ai.definePrompt({
-  name: 'generateBlogPostPrompt',
-  input: { schema: GenerateBlogPostInputSchema },
-  output: { schema: GenerateBlogPostOutputSchema },
-  tools: [ai.googleSearch],
-  prompt: `You are an expert content creator for PDSCC (Phoenix Desi Sports and Cultural Club), a non-profit organization that serves the Phoenix Indian community and AZ Desis.
+const blogPostPromptTemplate = `You are an expert content creator for PDSCC (Phoenix Desi Sports and Cultural Club), a non-profit organization that serves the Phoenix Indian community and AZ Desis.
 
 Your task is to write a complete, engaging, and SEO-friendly blog post based on the provided topic.
 
@@ -63,11 +58,8 @@ Your task is to write a complete, engaging, and SEO-friendly blog post based on 
 7.  **Content**: Write the full blog post (minimum 300 words). The content should be well-researched, well-structured with an introduction, multiple body paragraphs, and a conclusion. **Format the content using HTML tags** such as \`<p>\` for paragraphs and \`<h2>\` for subheadings to ensure it's web-ready.
 8.  **PDSCC Connection**: Ensure the post always connects back to the mission or activities of PDSCC, reinforcing the organization's role in the community. For example, if the topic is a festival, mention how PDSCC celebrates it or is involved.
 
-Return the output in the requested JSON format.`,
-  config: {
-      temperature: 0.9, // Increase creativity for varied results on each run
-  },
-});
+Return the output in the requested JSON format.`;
+
 
 // The main Genkit flow
 const generateBlogPostFlow = ai.defineFlow(
@@ -78,14 +70,16 @@ const generateBlogPostFlow = ai.defineFlow(
   },
   async (input) => {
     const { output } = await ai.generate({
-      prompt: prompt.prompt,
+      prompt: blogPostPromptTemplate,
       input: input,
       output: {
         format: 'json',
         schema: GenerateBlogPostOutputSchema,
       },
-      tools: prompt.tools,
-      config: prompt.config,
+      tools: [ai.googleSearch],
+      config: {
+          temperature: 0.9,
+      },
     });
 
     if (!output) {
