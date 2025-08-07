@@ -55,6 +55,7 @@ export async function createSponsorAction(
 
   revalidatePath('/admin/sponsors');
   revalidatePath('/');
+  revalidatePath('/sponsorship');
   redirect('/admin/sponsors');
 }
 
@@ -89,6 +90,7 @@ export async function updateSponsorAction(
   
   revalidatePath('/admin/sponsors');
   revalidatePath('/');
+  revalidatePath('/sponsorship');
   redirect('/admin/sponsors');
 }
 
@@ -97,6 +99,7 @@ export async function deleteSponsorAction(id: string) {
         await deleteSponsor(id);
         revalidatePath('/admin/sponsors');
         revalidatePath('/');
+        revalidatePath('/sponsorship');
         return { success: true, message: 'Sponsor deleted successfully.' };
     } catch (error) {
         console.error('Failed to delete sponsor:', error);
