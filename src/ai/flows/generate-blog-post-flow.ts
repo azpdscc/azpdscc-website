@@ -82,7 +82,7 @@ const generateBlogPostFlow = ai.defineFlow(
         prompt: prompt.prompt,
         input: input,
         output: {
-            schema: prompt.output.schema,
+            schema: GenerateBlogPostOutputSchema,
         },
         tools: prompt.tools,
         config: prompt.config,
