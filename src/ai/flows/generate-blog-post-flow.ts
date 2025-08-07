@@ -68,9 +68,10 @@ Your task is to write a complete, engaging, and SEO-friendly blog post based on 
 
 Return the output in the requested JSON format.`;
 
+    const finalPrompt = blogPostPromptTemplate.replace('{{{topic}}}', input.topic);
+
     const { output } = await ai.generate({
-      prompt: blogPostPromptTemplate,
-      input: input,
+      prompt: finalPrompt,
       output: {
         format: 'json',
         schema: GenerateBlogPostOutputSchema,
