@@ -78,7 +78,17 @@ const generateBlogPostFlow = ai.defineFlow(
   },
   async (input) => {
     
-    const { output } = await prompt(input);
+    const { output } = await ai.generate({
+      prompt: prompt.prompt,
+      input: input,
+      output: {
+        format: 'json',
+        schema: GenerateBlogPostOutputSchema,
+      },
+      tools: prompt.tools,
+      config: prompt.config,
+    });
+
 
     if (!output) {
       throw new Error('AI failed to generate the blog post.');
