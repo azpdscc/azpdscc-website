@@ -77,7 +77,6 @@ const generateBlogPostFlow = ai.defineFlow(
     outputSchema: GenerateBlogPostOutputSchema,
   },
   async (input) => {
-    
     const { output } = await ai.generate({
       prompt: prompt.prompt,
       input: input,
@@ -88,7 +87,6 @@ const generateBlogPostFlow = ai.defineFlow(
       tools: prompt.tools,
       config: prompt.config,
     });
-
 
     if (!output) {
       throw new Error('AI failed to generate the blog post.');
