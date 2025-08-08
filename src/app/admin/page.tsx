@@ -64,7 +64,7 @@ export default function AdminDashboardPage() {
                 Manage Blog
             </CardTitle>
             <CardDescription>
-                Create, edit, or delete blog posts for the website using the AI-powered generator.
+                Create, edit, or delete blog posts for the website. This includes scheduled drafts.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -77,15 +77,15 @@ export default function AdminDashboardPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
                 <Clock className="h-6 w-6" />
-                Scheduled Blog Posts
+                Schedule New Post
             </CardTitle>
             <CardDescription>
-                Schedule future blog posts. The system will automatically generate a draft for you to review and publish.
+                Use AI to generate a draft for a future blog post. It will be saved to your main blog list and published automatically.
             </CardDescription>
           </CardHeader>
           <CardContent>
              <Button asChild>
-                <Link href="/admin/scheduled-blog">Schedule Posts</Link>
+                <Link href="/admin/scheduled-blog">Schedule Post</Link>
             </Button>
           </CardContent>
         </Card>

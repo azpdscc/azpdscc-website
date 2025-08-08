@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { getBlogPosts } from '@/services/blog';
+import { getBlogPosts, processScheduledBlogPosts } from '@/services/blog';
 import { ArrowRight, User, Calendar } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -12,8 +12,8 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-  // Automatic processing is disabled. Users manually publish drafts.
-  // await processScheduledBlogPosts();
+  // Check for any scheduled posts that are due and publish them.
+  await processScheduledBlogPosts();
 
   const allPosts = await getBlogPosts();
   

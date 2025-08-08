@@ -5,13 +5,11 @@
  */
 
 import { db } from '@/lib/firebase';
-import type { BlogPost, BlogPostFormData, ScheduledBlogPost } from '@/lib/types';
+import type { BlogPost, BlogPostFormData } from '@/lib/types';
 import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, orderBy, Timestamp, writeBatch } from 'firebase/firestore';
-import { format, parseISO, isPast } from 'date-fns';
-import { getScheduledBlogPosts } from './scheduled-blog';
+import { format } from 'date-fns';
 
 const blogCollectionRef = collection(db, 'blogPosts');
-const scheduledBlogCollectionRef = collection(db, 'scheduledBlogPosts');
 
 /**
  * Fetches all blog posts from the Firestore database, ordered by date descending.
@@ -134,11 +132,40 @@ export async function deleteBlogPost(id: string): Promise<void> {
 
 
 /**
- * This function is no longer used for automatic publishing.
- * It is kept for potential future use but is not active.
+ * Checks for scheduled blog posts that are due to be published and updates their status.
+ * This function should be called from a page that receives regular traffic, like the main blog page.
  */
 export async function processScheduledBlogPosts(): Promise<void> {
-    // The automatic publishing logic has been disabled to give users full manual control.
-    // Scheduled posts are created as drafts and must be published manually from the admin panel.
-    return;
+    try {
+        const now = Timestamp.now();
+        
+        // Find all posts that are still drafts and their publish date is in the past.
+        const q = query(
+            blogCollectionRef, 
+            where('status', '==', 'Draft'),
+            where('date', '<=', now)
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+            return; // No posts to publish
+        }
+
+        // Use a batch write to update all due posts at once for efficiency.
+        const batch = writeBatch(db);
+        querySnapshot.forEach(docSnap => {
+            console.log(`Publishing post: ${docSnap.id}`);
+            const docRef = doc(db, 'blogPosts', docSnap.id);
+            batch.update(docRef, { status: 'Published' });
+        });
+
+        await batch.commit();
+        console.log(`Successfully published ${querySnapshot.size} blog post(s).`);
+
+    } catch (error) {
+        // This error is often a missing Firestore index.
+        console.error("Error processing scheduled blog posts:", error);
+        console.error("This may be due to a missing Firestore index. Please check the Firebase console. The query requires a composite index on 'status' (ascending) and 'date' (descending or ascending).");
+    }
 }
