@@ -16,7 +16,8 @@ import { AlertCircle, QrCode } from 'lucide-react';
 const initialState: QrTestFormState = {};
 
 export default function QrTestPage() {
-    const [baseUrl, setBaseUrl] = useState('');
+    // Start with null to indicate it's not ready yet.
+    const [baseUrl, setBaseUrl] = useState<string | null>(null);
 
     useEffect(() => {
         // This ensures the code only runs on the client-side
@@ -24,8 +25,9 @@ export default function QrTestPage() {
         setBaseUrl(window.location.origin);
     }, []);
 
-    const generateQrCodeActionWithBaseUrl = generateQrCodeAction.bind(null, baseUrl);
-    const [state, formAction] = useActionState(generateQrCodeActionWithBaseUrl, initialState);
+    // Ensure baseUrl is not null before binding.
+    const generateQrCodeActionWithBaseUrl = baseUrl ? generateQrCodeAction.bind(null, baseUrl) : null;
+    const [state, formAction] = useActionState(generateQrCodeActionWithBaseUrl ?? (() => Promise.resolve(initialState)), initialState);
 
     return (
         <div className="container mx-auto p-4 md:p-8">
