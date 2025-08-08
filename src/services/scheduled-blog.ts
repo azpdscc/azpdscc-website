@@ -27,7 +27,7 @@ export async function getScheduledBlogPosts(): Promise<ScheduledBlogPost[]> {
         id: doc.id,
         ...data,
         publishDate: format(date, 'MMMM dd, yyyy'),
-        publishTimestamp: data.publishDate.toMillis(),
+        publishTimestamp: date.getTime(), // Use getTime() on the Date object
       } as ScheduledBlogPost;
     });
     return posts;
