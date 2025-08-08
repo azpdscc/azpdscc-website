@@ -70,6 +70,13 @@ const sendGeneralRegistrationFlow = ai.defineFlow(
     outputSchema: GeneralRegistrationOutputSchema,
   },
   async (input) => {
+    const resendApiKey = process.env.RESEND_API_KEY;
+
+    if (!resendApiKey) {
+        console.error("Resend API key is not configured. Cannot send emails.");
+        return { success: false, message: "Server configuration error: Could not send email. Please contact support." };
+    }
+
     try {
       // 1. Generate the vendor confirmation email
       const { output: vendorEmailBody } = await registrationEmailPrompt({
@@ -98,7 +105,7 @@ const sendGeneralRegistrationFlow = ai.defineFlow(
       `;
 
       // 3. Send the emails
-      const resend = new Resend(process.env.RESEND_API_KEY);
+      const resend = new Resend(resendApiKey);
 
       // Send to vendor
       await resend.emails.send({
@@ -119,7 +126,8 @@ const sendGeneralRegistrationFlow = ai.defineFlow(
       return { success: true, message: "Registration successful! A confirmation has been sent to your email." };
     } catch (error) {
       console.error('General registration flow failed:', error);
-      return { success: false, message: 'An error occurred during registration.' };
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+      return { success: false, message: `An error occurred during registration: ${errorMessage}` };
     }
   }
 );
