@@ -77,8 +77,14 @@ const sendDonationReceiptFlow = ai.defineFlow(
     outputSchema: DonationReceiptOutputSchema,
   },
   async (input) => {
+    const resendApiKey = process.env.NEXT_PUBLIC_RESEND_API_KEY;
+    if (!resendApiKey) {
+        console.error("Resend API key is not configured. Ensure NEXT_PUBLIC_RESEND_API_KEY is set.");
+        return { success: false, message: "Server configuration error. Please contact support." };
+    }
+
     try {
-      const resend = new Resend(process.env.RESEND_API_KEY);
+      const resend = new Resend(resendApiKey);
 
       // 1. Generate the email content for the donor
       const { output: emailBody } = await receiptEmailPrompt(input);
