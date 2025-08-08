@@ -83,7 +83,6 @@ export async function createBlogPostAction(
 
   revalidateTag('blogPosts');
   revalidatePath('/admin/blog');
-  revalidatePath('/blog');
   redirect('/admin/blog');
 }
 
@@ -132,7 +131,6 @@ export async function updateBlogPostAction(
   
   revalidateTag('blogPosts');
   revalidatePath('/admin/blog');
-  revalidatePath('/blog'); // Revalidate public listing page
   // Revalidate the specific post path if the slug might have changed
   revalidatePath(`/blog/${postData.slug}`);
   redirect('/admin/blog');
@@ -148,7 +146,6 @@ export async function deleteBlogPostAction(id: string) {
         
         revalidateTag('blogPosts');
         revalidatePath('/admin/blog');
-        revalidatePath('/blog');
         if (postToDelete.slug) {
             revalidatePath(`/blog/${postToDelete.slug}`);
         }
