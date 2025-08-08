@@ -44,16 +44,3 @@ export function ConditionalLayout({ children }: { children: ReactNode }) {
     )
 
 }
-
-
-function AdminHeader() {
-  return (
-      <header className="bg-background border-b sticky top-0 z-10">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <span className="font-bold text-muted-foreground">Admin</span>
-          </div>
-        </div>
-      </header>
-  )
-}
