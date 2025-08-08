@@ -47,8 +47,8 @@ const formSchema = z.object({
   productDescription: z.string().min(20, "Description must be at least 20 characters.").max(500),
   zelleSenderName: z.string().min(2, "Zelle sender name is required."),
   zelleDateSent: z.coerce.date({ required_error: "Please select the date you sent the payment." }),
-  paymentSent: z.boolean().refine(val => val === true, {
-    message: 'You must confirm payment has been sent.',
+  paymentSent: z.literal('on', {
+    errorMap: () => ({ message: 'You must confirm payment has been sent.' }),
   }),
 });
 
@@ -64,18 +64,16 @@ export async function vendorApplicationAction(
       };
     }
 
-    const boothTypeKey = formData.get('boothType') as string;
-
     const validatedFields = formSchema.safeParse({
         name: formData.get('name'),
         organization: formData.get('organization'),
         email: formData.get('email'),
         phone: formData.get('phone'),
-        boothType: boothTypeKey,
+        boothType: formData.get('boothType'),
         productDescription: formData.get('productDescription'),
         zelleSenderName: formData.get('zelleSenderName'),
         zelleDateSent: formData.get('zelleDateSent'),
-        paymentSent: formData.get('paymentSent') === 'on',
+        paymentSent: formData.get('paymentSent'),
     });
 
     if (!validatedFields.success) {
@@ -83,6 +81,8 @@ export async function vendorApplicationAction(
             errors: validatedFields.error.flatten().fieldErrors,
         };
     }
+    
+    const boothTypeKey = validatedFields.data.boothType;
 
     try {
         // 1. Create a ticket record in Firestore to get an ID
@@ -107,7 +107,7 @@ export async function vendorApplicationAction(
             productDescription: validatedFields.data.productDescription,
             zelleSenderName: validatedFields.data.zelleSenderName,
             zelleDateSent: format(validatedFields.data.zelleDateSent, "PPP"),
-            paymentConfirmed: validatedFields.data.paymentSent,
+            paymentConfirmed: validatedFields.data.paymentSent === 'on',
             qrCodeUrl: qrCodeUrl,
         };
 
