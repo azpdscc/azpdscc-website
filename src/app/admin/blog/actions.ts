@@ -2,7 +2,7 @@
 'use server';
 
 import { z } from 'zod';
-import { createBlogPost, updateBlogPost, deleteBlogPost } from '@/services/blog';
+import { createBlogPost, updateBlogPost, deleteBlogPost, getBlogPostById } from '@/services/blog';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { generateBlogPost } from '@/ai/flows/generate-blog-post-flow';
@@ -171,9 +171,19 @@ export async function updateBlogPostAction(
 
 export async function deleteBlogPostAction(id: string) {
     try {
+        const postToDelete = await getBlogPostById(id);
+        if (!postToDelete) {
+             return { success: false, message: 'Could not find the post to delete.' };
+        }
         await deleteBlogPost(id);
+        
         revalidatePath('/admin/blog');
         revalidatePath('/blog');
+        // Revalidate the specific post page to prevent lingering cached versions
+        if (postToDelete.slug) {
+            revalidatePath(`/blog/${postToDelete.slug}`);
+        }
+
         return { success: true, message: 'Blog post deleted successfully.' };
     } catch (error) {
         console.error('Failed to delete blog post:', error);
