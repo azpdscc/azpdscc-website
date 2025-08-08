@@ -40,7 +40,7 @@ const GenerateBlogPostOutputSchema = z.object({
   content: z
     .string()
     .describe(
-      'The full content of the blog post, written in a warm, informative, and community-focused tone. It should be at least 300 words long and formatted with paragraphs using HTML tags like <p> and <h2>.'
+      'The full content of the blog post, written in a warm, informative, and community-focused tone. It should be at least 300 words long and formatted with rich HTML tags like <p>, <h2>, <h3>, <strong>, and <ul>.'
     ),
 });
 export type GenerateBlogPostOutput = z.infer<
@@ -75,7 +75,7 @@ Your task is to write a complete, engaging, and SEO-friendly blog post based on 
 3.  **Title**: Create a catchy title (max 70 characters) based on the topic.
 4.  **Slug**: Generate a URL-friendly slug from the title.
 5.  **Excerpt**: Write a concise summary (max 160 characters).
-6.  **Content**: Write the full blog post (minimum 300 words). The content should be well-structured with an introduction, multiple body paragraphs, and a conclusion. **Format the content using HTML tags** such as \`<p>\` for paragraphs and \`<h2>\` for subheadings to ensure it's web-ready.
+6.  **Content**: Write the full blog post (minimum 300 words). The content should be well-structured with an introduction, multiple body paragraphs, and a conclusion. **Format the content using rich HTML tags** such as \`<p>\` for paragraphs, \`<h2>\` and \`<h3>\` for subheadings, \`<strong>\` for bold text, and \`<ul>\` for lists where appropriate to ensure it's web-ready and visually appealing.
 7.  **PDSCC Connection**: Ensure the post always connects back to the mission or activities of PDSCC, reinforcing the organization's role in the community.
 
 Return the output in the requested JSON format.`,
