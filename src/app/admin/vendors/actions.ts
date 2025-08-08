@@ -75,7 +75,7 @@ export async function vendorApplicationAction(
         productDescription: formData.get('productDescription'),
         zelleSenderName: formData.get('zelleSenderName'),
         zelleDateSent: formData.get('zelleDateSent'),
-        paymentSent: formData.get('paymentSent') === 'on', // This now correctly handles the form data
+        paymentSent: formData.get('paymentSent') === 'on',
     });
 
     if (!validatedFields.success) {
