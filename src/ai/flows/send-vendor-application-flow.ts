@@ -81,9 +81,9 @@ const sendVendorApplicationFlow = ai.defineFlow(
     outputSchema: VendorApplicationOutputSchema,
   },
   async (input) => {
-    const resendApiKey = process.env.NEXT_PUBLIC_RESEND_API_KEY;
+    const resendApiKey = process.env.RESEND_API_KEY;
     if (!resendApiKey) {
-        console.error("Resend API key is not configured. Ensure NEXT_PUBLIC_RESEND_API_KEY is set.");
+        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set.");
         return { success: false, message: "Server configuration error. Please contact support." };
     }
 
