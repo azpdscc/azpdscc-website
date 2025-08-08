@@ -2,8 +2,8 @@
 "use client";
 
 import { useState, useActionState, useEffect } from 'react';
-import { useForm, type SubmitHandler } from 'react-hook-form';
-import { useFormState as useReactHookFormState } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
+import { useFormStatus } from 'react-dom';
 import * as z from 'zod';
 import { cn } from '@/lib/utils';
 import { vendorApplicationAction } from '@/app/admin/vendors/actions';
@@ -54,7 +54,7 @@ const boothPrices: { [key: string]: number } = {
 };
 
 function SubmitButton() {
-    const { pending } = useReactHookFormState();
+    const { pending } = useFormStatus();
     return (
         <Button type="submit" disabled={pending}>
             {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -77,7 +77,6 @@ export function ApplicationForm() {
   const [formState, formAction] = useActionState(actionWithBaseUrl, initialState);
 
   const form = useForm<VendorApplicationFormValues>({
-    // REMOVED ZodResolver. Validation is now handled solely by the server action.
     defaultValues: {
       name: "",
       organization: "",
