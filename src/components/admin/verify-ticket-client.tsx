@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useEffect } from 'react';
 import type { VendorApplication } from '@/lib/types';
 import { checkInVendorAction } from '@/app/admin/verify-ticket/actions';
 import { format } from 'date-fns';
@@ -22,6 +22,18 @@ export function VerifyTicketClient({ ticket }: VerifyTicketClientProps) {
     const { toast } = useToast();
     const [checkInStatus, setCheckInStatus] = useState(ticket.checkInStatus);
     const [checkedInAt, setCheckedInAt] = useState(ticket.checkedInAt);
+
+    // State to hold formatted dates, initialized to null or a placeholder
+    const [formattedCreatedAt, setFormattedCreatedAt] = useState<string | null>(null);
+    const [formattedCheckedInAt, setFormattedCheckedInAt] = useState<string | null>(null);
+
+    useEffect(() => {
+        // This effect runs only on the client, after hydration
+        setFormattedCreatedAt(format(new Date(ticket.createdAt), 'PPP p'));
+        if (checkedInAt) {
+             setFormattedCheckedInAt(format(new Date(checkedInAt), 'PPP p'));
+        }
+    }, [ticket.createdAt, checkedInAt]);
     
     const handleCheckIn = () => {
         startTransition(async () => {
@@ -33,7 +45,9 @@ export function VerifyTicketClient({ ticket }: VerifyTicketClientProps) {
                     variant: 'default'
                 });
                 setCheckInStatus('checkedIn');
-                setCheckedInAt(new Date().toISOString()); // Simulate timestamp update on client
+                const now = new Date().toISOString();
+                setCheckedInAt(now); 
+                setFormattedCheckedInAt(format(new Date(now), 'PPP p'));
             } else {
                  toast({
                     title: 'Error',
@@ -63,16 +77,16 @@ export function VerifyTicketClient({ ticket }: VerifyTicketClientProps) {
                  </div>
                  <div>
                     <p className="font-semibold">Application Date</p>
-                    <p className="text-muted-foreground">{format(new Date(ticket.createdAt), 'PPP p')}</p>
+                    <p className="text-muted-foreground">{formattedCreatedAt || 'Loading date...'}</p>
                  </div>
                  <div>
                     <p className="font-semibold">Status</p>
                     <Badge variant={checkInStatus === 'checkedIn' ? 'default' : 'secondary'} className={checkInStatus === 'checkedIn' ? 'bg-green-600' : ''}>
                         {checkInStatus === 'checkedIn' ? 'Checked In' : 'Pending Check-In'}
                     </Badge>
-                    {checkInStatus === 'checkedIn' && checkedInAt && (
+                    {checkInStatus === 'checkedIn' && formattedCheckedInAt && (
                          <p className="text-xs text-muted-foreground mt-1">
-                            at {format(new Date(checkedInAt), 'PPP p')}
+                            at {formattedCheckedInAt}
                         </p>
                     )}
                  </div>
