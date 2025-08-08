@@ -2,12 +2,12 @@
 "use client";
 
 import { useState, useActionState, useEffect } from 'react';
-import { useForm, type SubmitHandler, useFormState as useReactHookFormState } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, type SubmitHandler } from 'react-hook-form';
+import { useFormState as useReactHookFormState } from 'react-hook-form';
 import * as z from 'zod';
 import { cn } from '@/lib/utils';
 import { vendorApplicationAction } from '@/app/admin/vendors/actions';
-import type { VendorApplicationState } from '@/app/admin/vendors/application-actions';
+import type { VendorApplicationState } from '@/app/admin/vendors/actions';
 
 
 import { Button } from '@/components/ui/button';
@@ -23,8 +23,7 @@ import { CalendarIcon, Loader2, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 
-// This client-side schema is no longer needed for validation,
-// as it will be handled by the server action. We keep it for type inference.
+// This schema is used for type inference and default values, but not for validation on the client.
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   organization: z.string().optional(),
@@ -78,8 +77,7 @@ export function ApplicationForm() {
   const [formState, formAction] = useActionState(actionWithBaseUrl, initialState);
 
   const form = useForm<VendorApplicationFormValues>({
-    // The resolver is not strictly necessary anymore but can be kept for client-side feedback if desired
-    // resolver: zodResolver(formSchema), 
+    // REMOVED ZodResolver. Validation is now handled solely by the server action.
     defaultValues: {
       name: "",
       organization: "",
@@ -101,21 +99,12 @@ export function ApplicationForm() {
       });
       form.reset();
       setStep(1);
-    } else if (formState.message && !formState.errors) {
+    } else if (formState.message && !formState.errors?._form) { // Check for general messages not related to form fields
       toast({
         variant: 'destructive',
         title: "Submission Failed",
         description: formState.message,
       });
-    } else if (formState.errors) {
-        // This part handles displaying validation errors returned from the server
-        const errors = formState.errors;
-        (Object.keys(errors) as Array<keyof VendorApplicationFormValues>).forEach((key) => {
-            const fieldError = errors[key];
-            if(fieldError) {
-                form.setError(key, { type: 'server', message: fieldError.join(', ') });
-            }
-        });
     }
   }, [formState, toast, form]);
 
@@ -150,16 +139,16 @@ export function ApplicationForm() {
           <section className="space-y-4">
             <h2 className="font-headline text-2xl">Step 1: Contact Information</h2>
             <FormField name="name" control={form.control} render={({ field }) => (
-              <FormItem><FormLabel>Full Name</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage /></FormItem>
+              <FormItem><FormLabel>Full Name</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage>{formState.errors?.name}</FormMessage></FormItem>
             )} />
             <FormField name="organization" control={form.control} render={({ field }) => (
-              <FormItem><FormLabel>Organization (Optional)</FormLabel><FormControl><Input placeholder="Your Company LLC" {...field} /></FormControl><FormMessage /></FormItem>
+              <FormItem><FormLabel>Organization (Optional)</FormLabel><FormControl><Input placeholder="Your Company LLC" {...field} /></FormControl><FormMessage>{formState.errors?.organization}</FormMessage></FormItem>
             )} />
             <FormField name="email" control={form.control} render={({ field }) => (
-              <FormItem><FormLabel>Email Address</FormLabel><FormControl><Input type="email" placeholder="you@example.com" {...field} /></FormControl><FormMessage /></FormItem>
+              <FormItem><FormLabel>Email Address</FormLabel><FormControl><Input type="email" placeholder="you@example.com" {...field} /></FormControl><FormMessage>{formState.errors?.email}</FormMessage></FormItem>
             )} />
             <FormField name="phone" control={form.control} render={({ field }) => (
-              <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input type="tel" placeholder="(555) 555-5555" {...field} /></FormControl><FormMessage /></FormItem>
+              <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input type="tel" placeholder="(555) 555-5555" {...field} /></FormControl><FormMessage>{formState.errors?.phone}</FormMessage></FormItem>
             )} />
             <Button type="button" onClick={() => triggerValidation(['name', 'email', 'phone'])}>Next</Button>
           </section>
@@ -179,14 +168,14 @@ export function ApplicationForm() {
                     ))}
                   </SelectContent>
                 </Select>
-                <FormMessage />
+                <FormMessage>{formState.errors?.boothType}</FormMessage>
               </FormItem>
             )} />
             <FormField name="productDescription" control={form.control} render={({ field }) => (
               <FormItem>
                 <FormLabel>Product/Service Description</FormLabel>
                 <FormControl><Textarea placeholder="Describe what you will be selling or offering at your booth..." {...field} /></FormControl>
-                <FormMessage />
+                <FormMessage>{formState.errors?.productDescription}</FormMessage>
               </FormItem>
             )} />
             <div className="flex gap-4">
@@ -215,7 +204,7 @@ export function ApplicationForm() {
 
             <h3 className="font-headline text-lg">Confirm Your Payment</h3>
             <FormField name="zelleSenderName" control={form.control} render={({ field }) => (
-              <FormItem><FormLabel>Name on Zelle Account</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+              <FormItem><FormLabel>Name on Zelle Account</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage>{formState.errors?.zelleSenderName}</FormMessage></FormItem>
             )} />
             <FormField control={form.control} name="zelleDateSent" render={({ field }) => (
               <FormItem className="flex flex-col"><FormLabel>Date Sent</FormLabel>
@@ -229,15 +218,15 @@ export function ApplicationForm() {
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar mode="single" selected={field.value} onSelect={field.onChange} disabled={(date) => date > new Date() || date < new Date("1900-01-01")} initialFocus />
                   </PopoverContent>
-                </Popover><FormMessage />
+                </Popover><FormMessage>{formState.errors?.zelleDateSent}</FormMessage>
               </FormItem>
             )} />
             <FormField control={form.control} name="paymentSent" render={({ field }) => (
               <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
+                <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} name={field.name} /></FormControl>
                 <div className="space-y-1 leading-none">
                   <FormLabel>I confirm that I have sent the Zelle payment of ${totalPrice}.</FormLabel>
-                   <FormMessage />
+                   <FormMessage>{formState.errors?.paymentSent}</FormMessage>
                 </div>
               </FormItem>
             )} />
