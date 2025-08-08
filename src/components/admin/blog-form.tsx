@@ -17,6 +17,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertCircle, CalendarIcon, Loader2, Sparkles } from 'lucide-react';
 import { SubmitButton } from './submit-button';
 
@@ -40,12 +41,13 @@ export function BlogForm({ post }: BlogFormProps) {
   const [image, setImage] = useState(post?.image || 'https://placehold.co/800x400.png');
   const [excerpt, setExcerpt] = useState(post?.excerpt || '');
   const [content, setContent] = useState(post?.content || '');
-  const [date, setDate] = useState<Date | undefined>(post?.date ? new Date(post.date) : undefined);
+  const [date, setDate] = useState<Date | undefined>(post?.date ? new Date(post.date) : new Date());
+  const [status, setStatus] = useState<'Draft' | 'Published'>(post?.status || 'Draft');
   
   useEffect(() => {
-    // Only set a default date if we are creating a new post.
+    // When creating a new post from a schedule, it should start as a Draft.
     if (!isEditing) {
-      setDate(new Date());
+      setStatus('Draft');
     }
   }, [isEditing]);
 
@@ -98,7 +100,7 @@ export function BlogForm({ post }: BlogFormProps) {
               {formState.errors?.title && <p className="text-destructive text-sm mt-1">{formState.errors.title.join(', ')}</p>}
           </div>
           
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-6">
             <div>
                 <Label htmlFor="author">Author</Label>
                 <Input id="author" name="author" value={author} onChange={(e) => setAuthor(e.target.value)} required />
@@ -129,10 +131,25 @@ export function BlogForm({ post }: BlogFormProps) {
             </div>
           </div>
           
-          <div>
-              <Label htmlFor="image">Image URL</Label>
-              <Input id="image" name="image" value={image} onChange={(e) => setImage(e.target.value)} required />
-              {formState.errors?.image && <p className="text-destructive text-sm mt-1">{formState.errors.image.join(', ')}</p>}
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+                <Label htmlFor="image">Image URL</Label>
+                <Input id="image" name="image" value={image} onChange={(e) => setImage(e.target.value)} required />
+                {formState.errors?.image && <p className="text-destructive text-sm mt-1">{formState.errors.image.join(', ')}</p>}
+            </div>
+             <div>
+                <Label htmlFor="status">Status</Label>
+                <Select name="status" value={status} onValueChange={(value: 'Draft' | 'Published') => setStatus(value)}>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select a status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="Draft">Draft</SelectItem>
+                        <SelectItem value="Published">Published</SelectItem>
+                    </SelectContent>
+                </Select>
+                {formState.errors?.status && <p className="text-destructive text-sm mt-1">{formState.errors.status.join(', ')}</p>}
+            </div>
           </div>
 
           <div>

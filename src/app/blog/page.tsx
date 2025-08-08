@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { getBlogPosts, processScheduledBlogPosts } from '@/services/blog';
+import { getBlogPosts } from '@/services/blog';
 import { ArrowRight, User, Calendar } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -12,13 +12,12 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-  // This function will check for and publish any due posts.
-  // It's lightweight and runs on page load.
-  await processScheduledBlogPosts();
+  // Automatic processing is disabled. Users manually publish drafts.
+  // await processScheduledBlogPosts();
 
   const allPosts = await getBlogPosts();
   
-  // A post is publicly visible if it's "Published". The creation date is handled by the scheduler.
+  // A post is publicly visible only if its status is "Published".
   const blogPosts = allPosts.filter(post => post.status === 'Published');
 
   return (

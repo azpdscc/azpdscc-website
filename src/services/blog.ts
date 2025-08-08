@@ -96,7 +96,7 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
  * @param {Partial<BlogPostFormData>} postData - The data for the new post. The status will be added.
  * @returns {Promise<string>} The ID of the newly created document.
  */
-export async function createBlogPost(postData: Partial<BlogPostFormData>): Promise<string> {
+export async function createBlogPost(postData: BlogPostFormData): Promise<string> {
     const dataToSave = {
         ...postData,
         date: Timestamp.fromDate(postData.date), // Store as a Timestamp for correct querying
@@ -112,7 +112,7 @@ export async function createBlogPost(postData: Partial<BlogPostFormData>): Promi
  * @param {Partial<BlogPostFormData>} postData - An object with the fields to update.
  * @returns {Promise<void>}
  */
-export async function updateBlogPost(id: string, postData: Partial<Omit<BlogPostFormData, 'status'>>): Promise<void> {
+export async function updateBlogPost(id: string, postData: Partial<BlogPostFormData>): Promise<void> {
     const postDoc = doc(db, 'blogPosts', id);
     const dataToUpdate: any = { ...postData };
     if (postData.date) {
@@ -134,53 +134,11 @@ export async function deleteBlogPost(id: string): Promise<void> {
 
 
 /**
- * Processes scheduled blog posts. Finds posts that are due to be published,
- * updates their status in the main blog collection, and marks them as processed
- * in the scheduled collection.
+ * This function is no longer used for automatic publishing.
+ * It is kept for potential future use but is not active.
  */
 export async function processScheduledBlogPosts(): Promise<void> {
-    try {
-        // Step 1: Query for all pending posts. This is a simple query and doesn't need a composite index.
-        const q = query(
-            scheduledBlogCollectionRef, 
-            where('status', '==', 'Pending')
-        );
-
-        const querySnapshot = await getDocs(q);
-        if (querySnapshot.empty) {
-            return; // No pending posts to process
-        }
-
-        const batch = writeBatch(db);
-        let postsToPublishCount = 0;
-        const now = new Date();
-
-        for (const docSnap of querySnapshot.docs) {
-            const scheduledPost = { id: docSnap.id, ...docSnap.data() } as ScheduledBlogPost;
-            const publishDate = scheduledPost.publishTimestamp ? new Date(scheduledPost.publishTimestamp) : new Date(scheduledPost.publishDate);
-            
-            // Step 2: In the code, filter for posts whose publication date is in the past.
-            if (isPast(publishDate) && scheduledPost.generatedPostId) {
-                // Update the status of the actual blog post to 'Published'
-                const blogPostRef = doc(db, 'blogPosts', scheduledPost.generatedPostId);
-                batch.update(blogPostRef, { status: 'Published' });
-
-                // Update the scheduled post to 'Processed'
-                const scheduledPostRef = doc(db, 'scheduledBlogPosts', scheduledPost.id);
-                batch.update(scheduledPostRef, {
-                    status: 'Processed',
-                    processedAt: Timestamp.fromDate(new Date())
-                });
-                postsToPublishCount++;
-            }
-        }
-
-        if (postsToPublishCount > 0) {
-            await batch.commit();
-            console.log(`Successfully processed ${postsToPublishCount} scheduled blog posts.`);
-        }
-
-    } catch (error) {
-        console.error("Error processing scheduled blog posts:", error);
-    }
+    // The automatic publishing logic has been disabled to give users full manual control.
+    // Scheduled posts are created as drafts and must be published manually from the admin panel.
+    return;
 }
