@@ -7,6 +7,7 @@
 import { db } from '@/lib/firebase';
 import type { VendorApplication } from '@/lib/types';
 import { collection, doc, getDoc, addDoc, updateDoc, Timestamp, serverTimestamp } from 'firebase/firestore';
+import { format } from 'date-fns';
 
 // Using a separate collection for test data to not interfere with any future live data
 const vendorApplicationsCollectionRef = collection(db, 'vendorApplications_test');
@@ -43,7 +44,14 @@ export async function getVendorApplicationById(id: string): Promise<VendorApplic
         
         const data = docSnap.data();
         
-        return { id: docSnap.id, ...data } as VendorApplication;
+        // Convert Timestamps to serializable ISO strings before returning
+        const serializedData = {
+            ...data,
+            createdAt: data.createdAt?.toDate().toISOString(),
+            checkedInAt: data.checkedInAt ? data.checkedInAt.toDate().toISOString() : undefined,
+        }
+
+        return { id: docSnap.id, ...serializedData } as VendorApplication;
     } catch (error) {
         console.error("Error fetching vendor application by id:", error);
         return null;

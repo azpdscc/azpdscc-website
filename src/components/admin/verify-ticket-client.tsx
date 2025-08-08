@@ -33,7 +33,7 @@ export function VerifyTicketClient({ ticket }: VerifyTicketClientProps) {
                     variant: 'default'
                 });
                 setCheckInStatus('checkedIn');
-                setCheckedInAt(new Date()); // Simulate timestamp update on client
+                setCheckedInAt(new Date().toISOString()); // Simulate timestamp update on client
             } else {
                  toast({
                     title: 'Error',
@@ -63,7 +63,7 @@ export function VerifyTicketClient({ ticket }: VerifyTicketClientProps) {
                  </div>
                  <div>
                     <p className="font-semibold">Application Date</p>
-                    <p className="text-muted-foreground">{format(ticket.createdAt.toDate(), 'PPP p')}</p>
+                    <p className="text-muted-foreground">{format(new Date(ticket.createdAt), 'PPP p')}</p>
                  </div>
                  <div>
                     <p className="font-semibold">Status</p>
@@ -72,7 +72,7 @@ export function VerifyTicketClient({ ticket }: VerifyTicketClientProps) {
                     </Badge>
                     {checkInStatus === 'checkedIn' && checkedInAt && (
                          <p className="text-xs text-muted-foreground mt-1">
-                            at {format(checkedInAt instanceof Date ? checkedInAt : checkedInAt.toDate(), 'PPP p')}
+                            at {format(new Date(checkedInAt), 'PPP p')}
                         </p>
                     )}
                  </div>

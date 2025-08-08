@@ -60,9 +60,9 @@ export type VendorApplication = {
   name: string;
   organization?: string;
   boothType: string;
-  createdAt: Timestamp;
+  createdAt: string; // Serialized as ISO string
   checkInStatus: 'pending' | 'checkedIn';
-  checkedInAt?: Timestamp;
+  checkedInAt?: string; // Serialized as ISO string
 };
 
 export type DonationFormValues = {
