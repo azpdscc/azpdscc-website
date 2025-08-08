@@ -2,7 +2,7 @@
 'use server';
 
 import { z } from 'zod';
-import { createScheduledBlogPost } from '@/services/scheduled-blog';
+import { createScheduledBlogPost, deleteScheduledBlogPost } from '@/services/scheduled-blog';
 import { revalidatePath } from 'next/cache';
 import { generateBlogPost } from '@/ai/flows/generate-blog-post-flow';
 import { createBlogPost } from '@/services/blog';
@@ -87,7 +87,7 @@ export async function deleteScheduledBlogPostAction(id: string) {
         await deleteScheduledBlogPost(id);
         revalidatePath('/admin/scheduled-blog');
         return { success: true, message: 'Scheduled post deleted successfully.' };
-    } catch (error)
+    } catch (error) {
         console.error('Failed to delete scheduled post:', error);
         return { success: false, message: 'Failed to delete scheduled post.' };
     }
