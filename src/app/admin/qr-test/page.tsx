@@ -9,7 +9,7 @@ import { generateQrCodeAction } from './actions';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { SubmitButton } from '@/components/admin/submit-button';
+import { ActionSubmitButton } from '@/components/admin/submit-button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, QrCode } from 'lucide-react';
 
@@ -51,7 +51,7 @@ export default function QrTestPage() {
                              {state?.errors?.boothType && <p className="text-destructive text-sm mt-1">{state.errors.boothType.join(', ')}</p>}
                         </div>
 
-                        <SubmitButton isEditing={false} createText="Generate Test QR Code" disabled={!baseUrl} />
+                        <ActionSubmitButton isEditing={false} createText="Generate Test QR Code" disabled={!baseUrl} />
 
                         {state?.errors?._form && (
                           <Alert variant="destructive" className="mt-4">
