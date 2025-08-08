@@ -2,7 +2,7 @@
 'use server';
 
 import { z } from 'zod';
-import { createTestVendorApplication } from '@/services/vendorApplications';
+import { createVendorApplication } from '@/services/vendorApplications';
 
 export type QrTestFormState = {
   errors?: {
@@ -48,7 +48,7 @@ export async function generateQrCodeAction(
   }
 
   try {
-    const ticketId = await createTestVendorApplication({
+    const ticketId = await createVendorApplication({
         name: validatedFields.data.vendorName,
         boothType: validatedFields.data.boothType,
     });
