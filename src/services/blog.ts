@@ -137,35 +137,43 @@ export async function deleteBlogPost(id: string): Promise<void> {
  */
 export async function processScheduledBlogPosts(): Promise<void> {
     try {
-        const now = Timestamp.now();
+        const now = new Date();
         
-        // Find all posts that are still drafts and their publish date is in the past.
+        // Find all posts that are still drafts. This query does not require a composite index.
         const q = query(
             blogCollectionRef, 
-            where('status', '==', 'Draft'),
-            where('date', '<=', now)
+            where('status', '==', 'Draft')
         );
 
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
-            return; // No posts to publish
+            return; // No drafts to process
         }
-
-        // Use a batch write to update all due posts at once for efficiency.
+        
         const batch = writeBatch(db);
+        let postsToPublishCount = 0;
+
+        // Filter the drafts in code to see which ones are due.
         querySnapshot.forEach(docSnap => {
-            console.log(`Publishing post: ${docSnap.id}`);
-            const docRef = doc(db, 'blogPosts', docSnap.id);
-            batch.update(docRef, { status: 'Published' });
+            const post = docSnap.data();
+            const postDate = post.date.toDate(); // 'date' is a Firestore Timestamp
+
+            if (postDate <= now) {
+                console.log(`Scheduling post for publishing: ${docSnap.id}`);
+                const docRef = doc(db, 'blogPosts', docSnap.id);
+                batch.update(docRef, { status: 'Published' });
+                postsToPublishCount++;
+            }
         });
 
-        await batch.commit();
-        console.log(`Successfully published ${querySnapshot.size} blog post(s).`);
+        if (postsToPublishCount > 0) {
+            await batch.commit();
+            console.log(`Successfully published ${postsToPublishCount} blog post(s).`);
+        }
 
     } catch (error) {
         // This error is often a missing Firestore index.
         console.error("Error processing scheduled blog posts:", error);
-        console.error("This may be due to a missing Firestore index. Please check the Firebase console. The query requires a composite index on 'status' (ascending) and 'date' (descending or ascending).");
     }
 }
