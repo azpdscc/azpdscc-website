@@ -6,8 +6,6 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { getBlogPosts } from '@/services/blog';
 import { ArrowRight, User, Calendar } from 'lucide-react';
 
-export const dynamic = 'force-dynamic';
-
 export const metadata: Metadata = {
   title: 'PDSCC Blog | Phoenix Indian Community Stories',
   description: 'Explore articles about Indian festivals, culture, food, and community stories from the PDSCC Hub for AZ Desis and the Phoenix Indian community.',

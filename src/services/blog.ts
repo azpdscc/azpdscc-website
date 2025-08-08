@@ -9,19 +9,64 @@ import type { BlogPost, BlogPostFormData } from '@/lib/types';
 import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, orderBy, Timestamp, writeBatch } from 'firebase/firestore';
 import { format } from 'date-fns';
 import { unstable_cache } from 'next/cache';
+import { revalidateTag } from 'next/cache';
+
+/**
+ * Checks for scheduled blog posts that are due to be published and updates their status.
+ * This is called before fetching all posts to ensure the list is up-to-date.
+ */
+async function processScheduledBlogPosts(): Promise<void> {
+    try {
+        const now = new Date();
+        const draftsQuery = query(collection(db, 'blogPosts'), where('status', '==', 'Draft'));
+        const querySnapshot = await getDocs(draftsQuery);
+
+        if (querySnapshot.empty) {
+            return; // No drafts to process
+        }
+        
+        const batch = writeBatch(db);
+        let postsToPublishCount = 0;
+
+        querySnapshot.docs.forEach(docSnap => {
+            const post = docSnap.data() as BlogPost;
+            // The date from firestore is a Timestamp, so we convert it to a JS Date
+            const postDate = post.date instanceof Timestamp ? post.date.toDate() : new Date(post.date);
+            
+            if (postDate <= now) {
+                const docRef = doc(db, 'blogPosts', docSnap.id);
+                batch.update(docRef, { status: 'Published' });
+                postsToPublishCount++;
+            }
+        });
+
+        if (postsToPublishCount > 0) {
+            await batch.commit();
+            console.log(`Successfully published ${postsToPublishCount} scheduled blog post(s).`);
+            // After publishing, revalidate the cache so the public site sees the new posts
+            revalidateTag('blogPosts');
+        }
+
+    } catch (error) {
+        console.error("Error processing scheduled blog posts:", error);
+    }
+}
 
 /**
  * Fetches all blog posts from the Firestore database, ordered by date descending.
- * Uses unstable_cache for tag-based revalidation.
+ * Uses unstable_cache for tag-based revalidation (ISR).
  * @returns {Promise<BlogPost[]>} A promise that resolves to an array of blog posts.
  */
 export const getBlogPosts = unstable_cache(
   async (): Promise<BlogPost[]> => {
+    // Process any due posts before fetching the list.
+    await processScheduledBlogPosts();
     try {
       const q = query(collection(db, 'blogPosts'), orderBy('date', 'desc'));
       const querySnapshot = await getDocs(q);
       const posts = querySnapshot.docs.map(doc => {
         const data = doc.data();
+        // Firestore Timestamps need to be converted to JS Dates, then formatted.
         const date = data.date instanceof Timestamp ? data.date.toDate() : new Date(data.date);
         return {
           id: doc.id,
@@ -29,18 +74,15 @@ export const getBlogPosts = unstable_cache(
           date: format(date, 'MMMM dd, yyyy'),
         } as BlogPost;
       });
-      // Automatically publish any posts that are due
-      await processScheduledBlogPosts(posts.filter(p => p.status === 'Draft'));
       return posts;
     } catch (error) {
       console.error("Error fetching blog posts from Firestore:", error);
       return [];
     }
   },
-  ['blogPosts'], // The cache key
+  ['blogPosts'], // The cache key for this data fetch
   {
-    tags: ['blogPosts'], // The cache tag for revalidation
-    revalidate: 0, // Force revalidation on every request at the data level
+    tags: ['blogPosts'], // The cache tag used for on-demand revalidation
   }
 );
 
@@ -143,38 +185,4 @@ export async function updateBlogPost(id: string, postData: Partial<BlogPostFormD
 export async function deleteBlogPost(id: string): Promise<void> {
     const postDoc = doc(db, 'blogPosts', id);
     await deleteDoc(postDoc);
-}
-
-
-/**
- * Checks for scheduled blog posts that are due to be published and updates their status.
- * This function is now called from getBlogPosts to ensure it runs on data fetch.
- * @param {BlogPost[]} draftPosts - A pre-filtered list of posts with 'Draft' status.
- */
-async function processScheduledBlogPosts(draftPosts: BlogPost[]): Promise<void> {
-    try {
-        const now = new Date();
-        const batch = writeBatch(db);
-        let postsToPublishCount = 0;
-
-        draftPosts.forEach(post => {
-            // The date is already a string, so we parse it back to a Date object for comparison
-            const postDate = new Date(post.date);
-
-            if (postDate <= now) {
-                const docRef = doc(db, 'blogPosts', post.id);
-                batch.update(docRef, { status: 'Published' });
-                postsToPublishCount++;
-            }
-        });
-
-        if (postsToPublishCount > 0) {
-            await batch.commit();
-            revalidateTag('blogPosts');
-            console.log(`Successfully published ${postsToPublishCount} blog post(s).`);
-        }
-
-    } catch (error) {
-        console.error("Error processing scheduled blog posts:", error);
-    }
 }
