@@ -6,8 +6,7 @@
 
 import { db } from '@/lib/firebase';
 import type { VendorApplication } from '@/lib/types';
-import { collection, doc, getDoc, addDoc, updateDoc, Timestamp, serverTimestamp } from 'firebase/firestore';
-import { format } from 'date-fns';
+import { collection, doc, getDoc, addDoc, updateDoc, Timestamp, serverTimestamp, query, getDocs, orderBy } from 'firebase/firestore';
 
 // Using a separate collection for test data to not interfere with any future live data
 const vendorApplicationsCollectionRef = collection(db, 'vendorApplications_test');
@@ -26,6 +25,31 @@ export async function createTestVendorApplication(appData: Pick<VendorApplicatio
     const docRef = await addDoc(vendorApplicationsCollectionRef, dataToSave);
     return docRef.id;
 }
+
+/**
+ * Fetches all vendor applications from Firestore, ordered by creation date.
+ * @returns {Promise<VendorApplication[]>}
+ */
+export async function getVendorApplications(): Promise<VendorApplication[]> {
+    try {
+        const q = query(vendorApplicationsCollectionRef, orderBy('createdAt', 'desc'));
+        const querySnapshot = await getDocs(q);
+        const applications = querySnapshot.docs.map(doc => {
+            const data = doc.data();
+            const serializedData = {
+                ...data,
+                createdAt: data.createdAt?.toDate().toISOString(),
+                checkedInAt: data.checkedInAt ? data.checkedInAt.toDate().toISOString() : undefined,
+            }
+            return { id: doc.id, ...serializedData } as VendorApplication;
+        });
+        return applications;
+    } catch (error) {
+        console.error("Error fetching vendor applications:", error);
+        return [];
+    }
+}
+
 
 /**
  * Fetches a single vendor application by its ID from Firestore.
