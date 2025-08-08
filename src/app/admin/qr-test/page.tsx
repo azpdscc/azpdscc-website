@@ -1,7 +1,6 @@
-
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { QrTestFormState } from './actions';
@@ -17,7 +16,16 @@ import { AlertCircle, QrCode } from 'lucide-react';
 const initialState: QrTestFormState = {};
 
 export default function QrTestPage() {
-    const [state, formAction] = useActionState(generateQrCodeAction, initialState);
+    const [baseUrl, setBaseUrl] = useState('');
+
+    useEffect(() => {
+        // This ensures the code only runs on the client-side
+        // where window.location.origin is available.
+        setBaseUrl(window.location.origin);
+    }, []);
+
+    const generateQrCodeActionWithBaseUrl = generateQrCodeAction.bind(null, baseUrl);
+    const [state, formAction] = useActionState(generateQrCodeActionWithBaseUrl, initialState);
 
     return (
         <div className="container mx-auto p-4 md:p-8">
@@ -41,7 +49,7 @@ export default function QrTestPage() {
                              {state?.errors?.boothType && <p className="text-destructive text-sm mt-1">{state.errors.boothType.join(', ')}</p>}
                         </div>
 
-                        <SubmitButton isEditing={false} createText="Generate Test QR Code" />
+                        <SubmitButton isEditing={false} createText="Generate Test QR Code" disabled={!baseUrl} />
 
                         {state?.errors?._form && (
                           <Alert variant="destructive" className="mt-4">

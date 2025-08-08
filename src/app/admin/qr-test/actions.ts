@@ -23,10 +23,19 @@ const schema = z.object({
 });
 
 export async function generateQrCodeAction(
+  baseUrl: string, // The base URL is now passed in from the client
   prevState: QrTestFormState,
   formData: FormData
 ): Promise<QrTestFormState> {
   
+  if (!baseUrl) {
+    return {
+      errors: {
+        _form: ['Could not determine the base URL. Please refresh the page and try again.'],
+      },
+    };
+  }
+
   const validatedFields = schema.safeParse({
     vendorName: formData.get('vendorName'),
     boothType: formData.get('boothType'),
@@ -44,8 +53,6 @@ export async function generateQrCodeAction(
         boothType: validatedFields.data.boothType,
     });
 
-    // Hardcode a public, stable URL for testing.
-    const baseUrl = 'https://azpdscc-hub-2-gcp.ide.run';
     const verificationUrl = new URL(`/admin/verify-ticket?id=${ticketId}`, baseUrl).toString();
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(verificationUrl)}`;
     
