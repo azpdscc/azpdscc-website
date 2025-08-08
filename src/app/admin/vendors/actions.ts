@@ -16,7 +16,9 @@ const formSchema = z.object({
   productDescription: z.string().min(20, "Description must be at least 20 characters.").max(500),
   zelleSenderName: z.string().min(2, "Zelle sender name is required."),
   zelleDateSent: z.coerce.date({ required_error: "Please select the date you sent the payment." }),
-  paymentSent: z.coerce.boolean().refine(val => val === true, { message: "You must confirm payment has been sent." }),
+  paymentSent: z.literal('on', {
+    errorMap: () => ({ message: 'You must confirm payment has been sent.' }),
+  }),
 });
 
 export type VendorApplicationState = {
@@ -97,9 +99,17 @@ export async function processVendorApplicationAction(
 
         // 3. Send the confirmation email with the QR Code
         const emailFlowResult = await sendVendorApplication({
-            ...validatedFields.data,
+            name: validatedFields.data.name,
+            organization: validatedFields.data.organization,
+            email: validatedFields.data.email,
+            phone: validatedFields.data.phone,
+            boothType: validatedFields.data.boothType,
+            totalPrice: validatedFields.data.totalPrice,
+            productDescription: validatedFields.data.productDescription,
+            zelleSenderName: validatedFields.data.zelleSenderName,
             zelleDateSent: format(validatedFields.data.zelleDateSent, "PPP"),
             qrCodeUrl: qrCodeUrl,
+            paymentConfirmed: true, // This is now guaranteed by the schema
         });
 
         if (!emailFlowResult.success) {
