@@ -16,7 +16,7 @@ export type Event = {
 };
 
 // Form data includes a Date object before it's converted to a string
-export type EventFormData = Omit<Event, 'id' | 'date'> & {
+export type EventFormData = Omit<Event, 'id' | 'date' | 'slug'> & {
   date: Date;
 };
 
@@ -77,9 +77,25 @@ export type BlogPost = {
 };
 
 // Form data includes a Date object before it's converted to a string
-export type BlogPostFormData = Omit<BlogPost, 'id' | 'date'> & {
+export type BlogPostFormData = Omit<BlogPost, 'id' | 'date' | 'slug'> & {
     date: Date;
 };
+
+export type ScheduledBlogPost = {
+    id: string;
+    title: string;
+    image: string;
+    publishDate: string; // Stored as "Month Day, YYYY"
+    status: 'Pending' | 'Processed' | 'Error';
+    processedAt?: string;
+    generatedPostId?: string;
+    errorMessage?: string;
+};
+
+export type ScheduledBlogPostFormData = Omit<ScheduledBlogPost, 'id' | 'publishDate' | 'status'> & {
+    publishDate: Date;
+};
+
 
 export type GenerateBlogPostOutput = {
   title: string;

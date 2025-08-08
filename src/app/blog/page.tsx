@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { getBlogPosts } from '@/services/blog';
+import { processScheduledBlogPosts } from '@/services/scheduled-blog';
 import { ArrowRight, User, Calendar } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -12,6 +13,15 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
+  // On page load, check for and process any due scheduled posts.
+  // This is a simple, effective way to trigger the automation.
+  try {
+    await processScheduledBlogPosts();
+  } catch (error) {
+    console.error("Failed to process scheduled blog posts:", error);
+    // Don't block the page load if this fails. Log the error for debugging.
+  }
+
   const allPosts = await getBlogPosts();
   // Filter out drafts from the public-facing blog page
   const blogPosts = allPosts.filter(post => post.status === 'Published');
