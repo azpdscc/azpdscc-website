@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { createBlogPost, updateBlogPost, deleteBlogPost } from '@/services/blog';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { generateBlogPost } from '@/ai/flows/generate-blog-post-flow';
 
 export type BlogFormState = {
   errors?: {
@@ -21,7 +22,7 @@ export type BlogFormState = {
   message?: string;
 };
 
-// Added 'status' to the schema
+// This schema is used for both creating and updating standard posts.
 const blogPostSchema = z.object({
   title: z.string().min(1, "Title is required"),
   slug: z.string().min(1, "Slug is required"),
@@ -32,6 +33,14 @@ const blogPostSchema = z.object({
   content: z.string().min(1, "Content is required"),
   status: z.enum(['Draft', 'Published']),
 });
+
+// This schema is used specifically for the AI-powered scheduling form.
+const scheduledBlogPostSchema = z.object({
+  title: z.string().min(10, "Title must be at least 10 characters long."),
+  publishDate: z.coerce.date({ required_error: 'Please select a date.'}),
+  image: z.string().url("Must be a valid URL"),
+});
+
 
 export async function createBlogPostAction(
   prevState: BlogFormState,
@@ -55,12 +64,8 @@ export async function createBlogPostAction(
     };
   }
   
-  const postData = {
-      ...validatedFields.data,
-  };
-
   try {
-    await createBlogPost(postData);
+    await createBlogPost(validatedFields.data);
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {
@@ -74,6 +79,51 @@ export async function createBlogPostAction(
   revalidatePath('/admin/blog');
   redirect('/admin/blog');
 }
+
+export async function createScheduledBlogPostAction(
+  prevState: BlogFormState,
+  formData: FormData
+): Promise<BlogFormState> {
+  const validatedFields = scheduledBlogPostSchema.safeParse({
+    title: formData.get('title'),
+    publishDate: formData.get('publishDate'),
+    image: formData.get('image'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Failed to schedule post.',
+    };
+  }
+
+  const { title, image, publishDate } = validatedFields.data;
+
+  try {
+    const generatedContent = await generateBlogPost({ topic: title });
+
+    const newPostData = {
+      ...generatedContent,
+      author: 'PDSCC Team',
+      date: publishDate,
+      image: image,
+      status: 'Draft' as const,
+    };
+    await createBlogPost(newPostData);
+
+  } catch (err) {
+     const message = err instanceof Error ? err.message : 'An unknown error occurred.';
+     return {
+      errors: {
+        _form: ['An unexpected error occurred while generating the post draft.', message],
+      },
+    };
+  }
+
+  revalidatePath('/admin/blog');
+  redirect('/admin/blog');
+}
+
 
 export async function updateBlogPostAction(
   id: string,

@@ -4,8 +4,8 @@
 import * as React from 'react';
 import { useActionState, useEffect, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
-import type { ScheduledBlogFormState } from '@/app/admin/scheduled-blog/actions';
-import { createScheduledBlogPostAction } from '@/app/admin/scheduled-blog/actions';
+import type { BlogFormState } from '@/app/admin/blog/actions';
+import { createScheduledBlogPostAction } from '@/app/admin/blog/actions';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
@@ -16,6 +16,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { AlertCircle, CalendarIcon, Loader2, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { redirect } from 'next/navigation';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -28,7 +29,7 @@ function SubmitButton() {
 }
 
 export function ScheduledBlogForm() {
-  const initialState: ScheduledBlogFormState = { errors: {}, message: '' };
+  const initialState: BlogFormState = { errors: {}, message: '' };
   const [formState, formAction] = useActionState(createScheduledBlogPostAction, initialState);
   const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
@@ -47,7 +48,6 @@ export function ScheduledBlogForm() {
     }
   }, [formState, toast]);
 
-
   return (
     <form ref={formRef} action={formAction} className="space-y-6">
       <div>
@@ -58,7 +58,7 @@ export function ScheduledBlogForm() {
 
       <div>
         <Label htmlFor="image">Image URL</Label>
-        <Input id="image" name="image" placeholder="https://placehold.co/800x400.png" required />
+        <Input id="image" name="image" defaultValue="https://placehold.co/800x400.png" required />
         {formState.errors?.image && <p className="text-destructive text-sm mt-1">{formState.errors.image.join(', ')}</p>}
       </div>
       
