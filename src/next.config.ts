@@ -20,18 +20,15 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: '**.s3.amazonaws.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
         hostname: 'pdscc-images-website-2025.s3.us-east-1.amazonaws.com',
         port: '',
         pathname: '/**',
       }
     ],
   },
+  env: {
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+  }
 };
 
 export default nextConfig;
