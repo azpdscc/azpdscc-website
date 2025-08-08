@@ -1,4 +1,3 @@
-
 // This is a placeholder file.
 // In the next step, I will prompt you to get your Firebase config object.
 // We will then populate this file with the necessary Firebase initialization code.
