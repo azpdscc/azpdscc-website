@@ -47,8 +47,8 @@ const formSchema = z.object({
   productDescription: z.string().min(20, "Description must be at least 20 characters.").max(500),
   zelleSenderName: z.string().min(2, "Zelle sender name is required."),
   zelleDateSent: z.coerce.date({ required_error: "Please select the date you sent the payment." }),
-  paymentSent: z.literal('on', {
-    errorMap: () => ({ message: 'You must confirm payment has been sent.' }),
+  paymentSent: z.boolean().refine(val => val === true, {
+    message: 'You must confirm payment has been sent.',
   }),
 });
 
@@ -63,7 +63,7 @@ export async function vendorApplicationAction(
         errors: { _form: ['Could not determine the base URL. Please try again.'] },
       };
     }
-
+    
     const validatedFields = formSchema.safeParse({
         name: formData.get('name'),
         organization: formData.get('organization'),
@@ -73,7 +73,7 @@ export async function vendorApplicationAction(
         productDescription: formData.get('productDescription'),
         zelleSenderName: formData.get('zelleSenderName'),
         zelleDateSent: formData.get('zelleDateSent'),
-        paymentSent: formData.get('paymentSent'),
+        paymentSent: formData.get('paymentSent') === 'on',
     });
 
     if (!validatedFields.success) {
@@ -107,7 +107,7 @@ export async function vendorApplicationAction(
             productDescription: validatedFields.data.productDescription,
             zelleSenderName: validatedFields.data.zelleSenderName,
             zelleDateSent: format(validatedFields.data.zelleDateSent, "PPP"),
-            paymentConfirmed: validatedFields.data.paymentSent === 'on',
+            paymentConfirmed: validatedFields.data.paymentSent,
             qrCodeUrl: qrCodeUrl,
         };
 

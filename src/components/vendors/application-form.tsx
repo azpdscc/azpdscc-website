@@ -51,7 +51,11 @@ function VendorFormContent({ baseUrl }: { baseUrl: string }) {
                 title: "Application Submitted!",
                 description: state.message,
             });
-             document.querySelector('form')?.reset();
+             // A bit of a hack to reset the form since we are not using react-hook-form's reset method
+             const form = document.querySelector('form');
+             if (form) {
+                form.reset();
+             }
              setZelleDate(undefined);
         } else if (state.message || state.errors?._form) {
             toast({
@@ -167,12 +171,15 @@ export function ApplicationForm() {
   const [baseUrl, setBaseUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    // This effect runs only on the client, ensuring window is available.
     setBaseUrl(window.location.origin);
   }, []);
 
   if (!baseUrl) {
+    // Render a loading state or a skeleton while waiting for the base URL.
     return <div className="flex justify-center items-center h-40"><Loader2 className="h-8 w-8 animate-spin" /></div>;
   }
   
+  // Only render the form content once the base URL is available.
   return <VendorFormContent baseUrl={baseUrl} />;
 }
