@@ -19,7 +19,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertCircle, CalendarIcon, Loader2, Sparkles } from 'lucide-react';
-import { SubmitButton } from './submit-button';
+import { ActionSubmitButton } from './submit-button';
 
 interface EventFormProps {
   event?: Event;
@@ -170,7 +170,7 @@ export function EventForm({ event }: EventFormProps) {
         )}
 
         <div className="flex items-center gap-4">
-            <SubmitButton isEditing={isEditing} />
+            <ActionSubmitButton isEditing={isEditing} />
             <Button type="button" variant="outline" asChild>
                 <Link href="/admin/events">Cancel</Link>
             </Button>

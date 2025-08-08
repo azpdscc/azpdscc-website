@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Label } from '@/components/ui/label';
 import { AlertCircle } from 'lucide-react';
-import { SubmitButton } from './submit-button';
+import { ActionSubmitButton } from './submit-button';
 
 interface TeamFormProps {
   member?: TeamMember;
@@ -68,7 +68,7 @@ export function TeamForm({ member }: TeamFormProps) {
         )}
 
         <div className="flex items-center gap-4">
-            <SubmitButton isEditing={isEditing} />
+            <ActionSubmitButton isEditing={isEditing} />
             <Button variant="outline" asChild>
                 <Link href="/admin/team">Cancel</Link>
             </Button>

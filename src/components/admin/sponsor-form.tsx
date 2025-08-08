@@ -13,7 +13,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertCircle } from 'lucide-react';
-import { SubmitButton } from './submit-button';
+import { ActionSubmitButton } from './submit-button';
 
 interface SponsorFormProps {
   sponsor?: Sponsor;
@@ -73,7 +73,7 @@ export function SponsorForm({ sponsor }: SponsorFormProps) {
         )}
 
         <div className="flex items-center gap-4">
-            <SubmitButton isEditing={isEditing} />
+            <ActionSubmitButton isEditing={isEditing} />
             <Button variant="outline" asChild>
                 <Link href="/admin/sponsors">Cancel</Link>
             </Button>

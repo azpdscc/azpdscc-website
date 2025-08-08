@@ -42,55 +42,52 @@ function VendorFormContent({ baseUrl }: { baseUrl: string }) {
     const actionWithBaseUrl = vendorApplicationAction.bind(null, baseUrl);
     const [state, formAction] = useActionState(actionWithBaseUrl, initialState);
     
-    // For client-side rendering of date picker
     const [zelleDate, setZelleDate] = useState<Date | undefined>();
 
     useEffect(() => {
+        if (!state) return;
         if (state.success) {
             toast({
                 title: "Application Submitted!",
                 description: state.message,
             });
-             // Resetting the form can be tricky with server components.
-             // Usually, you'd redirect or show a success message in place of the form.
-             // For now, we rely on the toast notification.
-        } else if (state.message) {
+             document.querySelector('form')?.reset();
+             setZelleDate(undefined);
+        } else if (state.message || state.errors?._form) {
             toast({
                 variant: 'destructive',
                 title: "Submission Failed",
-                description: state.message,
+                description: state.message || state.errors?._form?.join(', '),
             });
         }
     }, [state, toast]);
 
     return (
         <form action={formAction} className="space-y-8">
-            {/* Step 1: Contact Information */}
             <fieldset className="space-y-4">
                 <legend className="font-headline text-2xl">Step 1: Contact Information</legend>
                 <div>
                     <Label htmlFor="name">Full Name</Label>
                     <Input id="name" name="name" placeholder="John Doe" required />
-                    {state.errors?.name && <p className="text-destructive text-sm mt-1">{state.errors.name.join(', ')}</p>}
+                    {state?.errors?.name && <p className="text-destructive text-sm mt-1">{state.errors.name.join(', ')}</p>}
                 </div>
                 <div>
                     <Label htmlFor="organization">Organization (Optional)</Label>
                     <Input id="organization" name="organization" placeholder="Your Company LLC" />
-                    {state.errors?.organization && <p className="text-destructive text-sm mt-1">{state.errors.organization.join(', ')}</p>}
+                    {state?.errors?.organization && <p className="text-destructive text-sm mt-1">{state.errors.organization.join(', ')}</p>}
                 </div>
                 <div>
                     <Label htmlFor="email">Email Address</Label>
                     <Input id="email" name="email" type="email" placeholder="you@example.com" required />
-                     {state.errors?.email && <p className="text-destructive text-sm mt-1">{state.errors.email.join(', ')}</p>}
+                     {state?.errors?.email && <p className="text-destructive text-sm mt-1">{state.errors.email.join(', ')}</p>}
                 </div>
                 <div>
                     <Label htmlFor="phone">Phone Number</Label>
                     <Input id="phone" name="phone" type="tel" placeholder="(555) 555-5555" required />
-                    {state.errors?.phone && <p className="text-destructive text-sm mt-1">{state.errors.phone.join(', ')}</p>}
+                    {state?.errors?.phone && <p className="text-destructive text-sm mt-1">{state.errors.phone.join(', ')}</p>}
                 </div>
             </fieldset>
 
-            {/* Step 2: Booth Details */}
             <fieldset className="space-y-4">
                  <legend className="font-headline text-2xl">Step 2: Booth Details</legend>
                  <div>
@@ -103,16 +100,15 @@ function VendorFormContent({ baseUrl }: { baseUrl: string }) {
                             ))}
                         </SelectContent>
                     </Select>
-                    {state.errors?.boothType && <p className="text-destructive text-sm mt-1">{state.errors.boothType.join(', ')}</p>}
+                    {state?.errors?.boothType && <p className="text-destructive text-sm mt-1">{state.errors.boothType.join(', ')}</p>}
                  </div>
                  <div>
                     <Label htmlFor="productDescription">Product/Service Description</Label>
                     <Textarea id="productDescription" name="productDescription" placeholder="Describe what you will be selling or offering..." required />
-                    {state.errors?.productDescription && <p className="text-destructive text-sm mt-1">{state.errors.productDescription.join(', ')}</p>}
+                    {state?.errors?.productDescription && <p className="text-destructive text-sm mt-1">{state.errors.productDescription.join(', ')}</p>}
                  </div>
             </fieldset>
 
-            {/* Step 3: Payment */}
              <fieldset className="space-y-6">
                  <legend className="font-headline text-2xl">Step 3: Payment & Confirmation</legend>
                  <div className="p-6 border-2 border-primary/50 rounded-lg bg-primary/5">
@@ -125,7 +121,7 @@ function VendorFormContent({ baseUrl }: { baseUrl: string }) {
                 <div>
                     <Label htmlFor="zelleSenderName">Name on Zelle Account</Label>
                     <Input id="zelleSenderName" name="zelleSenderName" required />
-                    {state.errors?.zelleSenderName && <p className="text-destructive text-sm mt-1">{state.errors.zelleSenderName.join(', ')}</p>}
+                    {state?.errors?.zelleSenderName && <p className="text-destructive text-sm mt-1">{state.errors.zelleSenderName.join(', ')}</p>}
                 </div>
                 
                  <div className="flex flex-col gap-2">
@@ -142,32 +138,30 @@ function VendorFormContent({ baseUrl }: { baseUrl: string }) {
                         </PopoverContent>
                     </Popover>
                     <input type="hidden" name="zelleDateSent" value={zelleDate?.toISOString() ?? ''} />
-                    {state.errors?.zelleDateSent && <p className="text-destructive text-sm mt-1">{state.errors.zelleDateSent.join(', ')}</p>}
+                    {state?.errors?.zelleDateSent && <p className="text-destructive text-sm mt-1">{state.errors.zelleDateSent.join(', ')}</p>}
                 </div>
                  
                  <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                     <Checkbox id="paymentSent" name="paymentSent" />
                     <div className="space-y-1 leading-none">
                         <Label htmlFor="paymentSent">I confirm that I have sent the Zelle payment.</Label>
-                        {state.errors?.paymentSent && <p className="text-destructive text-sm mt-1">{state.errors.paymentSent.join(', ')}</p>}
+                        {state?.errors?.paymentSent && <p className="text-destructive text-sm mt-1">{state.errors.paymentSent.join(', ')}</p>}
                     </div>
                  </div>
-
              </fieldset>
 
-            {state.errors?._form && (
-            <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Error</AlertTitle>
-                <AlertDescription>{state.errors._form.join(', ')}</AlertDescription>
-            </Alert>
+            {state?.errors?._form && (
+                <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Error</AlertTitle>
+                    <AlertDescription>{state.errors._form.join(', ')}</AlertDescription>
+                </Alert>
             )}
 
             <SubmitButton />
         </form>
     );
 }
-
 
 export function ApplicationForm() {
   const [baseUrl, setBaseUrl] = useState<string | null>(null);
