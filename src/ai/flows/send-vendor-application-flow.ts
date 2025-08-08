@@ -24,6 +24,7 @@ const VendorApplicationInputSchema = z.object({
   zelleSenderName: z.string().describe("The name on the Zelle account used for payment."),
   zelleDateSent: z.string().describe("The date the Zelle payment was sent."),
   paymentConfirmed: z.boolean().describe("Whether the vendor confirmed they sent the payment."),
+  qrCodeUrl: z.string().url().describe("The URL of the QR code image to include in the ticket."),
 });
 export type VendorApplicationInput = z.infer<typeof VendorApplicationInputSchema>;
 
@@ -65,7 +66,7 @@ const vendorTicketEmailPrompt = ai.definePrompt({
         -   **Organization:** {{{organization}}} (Show only if provided)
         -   **Booth Type:** {{{boothType}}}
         -   **Amount Paid:** \${{{totalPrice}}}
-    5.  A placeholder for a QR code. This should be a 150x150px image placeholder. Use: <img src="https://placehold.co/150x150.png" alt="QR Code" style="display: block; margin: 20px auto;" />
+    5.  A QR code for check-in. Use the following image URL: <img src="{{{qrCodeUrl}}}" alt="QR Code for Check-In" style="display: block; margin: 20px auto; border: 5px solid #333;" />
     6.  Instructions: "Please present this email (or the QR code) at the vendor check-in gate on the day of the event."
     7.  A closing: "We look forward to seeing you there," followed by "The PDSCC Team".
 

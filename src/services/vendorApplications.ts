@@ -8,15 +8,15 @@ import { db } from '@/lib/firebase';
 import type { VendorApplication } from '@/lib/types';
 import { collection, doc, getDoc, addDoc, updateDoc, Timestamp, serverTimestamp, query, getDocs, orderBy } from 'firebase/firestore';
 
-// Using a separate collection for test data to not interfere with any future live data
-const vendorApplicationsCollectionRef = collection(db, 'vendorApplications_test');
+// This collection will store all vendor applications for events.
+const vendorApplicationsCollectionRef = collection(db, 'vendorApplications');
 
 /**
- * Creates a new test vendor application in Firestore to simulate a vendor submission.
- * @param {Pick<VendorApplication, 'name' | 'organization' | 'boothType'>} appData - The basic data for the test vendor.
+ * Creates a new vendor application in Firestore for check-in purposes.
+ * @param {Pick<VendorApplication, 'name' | 'organization' | 'boothType'>} appData - The basic data for the vendor.
  * @returns {Promise<string>} The ID of the newly created document.
  */
-export async function createTestVendorApplication(appData: Pick<VendorApplication, 'name' | 'organization' | 'boothType'>): Promise<string> {
+export async function createVendorApplication(appData: Pick<VendorApplication, 'name' | 'organization' | 'boothType'>): Promise<string> {
     const dataToSave = {
         ...appData,
         createdAt: serverTimestamp(),
@@ -58,7 +58,7 @@ export async function getVendorApplications(): Promise<VendorApplication[]> {
  */
 export async function getVendorApplicationById(id: string): Promise<VendorApplication | null> {
     try {
-        const docRef = doc(db, 'vendorApplications_test', id);
+        const docRef = doc(db, 'vendorApplications', id);
         const docSnap = await getDoc(docRef);
 
         if (!docSnap.exists()) {
@@ -88,7 +88,7 @@ export async function getVendorApplicationById(id: string): Promise<VendorApplic
  * @returns {Promise<void>}
  */
 export async function checkInVendor(id: string): Promise<void> {
-    const appDoc = doc(db, 'vendorApplications_test', id);
+    const appDoc = doc(db, 'vendorApplications', id);
     await updateDoc(appDoc, {
         checkInStatus: 'checkedIn',
         checkedInAt: serverTimestamp(),

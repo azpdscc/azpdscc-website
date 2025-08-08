@@ -1,12 +1,14 @@
 
 "use client";
 
-import { useState } from 'react';
-import { useForm, type SubmitHandler } from 'react-hook-form';
+import { useState, useActionState, useEffect } from 'react';
+import { useForm, type SubmitHandler, useFormState } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { cn } from '@/lib/utils';
-import { sendVendorApplication } from '@/ai/flows/send-vendor-application-flow';
+import { processVendorApplicationAction } from '@/app/admin/vendors/actions';
+import type { VendorApplicationState } from '@/app/admin/vendors/actions';
+
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,8 +19,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { useToast } from '@/hooks/use-toast';
-import { CalendarIcon, Loader2 } from 'lucide-react';
+import { CalendarIcon, Loader2, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -50,10 +53,30 @@ const boothPrices: { [key: string]: number } = {
   '10x20-our': 650,
 };
 
+function SubmitButton() {
+    const { pending } = useFormState();
+    return (
+        <Button type="submit" disabled={pending}>
+            {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Submit Application
+        </Button>
+    )
+}
+
 export function ApplicationForm() {
   const [step, setStep] = useState(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const [baseUrl, setBaseUrl] = useState('');
+
+  useEffect(() => {
+    // This ensures window is defined, as it only runs on the client.
+    setBaseUrl(window.location.origin);
+  }, []);
+
+  const initialState: VendorApplicationState = { errors: {}, message: '' };
+  const actionWithBaseUrl = processVendorApplicationAction.bind(null, baseUrl);
+  const [formState, formAction] = useActionState(actionWithBaseUrl, initialState);
+
   const form = useForm<VendorApplicationFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -69,51 +92,27 @@ export function ApplicationForm() {
     },
   });
 
+  useEffect(() => {
+    if (formState.success) {
+      toast({
+        title: "Application Submitted!",
+        description: formState.message,
+      });
+      form.reset();
+      setStep(1);
+    } else if (formState.message && !formState.errors) { // A general error occurred
+      toast({
+        variant: 'destructive',
+        title: "Submission Failed",
+        description: formState.message,
+      });
+    }
+  }, [formState, toast, form]);
+
   const triggerValidation = async (fields: (keyof VendorApplicationFormValues)[]) => {
     const result = await form.trigger(fields);
     if (result) {
       setStep(prev => prev + 1);
-    }
-  };
-
-  const onSubmit: SubmitHandler<VendorApplicationFormValues> = async (data) => {
-    setIsSubmitting(true);
-    try {
-      const response = await sendVendorApplication({
-        name: data.name,
-        organization: data.organization,
-        email: data.email,
-        phone: data.phone,
-        boothType: boothOptions[data.boothType], // Send the full string description
-        totalPrice: boothPrices[data.boothType],
-        productDescription: data.productDescription,
-        zelleSenderName: data.zelleSenderName,
-        zelleDateSent: format(data.zelleDateSent, "PPP"),
-        paymentConfirmed: data.paymentSent
-      });
-
-      if (response.success) {
-        toast({
-          title: "Application Submitted!",
-          description: response.message,
-        });
-        form.reset();
-        setStep(1);
-      } else {
-        toast({
-          variant: 'destructive',
-          title: "Submission Failed",
-          description: response.message,
-        });
-      }
-    } catch (error) {
-      toast({
-        variant: 'destructive',
-        title: "An Error Occurred",
-        description: "Could not process the application at this time. Please try again.",
-      });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -122,7 +121,7 @@ export function ApplicationForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form action={formAction} className="space-y-8">
         <div className="flex items-center space-x-4 mb-8">
           {[1, 2, 3].map(s => (
             <div key={s} className="flex items-center">
@@ -206,21 +205,21 @@ export function ApplicationForm() {
 
             <h3 className="font-headline text-lg">Confirm Your Payment</h3>
             <FormField name="zelleSenderName" control={form.control} render={({ field }) => (
-              <FormItem><FormLabel>Name on Zelle Account</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage /></FormItem>
+              <FormItem><FormLabel>Name on Zelle Account</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage>{formState.errors?.zelleSenderName}</FormMessage></FormItem>
             )} />
             <FormField control={form.control} name="zelleDateSent" render={({ field }) => (
               <FormItem className="flex flex-col"><FormLabel>Date Sent</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild><FormControl>
-                      <Button variant={"outline"} className={cn("w-full sm:w-[240px] pl-3 text-left font-normal", !field.value && "text-white")}>
+                      <Button variant={"outline"} className={cn("w-full sm:w-[240px] pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
                         {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                        <CalendarIcon className={cn("ml-auto h-4 w-4", !field.value ? "text-white" : "opacity-50")} strokeWidth={1.5} />
+                        <CalendarIcon className="h-4 w-4 opacity-50" />
                       </Button>
                   </FormControl></PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar mode="single" selected={field.value} onSelect={field.onChange} disabled={(date) => date > new Date() || date < new Date("1900-01-01")} initialFocus />
                   </PopoverContent>
-                </Popover><FormMessage />
+                </Popover><FormMessage>{formState.errors?.zelleDateSent}</FormMessage>
               </FormItem>
             )} />
             <FormField control={form.control} name="paymentSent" render={({ field }) => (
@@ -228,16 +227,22 @@ export function ApplicationForm() {
                 <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                 <div className="space-y-1 leading-none">
                   <FormLabel>I confirm that I have sent the Zelle payment of ${totalPrice}.</FormLabel>
+                   <FormMessage>{formState.errors?.paymentSent}</FormMessage>
                 </div>
               </FormItem>
             )} />
+
+             {formState.errors?._form && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{formState.errors._form.join(', ')}</AlertDescription>
+              </Alert>
+            )}
             
             <div className="flex gap-4">
               <Button type="button" variant="outline" onClick={() => setStep(2)}>Back</Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Submit Application
-              </Button>
+              <SubmitButton />
             </div>
           </section>
         )}

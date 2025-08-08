@@ -52,6 +52,7 @@ export type VendorApplicationFormData = {
   zelleSenderName: string;
   zelleDateSent: string;
   paymentConfirmed: boolean;
+  qrCodeUrl: string;
 };
 
 // This represents the data stored in Firestore for verification
