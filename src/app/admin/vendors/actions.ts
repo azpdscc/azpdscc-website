@@ -15,8 +15,8 @@ const formSchema = z.object({
   totalPrice: z.number(),
   productDescription: z.string().min(20, "Description must be at least 20 characters.").max(500),
   zelleSenderName: z.string().min(2, "Zelle sender name is required."),
-  zelleDateSent: z.date({ required_error: "Please select the date you sent the payment." }),
-  paymentSent: z.boolean().refine(val => val === true, { message: "You must confirm payment has been sent." }),
+  zelleDateSent: z.coerce.date({ required_error: "Please select the date you sent the payment." }),
+  paymentSent: z.coerce.boolean().refine(val => val === true, { message: "You must confirm payment has been sent." }),
 });
 
 export type VendorApplicationState = {
@@ -72,8 +72,8 @@ export async function processVendorApplicationAction(
         totalPrice: boothPrices[boothTypeKey],
         productDescription: formData.get('productDescription'),
         zelleSenderName: formData.get('zelleSenderName'),
-        zelleDateSent: new Date(formData.get('zelleDateSent') as string),
-        paymentSent: formData.get('paymentSent') === 'on' || formData.get('paymentSent') === 'true',
+        zelleDateSent: formData.get('zelleDateSent'),
+        paymentSent: formData.get('paymentSent'),
     });
 
     if (!validatedFields.success) {
@@ -103,8 +103,6 @@ export async function processVendorApplicationAction(
         });
 
         if (!emailFlowResult.success) {
-            // NOTE: In a real-world scenario, you might want to handle this more gracefully,
-            // e.g., by notifying an admin that the record was created but the email failed.
             return { success: false, message: `Application recorded, but failed to send email: ${emailFlowResult.message}` };
         }
         

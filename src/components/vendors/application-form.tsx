@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useActionState, useEffect } from 'react';
-import { useForm, type SubmitHandler, useFormState } from 'react-hook-form';
+import { useForm, type SubmitHandler, useFormState as useReactHookFormState } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { cn } from '@/lib/utils';
@@ -23,19 +23,20 @@ import { CalendarIcon, Loader2, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 
+// This client-side schema is no longer needed for validation,
+// as it will be handled by the server action. We keep it for type inference.
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   organization: z.string().optional(),
   email: z.string().email(),
   phone: z.string().min(10, "Please enter a valid phone number."),
-  boothType: z.enum(['10x10-own', '10x10-our', '10x20-own', '10x20-our'], {
-    required_error: "You need to select a booth type.",
-  }),
+  boothType: z.enum(['10x10-own', '10x10-our', '10x20-own', '10x20-our']),
   productDescription: z.string().min(20, "Description must be at least 20 characters.").max(500),
   zelleSenderName: z.string().min(2, "Zelle sender name is required."),
-  zelleDateSent: z.date({ required_error: "Please select the date you sent the payment." }),
-  paymentSent: z.boolean().refine(val => val === true, { message: "You must confirm payment has been sent." }),
+  zelleDateSent: z.date(),
+  paymentSent: z.boolean(),
 });
+
 
 type VendorApplicationFormValues = z.infer<typeof formSchema>;
 
@@ -54,7 +55,7 @@ const boothPrices: { [key: string]: number } = {
 };
 
 function SubmitButton() {
-    const { pending } = useFormState();
+    const { pending } = useReactHookFormState();
     return (
         <Button type="submit" disabled={pending}>
             {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -69,7 +70,6 @@ export function ApplicationForm() {
   const [baseUrl, setBaseUrl] = useState('');
 
   useEffect(() => {
-    // This ensures window is defined, as it only runs on the client.
     setBaseUrl(window.location.origin);
   }, []);
 
@@ -78,7 +78,8 @@ export function ApplicationForm() {
   const [formState, formAction] = useActionState(actionWithBaseUrl, initialState);
 
   const form = useForm<VendorApplicationFormValues>({
-    resolver: zodResolver(formSchema),
+    // The resolver is not strictly necessary anymore but can be kept for client-side feedback if desired
+    // resolver: zodResolver(formSchema), 
     defaultValues: {
       name: "",
       organization: "",
@@ -100,12 +101,21 @@ export function ApplicationForm() {
       });
       form.reset();
       setStep(1);
-    } else if (formState.message && !formState.errors) { // A general error occurred
+    } else if (formState.message && !formState.errors) {
       toast({
         variant: 'destructive',
         title: "Submission Failed",
         description: formState.message,
       });
+    } else if (formState.errors) {
+        // This part handles displaying validation errors returned from the server
+        const errors = formState.errors;
+        (Object.keys(errors) as Array<keyof VendorApplicationFormValues>).forEach((key) => {
+            const fieldError = errors[key];
+            if(fieldError) {
+                form.setError(key, { type: 'server', message: fieldError.join(', ') });
+            }
+        });
     }
   }, [formState, toast, form]);
 
@@ -205,7 +215,7 @@ export function ApplicationForm() {
 
             <h3 className="font-headline text-lg">Confirm Your Payment</h3>
             <FormField name="zelleSenderName" control={form.control} render={({ field }) => (
-              <FormItem><FormLabel>Name on Zelle Account</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage>{formState.errors?.zelleSenderName}</FormMessage></FormItem>
+              <FormItem><FormLabel>Name on Zelle Account</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
             )} />
             <FormField control={form.control} name="zelleDateSent" render={({ field }) => (
               <FormItem className="flex flex-col"><FormLabel>Date Sent</FormLabel>
@@ -219,7 +229,7 @@ export function ApplicationForm() {
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar mode="single" selected={field.value} onSelect={field.onChange} disabled={(date) => date > new Date() || date < new Date("1900-01-01")} initialFocus />
                   </PopoverContent>
-                </Popover><FormMessage>{formState.errors?.zelleDateSent}</FormMessage>
+                </Popover><FormMessage />
               </FormItem>
             )} />
             <FormField control={form.control} name="paymentSent" render={({ field }) => (
@@ -227,7 +237,7 @@ export function ApplicationForm() {
                 <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                 <div className="space-y-1 leading-none">
                   <FormLabel>I confirm that I have sent the Zelle payment of ${totalPrice}.</FormLabel>
-                   <FormMessage>{formState.errors?.paymentSent}</FormMessage>
+                   <FormMessage />
                 </div>
               </FormItem>
             )} />
