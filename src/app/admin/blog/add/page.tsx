@@ -8,7 +8,7 @@ export default function AddBlogPostPage() {
       <Card className="max-w-4xl mx-auto">
         <CardHeader>
           <CardTitle className="font-headline text-2xl">Add New Blog Post</CardTitle>
-          <CardDescription>Use the AI generator to create a new post, then review and save.</CardDescription>
+          <CardDescription>Use the form below to create a new post. You can use the AI generator to create a draft, then review and save.</CardDescription>
         </CardHeader>
         <CardContent>
           <BlogForm />

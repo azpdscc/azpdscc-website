@@ -5,7 +5,6 @@ import { z } from 'zod';
 import { createBlogPost, updateBlogPost, deleteBlogPost, getBlogPostById } from '@/services/blog';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { generateBlogPost } from '@/ai/flows/generate-blog-post-flow';
 
 export type BlogFormState = {
   errors?: {
@@ -22,7 +21,7 @@ export type BlogFormState = {
   message?: string;
 };
 
-// This schema is used for both creating and updating standard posts.
+// This schema is used for both creating and updating posts.
 const blogPostSchema = z.object({
   title: z.string().min(1, "Title is required"),
   slug: z.string().min(1, "Slug is required"),
@@ -32,13 +31,6 @@ const blogPostSchema = z.object({
   excerpt: z.string().min(1, "Excerpt is required"),
   content: z.string().min(1, "Content is required"),
   status: z.enum(['Draft', 'Published']),
-});
-
-// This schema is used specifically for the AI-powered scheduling form.
-const scheduledBlogPostSchema = z.object({
-  title: z.string().min(10, "Title must be at least 10 characters long."),
-  publishDate: z.coerce.date({ required_error: 'Please select a date.'}),
-  image: z.string().url("Must be a valid URL"),
 });
 
 
@@ -71,51 +63,6 @@ export async function createBlogPostAction(
      return {
       errors: {
         _form: ['An unexpected error occurred while creating the post.', message],
-      },
-    };
-  }
-
-  revalidateTag('blogPosts');
-  revalidatePath('/admin/blog');
-  redirect('/admin/blog');
-}
-
-export async function createScheduledBlogPostAction(
-  prevState: BlogFormState,
-  formData: FormData
-): Promise<BlogFormState> {
-  const validatedFields = scheduledBlogPostSchema.safeParse({
-    title: formData.get('title'),
-    publishDate: formData.get('publishDate'),
-    image: formData.get('image'),
-  });
-
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Failed to schedule post.',
-    };
-  }
-
-  const { title, image, publishDate } = validatedFields.data;
-
-  try {
-    const generatedContent = await generateBlogPost({ topic: title });
-
-    const newPostData = {
-      ...generatedContent,
-      author: 'PDSCC Team',
-      date: publishDate,
-      image: image,
-      status: 'Draft' as const,
-    };
-    await createBlogPost(newPostData);
-
-  } catch (err) {
-     const message = err instanceof Error ? err.message : 'An unknown error occurred.';
-     return {
-      errors: {
-        _form: ['An unexpected error occurred while generating the post draft.', message],
       },
     };
   }
@@ -166,6 +113,9 @@ export async function updateBlogPostAction(
   
   revalidateTag('blogPosts');
   revalidatePath('/admin/blog');
+  revalidatePath('/blog'); // Revalidate public listing page
+  // Revalidate the specific post path if the slug might have changed
+  revalidatePath(`/blog/${postData.slug}`);
   redirect('/admin/blog');
 }
 
@@ -179,6 +129,10 @@ export async function deleteBlogPostAction(id: string) {
         
         revalidateTag('blogPosts');
         revalidatePath('/admin/blog');
+        revalidatePath('/blog');
+        if (postToDelete.slug) {
+            revalidatePath(`/blog/${postToDelete.slug}`);
+        }
         
         return { success: true, message: 'Blog post deleted successfully.' };
     } catch (error) {

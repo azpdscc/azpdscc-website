@@ -66,6 +66,8 @@ export function BlogForm({ post }: BlogFormProps) {
             setSlug(result.slug);
             setExcerpt(result.excerpt);
             setContent(result.content);
+            // Also set the main title field for consistency
+            form.setValue('title', result.title);
         }
     } catch (error) {
         console.error("Failed to generate blog post:", error);
@@ -75,11 +77,16 @@ export function BlogForm({ post }: BlogFormProps) {
     }
   };
 
+  const form = { setValue: (fieldName: string, value: any) => {
+    // This is a mock for the form state update
+    if (fieldName === 'title') setTitle(value);
+  }};
+
   return (
     <>
       {!isEditing && (
         <div className="space-y-4 p-4 border rounded-lg bg-secondary/50 mb-6">
-            <Label htmlFor="topic" className="text-lg font-semibold">Blog Post Topic</Label>
+            <Label htmlFor="topic" className="text-lg font-semibold">AI Content Generator</Label>
             <p className="text-sm text-muted-foreground">Enter a topic and let AI create a draft for you. Remember to review and edit the generated content before saving.</p>
             <div className="flex items-center gap-2">
                 <Input id="topic" value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="e.g., The importance of Vaisakhi" />
@@ -159,7 +166,7 @@ export function BlogForm({ post }: BlogFormProps) {
           </div>
           
           <div>
-              <Label htmlFor="content">Full Content</Label>
+              <Label htmlFor="content">Full Content (Supports HTML)</Label>
               <Textarea id="content" name="content" value={content} onChange={(e) => setContent(e.target.value)} rows={15} required />
               {formState.errors?.content && <p className="text-destructive text-sm mt-1">{formState.errors.content.join(', ')}</p>}
           </div>
