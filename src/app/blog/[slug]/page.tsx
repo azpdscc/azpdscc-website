@@ -8,7 +8,7 @@ import { getEvents } from '@/services/events';
 import { Button } from '@/components/ui/button';
 import { Calendar, User, Ticket } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { isPast, isToday } from 'date-fns';
 
 type Props = {
   params: { slug: string }
@@ -44,21 +44,24 @@ export async function generateMetadata(
 
 export async function generateStaticParams() {
   const posts = await getBlogPosts();
-  // Only generate static pages for published posts
-  return posts.filter(p => p.status === 'Published').map((post) => ({
-    slug: post.slug,
+  // Only generate static pages for published, non-future posts
+  return posts
+    .filter(p => p.status === 'Published' && (isToday(new Date(p.date)) || isPast(new Date(p.date))))
+    .map((post) => ({
+      slug: post.slug,
   }));
 }
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+export default async function BlogPostPage({ params }: { params: { slug:string } }) {
   const post = await getBlogPostBySlug(params.slug);
 
   if (!post) {
     notFound();
   }
   
-  // Do not show drafts on the public site
-  if (post.status === 'Draft') {
+  const postDate = new Date(post.date);
+  // Do not show the page if the post is a draft OR if it's a published post with a future date.
+  if (post.status === 'Draft' || (post.status === 'Published' && !isToday(postDate) && !isPast(postDate))) {
       notFound();
   }
 
