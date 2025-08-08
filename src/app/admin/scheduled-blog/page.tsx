@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Clock, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Clock, CheckCircle2, AlertTriangle, Edit } from 'lucide-react';
 import { ScheduledBlogForm } from '@/components/admin/scheduled-blog-form';
 import { DeleteScheduledPostButton } from '@/components/admin/delete-buttons';
+import Link from 'next/link';
 
 export default async function ManageScheduledBlogPage() {
     const posts = await getScheduledBlogPosts();
@@ -19,7 +20,7 @@ export default async function ManageScheduledBlogPage() {
                         <CardHeader>
                             <CardTitle className="font-headline text-2xl">Schedule a New Post</CardTitle>
                             <CardDescription>
-                                Provide a title and a future date. The system will auto-generate and publish the post on that day.
+                                Provide a topic. The system will auto-generate a draft for you to review, approve, and schedule.
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -62,6 +63,14 @@ export default async function ManageScheduledBlogPage() {
                                                 </Badge>
                                             </TableCell>
                                             <TableCell className="text-right">
+                                                {post.generatedPostId && (
+                                                    <Button asChild variant="ghost" size="icon">
+                                                        <Link href={`/admin/blog/edit/${post.generatedPostId}`}>
+                                                            <Edit className="h-4 w-4" />
+                                                            <span className="sr-only">View & Approve</span>
+                                                        </Link>
+                                                    </Button>
+                                                )}
                                                <DeleteScheduledPostButton id={post.id} />
                                             </TableCell>
                                         </TableRow>

@@ -21,11 +21,12 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
     const querySnapshot = await getDocs(q);
     const posts = querySnapshot.docs.map(doc => {
       const data = doc.data();
-      const date = data.date instanceof Timestamp ? format(data.date.toDate(), 'MMMM dd, yyyy') : data.date;
+      // Handle both Timestamp and string dates for compatibility
+      const date = data.date instanceof Timestamp ? data.date.toDate() : new Date(data.date);
       return {
         id: doc.id,
         ...data,
-        date: date,
+        date: format(date, 'MMMM dd, yyyy'),
       } as BlogPost;
     });
     return posts;
@@ -51,9 +52,9 @@ export async function getBlogPostById(id: string): Promise<BlogPost | null> {
         }
 
         const data = docSnap.data();
-        const date = data.date instanceof Timestamp ? format(data.date.toDate(), 'MMMM dd, yyyy') : data.date;
+        const date = data.date instanceof Timestamp ? data.date.toDate() : new Date(data.date);
 
-        return { id: docSnap.id, ...data, date } as BlogPost;
+        return { id: docSnap.id, ...data, date: format(date, 'MMMM dd, yyyy') } as BlogPost;
     } catch (error) {
         console.error("Error fetching blog post by id:", error);
         return null;
@@ -77,9 +78,9 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
         
         const docSnap = querySnapshot.docs[0];
         const data = docSnap.data();
-        const date = data.date instanceof Timestamp ? format(data.date.toDate(), 'MMMM dd, yyyy') : data.date;
+        const date = data.date instanceof Timestamp ? data.date.toDate() : new Date(data.date);
         
-        return { id: docSnap.id, ...data, date } as BlogPost;
+        return { id: docSnap.id, ...data, date: format(date, 'MMMM dd, yyyy') } as BlogPost;
 
     } catch (error) {
         console.error("Error fetching blog post by slug:", error);
@@ -96,7 +97,7 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
 export async function createBlogPost(postData: BlogPostFormData): Promise<string> {
     const dataToSave = {
         ...postData,
-        date: format(postData.date, 'MMMM dd, yyyy')
+        date: postData.date, // Keep as a Date object for Firestore
     };
     const docRef = await addDoc(blogCollectionRef, dataToSave);
     return docRef.id;
@@ -110,12 +111,13 @@ export async function createBlogPost(postData: BlogPostFormData): Promise<string
  * @returns {Promise<void>}
  */
 export async function updateBlogPost(id: string, postData: Partial<BlogPostFormData>): Promise<void> {
-    const dataToSave = {
-        ...postData,
-        date: format(postData.date, 'MMMM dd, yyyy')
-    };
     const postDoc = doc(db, 'blogPosts', id);
-    await updateDoc(postDoc, dataToSave);
+    // Keep date as a Date object if it's provided
+    if (postData.date) {
+        await updateDoc(postDoc, {...postData, date: postData.date});
+    } else {
+        await updateDoc(postDoc, postData);
+    }
 }
 
 /**

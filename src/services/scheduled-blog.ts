@@ -6,11 +6,10 @@
  */
 
 import { db } from '@/lib/firebase';
-import type { ScheduledBlogPost, ScheduledBlogPostFormData } from '@/lib/types';
+import type { BlogPost, ScheduledBlogPost, ScheduledBlogPostFormData } from '@/lib/types';
 import { collection, getDocs, doc, addDoc, updateDoc, deleteDoc, query, where, orderBy, Timestamp } from 'firebase/firestore';
-import { format } from 'date-fns';
-import { generateBlogPost } from '@/ai/flows/generate-blog-post-flow';
-import { createBlogPost } from './blog';
+import { format, isToday, isPast } from 'date-fns';
+import { getBlogPostById, updateBlogPost } from './blog';
 
 const scheduledBlogCollectionRef = collection(db, 'scheduledBlogPosts');
 
@@ -39,20 +38,21 @@ export async function getScheduledBlogPosts(): Promise<ScheduledBlogPost[]> {
 }
 
 /**
- * Creates a new scheduled blog post in Firestore.
- * @param {ScheduledBlogPostFormData} postData
+ * Creates a new scheduled blog post record in Firestore.
+ * This is called *after* the draft has already been created.
+ * @param {Omit<ScheduledBlogPost, 'id' | 'status'>} postData
  * @returns {Promise<string>} The ID of the newly created document.
  */
-export async function createScheduledBlogPost(postData: ScheduledBlogPostFormData): Promise<string> {
+export async function createScheduledBlogPost(postData: Omit<ScheduledBlogPost, 'id' | 'status'>): Promise<string> {
     const dataToSave = {
-        title: postData.title,
-        image: postData.image,
+        ...postData,
         publishDate: format(postData.publishDate, 'MMMM dd, yyyy'),
-        status: 'Pending' as const,
+        status: 'Pending' as const, // Pending means it's scheduled but not yet published
     };
     const docRef = await addDoc(scheduledBlogCollectionRef, dataToSave);
     return docRef.id;
 }
+
 
 /**
  * Deletes a scheduled blog post from Firestore.
@@ -66,66 +66,76 @@ export async function deleteScheduledBlogPost(id: string): Promise<void> {
 
 /**
  * Processes any scheduled blog posts that are due to be published.
- * This function is designed to be called from a server-side environment (e.g., a page's `getServerSideProps` or in a React Server Component).
+ * This function is designed to be called from a server-side environment.
+ * It now checks for DRAFT posts with a past/present publish date.
  */
 export async function processScheduledBlogPosts(): Promise<void> {
-    console.log("Checking for scheduled blog posts to process...");
+    console.log("Checking for scheduled blog posts to publish...");
     
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayString = format(today, 'MMMM dd, yyyy');
-
-    const q = query(scheduledBlogCollectionRef, where('status', '==', 'Pending'), where('publishDate', '<=', todayString));
-
+    // Query for all posts that are still in 'Draft' status
+    const blogPostsRef = collection(db, 'blogPosts');
+    const q = query(blogPostsRef, where('status', '==', 'Draft'));
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
-        console.log("No pending blog posts to process today.");
+        console.log("No draft posts found to check for publishing.");
         return;
     }
 
-    console.log(`Found ${querySnapshot.docs.length} post(s) to process.`);
+    const postsToPublish: BlogPost[] = [];
+    querySnapshot.forEach(docSnap => {
+        const post = { id: docSnap.id, ...docSnap.data() } as BlogPost;
+        const publishDate = new Date(post.date);
 
-    for (const docSnap of querySnapshot.docs) {
-        const scheduledPost = { id: docSnap.id, ...docSnap.data() } as ScheduledBlogPost;
-        const scheduledPostRef = doc(db, 'scheduledBlogPosts', scheduledPost.id);
+        // Check if the publish date is today or in the past
+        if (isToday(publishDate) || isPast(publishDate)) {
+            postsToPublish.push(post);
+        }
+    });
 
+    if (postsToPublish.length === 0) {
+        console.log("No due draft posts to publish today.");
+        return;
+    }
+
+    console.log(`Found ${postsToPublish.length} draft post(s) to publish.`);
+
+    for (const post of postsToPublish) {
         try {
-            console.log(`Processing post: "${scheduledPost.title}"`);
+            console.log(`Publishing post: "${post.title}" (ID: ${post.id})`);
             
-            // 1. Generate the blog post content using the AI flow
-            const generatedContent = await generateBlogPost({ topic: scheduledPost.title });
-            
-            // 2. Create the new blog post in the main 'blogPosts' collection
-            const newPostData = {
-                ...generatedContent,
-                author: 'PDSCC Team',
-                date: new Date(), // This will be formatted by createBlogPost
-                image: scheduledPost.image,
-                status: 'Draft' as const, // Save as Draft for review
-            };
-
-            const newPostId = await createBlogPost(newPostData);
-
-            // 3. Update the scheduled post's status to 'Processed'
-            await updateDoc(scheduledPostRef, {
-                status: 'Processed',
-                processedAt: format(new Date(), 'MMMM dd, yyyy HH:mm:ss'),
-                generatedPostId: newPostId,
+            // 1. Update the blog post's status to 'Published'
+            await updateBlogPost(post.id, {
+                status: 'Published'
             });
 
-            console.log(`Successfully processed and created draft for: "${scheduledPost.title}"`);
+            // 2. Find and update the corresponding scheduled post's status to 'Processed'
+            const scheduleQuery = query(scheduledBlogCollectionRef, where('generatedPostId', '==', post.id));
+            const scheduleSnapshot = await getDocs(scheduleQuery);
+            if (!scheduleSnapshot.empty) {
+                const scheduleDocRef = scheduleSnapshot.docs[0].ref;
+                await updateDoc(scheduleDocRef, {
+                    status: 'Processed',
+                    processedAt: format(new Date(), 'MMMM dd, yyyy HH:mm:ss'),
+                });
+            }
+
+            console.log(`Successfully published post: "${post.title}"`);
 
         } catch (error) {
-            console.error(`Error processing scheduled post ${scheduledPost.id}:`, error);
+            console.error(`Error publishing post ${post.id}:`, error);
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-
-            // 4. If an error occurs, update the status to 'Error'
-            await updateDoc(scheduledPostRef, {
-                status: 'Error',
-                errorMessage: errorMessage,
-                processedAt: format(new Date(), 'MMMM dd, yyyy HH:mm:ss'),
-            });
+            
+            // Optionally, update the scheduled post to an 'Error' status
+            const scheduleQuery = query(scheduledBlogCollectionRef, where('generatedPostId', '==', post.id));
+            const scheduleSnapshot = await getDocs(scheduleQuery);
+             if (!scheduleSnapshot.empty) {
+                const scheduleDocRef = scheduleSnapshot.docs[0].ref;
+                await updateDoc(scheduleDocRef, {
+                    status: 'Error',
+                    errorMessage: `Failed during publishing: ${errorMessage}`,
+                });
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 
+
 export type EventCategory = 'Music' | 'Food' | 'Dance' | 'Cultural';
 
 export type Event = {
@@ -77,8 +78,8 @@ export type BlogPost = {
 };
 
 // Form data includes a Date object before it's converted to a string
-export type BlogPostFormData = Omit<BlogPost, 'id' | 'date' | 'slug'> & {
-    date: Date;
+export type BlogPostFormData = Partial<Omit<BlogPost, 'id' | 'date'>> & {
+    date?: Date;
 };
 
 export type ScheduledBlogPost = {
@@ -92,7 +93,7 @@ export type ScheduledBlogPost = {
     errorMessage?: string;
 };
 
-export type ScheduledBlogPostFormData = Omit<ScheduledBlogPost, 'id' | 'publishDate' | 'status'> & {
+export type ScheduledBlogPostFormData = Omit<ScheduledBlogPost, 'id' | 'publishDate' | 'status' | 'generatedPostId'> & {
     publishDate: Date;
 };
 
