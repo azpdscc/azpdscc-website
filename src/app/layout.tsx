@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
 import { Montserrat, Open_Sans } from 'next/font/google';
 import { cn } from '@/lib/utils';
+import { ConditionalLayout } from '@/components/layout/conditional-layout';
 import './globals.css';
 
 const montserrat = Montserrat({
@@ -94,7 +95,9 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
-        {children}
+        <ConditionalLayout>
+          {children}
+        </ConditionalLayout>
         <Toaster />
       </body>
     </html>

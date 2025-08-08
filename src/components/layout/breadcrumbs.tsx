@@ -9,6 +9,8 @@ import { cn } from '@/lib/utils';
 // A simple utility to format slug-like strings into readable titles
 const formatPathSegment = (segment: string) => {
   if (!segment) return '';
+  // Special case for the admin dashboard link
+  if (segment === 'admin') return 'Dashboard';
   return segment
     .replace(/-/g, ' ')
     .replace(/\b\w/g, (char) => char.toUpperCase());
@@ -21,6 +23,8 @@ export function Breadcrumbs() {
   if (pathname === '/') {
     return null;
   }
+  
+  const isInsideAdmin = pathname.startsWith('/admin');
 
   // Generate breadcrumb items from the pathname
   const pathSegments = pathname.split('/').filter(Boolean);
@@ -36,7 +40,7 @@ export function Breadcrumbs() {
   ];
 
   return (
-    <nav aria-label="Breadcrumb" className="bg-card border-b">
+    <nav aria-label="Breadcrumb" className={cn("border-b", isInsideAdmin ? 'bg-background' : 'bg-card' )}>
       <div className="container mx-auto px-4">
         <ol className="flex items-center space-x-2 py-3 text-sm text-muted-foreground">
           {breadcrumbs.map((crumb, index) => (
