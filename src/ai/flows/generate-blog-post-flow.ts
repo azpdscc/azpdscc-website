@@ -3,9 +3,8 @@
 /**
  * @fileOverview An AI flow to generate a full blog post from a topic.
  *
- * This flow uses a two-step process:
- * 1. Research: Gathers up-to-date information on a topic using Google Search.
- * 2. Write: Uses the research to write a complete, formatted blog post.
+ * This flow now uses a single, robust prompt to generate the entire post.
+ * It no longer uses external tools, which resolves the framework instability.
  *
  * - generateBlogPost: Takes a topic and generates a title, slug, excerpt, and content.
  * - GenerateBlogPostInput: The input type for the flow.
@@ -59,49 +58,30 @@ export async function generateBlogPost(
   return generateBlogPostFlow(input);
 }
 
-// STEP 1: Define the text for the research prompt. This prompt uses a tool.
-const researchPromptText = `You are a research assistant. Your goal is to gather relevant, up-to-date information on a given topic to help a writer create a blog post.
-  
-Please research the following topic: "{{{topic}}}"
-
-Provide a summary of your findings as a block of text. Focus on information from the last year to ensure the content is current.`;
-
-
-// STEP 2: A writing prompt that takes the research and formats the output.
-// It does NOT use tools, so it can be defined and called directly.
+// Define the single, powerful writing prompt.
 const writingPrompt = ai.definePrompt({
   name: 'blogPostWritingPrompt',
-  input: {
-    schema: z.object({
-      topic: z.string(),
-      research: z.string(),
-    }),
-  },
+  input: { schema: GenerateBlogPostInputSchema },
   output: { schema: GenerateBlogPostOutputSchema },
   prompt: `You are an expert content creator for PDSCC (Phoenix Desi Sports and Cultural Club), a non-profit organization that serves the Phoenix Indian community and AZ Desis.
 
-Your task is to write a complete, engaging, and SEO-friendly blog post based on the provided topic and research notes.
+Your task is to write a complete, engaging, and SEO-friendly blog post based on the provided topic. Use your general knowledge to create the content.
 
 **Topic:** "{{{topic}}}"
-
-**Research Notes:**
-\`\`\`
-{{{research}}}
-\`\`\`
 
 **Instructions:**
 1.  **Tone**: The tone must be warm, welcoming, informative, and community-focused.
 2.  **Keywords**: Naturally incorporate the following keywords throughout the post where relevant: "PDSCC", "Phoenix Indian community", "AZ Desis", "Arizona Indian festivals". This is crucial for SEO.
-3.  **Title**: Create a catchy title (max 70 characters).
+3.  **Title**: Create a catchy title (max 70 characters) based on the topic.
 4.  **Slug**: Generate a URL-friendly slug from the title.
 5.  **Excerpt**: Write a concise summary (max 160 characters).
-6.  **Content**: Write the full blog post (minimum 300 words) based on the provided research. The content should be well-structured with an introduction, multiple body paragraphs, and a conclusion. **Format the content using HTML tags** such as \`<p>\` for paragraphs and \`<h2>\` for subheadings to ensure it's web-ready.
+6.  **Content**: Write the full blog post (minimum 300 words). The content should be well-structured with an introduction, multiple body paragraphs, and a conclusion. **Format the content using HTML tags** such as \`<p>\` for paragraphs and \`<h2>\` for subheadings to ensure it's web-ready.
 7.  **PDSCC Connection**: Ensure the post always connects back to the mission or activities of PDSCC, reinforcing the organization's role in the community.
 
 Return the output in the requested JSON format.`,
 });
 
-// The main Genkit flow that chains the two steps together.
+// The main Genkit flow, now simplified to use only one prompt.
 const generateBlogPostFlow = ai.defineFlow(
   {
     name: 'generateBlogPostFlow',
@@ -109,25 +89,8 @@ const generateBlogPostFlow = ai.defineFlow(
     outputSchema: GenerateBlogPostOutputSchema,
   },
   async (input) => {
-    // Step 1: Run the research prompt using ai.generate() directly because it has tools.
-    // This is the correct pattern for tool-based generation within a flow.
-    const researchResult = await ai.generate({
-      prompt: researchPromptText,
-      input: input,
-      tools: [ai.googleSearch],
-    });
-    
-    const researchText = researchResult.text;
-
-    if (!researchText) {
-        throw new Error("AI failed to conduct research.");
-    }
-
-    // Step 2: Run the writing prompt, which has no tools and can be called directly.
-    const { output } = await writingPrompt({
-      topic: input.topic,
-      research: researchText,
-    });
+    // Directly call the single, tool-less writing prompt.
+    const { output } = await writingPrompt(input);
 
     if (!output) {
       throw new Error('AI failed to generate the blog post.');
