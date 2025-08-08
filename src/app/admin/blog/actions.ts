@@ -24,7 +24,7 @@ export type BlogFormState = {
 // This schema is used for both creating and updating posts.
 const blogPostSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  slug: z.string().min(1, "Slug is required"),
+  slug: z.string(), // Slug is now generated on the server, so it doesn't need validation here.
   author: z.string().min(1, "Author is required"),
   date: z.coerce.date({ required_error: 'Please select a date.'}),
   image: z.string().url("Must be a valid URL"),
@@ -50,11 +50,10 @@ export async function createBlogPostAction(
 
   // Generate slug on the server from the title
   const title = formData.get('title') as string;
-  const slug = createSlug(title);
   
   const validatedFields = blogPostSchema.safeParse({
     title: title,
-    slug: slug, // Use the server-generated slug
+    slug: createSlug(title), // Generate and include slug here
     author: formData.get('author'),
     date: formData.get('date'),
     image: formData.get('image'),
@@ -82,7 +81,6 @@ export async function createBlogPostAction(
   }
 
   revalidateTag('blogPosts');
-  revalidatePath('/admin/blog');
   redirect('/admin/blog');
 }
 
@@ -93,13 +91,11 @@ export async function updateBlogPostAction(
   formData: FormData
 ): Promise<BlogFormState> {
 
-  // Generate slug on the server from the title
   const title = formData.get('title') as string;
-  const slug = createSlug(title);
 
   const validatedFields = blogPostSchema.safeParse({
     title: title,
-    slug: slug, // Use the server-generated slug
+    slug: createSlug(title), // Always regenerate slug on update
     author: formData.get('author'),
     date: formData.get('date'),
     image: formData.get('image'),
@@ -114,12 +110,8 @@ export async function updateBlogPostAction(
     };
   }
   
-  const postData = {
-      ...validatedFields.data,
-  };
-
   try {
-    await updateBlogPost(id, postData);
+    await updateBlogPost(id, validatedFields.data);
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {
@@ -130,9 +122,8 @@ export async function updateBlogPostAction(
   }
   
   revalidateTag('blogPosts');
-  revalidatePath('/admin/blog');
   // Revalidate the specific post path if the slug might have changed
-  revalidatePath(`/blog/${postData.slug}`);
+  revalidatePath(`/blog/${validatedFields.data.slug}`);
   redirect('/admin/blog');
 }
 
@@ -145,7 +136,6 @@ export async function deleteBlogPostAction(id: string) {
         await deleteBlogPost(id);
         
         revalidateTag('blogPosts');
-        revalidatePath('/admin/blog');
         if (postToDelete.slug) {
             revalidatePath(`/blog/${postToDelete.slug}`);
         }

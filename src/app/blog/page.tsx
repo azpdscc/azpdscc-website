@@ -3,8 +3,10 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { getBlogPosts, processScheduledBlogPosts } from '@/services/blog';
+import { getBlogPosts } from '@/services/blog';
 import { ArrowRight, User, Calendar } from 'lucide-react';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'PDSCC Blog | Phoenix Indian Community Stories',
@@ -12,9 +14,6 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-  // This background task ensures any drafts scheduled for a past date get published.
-  await processScheduledBlogPosts();
-
   const allPosts = await getBlogPosts();
   
   // A post is publicly visible only if its status is "Published".

@@ -78,7 +78,6 @@ export function BlogForm({ post }: BlogFormProps) {
 
   return (
     <>
-      {!isEditing && (
         <div className="space-y-4 p-4 border rounded-lg bg-secondary/50 mb-6">
             <Label htmlFor="topic" className="text-lg font-semibold">AI Content Generator</Label>
             <p className="text-sm text-muted-foreground">Enter a topic and let AI create a draft for you. Remember to review and edit the generated content before saving.</p>
@@ -90,7 +89,6 @@ export function BlogForm({ post }: BlogFormProps) {
                 </Button>
             </div>
         </div>
-      )}
 
       <form action={formAction} className="space-y-6">
           <div>
