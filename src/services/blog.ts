@@ -44,7 +44,8 @@ async function processScheduledBlogPosts(): Promise<void> {
             await batch.commit();
             console.log(`Successfully published ${postsToPublishCount} scheduled blog post(s).`);
             // After publishing, revalidate the cache so the public site sees the new posts
-            revalidateTag('blogPosts');
+            // This can't be called here as this function is used by client components.
+            // revalidateTag('blogPosts');
         }
 
     } catch (error) {
