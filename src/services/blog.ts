@@ -7,7 +7,7 @@
 import { db } from '@/lib/firebase';
 import type { BlogPost, BlogPostFormData, ScheduledBlogPost } from '@/lib/types';
 import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, orderBy, Timestamp, writeBatch } from 'firebase/firestore';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, isPast } from 'date-fns';
 import { getScheduledBlogPosts } from './scheduled-blog';
 
 const blogCollectionRef = collection(db, 'blogPosts');
@@ -139,29 +139,28 @@ export async function deleteBlogPost(id: string): Promise<void> {
  * in the scheduled collection.
  */
 export async function processScheduledBlogPosts(): Promise<void> {
-    const now = new Date();
-    // Set time to the beginning of the day for a clean date comparison
-    now.setHours(0, 0, 0, 0);
-    
     try {
-        // Find scheduled posts that are pending and their publishDate is in the past.
+        // Step 1: Query for all pending posts. This is a simple query and doesn't need a composite index.
         const q = query(
             scheduledBlogCollectionRef, 
-            where('status', '==', 'Pending'), 
-            where('publishDate', '<=', Timestamp.fromDate(now))
+            where('status', '==', 'Pending')
         );
 
         const querySnapshot = await getDocs(q);
         if (querySnapshot.empty) {
-            return; // No posts to process
+            return; // No pending posts to process
         }
 
         const batch = writeBatch(db);
+        let postsToPublishCount = 0;
+        const now = new Date();
 
         for (const docSnap of querySnapshot.docs) {
             const scheduledPost = { id: docSnap.id, ...docSnap.data() } as ScheduledBlogPost;
-
-            if (scheduledPost.generatedPostId) {
+            const publishDate = scheduledPost.publishTimestamp ? new Date(scheduledPost.publishTimestamp) : new Date(scheduledPost.publishDate);
+            
+            // Step 2: In the code, filter for posts whose publication date is in the past.
+            if (isPast(publishDate) && scheduledPost.generatedPostId) {
                 // Update the status of the actual blog post to 'Published'
                 const blogPostRef = doc(db, 'blogPosts', scheduledPost.generatedPostId);
                 batch.update(blogPostRef, { status: 'Published' });
@@ -172,11 +171,14 @@ export async function processScheduledBlogPosts(): Promise<void> {
                     status: 'Processed',
                     processedAt: Timestamp.fromDate(new Date())
                 });
+                postsToPublishCount++;
             }
         }
 
-        await batch.commit();
-        console.log(`Successfully processed ${querySnapshot.size} scheduled blog posts.`);
+        if (postsToPublishCount > 0) {
+            await batch.commit();
+            console.log(`Successfully processed ${postsToPublishCount} scheduled blog posts.`);
+        }
 
     } catch (error) {
         console.error("Error processing scheduled blog posts:", error);
