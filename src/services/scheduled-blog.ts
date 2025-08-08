@@ -102,7 +102,7 @@ export async function processScheduledBlogPosts(): Promise<void> {
                 author: 'PDSCC Team',
                 date: new Date(), // This will be formatted by createBlogPost
                 image: scheduledPost.image,
-                status: 'Published' as const,
+                status: 'Draft' as const, // Save as Draft for review
             };
 
             const newPostId = await createBlogPost(newPostData);
@@ -114,7 +114,7 @@ export async function processScheduledBlogPosts(): Promise<void> {
                 generatedPostId: newPostId,
             });
 
-            console.log(`Successfully processed and published post: "${scheduledPost.title}"`);
+            console.log(`Successfully processed and created draft for: "${scheduledPost.title}"`);
 
         } catch (error) {
             console.error(`Error processing scheduled post ${scheduledPost.id}:`, error);
