@@ -44,8 +44,8 @@ export async function generateQrCodeAction(
         boothType: validatedFields.data.boothType,
     });
 
-    // Use the correct environment variable for the public project URL
-    const baseUrl = process.env.NEXT_PUBLIC_PROJECT_URL || 'http://localhost:3000';
+    // Hardcode a public, stable URL for testing.
+    const baseUrl = 'https://azpdscc-hub-2-gcp.ide.run';
     const verificationUrl = new URL(`/admin/verify-ticket?id=${ticketId}`, baseUrl).toString();
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(verificationUrl)}`;
     
