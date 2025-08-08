@@ -7,7 +7,6 @@
  * - DonationReceiptInput: The input type for the flow.
  * - DonationReceiptOutput: The return type for the flow.
  */
-import 'dotenv/config';
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 import { Resend } from 'resend';
