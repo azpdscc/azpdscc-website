@@ -80,7 +80,7 @@ export default function AdminDashboardPage() {
                 Scheduled Blog Posts
             </CardTitle>
             <CardDescription>
-                Schedule future blog posts. The system will automatically generate and publish them on the set date.
+                Schedule future blog posts. The system will automatically generate a draft for you to review and publish.
             </CardDescription>
           </CardHeader>
           <CardContent>
