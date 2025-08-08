@@ -8,33 +8,39 @@ import { db } from '@/lib/firebase';
 import type { BlogPost, BlogPostFormData } from '@/lib/types';
 import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, orderBy, Timestamp, writeBatch } from 'firebase/firestore';
 import { format } from 'date-fns';
-
-const blogCollectionRef = collection(db, 'blogPosts');
+import { unstable_cache } from 'next/cache';
 
 /**
  * Fetches all blog posts from the Firestore database, ordered by date descending.
+ * Uses unstable_cache for tag-based revalidation.
  * @returns {Promise<BlogPost[]>} A promise that resolves to an array of blog posts.
  */
-export async function getBlogPosts(): Promise<BlogPost[]> {
-  try {
-    const q = query(blogCollectionRef, orderBy('date', 'desc'));
-    const querySnapshot = await getDocs(q);
-    const posts = querySnapshot.docs.map(doc => {
-      const data = doc.data();
-      // Handle both Timestamp and string dates for compatibility
-      const date = data.date instanceof Timestamp ? data.date.toDate() : new Date(data.date);
-      return {
-        id: doc.id,
-        ...data,
-        date: format(date, 'MMMM dd, yyyy'),
-      } as BlogPost;
-    });
-    return posts;
-  } catch (error) {
-    console.error("Error fetching blog posts from Firestore:", error);
-    return [];
+export const getBlogPosts = unstable_cache(
+  async (): Promise<BlogPost[]> => {
+    try {
+      const q = query(collection(db, 'blogPosts'), orderBy('date', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const posts = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        const date = data.date instanceof Timestamp ? data.date.toDate() : new Date(data.date);
+        return {
+          id: doc.id,
+          ...data,
+          date: format(date, 'MMMM dd, yyyy'),
+        } as BlogPost;
+      });
+      return posts;
+    } catch (error) {
+      console.error("Error fetching blog posts from Firestore:", error);
+      return [];
+    }
+  },
+  ['blogPosts'], // The cache key
+  {
+    tags: ['blogPosts'], // The cache tag for revalidation
   }
-}
+);
+
 
 /**
  * Fetches a single blog post by its ID from Firestore.
@@ -66,27 +72,33 @@ export async function getBlogPostById(id: string): Promise<BlogPost | null> {
  * @param {string} slug - The slug of the blog post to fetch.
  * @returns {Promise<BlogPost | null>} A promise that resolves to the post object or null if not found.
  */
-export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
-    try {
-        const q = query(blogCollectionRef, where('slug', '==', slug));
-        const querySnapshot = await getDocs(q);
+export const getBlogPostBySlug = unstable_cache(
+    async (slug: string): Promise<BlogPost | null> => {
+        try {
+            const q = query(collection(db, 'blogPosts'), where('slug', '==', slug));
+            const querySnapshot = await getDocs(q);
 
-        if (querySnapshot.empty) {
-            console.warn(`No blog post found with slug: ${slug}.`);
+            if (querySnapshot.empty) {
+                console.warn(`No blog post found with slug: ${slug}.`);
+                return null;
+            }
+            
+            const docSnap = querySnapshot.docs[0];
+            const data = docSnap.data();
+            const date = data.date instanceof Timestamp ? data.date.toDate() : new Date(data.date);
+            
+            return { id: docSnap.id, ...data, date: format(date, 'MMMM dd, yyyy') } as BlogPost;
+
+        } catch (error) {
+            console.error("Error fetching blog post by slug:", error);
             return null;
         }
-        
-        const docSnap = querySnapshot.docs[0];
-        const data = docSnap.data();
-        const date = data.date instanceof Timestamp ? data.date.toDate() : new Date(data.date);
-        
-        return { id: docSnap.id, ...data, date: format(date, 'MMMM dd, yyyy') } as BlogPost;
-
-    } catch (error) {
-        console.error("Error fetching blog post by slug:", error);
-        return null;
+    },
+    ['blogPostBySlug'],
+    {
+        tags: ['blogPosts'], 
     }
-}
+);
 
 
 /**
@@ -99,7 +111,7 @@ export async function createBlogPost(postData: BlogPostFormData): Promise<string
         ...postData,
         date: Timestamp.fromDate(postData.date), // Store as a Timestamp for correct querying
     };
-    const docRef = await addDoc(blogCollectionRef, dataToSave);
+    const docRef = await addDoc(collection(db, 'blogPosts'), dataToSave);
     return docRef.id;
 }
 
@@ -141,7 +153,7 @@ export async function processScheduledBlogPosts(): Promise<void> {
         
         // Find all posts that are still drafts. This query does not require a composite index.
         const q = query(
-            blogCollectionRef, 
+            collection(db, 'blogPosts'), 
             where('status', '==', 'Draft')
         );
 
@@ -160,7 +172,6 @@ export async function processScheduledBlogPosts(): Promise<void> {
             const postDate = post.date.toDate(); // 'date' is a Firestore Timestamp
 
             if (postDate <= now) {
-                console.log(`Scheduling post for publishing: ${docSnap.id}`);
                 const docRef = doc(db, 'blogPosts', docSnap.id);
                 batch.update(docRef, { status: 'Published' });
                 postsToPublishCount++;

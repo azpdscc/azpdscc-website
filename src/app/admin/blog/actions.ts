@@ -3,7 +3,7 @@
 
 import { z } from 'zod';
 import { createBlogPost, updateBlogPost, deleteBlogPost, getBlogPostById } from '@/services/blog';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { generateBlogPost } from '@/ai/flows/generate-blog-post-flow';
 
@@ -75,7 +75,7 @@ export async function createBlogPostAction(
     };
   }
 
-  revalidatePath('/blog');
+  revalidateTag('blogPosts');
   revalidatePath('/admin/blog');
   redirect('/admin/blog');
 }
@@ -120,6 +120,7 @@ export async function createScheduledBlogPostAction(
     };
   }
 
+  revalidateTag('blogPosts');
   revalidatePath('/admin/blog');
   redirect('/admin/blog');
 }
@@ -163,8 +164,7 @@ export async function updateBlogPostAction(
     };
   }
   
-  revalidatePath('/blog');
-  revalidatePath(`/blog/${postData.slug}`);
+  revalidateTag('blogPosts');
   revalidatePath('/admin/blog');
   redirect('/admin/blog');
 }
@@ -177,13 +177,9 @@ export async function deleteBlogPostAction(id: string) {
         }
         await deleteBlogPost(id);
         
+        revalidateTag('blogPosts');
         revalidatePath('/admin/blog');
-        revalidatePath('/blog');
-        // Revalidate the specific post page to prevent lingering cached versions
-        if (postToDelete.slug) {
-            revalidatePath(`/blog/${postToDelete.slug}`);
-        }
-
+        
         return { success: true, message: 'Blog post deleted successfully.' };
     } catch (error) {
         console.error('Failed to delete blog post:', error);
