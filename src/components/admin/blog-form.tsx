@@ -36,7 +36,6 @@ export function BlogForm({ post }: BlogFormProps) {
   const [topic, setTopic] = useState('');
   
   const [title, setTitle] = useState(post?.title || '');
-  const [slug, setSlug] = useState(post?.slug || '');
   const [author, setAuthor] = useState(post?.author || 'PDSCC Team');
   const [image, setImage] = useState(post?.image || 'https://placehold.co/800x400.png');
   const [excerpt, setExcerpt] = useState(post?.excerpt || '');
@@ -45,11 +44,13 @@ export function BlogForm({ post }: BlogFormProps) {
   const [status, setStatus] = useState<'Draft' | 'Published'>(post?.status || 'Draft');
   
   useEffect(() => {
-    // When creating a new post from a schedule, it should start as a Draft.
-    if (!isEditing) {
-      setStatus('Draft');
+    if (isEditing && post?.date) {
+        setDate(new Date(post.date));
     }
-  }, [isEditing]);
+    if (!isEditing) {
+        setStatus('Draft');
+    }
+  }, [isEditing, post?.date]);
 
 
   const handleGeneratePost = async () => {
@@ -63,11 +64,8 @@ export function BlogForm({ post }: BlogFormProps) {
         const result = await generateBlogPost({ topic });
         if (result) {
             setTitle(result.title);
-            setSlug(result.slug);
             setExcerpt(result.excerpt);
             setContent(result.content);
-            // Also set the main title field for consistency
-            form.setValue('title', result.title);
         }
     } catch (error) {
         console.error("Failed to generate blog post:", error);
@@ -77,10 +75,6 @@ export function BlogForm({ post }: BlogFormProps) {
     }
   };
 
-  const form = { setValue: (fieldName: string, value: any) => {
-    // This is a mock for the form state update
-    if (fieldName === 'title') setTitle(value);
-  }};
 
   return (
     <>
@@ -99,8 +93,6 @@ export function BlogForm({ post }: BlogFormProps) {
       )}
 
       <form action={formAction} className="space-y-6">
-          <input type="hidden" name="slug" value={slug} />
-          
           <div>
               <Label htmlFor="title">Post Title</Label>
               <Input id="title" name="title" value={title} onChange={(e) => setTitle(e.target.value)} required />

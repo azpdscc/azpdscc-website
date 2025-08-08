@@ -33,14 +33,28 @@ const blogPostSchema = z.object({
   status: z.enum(['Draft', 'Published']),
 });
 
+const createSlug = (title: string) => {
+    return title
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^\w-]+/g, '')
+        .replace(/--+/g, '-')
+        .replace(/^-+/, '')
+        .replace(/-+$/, '');
+}
 
 export async function createBlogPostAction(
   prevState: BlogFormState,
   formData: FormData
 ): Promise<BlogFormState> {
+
+  // Generate slug on the server from the title
+  const title = formData.get('title') as string;
+  const slug = createSlug(title);
+  
   const validatedFields = blogPostSchema.safeParse({
-    title: formData.get('title'),
-    slug: formData.get('slug'),
+    title: title,
+    slug: slug, // Use the server-generated slug
     author: formData.get('author'),
     date: formData.get('date'),
     image: formData.get('image'),
@@ -69,6 +83,7 @@ export async function createBlogPostAction(
 
   revalidateTag('blogPosts');
   revalidatePath('/admin/blog');
+  revalidatePath('/blog');
   redirect('/admin/blog');
 }
 
@@ -79,9 +94,13 @@ export async function updateBlogPostAction(
   formData: FormData
 ): Promise<BlogFormState> {
 
+  // Generate slug on the server from the title
+  const title = formData.get('title') as string;
+  const slug = createSlug(title);
+
   const validatedFields = blogPostSchema.safeParse({
-    title: formData.get('title'),
-    slug: formData.get('slug'),
+    title: title,
+    slug: slug, // Use the server-generated slug
     author: formData.get('author'),
     date: formData.get('date'),
     image: formData.get('image'),
