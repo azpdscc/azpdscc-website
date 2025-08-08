@@ -6,8 +6,8 @@ import { useForm, type SubmitHandler, useFormState as useReactHookFormState } fr
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { cn } from '@/lib/utils';
-import { processVendorApplicationAction } from '@/app/admin/vendors/actions';
-import type { VendorApplicationState } from '@/app/admin/vendors/actions';
+import { vendorApplicationAction } from '@/app/admin/vendors/actions';
+import type { VendorApplicationState } from '@/app/admin/vendors/application-actions';
 
 
 import { Button } from '@/components/ui/button';
@@ -74,7 +74,7 @@ export function ApplicationForm() {
   }, []);
 
   const initialState: VendorApplicationState = { errors: {}, message: '' };
-  const actionWithBaseUrl = processVendorApplicationAction.bind(null, baseUrl);
+  const actionWithBaseUrl = vendorApplicationAction.bind(null, baseUrl);
   const [formState, formAction] = useActionState(actionWithBaseUrl, initialState);
 
   const form = useForm<VendorApplicationFormValues>({
