@@ -44,7 +44,9 @@ export async function generateQrCodeAction(
         boothType: validatedFields.data.boothType,
     });
 
-    const verificationUrl = new URL(`/admin/verify-ticket?id=${ticketId}`, process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000').toString();
+    // Use the correct environment variable for the public project URL
+    const baseUrl = process.env.NEXT_PUBLIC_PROJECT_URL || 'http://localhost:3000';
+    const verificationUrl = new URL(`/admin/verify-ticket?id=${ticketId}`, baseUrl).toString();
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(verificationUrl)}`;
     
     return {
