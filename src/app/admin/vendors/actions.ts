@@ -1,3 +1,4 @@
+
 'use server';
 
 import { z } from 'zod';
@@ -72,7 +73,7 @@ export async function processVendorApplicationAction(
         productDescription: formData.get('productDescription'),
         zelleSenderName: formData.get('zelleSenderName'),
         zelleDateSent: new Date(formData.get('zelleDateSent') as string),
-        paymentSent: formData.get('paymentSent') === 'on',
+        paymentSent: formData.get('paymentSent') === 'on' || formData.get('paymentSent') === 'true',
     });
 
     if (!validatedFields.success) {
