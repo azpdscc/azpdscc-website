@@ -53,7 +53,8 @@ export async function generateQrCodeAction(
         boothType: validatedFields.data.boothType,
     });
 
-    const verificationUrl = new URL(`/admin/verify-ticket?id=${ticketId}`, baseUrl).toString();
+    // Point to the new public verification page
+    const verificationUrl = new URL(`/verify-ticket?id=${ticketId}`, baseUrl).toString();
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(verificationUrl)}`;
     
     return {
