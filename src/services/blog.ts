@@ -7,6 +7,7 @@
 import { db } from '@/lib/firebase';
 import type { BlogPost, BlogPostFormData } from '@/lib/types';
 import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, orderBy, Timestamp } from 'firebase/firestore';
+import { format } from 'date-fns';
 
 const blogCollectionRef = collection(db, 'blogPosts');
 
@@ -16,15 +17,11 @@ const blogCollectionRef = collection(db, 'blogPosts');
  */
 export async function getBlogPosts(): Promise<BlogPost[]> {
   try {
-    // Note: Firestore queries require a composite index for ordering by one field
-    // and filtering by another if you add a where clause. For now, order by date.
-    // To sort by status and then date, a composite index on (status, date) is needed.
     const q = query(blogCollectionRef, orderBy('date', 'desc'));
     const querySnapshot = await getDocs(q);
     const posts = querySnapshot.docs.map(doc => {
       const data = doc.data();
-      // Firestore returns a Timestamp, convert it to a string date format
-      const date = data.date instanceof Timestamp ? data.date.toDate().toISOString() : data.date;
+      const date = data.date instanceof Timestamp ? format(data.date.toDate(), 'MMMM dd, yyyy') : data.date;
       return {
         id: doc.id,
         ...data,
@@ -54,7 +51,7 @@ export async function getBlogPostById(id: string): Promise<BlogPost | null> {
         }
 
         const data = docSnap.data();
-        const date = data.date instanceof Timestamp ? data.date.toDate().toISOString() : data.date;
+        const date = data.date instanceof Timestamp ? format(data.date.toDate(), 'MMMM dd, yyyy') : data.date;
 
         return { id: docSnap.id, ...data, date } as BlogPost;
     } catch (error) {
@@ -80,7 +77,7 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
         
         const docSnap = querySnapshot.docs[0];
         const data = docSnap.data();
-        const date = data.date instanceof Timestamp ? data.date.toDate().toISOString() : data.date;
+        const date = data.date instanceof Timestamp ? format(data.date.toDate(), 'MMMM dd, yyyy') : data.date;
         
         return { id: docSnap.id, ...data, date } as BlogPost;
 
@@ -97,7 +94,11 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
  * @returns {Promise<string>} The ID of the newly created document.
  */
 export async function createBlogPost(postData: BlogPostFormData): Promise<string> {
-    const docRef = await addDoc(blogCollectionRef, postData);
+    const dataToSave = {
+        ...postData,
+        date: format(postData.date, 'MMMM dd, yyyy')
+    };
+    const docRef = await addDoc(blogCollectionRef, dataToSave);
     return docRef.id;
 }
 
@@ -109,8 +110,12 @@ export async function createBlogPost(postData: BlogPostFormData): Promise<string
  * @returns {Promise<void>}
  */
 export async function updateBlogPost(id: string, postData: Partial<BlogPostFormData>): Promise<void> {
+    const dataToSave = {
+        ...postData,
+        date: format(postData.date, 'MMMM dd, yyyy')
+    };
     const postDoc = doc(db, 'blogPosts', id);
-    await updateDoc(postDoc, postData);
+    await updateDoc(postDoc, dataToSave);
 }
 
 /**

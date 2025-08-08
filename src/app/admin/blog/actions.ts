@@ -5,7 +5,6 @@ import { z } from 'zod';
 import { createBlogPost, updateBlogPost, deleteBlogPost } from '@/services/blog';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { format } from 'date-fns';
 
 export type BlogFormState = {
   errors?: {
@@ -56,8 +55,7 @@ export async function createBlogPostAction(
   }
   
   const postData = {
-      ...validatedFields.data,
-      date: format(validatedFields.data.date, 'MMMM dd, yyyy')
+      ...validatedFields.data
   };
 
   try {
@@ -100,8 +98,7 @@ export async function updateBlogPostAction(
   }
 
   const postData = {
-      ...validatedFields.data,
-      date: format(validatedFields.data.date, 'MMMM dd, yyyy')
+      ...validatedFields.data
   };
 
   try {

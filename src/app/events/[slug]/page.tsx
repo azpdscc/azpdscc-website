@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, MapPin, Youtube, Facebook } from 'lucide-react';
 import type { Event } from '@/lib/types';
-import { format, parse } from 'date-fns';
+import { format, parse, isValid } from 'date-fns';
 import { Card } from '@/components/ui/card';
 
 
@@ -30,7 +30,6 @@ export async function generateMetadata(
     }
   }
 
-  // Fallback to parent metadata for OpenGraph images if event image doesn't exist
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
@@ -54,25 +53,21 @@ export async function generateStaticParams() {
 }
 
 const createEventSchema = (event: Event) => {
-  const [startTime, endTime] = event.time.split(' - ');
-  // A helper to safely parse time strings like "5:00 PM"
-  const parseTime = (timeStr: string, date: Date): Date => {
-      try {
-          return parse(timeStr.trim(), 'h:mm a', date);
-      } catch {
-          // Fallback if time format is unexpected
-          return date;
-      }
-  };
-  const startDate = parseTime(startTime, new Date(event.date));
-  const endDate = parseTime(endTime, new Date(event.date));
+  const eventDate = parse(event.date, 'MMMM dd, yyyy', new Date());
+  if (!isValid(eventDate)) return null;
 
+  const [startTimeStr, endTimeStr] = event.time.split(' - ');
+  const startTime = parse(startTimeStr.trim(), 'h:mm a', eventDate);
+  const endTime = parse(endTimeStr.trim(), 'h:mm a', eventDate);
+
+  if (!isValid(startTime) || !isValid(endTime)) return null;
+  
   return {
     '@context': 'https://schema.org',
     '@type': 'Event',
     name: event.name,
-    startDate: startDate.toISOString(),
-    endDate: endDate.toISOString(),
+    startDate: startTime.toISOString(),
+    endDate: endTime.toISOString(),
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
     eventStatus: 'https://schema.org/EventScheduled',
     location: {
@@ -88,6 +83,7 @@ const createEventSchema = (event: Event) => {
       price: '0',
       priceCurrency: 'USD',
       availability: 'https://schema.org/InStock',
+      validFrom: new Date().toISOString(),
     },
     organizer: {
       '@type': 'Organization',
@@ -112,16 +108,17 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
   const eventSchema = createEventSchema(event);
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.locationAddress)}`;
 
-  // Helper function to create a Google Calendar link
   const createGoogleCalendarLink = (event: Event): string => {
     try {
-      // Parse the event date and time
       const date = parse(event.date, 'MMMM dd, yyyy', new Date());
+      if (!isValid(date)) return '#';
+
       const [startTimeStr, endTimeStr] = event.time.split(' - ');
-      const startTime = parse(startTimeStr, 'h:mm a', date);
-      const endTime = parse(endTimeStr, 'h:mm a', date);
+      const startTime = parse(startTimeStr.trim(), 'h:mm a', date);
+      const endTime = parse(endTimeStr.trim(), 'h:mm a', date);
       
-      // Format dates to YYYYMMDDTHHmmSSZ format for Google Calendar
+      if (!isValid(startTime) || !isValid(endTime)) return '#';
+
       const startUTC = format(startTime, "yyyyMMdd'T'HHmmss'Z'");
       const endUTC = format(endTime, "yyyyMMdd'T'HHmmss'Z'");
 
@@ -139,7 +136,6 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
       return `https://calendar.google.com/calendar/render?${params.toString()}`;
     } catch (error) {
       console.error("Error creating calendar link:", error);
-      // Fallback to a simple search for the event if parsing fails
       return `https://www.google.com/search?q=${encodeURIComponent(event.name + ' on ' + event.date)}`;
     }
   };
@@ -148,10 +144,10 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
 
   return (
     <article>
-      <script
+      {eventSchema && <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(eventSchema) }}
-      />
+      />}
       <header className="relative h-[50vh] min-h-[300px] w-full">
         <Image
           src={event.image}
@@ -181,12 +177,12 @@ export default async function EventDetailPage({ params }: { params: { slug: stri
               </p>
               <div className="mt-4 flex flex-col sm:flex-row gap-2 justify-center">
                 <Button asChild>
-                  <Link href="https://www.youtube.com/@AZPDSCC" target="_blank" rel="noopener noreferrer">
+                  <Link href="https://www.youtube.com/@AZPDSCC" target="_blank" rel="noopener noreferrer" aria-label={`Watch videos from ${event.name} on YouTube`}>
                     <Youtube className="mr-2"/> Watch on YouTube
                   </Link>
                 </Button>
                  <Button asChild>
-                  <Link href="https://www.facebook.com/pdscc/photos_albums" target="_blank" rel="noopener noreferrer">
+                  <Link href="https://www.facebook.com/pdscc/photos_albums" target="_blank" rel="noopener noreferrer" aria-label={`View photo albums from ${event.name} on Facebook`}>
                     <Facebook className="mr-2"/> View Photos
                   </Link>
                 </Button>

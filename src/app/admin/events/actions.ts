@@ -5,7 +5,6 @@ import { z } from 'zod';
 import { createEvent, updateEvent, deleteEvent } from '@/services/events';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { format } from 'date-fns';
 
 export type FormState = {
   errors?: {
@@ -72,17 +71,11 @@ export async function createEventAction(
   
   const eventData = {
       ...validatedFields.data,
-      slug,
-      date: format(validatedFields.data.date, 'MMMM dd, yyyy')
+      slug
   };
 
   try {
-    const newEventId = await createEvent(eventData);
-
-    if (!newEventId) {
-       throw new Error('Database operation failed to return an ID.');
-    }
-    
+    await createEvent(eventData);
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {
@@ -126,13 +119,11 @@ export async function updateEventAction(
 
   const eventData = {
       ...validatedFields.data,
-      slug,
-      date: format(validatedFields.data.date, 'MMMM dd, yyyy')
+      slug
   };
 
   try {
     await updateEvent(id, eventData);
-    
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {

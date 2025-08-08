@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useActionState } from 'react';
+import { useState, useActionState, useEffect } from 'react';
 import type { Event } from '@/lib/types';
 import type { FormState } from '@/app/admin/events/actions';
 import { createEventAction, updateEventAction } from '@/app/admin/events/actions';
@@ -37,6 +37,12 @@ export function EventForm({ event }: EventFormProps) {
   const [fullDescription, setFullDescription] = useState(event?.fullDescription || '');
   const [name, setName] = useState(event?.name || '');
   const [date, setDate] = useState<Date | undefined>(event?.date ? new Date(event.date) : undefined);
+  
+  useEffect(() => {
+    if (!event?.date) {
+      setDate(new Date());
+    }
+  }, [event?.date]);
 
   const handleGenerateDescriptions = async () => {
     if (!name) {
@@ -73,6 +79,7 @@ export function EventForm({ event }: EventFormProps) {
                  <Popover>
                     <PopoverTrigger asChild>
                         <Button
+                            type="button"
                             variant={"outline"}
                             className={cn(
                                 "w-full pl-3 text-left font-normal",
@@ -164,7 +171,7 @@ export function EventForm({ event }: EventFormProps) {
 
         <div className="flex items-center gap-4">
             <SubmitButton isEditing={isEditing} />
-            <Button variant="outline" asChild>
+            <Button type="button" variant="outline" asChild>
                 <Link href="/admin/events">Cancel</Link>
             </Button>
         </div>

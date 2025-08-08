@@ -35,7 +35,6 @@ export function BlogForm({ post }: BlogFormProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [topic, setTopic] = useState('');
   
-  // Form fields state
   const [title, setTitle] = useState(post?.title || '');
   const [slug, setSlug] = useState(post?.slug || '');
   const [author, setAuthor] = useState(post?.author || 'PDSCC Team');
@@ -45,7 +44,6 @@ export function BlogForm({ post }: BlogFormProps) {
   const [date, setDate] = useState<Date | undefined>(post?.date ? new Date(post.date) : undefined);
   
   useEffect(() => {
-    // To avoid hydration mismatch, only set the default date on the client
     if (!post?.date) {
       setDate(new Date());
     }
@@ -111,6 +109,7 @@ export function BlogForm({ post }: BlogFormProps) {
                  <Popover>
                     <PopoverTrigger asChild>
                         <Button
+                            type="button"
                             variant={"outline"}
                             className={cn(
                                 "w-full pl-3 text-left font-normal",
@@ -171,7 +170,7 @@ export function BlogForm({ post }: BlogFormProps) {
 
           <div className="flex items-center gap-4">
               <SubmitButton isEditing={isEditing} createText="Save Post" />
-              <Button variant="outline" asChild>
+              <Button type="button" variant="outline" asChild>
                   <Link href="/admin/blog">Cancel</Link>
               </Button>
           </div>

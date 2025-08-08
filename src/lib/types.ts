@@ -5,7 +5,7 @@ export type Event = {
   id: string; // Firestore document ID is a string
   slug: string;
   name: string;
-  date: string; // Keep as string for simplicity, e.g. "April 02, 2025"
+  date: string; // Stored as "Month Day, YYYY"
   time: string;
   locationName: string;
   locationAddress: string;
@@ -15,17 +15,9 @@ export type Event = {
   category: EventCategory;
 };
 
-export type EventFormData = {
-  slug: string;
-  name: string;
-  date: string; // Keep as string for simplicity, e.g. "April 02, 2025"
-  time: string;
-  locationName: string;
-  locationAddress: string;
-  image: string;
-  description: string;
-  fullDescription: string;
-  category: EventCategory;
+// Form data includes a Date object before it's converted to a string
+export type EventFormData = Omit<Event, 'id' | 'date'> & {
+  date: Date;
 };
 
 export type TeamMember = {
@@ -77,14 +69,17 @@ export type BlogPost = {
   slug: string;
   title: string;
   author: string;
-  date: string;
+  date: string; // Stored as "Month Day, YYYY"
   image: string;
   excerpt: string;
   content: string;
   status: 'Draft' | 'Published';
 };
 
-export type BlogPostFormData = Omit<BlogPost, 'id'>;
+// Form data includes a Date object before it's converted to a string
+export type BlogPostFormData = Omit<BlogPost, 'id' | 'date'> & {
+    date: Date;
+};
 
 export type GenerateBlogPostOutput = {
   title: string;

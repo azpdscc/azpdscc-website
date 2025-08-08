@@ -8,6 +8,7 @@
 import { db } from '@/lib/firebase';
 import type { Event, EventFormData } from '@/lib/types';
 import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, orderBy, Timestamp } from 'firebase/firestore';
+import { format } from 'date-fns';
 
 const eventsCollectionRef = collection(db, 'events');
 
@@ -21,9 +22,7 @@ export async function getEvents(): Promise<Event[]> {
     const querySnapshot = await getDocs(q);
     const events = querySnapshot.docs.map(doc => {
       const data = doc.data();
-      // Firestore returns a Timestamp for dates, so we convert it to a string.
-      // This ensures consistency with how we handle dates elsewhere.
-      const date = data.date instanceof Timestamp ? data.date.toDate().toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' }) : data.date;
+      const date = data.date instanceof Timestamp ? format(data.date.toDate(), 'MMMM dd, yyyy') : data.date;
       return {
         id: doc.id,
         ...data,
@@ -33,7 +32,6 @@ export async function getEvents(): Promise<Event[]> {
     return events;
   } catch (error) {
     console.error("Error fetching events from Firestore:", error);
-    // Return empty array on failure.
     return [];
   }
 }
@@ -54,7 +52,7 @@ export async function getEventById(id: string): Promise<Event | null> {
         }
         
         const data = docSnap.data();
-        const date = data.date instanceof Timestamp ? data.date.toDate().toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' }) : data.date;
+        const date = data.date instanceof Timestamp ? format(data.date.toDate(), 'MMMM dd, yyyy') : data.date;
         
         return { id: docSnap.id, ...data, date } as Event;
     } catch (error) {
@@ -80,7 +78,7 @@ export async function getEventBySlug(slug: string): Promise<Event | null> {
         
         const docSnap = querySnapshot.docs[0];
         const data = docSnap.data();
-        const date = data.date instanceof Timestamp ? data.date.toDate().toLocaleDateString('en-US', { month: 'long', day: '2-digit', year: 'numeric' }) : data.date;
+        const date = data.date instanceof Timestamp ? format(data.date.toDate(), 'MMMM dd, yyyy') : data.date;
 
         return { id: docSnap.id, ...data, date } as Event;
     } catch (error) {
@@ -96,7 +94,11 @@ export async function getEventBySlug(slug: string): Promise<Event | null> {
  * @returns {Promise<string>} The ID of the newly created document.
  */
 export async function createEvent(eventData: EventFormData): Promise<string> {
-    const docRef = await addDoc(eventsCollectionRef, eventData);
+    const dataToSave = {
+        ...eventData,
+        date: format(eventData.date, 'MMMM dd, yyyy')
+    };
+    const docRef = await addDoc(eventsCollectionRef, dataToSave);
     return docRef.id;
 }
 
@@ -108,8 +110,12 @@ export async function createEvent(eventData: EventFormData): Promise<string> {
  * @returns {Promise<void>}
  */
 export async function updateEvent(id: string, eventData: Partial<EventFormData>): Promise<void> {
+    const dataToSave = {
+        ...eventData,
+        date: format(eventData.date, 'MMMM dd, yyyy')
+    };
     const eventDoc = doc(db, 'events', id);
-    await updateDoc(eventDoc, eventData);
+    await updateDoc(eventDoc, dataToSave);
 }
 
 /**
