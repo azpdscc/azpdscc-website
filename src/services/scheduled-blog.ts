@@ -27,6 +27,7 @@ export async function getScheduledBlogPosts(): Promise<ScheduledBlogPost[]> {
         id: doc.id,
         ...data,
         publishDate: format(date, 'MMMM dd, yyyy'),
+        publishTimestamp: data.publishDate.toMillis(),
       } as ScheduledBlogPost;
     });
     return posts;
@@ -45,7 +46,7 @@ export async function getScheduledBlogPosts(): Promise<ScheduledBlogPost[]> {
 export async function createScheduledBlogPost(postData: Omit<ScheduledBlogPost, 'id' | 'status'>): Promise<string> {
     const dataToSave = {
         ...postData,
-        publishDate: postData.publishDate, // Expects a Date object
+        publishDate: postData.publishDate, // Expects a Timestamp object
         status: 'Pending' as const, 
     };
     const docRef = await addDoc(scheduledBlogCollectionRef, dataToSave);

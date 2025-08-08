@@ -99,7 +99,7 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
 export async function createBlogPost(postData: Partial<BlogPostFormData>): Promise<string> {
     const dataToSave = {
         ...postData,
-        date: postData.date, // Keep as a Date object for Firestore
+        date: Timestamp.fromDate(postData.date), // Store as a Timestamp for correct querying
     };
     const docRef = await addDoc(blogCollectionRef, dataToSave);
     return docRef.id;
@@ -116,7 +116,8 @@ export async function updateBlogPost(id: string, postData: Partial<Omit<BlogPost
     const postDoc = doc(db, 'blogPosts', id);
     const dataToUpdate: any = { ...postData };
     if (postData.date) {
-        dataToUpdate.date = postData.date;
+        // Ensure date is a Timestamp for consistency
+        dataToUpdate.date = Timestamp.fromDate(postData.date);
     }
     await updateDoc(postDoc, dataToUpdate);
 }
@@ -139,6 +140,8 @@ export async function deleteBlogPost(id: string): Promise<void> {
  */
 export async function processScheduledBlogPosts(): Promise<void> {
     const now = new Date();
+    // Set time to the beginning of the day for a clean date comparison
+    now.setHours(0, 0, 0, 0);
     
     try {
         // Find scheduled posts that are pending and their publishDate is in the past.
@@ -167,7 +170,7 @@ export async function processScheduledBlogPosts(): Promise<void> {
                 const scheduledPostRef = doc(db, 'scheduledBlogPosts', scheduledPost.id);
                 batch.update(scheduledPostRef, {
                     status: 'Processed',
-                    processedAt: Timestamp.fromDate(now)
+                    processedAt: Timestamp.fromDate(new Date())
                 });
             }
         }

@@ -1,4 +1,6 @@
 
+import type { Timestamp } from "firebase/firestore";
+
 
 export type EventCategory = 'Music' | 'Food' | 'Dance' | 'Cultural';
 
@@ -78,24 +80,35 @@ export type BlogPost = {
 };
 
 // Form data includes a Date object before it's converted to a string
-export type BlogPostFormData = Omit<BlogPost, 'id' | 'date' | 'slug'> & {
+export type BlogPostFormData = Omit<BlogPost, 'id' | 'date' | 'slug' | 'status'> & {
     date: Date;
+    status: 'Draft' | 'Published';
 };
 
 export type ScheduledBlogPost = {
     id: string;
     title: string;
     image: string;
-    publishDate: string; // Stored as a Date object from Firestore
+    publishDate: string; // Stored as a string for display
+    publishTimestamp: number; // Stored as a millisecond timestamp
     status: 'Pending' | 'Processed' | 'Error';
-    processedAt?: string;
+    processedAt?: Timestamp;
     generatedPostId?: string;
     errorMessage?: string;
 };
 
-export type ScheduledBlogPostFormData = Omit<ScheduledBlogPost, 'id' | 'publishDate' | 'status' | 'generatedPostId'> & {
+export type ScheduledBlogPostFormData = {
+    title: string;
+    image: string;
     publishDate: Date;
 };
+
+export type CreateScheduledBlogPostData = {
+    title: string;
+    image: string;
+    publishDate: Timestamp;
+    generatedPostId: string;
+}
 
 
 export type GenerateBlogPostOutput = {
