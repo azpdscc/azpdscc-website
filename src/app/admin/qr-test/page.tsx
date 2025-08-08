@@ -57,7 +57,7 @@ export default function QrTestPage() {
                     <CardFooter className="flex flex-col items-start gap-4 pt-6 border-t">
                         <h3 className="font-headline text-lg font-bold">Test Result</h3>
                         <div className="flex flex-col sm:flex-row gap-6 items-center">
-                            <Image src={state.result.qrCodeUrl} alt="Generated QR Code" width={200} height={200} className="border-4 border-foreground" />
+                            <img src={state.result.qrCodeUrl} alt="Generated QR Code" width={200} height={200} className="border-4 border-foreground" />
                             <div className="space-y-2">
                                 <p><strong>Ticket ID:</strong> {state.result.ticketId}</p>
                                 <p><strong>QR Code URL (from qrserver.com):</strong></p>
