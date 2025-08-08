@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import { GeneralRegistrationForm } from '@/components/vendors/general-registration-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';

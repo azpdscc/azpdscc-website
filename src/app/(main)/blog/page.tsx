@@ -1,21 +1,28 @@
 
+'use client';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { getBlogPosts } from '@/services/blog';
 import { ArrowRight, User, Calendar } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import type { BlogPost } from '@/lib/types';
 
-export const metadata: Metadata = {
-  title: 'PDSCC Blog | Phoenix Indian Community Stories',
-  description: 'Explore articles about Indian festivals, culture, food, and community stories from the PDSCC Hub for AZ Desis and the Phoenix Indian community.',
-};
+// export const metadata: Metadata = {
+//   title: 'PDSCC Blog | Phoenix Indian Community Stories',
+//   description: 'Explore articles about Indian festivals, culture, food, and community stories from the PDSCC Hub for AZ Desis and the Phoenix Indian community.',
+// };
 
-export default async function BlogPage() {
-  const allPosts = await getBlogPosts();
-  
-  // A post is publicly visible only if its status is "Published".
-  const blogPosts = allPosts.filter(post => post.status === 'Published');
+export default function BlogPage() {
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+
+  useEffect(() => {
+    getBlogPosts().then(posts => {
+       const publishedPosts = posts.filter(post => post.status === 'Published');
+       setBlogPosts(publishedPosts);
+    });
+  }, []);
 
   return (
     <div className="bg-background">

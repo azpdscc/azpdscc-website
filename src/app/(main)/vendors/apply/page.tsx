@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import { ApplicationForm } from '@/components/vendors/application-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';

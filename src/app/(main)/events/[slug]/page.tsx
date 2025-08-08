@@ -1,8 +1,10 @@
 
+'use client';
+
 import type { Metadata, ResolvingMetadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { getEvents, getEventBySlug } from '@/services/events';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -10,47 +12,49 @@ import { Calendar, Clock, MapPin, Youtube, Facebook } from 'lucide-react';
 import type { Event } from '@/lib/types';
 import { format, parse, isValid } from 'date-fns';
 import { Card } from '@/components/ui/card';
+import { useEffect, useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 
-type Props = {
-  params: { slug: string }
-}
+// type Props = {
+//   params: { slug: string }
+// }
 
-export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
-  const slug = params.slug;
-  const event = await getEventBySlug(slug);
+// export async function generateMetadata(
+//   { params }: Props,
+//   parent: ResolvingMetadata
+// ): Promise<Metadata> {
+//   const slug = params.slug;
+//   const event = await getEventBySlug(slug);
  
-  if (!event) {
-    return {
-        title: 'Event Not Found | PDSCC Hub',
-        description: 'The event you are looking for could not be found. Please check our main events page for upcoming Arizona Indian festivals.',
-    }
-  }
+//   if (!event) {
+//     return {
+//         title: 'Event Not Found | PDSCC Hub',
+//         description: 'The event you are looking for could not be found. Please check our main events page for upcoming Arizona Indian festivals.',
+//     }
+//   }
 
-  const previousImages = (await parent).openGraph?.images || [];
+//   const previousImages = (await parent).openGraph?.images || [];
 
-  return {
-    title: `${event.name} | PDSCC Phoenix Indian Community`,
-    description: `Get details for ${event.name}, a premier event for the AZ India community. Find date, time, location, and RSVP info for this top Arizona Indian festival.`,
-    openGraph: {
-      title: event.name,
-      description: event.description,
-      images: [event.image, ...previousImages],
-      type: 'article',
-    },
-  }
-}
+//   return {
+//     title: `${event.name} | PDSCC Phoenix Indian Community`,
+//     description: `Get details for ${event.name}, a premier event for the AZ India community. Find date, time, location, and RSVP info for this top Arizona Indian festival.`,
+//     openGraph: {
+//       title: event.name,
+//       description: event.description,
+//       images: [event.image, ...previousImages],
+//       type: 'article',
+//     },
+//   }
+// }
 
 
-export async function generateStaticParams() {
-  const events = await getEvents();
-  return events.map((event) => ({
-    slug: event.slug,
-  }));
-}
+// export async function generateStaticParams() {
+//   const events = await getEvents();
+//   return events.map((event) => ({
+//     slug: event.slug,
+//   }));
+// }
 
 const createEventSchema = (event: Event) => {
   const eventDate = parse(event.date, 'MMMM dd, yyyy', new Date());
@@ -93,11 +97,47 @@ const createEventSchema = (event: Event) => {
   };
 };
 
-export default async function EventDetailPage({ params }: { params: { slug: string } }) {
-  const event = await getEventBySlug(params.slug);
+function EventPageSkeleton() {
+  return (
+    <div className="container mx-auto px-4 py-12">
+      <Skeleton className="h-[50vh] w-full mb-8" />
+      <div className="grid md:grid-cols-3 gap-8">
+        <div className="md:col-span-2 space-y-4">
+          <Skeleton className="h-8 w-1/2" />
+          <Skeleton className="h-20 w-full" />
+          <Skeleton className="h-8 w-1/3 mt-8" />
+          <Skeleton className="h-24 w-full" />
+        </div>
+        <div className="md:col-span-1">
+          <Skeleton className="h-64 w-full" />
+        </div>
+      </div>
+    </div>
+  )
+}
 
-  if (!event) {
-    notFound();
+export default function EventDetailPage() {
+  const params = useParams();
+  const slug = params.slug as string;
+  const [event, setEvent] = useState<Event | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (slug) {
+      setIsLoading(true);
+      getEventBySlug(slug).then(eventData => {
+        if (!eventData) {
+          notFound();
+        } else {
+          setEvent(eventData);
+        }
+        setIsLoading(false);
+      });
+    }
+  }, [slug]);
+
+  if (isLoading || !event) {
+    return <EventPageSkeleton />;
   }
 
   const eventDate = new Date(event.date);

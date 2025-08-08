@@ -1,14 +1,9 @@
 
 import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
-import { Header } from '@/components/layout/header';
-import { Footer } from '@/components/layout/footer';
 import { Montserrat, Open_Sans } from 'next/font/google';
 import { cn } from '@/lib/utils';
-import { ConditionalTicker } from '@/components/layout/conditional-ticker';
-import { Breadcrumbs } from '@/components/layout/breadcrumbs';
 import './globals.css';
-import { ConditionalLayout } from '@/components/layout/conditional-layout';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -99,9 +94,7 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
-        <ConditionalLayout>
-            {children}
-        </ConditionalLayout>
+        {children}
         <Toaster />
       </body>
     </html>

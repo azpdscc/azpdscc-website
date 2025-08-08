@@ -1,4 +1,6 @@
 
+'use client';
+
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,11 +10,12 @@ import { SponsorshipForm } from '@/components/sponsorship/sponsorship-form';
 import { getSponsors } from '@/services/sponsors';
 import type { Sponsor } from '@/lib/types';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
-export const metadata: Metadata = {
-  title: 'Sponsor PDSCC | Partner with the Phoenix Indian Community',
-  description: 'Become a sponsor of PDSCC and connect with the vibrant AZ India community. Explore our sponsorship packages and benefits for supporting Arizona Indian festivals.',
-};
+// export const metadata: Metadata = {
+//   title: 'Sponsor PDSCC | Partner with the Phoenix Indian Community',
+//   description: 'Become a sponsor of PDSCC and connect with the vibrant AZ India community. Explore our sponsorship packages and benefits for supporting Arizona Indian festivals.',
+// };
 
 const sponsorshipTiers = [
   {
@@ -62,8 +65,13 @@ const sponsorshipTiers = [
   },
 ];
 
-export default async function SponsorshipPage() {
-  const sponsors = await getSponsors();
+export default function SponsorshipPage() {
+  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+
+  useEffect(() => {
+    getSponsors().then(setSponsors);
+  }, []);
+
   const sponsorLevels: Array<Sponsor['level']> = ['Diamond', 'Gold', 'Silver', 'Bronze', 'Other'];
   const groupedSponsors = sponsors.reduce((acc, sponsor) => {
     (acc[sponsor.level] = acc[sponsor.level] || []).push(sponsor);

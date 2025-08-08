@@ -1,4 +1,5 @@
 
+'use client';
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -6,14 +7,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getTeamMembers } from '@/services/team';
 import { HeartHandshake, Target, Users, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
+import type { TeamMember } from '@/lib/types';
 
-export const metadata: Metadata = {
-  title: 'About PDSCC: Our Story & Mission for the Phoenix Indian Community',
-  description: 'Learn about the story, values, and team behind the Phoenix Desi Sports and Cultural Club (PDSCC), a non-profit organization dedicated to serving the AZ India community and AZ Desis in Phoenix.',
-};
+// export const metadata: Metadata = {
+//   title: 'About PDSCC: Our Story & Mission for the Phoenix Indian Community',
+//   description: 'Learn about the story, values, and team behind the Phoenix Desi Sports and Cultural Club (PDSCC), a non-profit organization dedicated to serving the AZ India community and AZ Desis in Phoenix.',
+// };
 
-export default async function AboutPage() {
-  const teamMembers = await getTeamMembers();
+export default function AboutPage() {
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+
+  useEffect(() => {
+    getTeamMembers().then(setTeamMembers);
+  }, []);
 
   return (
     <div className="bg-background">

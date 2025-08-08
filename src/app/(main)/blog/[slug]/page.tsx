@@ -1,84 +1,102 @@
 
+'use client';
 import type { Metadata, ResolvingMetadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { getBlogPosts, getBlogPostBySlug } from '@/services/blog';
 import { getEvents } from '@/services/events';
 import { Button } from '@/components/ui/button';
 import { Calendar, User, Ticket } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
+import { useEffect, useState } from 'react';
+import type { BlogPost, Event } from '@/lib/types';
 
-type Props = {
-  params: { slug: string }
-}
-
-export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
-  const slug = params.slug;
-  const post = await getBlogPostBySlug(slug);
+// export async function generateMetadata(
+//   { params }: Props,
+//   parent: ResolvingMetadata
+// ): Promise<Metadata> {
+//   const slug = params.slug;
+//   const post = await getBlogPostBySlug(slug);
  
-  if (!post) {
-    return {
-        title: 'Post Not Found | PDSCC Blog',
-        description: 'The blog post you are looking for could not be found.',
-    }
-  }
+//   if (!post) {
+//     return {
+//         title: 'Post Not Found | PDSCC Blog',
+//         description: 'The blog post you are looking for could not be found.',
+//     }
+//   }
 
-  // Fallback to parent metadata for OpenGraph images if post image doesn't exist
-  const previousImages = (await parent).openGraph?.images || [];
+//   // Fallback to parent metadata for OpenGraph images if post image doesn't exist
+//   const previousImages = (await parent).openGraph?.images || [];
 
-  return {
-    title: `${post.title} | PDSCC Blog`,
-    description: post.excerpt,
-    openGraph: {
-      title: post.title,
-      description: post.excerpt,
-      images: [post.image, ...previousImages],
-    },
-  }
-}
+//   return {
+//     title: `${post.title} | PDSCC Blog`,
+//     description: post.excerpt,
+//     openGraph: {
+//       title: post.title,
+//       description: post.excerpt,
+//       images: [post.image, ...previousImages],
+//     },
+//   }
+// }
 
-export async function generateStaticParams() {
-  const posts = await getBlogPosts();
-  // Only generate static pages for published posts
-  return posts
-    .filter(p => p.status === 'Published')
-    .map((post) => ({
-      slug: post.slug,
-  }));
-}
+// export async function generateStaticParams() {
+//   const posts = await getBlogPosts();
+//   // Only generate static pages for published posts
+//   return posts
+//     .filter(p => p.status === 'Published')
+//     .map((post) => ({
+//       slug: post.slug,
+//   }));
+// }
 
-export default async function BlogPostPage({ params }: { params: { slug:string } }) {
-  const post = await getBlogPostBySlug(params.slug);
+export default function BlogPostPage() {
+  const params = useParams();
+  const slug = params.slug as string;
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [relatedEvent, setRelatedEvent] = useState<Event | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!post || post.status !== 'Published') {
-    notFound();
-  }
+  useEffect(() => {
+    if (!slug) return;
 
-  // Check if post is about a specific event and find that event
-  let relatedEvent = null;
-  const postTitleLower = post.title.toLowerCase();
-  const eventKeywords = ['vaisakhi', 'teeyan'];
-
-  const keywordInTitle = eventKeywords.find(keyword => postTitleLower.includes(keyword));
-
-  if (keywordInTitle) {
-      const allEvents = await getEvents();
-      const now = new Date();
-      now.setHours(0, 0, 0, 0);
-
-      const upcomingMatchingEvents = allEvents
-        .filter(e => e.name.toLowerCase().includes(keywordInTitle) && new Date(e.date) >= now)
-        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const fetchPostData = async () => {
+      setLoading(true);
+      const postData = await getBlogPostBySlug(slug);
       
-      if (upcomingMatchingEvents.length > 0) {
-        relatedEvent = upcomingMatchingEvents[0];
+      if (!postData || postData.status !== 'Published') {
+        notFound();
+        return;
       }
-  }
+      setPost(postData);
 
+      // Check for related event
+      const postTitleLower = postData.title.toLowerCase();
+      const eventKeywords = ['vaisakhi', 'teeyan'];
+      const keywordInTitle = eventKeywords.find(keyword => postTitleLower.includes(keyword));
+
+      if (keywordInTitle) {
+          const allEvents = await getEvents();
+          const now = new Date();
+          now.setHours(0, 0, 0, 0);
+
+          const upcomingMatchingEvents = allEvents
+            .filter(e => e.name.toLowerCase().includes(keywordInTitle) && new Date(e.date) >= now)
+            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+          
+          if (upcomingMatchingEvents.length > 0) {
+            setRelatedEvent(upcomingMatchingEvents[0]);
+          }
+      }
+      setLoading(false);
+    };
+
+    fetchPostData();
+  }, [slug]);
+
+  if (loading || !post) {
+    return <div>Loading...</div>; // Or a skeleton component
+  }
 
   return (
     <article>

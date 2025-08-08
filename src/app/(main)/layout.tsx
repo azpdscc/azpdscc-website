@@ -5,18 +5,10 @@ import { usePathname } from 'next/navigation';
 import { type ReactNode } from 'react';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { ConditionalTicker } from './conditional-ticker';
-import { Breadcrumbs } from './breadcrumbs';
+import { ConditionalTicker } from '@/components/layout/conditional-ticker';
+import { Breadcrumbs } from '@/components/layout/breadcrumbs';
 
-export function ConditionalLayout({ children }: { children: ReactNode }) {
-    const pathname = usePathname();
-    const isAdminPage = pathname.startsWith('/admin');
-    const isVerifyPage = pathname.startsWith('/verify-ticket');
-
-    if (isAdminPage || isVerifyPage) {
-        return <>{children}</>;
-    }
-
+export default function MainAppLayout({ children }: { children: ReactNode }) {
     return (
         <div className="flex min-h-screen flex-col">
             <Header />
@@ -26,5 +18,4 @@ export function ConditionalLayout({ children }: { children: ReactNode }) {
             <Footer />
         </div>
     )
-
 }
