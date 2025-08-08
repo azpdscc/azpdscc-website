@@ -15,12 +15,12 @@ export type BlogFormState = {
     image?: string[];
     excerpt?: string[];
     content?: string[];
-    status?: string[];
     _form?: string[];
   };
   message?: string;
 };
 
+// Removed 'status' from the schema as it's no longer manually controlled.
 const blogPostSchema = z.object({
   title: z.string().min(1, "Title is required"),
   slug: z.string().min(1, "Slug is required"),
@@ -29,7 +29,6 @@ const blogPostSchema = z.object({
   image: z.string().url("Must be a valid URL"),
   excerpt: z.string().min(1, "Excerpt is required"),
   content: z.string().min(1, "Content is required"),
-  status: z.enum(['Draft', 'Published']),
 });
 
 export async function createBlogPostAction(
@@ -44,7 +43,6 @@ export async function createBlogPostAction(
     image: formData.get('image'),
     excerpt: formData.get('excerpt'),
     content: formData.get('content'),
-    status: formData.get('status'),
   });
 
   if (!validatedFields.success) {
@@ -55,7 +53,8 @@ export async function createBlogPostAction(
   }
   
   const postData = {
-      ...validatedFields.data
+      ...validatedFields.data,
+      status: 'Published' as const, // Posts created manually are always published
   };
 
   try {
@@ -88,7 +87,6 @@ export async function updateBlogPostAction(
     image: formData.get('image'),
     excerpt: formData.get('excerpt'),
     content: formData.get('content'),
-    status: formData.get('status'),
   });
 
   if (!validatedFields.success) {
@@ -97,11 +95,13 @@ export async function updateBlogPostAction(
     };
   }
 
+  // When updating, we don't need to change the status. It's handled by the publishing logic.
   const postData = {
       ...validatedFields.data
   };
 
   try {
+    // We pass the partial data, and status is not included.
     await updateBlogPost(id, postData);
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
@@ -115,6 +115,7 @@ export async function updateBlogPostAction(
   revalidatePath('/blog');
   revalidatePath(`/blog/${postData.slug}`);
   revalidatePath('/admin/blog');
+  revalidatePath('/admin/scheduled-blog'); // Revalidate in case it came from a scheduled post
   redirect('/admin/blog');
 }
 

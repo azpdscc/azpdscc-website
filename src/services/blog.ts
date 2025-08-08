@@ -5,11 +5,13 @@
  */
 
 import { db } from '@/lib/firebase';
-import type { BlogPost, BlogPostFormData } from '@/lib/types';
-import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, orderBy, Timestamp } from 'firebase/firestore';
-import { format } from 'date-fns';
+import type { BlogPost, BlogPostFormData, ScheduledBlogPost } from '@/lib/types';
+import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, orderBy, Timestamp, writeBatch } from 'firebase/firestore';
+import { format, parseISO } from 'date-fns';
+import { getScheduledBlogPosts } from './scheduled-blog';
 
 const blogCollectionRef = collection(db, 'blogPosts');
+const scheduledBlogCollectionRef = collection(db, 'scheduledBlogPosts');
 
 /**
  * Fetches all blog posts from the Firestore database, ordered by date descending.
@@ -91,10 +93,10 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
 
 /**
  * Creates a new blog post in Firestore.
- * @param {BlogPostFormData} postData - The data for the new post.
+ * @param {Partial<BlogPostFormData>} postData - The data for the new post. The status will be added.
  * @returns {Promise<string>} The ID of the newly created document.
  */
-export async function createBlogPost(postData: BlogPostFormData): Promise<string> {
+export async function createBlogPost(postData: Partial<BlogPostFormData>): Promise<string> {
     const dataToSave = {
         ...postData,
         date: postData.date, // Keep as a Date object for Firestore
@@ -110,14 +112,13 @@ export async function createBlogPost(postData: BlogPostFormData): Promise<string
  * @param {Partial<BlogPostFormData>} postData - An object with the fields to update.
  * @returns {Promise<void>}
  */
-export async function updateBlogPost(id: string, postData: Partial<BlogPostFormData>): Promise<void> {
+export async function updateBlogPost(id: string, postData: Partial<Omit<BlogPostFormData, 'status'>>): Promise<void> {
     const postDoc = doc(db, 'blogPosts', id);
-    // Keep date as a Date object if it's provided
+    const dataToUpdate: any = { ...postData };
     if (postData.date) {
-        await updateDoc(postDoc, {...postData, date: postData.date});
-    } else {
-        await updateDoc(postDoc, postData);
+        dataToUpdate.date = postData.date;
     }
+    await updateDoc(postDoc, dataToUpdate);
 }
 
 /**
@@ -128,4 +129,53 @@ export async function updateBlogPost(id: string, postData: Partial<BlogPostFormD
 export async function deleteBlogPost(id: string): Promise<void> {
     const postDoc = doc(db, 'blogPosts', id);
     await deleteDoc(postDoc);
+}
+
+
+/**
+ * Processes scheduled blog posts. Finds posts that are due to be published,
+ * updates their status in the main blog collection, and marks them as processed
+ * in the scheduled collection.
+ */
+export async function processScheduledBlogPosts(): Promise<void> {
+    const now = new Date();
+    
+    try {
+        // Find scheduled posts that are pending and their publishDate is in the past.
+        const q = query(
+            scheduledBlogCollectionRef, 
+            where('status', '==', 'Pending'), 
+            where('publishDate', '<=', Timestamp.fromDate(now))
+        );
+
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
+            return; // No posts to process
+        }
+
+        const batch = writeBatch(db);
+
+        for (const docSnap of querySnapshot.docs) {
+            const scheduledPost = { id: docSnap.id, ...docSnap.data() } as ScheduledBlogPost;
+
+            if (scheduledPost.generatedPostId) {
+                // Update the status of the actual blog post to 'Published'
+                const blogPostRef = doc(db, 'blogPosts', scheduledPost.generatedPostId);
+                batch.update(blogPostRef, { status: 'Published' });
+
+                // Update the scheduled post to 'Processed'
+                const scheduledPostRef = doc(db, 'scheduledBlogPosts', scheduledPost.id);
+                batch.update(scheduledPostRef, {
+                    status: 'Processed',
+                    processedAt: Timestamp.fromDate(now)
+                });
+            }
+        }
+
+        await batch.commit();
+        console.log(`Successfully processed ${querySnapshot.size} scheduled blog posts.`);
+
+    } catch (error) {
+        console.error("Error processing scheduled blog posts:", error);
+    }
 }

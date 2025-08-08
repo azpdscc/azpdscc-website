@@ -78,15 +78,15 @@ export type BlogPost = {
 };
 
 // Form data includes a Date object before it's converted to a string
-export type BlogPostFormData = Partial<Omit<BlogPost, 'id' | 'date'>> & {
-    date?: Date;
+export type BlogPostFormData = Omit<BlogPost, 'id' | 'date' | 'slug'> & {
+    date: Date;
 };
 
 export type ScheduledBlogPost = {
     id: string;
     title: string;
     image: string;
-    publishDate: string; // Stored as "Month Day, YYYY"
+    publishDate: string; // Stored as a Date object from Firestore
     status: 'Pending' | 'Processed' | 'Error';
     processedAt?: string;
     generatedPostId?: string;

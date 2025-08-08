@@ -3,9 +3,8 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { getBlogPosts } from '@/services/blog';
+import { getBlogPosts, processScheduledBlogPosts } from '@/services/blog';
 import { ArrowRight, User, Calendar } from 'lucide-react';
-import { isPast, isToday } from 'date-fns';
 
 export const metadata: Metadata = {
   title: 'PDSCC Blog | Phoenix Indian Community Stories',
@@ -13,16 +12,14 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
+  // This function will check for and publish any due posts.
+  // It's lightweight and runs on page load.
+  await processScheduledBlogPosts();
+
   const allPosts = await getBlogPosts();
   
-  // A post is publicly visible if it's "Published" and its date is today or in the past.
-  const blogPosts = allPosts.filter(post => {
-    if (post.status !== 'Published') {
-      return false;
-    }
-    const postDate = new Date(post.date);
-    return isToday(postDate) || isPast(postDate);
-  });
+  // A post is publicly visible if it's "Published". The creation date is handled by the scheduler.
+  const blogPosts = allPosts.filter(post => post.status === 'Published');
 
   return (
     <div className="bg-background">
