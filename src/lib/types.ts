@@ -40,16 +40,29 @@ export type Sponsor = {
   website?: string;
 };
 
-export type VendorApplication = {
+// This represents the data coming from the live application form
+export type VendorApplicationFormData = {
   name: string;
   organization?: string;
   email: string;
   phone: string;
-  boothType: '10x10-own' | '10x10-our' | '10x20-own' | '10x20-our';
+  boothType: string;
+  totalPrice: number;
   productDescription: string;
   zelleSenderName: string;
-  zelleDateSent: Date;
-  paymentSent: boolean;
+  zelleDateSent: string;
+  paymentConfirmed: boolean;
+};
+
+// This represents the data stored in Firestore for verification
+export type VendorApplication = {
+  id: string;
+  name: string;
+  organization?: string;
+  boothType: string;
+  createdAt: Timestamp;
+  checkInStatus: 'pending' | 'checkedIn';
+  checkedInAt?: Timestamp;
 };
 
 export type DonationFormValues = {
