@@ -9,7 +9,6 @@ import type { BlogPost, BlogPostFormData } from '@/lib/types';
 import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, orderBy, Timestamp, writeBatch } from 'firebase/firestore';
 import { format } from 'date-fns';
 import { unstable_cache } from 'next/cache';
-import { revalidateTag } from 'next/cache';
 
 /**
  * Checks for scheduled blog posts that are due to be published and updates their status.
@@ -43,9 +42,7 @@ async function processScheduledBlogPosts(): Promise<void> {
         if (postsToPublishCount > 0) {
             await batch.commit();
             console.log(`Successfully published ${postsToPublishCount} scheduled blog post(s).`);
-            // After publishing, revalidate the cache so the public site sees the new posts
-            // This can't be called here as this function is used by client components.
-            // revalidateTag('blogPosts');
+            // Revalidation should be triggered from server actions, not here.
         }
 
     } catch (error) {
