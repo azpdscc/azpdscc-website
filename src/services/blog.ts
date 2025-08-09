@@ -11,54 +11,12 @@ import { format } from 'date-fns';
 import { unstable_cache } from 'next/cache';
 
 /**
- * Checks for scheduled blog posts that are due to be published and updates their status.
- * This is called before fetching all posts to ensure the list is up-to-date.
- */
-async function processScheduledBlogPosts(): Promise<void> {
-    try {
-        const now = new Date();
-        const draftsQuery = query(collection(db, 'blogPosts'), where('status', '==', 'Draft'));
-        const querySnapshot = await getDocs(draftsQuery);
-
-        if (querySnapshot.empty) {
-            return; // No drafts to process
-        }
-        
-        const batch = writeBatch(db);
-        let postsToPublishCount = 0;
-
-        querySnapshot.docs.forEach(docSnap => {
-            const post = docSnap.data() as BlogPost;
-            // The date from firestore is a Timestamp, so we convert it to a JS Date
-            const postDate = post.date instanceof Timestamp ? post.date.toDate() : new Date(post.date);
-            
-            if (postDate <= now) {
-                const docRef = doc(db, 'blogPosts', docSnap.id);
-                batch.update(docRef, { status: 'Published' });
-                postsToPublishCount++;
-            }
-        });
-
-        if (postsToPublishCount > 0) {
-            await batch.commit();
-            console.log(`Successfully published ${postsToPublishCount} scheduled blog post(s).`);
-            // Revalidation should be triggered from server actions, not here.
-        }
-
-    } catch (error) {
-        console.error("Error processing scheduled blog posts:", error);
-    }
-}
-
-/**
  * Fetches all blog posts from the Firestore database, ordered by date descending.
  * Uses unstable_cache for tag-based revalidation (ISR).
  * @returns {Promise<BlogPost[]>} A promise that resolves to an array of blog posts.
  */
 export const getBlogPosts = unstable_cache(
   async (): Promise<BlogPost[]> => {
-    // Process any due posts before fetching the list.
-    await processScheduledBlogPosts();
     try {
       const q = query(collection(db, 'blogPosts'), orderBy('date', 'desc'));
       const querySnapshot = await getDocs(q);
@@ -66,10 +24,15 @@ export const getBlogPosts = unstable_cache(
         const data = doc.data();
         // Firestore Timestamps need to be converted to JS Dates, then formatted.
         const date = data.date instanceof Timestamp ? data.date.toDate() : new Date(data.date);
+        
+        // Simple determination of status based on date
+        const status: 'Published' | 'Draft' = new Date() > date ? 'Published' : 'Draft';
+
         return {
           id: doc.id,
           ...data,
           date: format(date, 'MMMM dd, yyyy'),
+          status, // Overwrite status based on the date
         } as BlogPost;
       });
       return posts;
@@ -102,8 +65,10 @@ export async function getBlogPostById(id: string): Promise<BlogPost | null> {
 
         const data = docSnap.data();
         const date = data.date instanceof Timestamp ? data.date.toDate() : new Date(data.date);
+        const status: 'Published' | 'Draft' = new Date() > date ? 'Published' : 'Draft';
 
-        return { id: docSnap.id, ...data, date: format(date, 'MMMM dd, yyyy') } as BlogPost;
+
+        return { id: docSnap.id, ...data, date: format(date, 'MMMM dd, yyyy'), status } as BlogPost;
     } catch (error) {
         console.error("Error fetching blog post by id:", error);
         return null;
