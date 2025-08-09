@@ -8,15 +8,12 @@ import { db } from '@/lib/firebase';
 import type { BlogPost, BlogPostFormData } from '@/lib/types';
 import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, orderBy, Timestamp, writeBatch } from 'firebase/firestore';
 import { format } from 'date-fns';
-import { unstable_cache } from 'next/cache';
 
 /**
  * Fetches all blog posts from the Firestore database, ordered by date descending.
- * Uses unstable_cache for tag-based revalidation (ISR).
  * @returns {Promise<BlogPost[]>} A promise that resolves to an array of blog posts.
  */
-export const getBlogPosts = unstable_cache(
-  async (): Promise<BlogPost[]> => {
+export async function getBlogPosts(): Promise<BlogPost[]> {
     try {
       const q = query(collection(db, 'blogPosts'), orderBy('date', 'desc'));
       const querySnapshot = await getDocs(q);
@@ -25,14 +22,11 @@ export const getBlogPosts = unstable_cache(
         // Firestore Timestamps need to be converted to JS Dates, then formatted.
         const date = data.date instanceof Timestamp ? data.date.toDate() : new Date(data.date);
         
-        // Simple determination of status based on date
-        const status: 'Published' | 'Draft' = new Date() > date ? 'Published' : 'Draft';
-
         return {
           id: doc.id,
           ...data,
           date: format(date, 'MMMM dd, yyyy'),
-          status, // Overwrite status based on the date
+          status: data.status,
         } as BlogPost;
       });
       return posts;
@@ -40,12 +34,7 @@ export const getBlogPosts = unstable_cache(
       console.error("Error fetching blog posts from Firestore:", error);
       return [];
     }
-  },
-  ['blogPosts'], // The cache key for this data fetch
-  {
-    tags: ['blogPosts'], // The cache tag used for on-demand revalidation
-  }
-);
+}
 
 
 /**
@@ -65,10 +54,8 @@ export async function getBlogPostById(id: string): Promise<BlogPost | null> {
 
         const data = docSnap.data();
         const date = data.date instanceof Timestamp ? data.date.toDate() : new Date(data.date);
-        const status: 'Published' | 'Draft' = new Date() > date ? 'Published' : 'Draft';
 
-
-        return { id: docSnap.id, ...data, date: format(date, 'MMMM dd, yyyy'), status } as BlogPost;
+        return { id: docSnap.id, ...data, date: format(date, 'MMMM dd, yyyy') } as BlogPost;
     } catch (error) {
         console.error("Error fetching blog post by id:", error);
         return null;
@@ -80,33 +67,27 @@ export async function getBlogPostById(id: string): Promise<BlogPost | null> {
  * @param {string} slug - The slug of the blog post to fetch.
  * @returns {Promise<BlogPost | null>} A promise that resolves to the post object or null if not found.
  */
-export const getBlogPostBySlug = unstable_cache(
-    async (slug: string): Promise<BlogPost | null> => {
-        try {
-            const q = query(collection(db, 'blogPosts'), where('slug', '==', slug));
-            const querySnapshot = await getDocs(q);
+export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
+    try {
+        const q = query(collection(db, 'blogPosts'), where('slug', '==', slug));
+        const querySnapshot = await getDocs(q);
 
-            if (querySnapshot.empty) {
-                console.warn(`No blog post found with slug: ${slug}.`);
-                return null;
-            }
-            
-            const docSnap = querySnapshot.docs[0];
-            const data = docSnap.data();
-            const date = data.date instanceof Timestamp ? data.date.toDate() : new Date(data.date);
-            
-            return { id: docSnap.id, ...data, date: format(date, 'MMMM dd, yyyy') } as BlogPost;
-
-        } catch (error) {
-            console.error("Error fetching blog post by slug:", error);
+        if (querySnapshot.empty) {
+            console.warn(`No blog post found with slug: ${slug}.`);
             return null;
         }
-    },
-    ['blogPostBySlug'],
-    {
-        tags: ['blogPosts'], 
+        
+        const docSnap = querySnapshot.docs[0];
+        const data = docSnap.data();
+        const date = data.date instanceof Timestamp ? data.date.toDate() : new Date(data.date);
+        
+        return { id: docSnap.id, ...data, date: format(date, 'MMMM dd, yyyy') } as BlogPost;
+
+    } catch (error) {
+        console.error("Error fetching blog post by slug:", error);
+        return null;
     }
-);
+}
 
 
 /**
