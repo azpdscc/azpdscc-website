@@ -60,11 +60,7 @@ const receiptEmailPrompt = ai.definePrompt({
     Start the email with "Dear {{{donorName}}},".
     Thank them for their generous {{#if isMonthly}}monthly{{else}}one-time{{/if}} donation of \${{{amount}}}.
     Mention that their support helps PDSCC continue its mission of celebrating North Indian culture through sports and festivals in the Phoenix community.
-    {{#if zelleSenderName}}
     Mention that they will receive an official tax receipt once the Zelle payment has been verified by the team.
-    {{else}}
-    Include a line stating "This email serves as your official receipt." for tax purposes.
-    {{/if}}
     End with a warm closing like "With heartfelt gratitude," followed by "The PDSCC Team".
   `,
 });
@@ -103,7 +99,7 @@ const sendDonationReceiptFlow = ai.defineFlow(
       
       // 3. Prepare and send the notification email to the admin
       const adminEmailText = `
-        You have received a new donation.
+        You have received a new Zelle donation submission.
 
         Donor Details:
         - Name: ${input.donorName}
@@ -111,23 +107,16 @@ const sendDonationReceiptFlow = ai.defineFlow(
 
         Donation Details:
         - Amount: $${input.amount}
-        - Frequency: ${input.isMonthly ? 'Monthly' : 'One-Time'}
-        - Payment Method: ${input.paymentMethod}
-
-        ${input.paymentMethod === 'zelle' ? `
+        
         Zelle Information:
         - Sender Name: ${input.zelleSenderName || 'Not provided'}
-        - Action Required: Please verify this payment in your Zelle account.
-        ` : `
-        Credit Card Information:
-        - Action Required: This was processed automatically. Please check your payment processor's dashboard for details.
-        `}
+        - Action Required: Please verify this payment in your Zelle account and update records.
       `;
 
       await resend.emails.send({
         from: 'Donation Bot <noreply@azpdscc.org>',
         to: 'admin@azpdscc.org',
-        subject: `New Donation Received from ${input.donorName}`,
+        subject: `New Zelle Donation from ${input.donorName}`,
         text: adminEmailText,
       });
 

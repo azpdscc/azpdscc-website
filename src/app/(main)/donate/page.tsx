@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { HandHeart, Award, Paintbrush, Users, Heart } from 'lucide-react';
 import { DonationForm } from '@/components/donate/donation-form';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CreditCard, Banknote } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Donate or Volunteer | Support the Phoenix Indian Community',
@@ -29,7 +31,82 @@ export default function DonatePage() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-16">
-        <DonationForm />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <div className="lg:col-span-2">
+                <Card className="shadow-2xl">
+                    <CardHeader>
+                        <CardTitle className="font-headline text-3xl">Make a Donation</CardTitle>
+                        <CardDescription>Choose your preferred way to give. Your generous contribution helps us continue our mission.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Tabs defaultValue="zeffy" className="w-full">
+                            <TabsList className="grid w-full grid-cols-2">
+                                <TabsTrigger value="zeffy">
+                                    <CreditCard className="mr-2" />
+                                    Card, Apple/Google Pay
+                                </TabsTrigger>
+                                <TabsTrigger value="zelle">
+                                    <Banknote className="mr-2" />
+                                    Zelle
+                                </TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="zeffy" className="pt-6">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Donate via Zeffy</CardTitle>
+                                        <CardDescription>Use your credit card, debit card, or other methods through our secure Zeffy portal.</CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div style={{position:'relative',overflow:'hidden',height:'1200px',width:'100%'}}>
+                                            <iframe 
+                                            title='Donation form powered by Zeffy' 
+                                            style={{position: 'absolute', border: 0, top:0, left:0, bottom:0, right:0, width:'100%', height:'100%'}} 
+                                            src='https://www.zeffy.com/embed/donation-form/520c79cb-f491-4e02-bb41-fa9ef5ccca73' 
+                                            allowpaymentrequest="true" 
+                                            allowtransparency="true">
+                                            </iframe>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+                            <TabsContent value="zelle" className="pt-6">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Donate via Zelle</CardTitle>
+                                        <CardDescription>Follow the instructions below to make a direct donation using Zelle.</CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <DonationForm />
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+                        </Tabs>
+                    </CardContent>
+                </Card>
+            </div>
+            <div className="lg:col-span-1">
+              <Card className="bg-secondary shadow-lg h-full flex flex-col sticky top-24">
+                <CardHeader>
+                  <div className="flex justify-center mb-4">
+                      <div className="bg-primary/10 rounded-full p-4">
+                          <HandHeart className="h-10 w-10 text-primary" strokeWidth={1.5} />
+                      </div>
+                  </div>
+                  <CardTitle className="font-headline text-center text-3xl">Give the Gift of Time</CardTitle>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  <p className="text-center text-muted-foreground">
+                      Volunteers are the heart of our organization. If you'd like to help with events, outreach, or administrative tasks, we'd love to have you. <Link href="/about" className="text-primary hover:underline">Learn more about our mission</Link>.
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <Button asChild variant="default" size="lg" className="w-full">
+                    <Link href="/volunteer">Sign Up to Volunteer</Link>
+                  </Button>
+                </CardFooter>
+              </Card>
+            </div>
+        </div>
       </main>
 
       {/* Impact Section */}
