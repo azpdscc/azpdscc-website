@@ -4,8 +4,9 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Logo } from '@/components/logo';
-import { Instagram, Twitter, Facebook, Mail, Youtube, Lock } from 'lucide-react';
+import { Instagram, Twitter, Facebook, Mail, Youtube, Lock, HandHeart, CircleDollarSign } from 'lucide-react';
 import { SubscribeForm } from './subscribe-form';
+import { Button } from '../ui/button';
 
 export function Footer() {
   const pathname = usePathname();
@@ -15,7 +16,25 @@ export function Footer() {
     <footer className="bg-card border-t">
       <div className="container mx-auto px-4 pt-16 pb-8">
         {!isAdminPage && (
-            <div className="bg-primary/5 border border-primary/20 rounded-lg p-8 mb-12 text-center">
+          <>
+            <div className="grid md:grid-cols-2 gap-8 items-center bg-primary/5 border border-primary/20 rounded-lg p-8 mb-12">
+                <div className="text-center md:text-left">
+                  <h2 className="font-headline text-3xl font-bold text-foreground">Support Our Mission</h2>
+                  <p className="mt-2 text-muted-foreground">
+                    Your generous contributions and the gift of your time are what make our community thrive. Help us continue our work.
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-end">
+                    <Button asChild size="lg">
+                        <Link href="/donate"><CircleDollarSign className="mr-2" /> Donate Now</Link>
+                    </Button>
+                     <Button asChild size="lg" variant="secondary">
+                        <Link href="/volunteer"><HandHeart className="mr-2" /> Sign Up to Volunteer</Link>
+                    </Button>
+                </div>
+            </div>
+
+            <div className="text-center mb-12">
                 <Mail className="mx-auto h-12 w-12 text-primary mb-4" strokeWidth={1.5}/>
                 <h2 className="font-headline text-3xl font-bold text-foreground">Stay Connected</h2>
                 <p className="mt-2 max-w-2xl mx-auto text-muted-foreground">
@@ -25,6 +44,7 @@ export function Footer() {
                     <SubscribeForm />
                 </div>
             </div>
+          </>
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
