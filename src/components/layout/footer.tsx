@@ -17,23 +17,6 @@ export function Footer() {
       <div className="container mx-auto px-4 pt-16 pb-8">
         {!isAdminPage && (
           <>
-            <div className="grid md:grid-cols-2 gap-8 items-center bg-primary/5 border border-primary/20 rounded-lg p-8 mb-12">
-                <div className="text-center md:text-left">
-                  <h2 className="font-headline text-3xl font-bold text-foreground">Support Our Mission</h2>
-                  <p className="mt-2 text-muted-foreground">
-                    Your generous contributions and the gift of your time are what make our community thrive. Help us continue our work.
-                  </p>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-end">
-                    <Button asChild size="lg">
-                        <Link href="/donate"><CircleDollarSign className="mr-2" /> Donate Now</Link>
-                    </Button>
-                     <Button asChild size="lg" variant="secondary">
-                        <Link href="/volunteer"><HandHeart className="mr-2" /> Sign Up to Volunteer</Link>
-                    </Button>
-                </div>
-            </div>
-
             <div className="text-center mb-12">
                 <Mail className="mx-auto h-12 w-12 text-primary mb-4" strokeWidth={1.5}/>
                 <h2 className="font-headline text-3xl font-bold text-foreground">Stay Connected</h2>
@@ -76,6 +59,7 @@ export function Footer() {
               <li><Link href="/vendors" className="text-muted-foreground hover:text-primary">Vendors</Link></li>
               <li><Link href="/sponsorship" className="text-muted-foreground hover:text-primary">Sponsorship</Link></li>
               <li><Link href="/blog" className="text-muted-foreground hover:text-primary">Blog</Link></li>
+              <li><Link href="/volunteer" className="text-muted-foreground hover:text-primary">Volunteer</Link></li>
               <li><Link href="/contact" className="text-muted-foreground hover:text-primary">Contact Us</Link></li>
             </ul>
           </div>
