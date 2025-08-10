@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Logo } from '@/components/logo';
-import { Instagram, Twitter, Facebook, Mail, Youtube, Lock, HandHeart, CircleDollarSign } from 'lucide-react';
+import { Instagram, Twitter, Facebook, Mail, Youtube, Lock, HandHeart } from 'lucide-react';
 import { SubscribeForm } from './subscribe-form';
 import { Button } from '../ui/button';
 
@@ -59,7 +59,6 @@ export function Footer() {
               <li><Link href="/vendors" className="text-muted-foreground hover:text-primary">Vendors</Link></li>
               <li><Link href="/sponsorship" className="text-muted-foreground hover:text-primary">Sponsorship</Link></li>
               <li><Link href="/blog" className="text-muted-foreground hover:text-primary">Blog</Link></li>
-              <li><Link href="/volunteer" className="text-muted-foreground hover:text-primary">Volunteer</Link></li>
               <li><Link href="/contact" className="text-muted-foreground hover:text-primary">Contact Us</Link></li>
             </ul>
           </div>
@@ -77,13 +76,19 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h3 className="font-headline font-semibold text-foreground">Contact</h3>
+            <h3 className="font-headline font-semibold text-foreground">Get Involved</h3>
             <address className="mt-4 text-muted-foreground text-sm not-italic">
               AZPDSCC Community Lane<br />
               Buckeye, AZ 85326<br />
               Email: <a href="mailto:admin@azpdscc.org" className="text-primary hover:underline">admin@azpdscc.org</a><br/>
               Phone: <a href="tel:6023172239" className="text-primary hover:underline">(602) 317-2239</a>
             </address>
+             <Button asChild className="mt-4">
+                <Link href="/volunteer">
+                    <HandHeart className="mr-2"/>
+                    Volunteer
+                </Link>
+             </Button>
           </div>
         </div>
         <div className="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">
