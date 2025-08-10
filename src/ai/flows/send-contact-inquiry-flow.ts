@@ -87,9 +87,7 @@ const sendContactInquiryFlow = ai.defineFlow(
 
         From: ${input.name} (${input.email})
         Subject: ${input.subject}
-
-        Message:
-        ${input.message}
+        Message: ${input.message}
       `;
 
       // 3. Send both emails
