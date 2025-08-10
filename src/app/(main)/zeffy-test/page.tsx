@@ -17,7 +17,7 @@ export default function ZeffyTestPage() {
               title='Donation form powered by Zeffy' 
               style={{position: 'absolute', border: 0, top:0, left:0, bottom:0, right:0, width:'100%', height:'100%'}} 
               src='https://www.zeffy.com/embed/donation-form/520c79cb-f491-4e02-bb41-fa9ef5ccca73' 
-              allowPaymentRequest 
+              allowpaymentrequest="true" 
               allowTransparency={true}>
             </iframe>
           </div>
