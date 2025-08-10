@@ -13,7 +13,7 @@ export function Footer() {
   const isAdminPage = pathname.startsWith('/admin');
 
   return (
-    <footer className="bg-card border-t">
+    <footer className="bg-secondary border-t">
       <div className="container mx-auto px-4 pt-16 pb-8">
         {!isAdminPage && (
           <>
