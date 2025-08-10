@@ -14,7 +14,7 @@ export function Footer() {
 
   return (
     <footer className="bg-secondary border-t relative overflow-hidden">
-      <div className="absolute inset-0 bg-hero-pattern opacity-5" />
+      <div className="absolute inset-0 bg-hero-pattern opacity-[0.02]" />
       <div className="relative z-10">
         <div className="container mx-auto px-4 pt-16 pb-8">
           {!isAdminPage && (
