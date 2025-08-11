@@ -15,10 +15,12 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { useToast } from '@/hooks/use-toast';
-import { CalendarIcon, Loader2, AlertCircle } from 'lucide-react';
+import { CalendarIcon, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { AnimatePresence, motion } from 'framer-motion';
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog';
+
 
 const boothOptions: { [key: string]: string } = {
   '10x10-own': '10x10 Booth (Own Canopy) - $250',
@@ -45,20 +47,14 @@ function VendorFormContent({ baseUrl }: { baseUrl: string }) {
     
     const [zelleDate, setZelleDate] = useState<Date | undefined>();
     const [paymentConfirmed, setPaymentConfirmed] = useState(false);
+    const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+
+    const formRef = React.useRef<HTMLFormElement>(null);
 
     useEffect(() => {
         if (!state) return;
         if (state.success) {
-            toast({
-                title: "Application Submitted!",
-                description: state.message,
-            });
-             const form = document.querySelector('form');
-             if (form) {
-                form.reset();
-                setPaymentConfirmed(false);
-             }
-             setZelleDate(undefined);
+            setShowSuccessDialog(true);
         } else if (state.message || state.errors?._form) {
             toast({
                 variant: 'destructive',
@@ -68,8 +64,18 @@ function VendorFormContent({ baseUrl }: { baseUrl: string }) {
         }
     }, [state, toast]);
 
+    const handleDialogClose = () => {
+        setShowSuccessDialog(false);
+        if (formRef.current) {
+            formRef.current.reset();
+        }
+        setPaymentConfirmed(false);
+        setZelleDate(undefined);
+    }
+
     return (
-        <form action={formAction} className="space-y-8">
+        <>
+        <form ref={formRef} action={formAction} className="space-y-8">
             <fieldset className="space-y-4">
                 <legend className="font-headline text-2xl">Step 1: Your Information & Booth Details</legend>
                 <div>
@@ -117,7 +123,7 @@ function VendorFormContent({ baseUrl }: { baseUrl: string }) {
                     <h3 className="font-headline font-bold text-lg text-primary">Complete Your Booth Payment via Zelle</h3>
                     <p className="mt-2 text-muted-foreground">Please send your booth payment via Zelle to:</p>
                     <p className="text-2xl font-mono bg-background p-2 rounded-md text-center my-4">admin@azpdscc.org</p>
-                    <p className="font-bold text-destructive">Important: Below, after you confirm payment, please enter the name exactly as it appears on your Zelle account.</p>
+                    <p className="font-bold text-muted-foreground">Important: Below, after you confirm payment, please enter the name exactly as it appears on your Zelle account.</p>
                 </div>
                  <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                     <Checkbox id="paymentSent" name="paymentSent" checked={paymentConfirmed} onCheckedChange={(checked) => setPaymentConfirmed(checked as boolean)} />
@@ -175,6 +181,24 @@ function VendorFormContent({ baseUrl }: { baseUrl: string }) {
                 )}
              </AnimatePresence>
         </form>
+
+        <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+                        <CheckCircle className="h-6 w-6 text-green-600" />
+                    </div>
+                    <AlertDialogTitle className="text-center">Application Submitted!</AlertDialogTitle>
+                    <AlertDialogDescription className="text-center">
+                        {state?.message}
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogAction onClick={handleDialogClose}>Close</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+      </>
     );
 }
 
