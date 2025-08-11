@@ -78,15 +78,8 @@ export function DonationForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="p-4 border-2 border-primary/50 rounded-lg bg-primary/5">
-            <h3 className="font-headline font-bold text-lg text-primary">Instructions</h3>
-            <p className="mt-2 text-muted-foreground">
-                1. Please send your donation via Zelle to:
-                <span className="block text-xl font-mono bg-background p-2 rounded-md text-center my-2">admin@azpdscc.org</span>
-                2. After sending, fill out the form below so we can match your payment and send you a receipt.
-            </p>
-        </div>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-6 border-t">
+        <p className="text-sm text-muted-foreground">Please fill out the form below so we can correctly attribute your Zelle donation and send your receipt.</p>
         <FormField control={form.control} name="amount" render={({ field }) => (
             <FormItem>
                 <FormLabel>Donation Amount (USD)</FormLabel>

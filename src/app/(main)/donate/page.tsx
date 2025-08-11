@@ -1,19 +1,25 @@
 
+'use client';
+
+import { useState } from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { HandHeart, Award, Paintbrush, Users, Heart } from 'lucide-react';
+import { HandHeart, Award, Paintbrush, Users, Heart, CreditCard, Banknote, Check } from 'lucide-react';
 import { DonationForm } from '@/components/donate/donation-form';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CreditCard, Banknote } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 
-export const metadata: Metadata = {
-  title: 'Donate or Volunteer | Support the Phoenix Indian Community',
-  description: 'Support PDSCC by making a donation or volunteering your time. Your contribution helps us host Arizona Indian festivals and support the AZ India community.',
-};
+// export const metadata: Metadata = {
+//   title: 'Donate or Volunteer | Support the Phoenix Indian Community',
+//   description: 'Support PDSCC by making a donation or volunteering your time. Your contribution helps us host Arizona Indian festivals and support the AZ India community.',
+// };
 
 export default function DonatePage() {
+  const [zellePaymentConfirmed, setZellePaymentConfirmed] = useState(false);
+
   return (
     <div className="bg-background">
       {/* Hero Section */}
@@ -38,48 +44,71 @@ export default function DonatePage() {
                     <CardDescription>Choose your preferred way to give. Your generous contribution helps us continue our mission.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Tabs defaultValue="zeffy" className="w-full">
-                        <TabsList className="grid w-full grid-cols-2">
-                            <TabsTrigger value="zeffy">
-                                <CreditCard className="mr-2" />
-                                Card, Apple/Google Pay
-                            </TabsTrigger>
-                            <TabsTrigger value="zelle">
-                                <Banknote className="mr-2" />
-                                Zelle
-                            </TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="zeffy" className="pt-6">
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Donate via Zeffy</CardTitle>
-                                    <CardDescription>Use your credit card, debit card, or other methods through our secure Zeffy portal.</CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <div style={{position:'relative',overflow:'hidden',height:'1200px',width:'100%'}}>
-                                        <iframe 
-                                        title='Donation form powered by Zeffy' 
-                                        style={{position: 'absolute', border: 0, top:0, left:0, bottom:0, right:0, width:'100%', height:'100%'}} 
-                                        src='https://www.zeffy.com/embed/donation-form/520c79cb-f491-4e02-bb41-fa9ef5ccca73' 
-                                        allowpaymentrequest="true" 
-                                        allowtransparency="true">
-                                        </iframe>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </TabsContent>
-                        <TabsContent value="zelle" className="pt-6">
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Donate via Zelle</CardTitle>
-                                    <CardDescription>Follow the instructions below to make a direct donation using Zelle.</CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <DonationForm />
-                                </CardContent>
-                            </Card>
-                        </TabsContent>
-                    </Tabs>
+                    <Accordion type="single" collapsible className="w-full space-y-4">
+                        <AccordionItem value="zeffy">
+                            <AccordionTrigger className="p-4 bg-secondary rounded-lg text-lg font-bold hover:no-underline">
+                                <div className="flex items-center gap-4">
+                                    <CreditCard className="h-6 w-6 text-primary" />
+                                    <span>Card, Apple/Google Pay</span>
+                                </div>
+                            </AccordionTrigger>
+                            <AccordionContent className="pt-4">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Donate via Zeffy</CardTitle>
+                                        <CardDescription>Use your credit card, debit card, or other methods through our secure Zeffy portal (a 100% free platform for non-profits).</CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div style={{position:'relative',overflow:'hidden',height:'1200px',width:'100%'}}>
+                                            <iframe 
+                                            title='Donation form powered by Zeffy' 
+                                            style={{position: 'absolute', border: 0, top:0, left:0, bottom:0, right:0, width:'100%', height:'100%'}} 
+                                            src='https://www.zeffy.com/embed/donation-form/520c79cb-f491-4e02-bb41-fa9ef5ccca73' 
+                                            allowpaymentrequest="true" 
+                                            allowtransparency="true">
+                                            </iframe>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </AccordionContent>
+                        </AccordionItem>
+                        
+                        <AccordionItem value="zelle">
+                             <AccordionTrigger className="p-4 bg-secondary rounded-lg text-lg font-bold hover:no-underline">
+                                <div className="flex items-center gap-4">
+                                    <Banknote className="h-6 w-6 text-primary" />
+                                    <span>Zelle</span>
+                                </div>
+                            </AccordionTrigger>
+                            <AccordionContent className="pt-4">
+                                 <Card>
+                                    <CardHeader>
+                                        <CardTitle>Donate via Zelle</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-6">
+                                        <div className="p-4 border-2 border-primary/50 rounded-lg bg-primary/5">
+                                            <h3 className="font-headline font-bold text-lg text-primary">Instructions</h3>
+                                            <p className="mt-2 text-muted-foreground">
+                                                1. Please send your donation via Zelle to:
+                                                <span className="block text-xl font-mono bg-background p-2 rounded-md text-center my-2">admin@azpdscc.org</span>
+                                                2. After sending, check the box below and fill out the form so we can match your payment and send you a receipt.
+                                            </p>
+                                        </div>
+
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox id="zelle-sent" onCheckedChange={(checked) => setZellePaymentConfirmed(checked as boolean)} />
+                                            <Label htmlFor="zelle-sent" className="font-bold text-lg">
+                                                Yes, I have sent the payment via Zelle.
+                                            </Label>
+                                        </div>
+
+                                        {zellePaymentConfirmed && <DonationForm />}
+
+                                    </CardContent>
+                                </Card>
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
                 </CardContent>
             </Card>
         </div>
