@@ -108,6 +108,37 @@ export default function DonatePage() {
                                 </Card>
                             </AccordionContent>
                         </AccordionItem>
+
+                        <AccordionItem value="check">
+                            <AccordionTrigger className="p-4 bg-secondary rounded-lg text-lg font-bold hover:no-underline">
+                                <div className="flex items-center gap-4">
+                                    <Check className="h-6 w-6 text-primary" />
+                                    <span>Pay by Check</span>
+                                </div>
+                            </AccordionTrigger>
+                            <AccordionContent className="pt-4">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Donate by Check</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="p-4 border-2 border-primary/50 rounded-lg bg-primary/5 space-y-4">
+                                            <div>
+                                                <p className="font-semibold text-foreground">Please make checks payable to:</p>
+                                                <p className="text-xl font-mono bg-background p-2 rounded-md text-center my-2">PDSCC</p>
+                                            </div>
+                                            <div>
+                                                <p className="font-semibold text-foreground">Mail your check to:</p>
+                                                <address className="not-italic text-xl font-mono bg-background p-2 rounded-md text-center my-2">
+                                                    2259 S Hughes Drive<br />
+                                                    Buckeye, AZ 85326
+                                                </address>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </AccordionContent>
+                        </AccordionItem>
                     </Accordion>
                 </CardContent>
             </Card>
