@@ -13,7 +13,9 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { sendVolunteerInquiry } from '@/ai/flows/send-volunteer-inquiry-flow';
-import { Loader2 } from 'lucide-react';
+import { Loader2, CheckCircle } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from './ui/alert-dialog';
+
 
 const interests = [
     { id: 'event-setup', label: 'Event Setup & Teardown' },
@@ -38,6 +40,8 @@ type VolunteerFormValues = z.infer<typeof volunteerFormSchema>;
 
 export function VolunteerForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const { toast } = useToast();
   const form = useForm<VolunteerFormValues>({
     resolver: zodResolver(volunteerFormSchema),
@@ -56,10 +60,8 @@ export function VolunteerForm() {
       const response = await sendVolunteerInquiry(data);
 
       if (response.success) {
-        toast({
-          title: "Thank You for Volunteering!",
-          description: response.message,
-        });
+        setSuccessMessage(response.message);
+        setShowSuccessDialog(true);
         form.reset();
       } else {
         toast({
@@ -81,85 +83,103 @@ export function VolunteerForm() {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="grid md:grid-cols-2 gap-6">
-            <FormField name="name" control={form.control} render={({ field }) => (
-              <FormItem><FormLabel>Full Name</FormLabel><FormControl><Input placeholder="Jane Doe" {...field} /></FormControl><FormMessage /></FormItem>
+    <>
+        <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <div className="grid md:grid-cols-2 gap-6">
+                <FormField name="name" control={form.control} render={({ field }) => (
+                <FormItem><FormLabel>Full Name</FormLabel><FormControl><Input placeholder="Jane Doe" {...field} /></FormControl><FormMessage /></FormItem>
+                )} />
+                <FormField name="email" control={form.control} render={({ field }) => (
+                <FormItem><FormLabel>Email Address</FormLabel><FormControl><Input type="email" placeholder="jane.doe@example.com" {...field} /></FormControl><FormMessage /></FormItem>
+                )} />
+            </div>
+            
+            <FormField name="phone" control={form.control} render={({ field }) => (
+            <FormItem><FormLabel>Phone Number (Optional)</FormLabel><FormControl><Input type="tel" placeholder="(555) 555-5555" {...field} /></FormControl><FormMessage /></FormItem>
             )} />
-            <FormField name="email" control={form.control} render={({ field }) => (
-              <FormItem><FormLabel>Email Address</FormLabel><FormControl><Input type="email" placeholder="jane.doe@example.com" {...field} /></FormControl><FormMessage /></FormItem>
-            )} />
-        </div>
-        
-        <FormField name="phone" control={form.control} render={({ field }) => (
-          <FormItem><FormLabel>Phone Number (Optional)</FormLabel><FormControl><Input type="tel" placeholder="(555) 555-5555" {...field} /></FormControl><FormMessage /></FormItem>
-        )} />
-        
-        <FormField
-          control={form.control}
-          name="interests"
-          render={() => (
+            
+            <FormField
+            control={form.control}
+            name="interests"
+            render={() => (
+                <FormItem>
+                <div className="mb-4">
+                    <FormLabel className="text-base">Areas of Interest</FormLabel>
+                    <FormDescription>
+                    Select all areas where you would like to help.
+                    </FormDescription>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {interests.map((item) => (
+                    <FormField
+                        key={item.id}
+                        control={form.control}
+                        name="interests"
+                        render={({ field }) => {
+                        return (
+                            <FormItem
+                            key={item.id}
+                            className="flex flex-row items-start space-x-3 space-y-0"
+                            >
+                            <FormControl>
+                                <Checkbox
+                                checked={field.value?.includes(item.id)}
+                                onCheckedChange={(checked) => {
+                                    return checked
+                                    ? field.onChange([...(field.value || []), item.id])
+                                    : field.onChange(
+                                        field.value?.filter(
+                                            (value) => value !== item.id
+                                        )
+                                        )
+                                }}
+                                />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                                {item.label}
+                            </FormLabel>
+                            </FormItem>
+                        )
+                        }}
+                    />
+                    ))}
+                </div>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
+            
+            <FormField name="message" control={form.control} render={({ field }) => (
             <FormItem>
-              <div className="mb-4">
-                <FormLabel className="text-base">Areas of Interest</FormLabel>
-                <FormDescription>
-                  Select all areas where you would like to help.
-                </FormDescription>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {interests.map((item) => (
-                  <FormField
-                    key={item.id}
-                    control={form.control}
-                    name="interests"
-                    render={({ field }) => {
-                      return (
-                        <FormItem
-                          key={item.id}
-                          className="flex flex-row items-start space-x-3 space-y-0"
-                        >
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(item.id)}
-                              onCheckedChange={(checked) => {
-                                return checked
-                                  ? field.onChange([...(field.value || []), item.id])
-                                  : field.onChange(
-                                      field.value?.filter(
-                                        (value) => value !== item.id
-                                      )
-                                    )
-                              }}
-                            />
-                          </FormControl>
-                          <FormLabel className="font-normal">
-                            {item.label}
-                          </FormLabel>
-                        </FormItem>
-                      )
-                    }}
-                  />
-                ))}
-              </div>
-              <FormMessage />
+                <FormLabel>Additional Comments (Optional)</FormLabel>
+                <FormControl><Textarea placeholder="Let us know if you have any specific skills or questions." {...field} /></FormControl>
+                <FormMessage />
             </FormItem>
-          )}
-        />
-        
-        <FormField name="message" control={form.control} render={({ field }) => (
-          <FormItem>
-            <FormLabel>Additional Comments (Optional)</FormLabel>
-            <FormControl><Textarea placeholder="Let us know if you have any specific skills or questions." {...field} /></FormControl>
-            <FormMessage />
-          </FormItem>
-        )} />
-        
-        <Button type="submit" size="lg" disabled={isSubmitting}>
-          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Submit Application
-        </Button>
-      </form>
-    </Form>
+            )} />
+            
+            <Button type="submit" size="lg" disabled={isSubmitting}>
+            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Submit Application
+            </Button>
+        </form>
+        </Form>
+        <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+                        <CheckCircle className="h-6 w-6 text-green-600" />
+                    </div>
+                    <AlertDialogTitle className="text-center">Thank You for Volunteering!</AlertDialogTitle>
+                    <AlertDialogDescription className="text-center">
+                        {successMessage}
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogAction onClick={() => setShowSuccessDialog(false)}>Close</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+    </>
   );
 }

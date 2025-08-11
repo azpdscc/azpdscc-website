@@ -13,7 +13,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, CheckCircle } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+
 
 const formSchema = z.object({
   name: z.string().min(2, "Your name must be at least 2 characters."),
@@ -26,6 +28,8 @@ type ContactFormValues = z.infer<typeof formSchema>;
 
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const { toast } = useToast();
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(formSchema),
@@ -43,10 +47,8 @@ export function ContactForm() {
       const response = await sendContactInquiry(data);
 
       if (response.success) {
-        toast({
-          title: "Message Sent!",
-          description: response.message,
-        });
+        setSuccessMessage(response.message);
+        setShowSuccessDialog(true);
         form.reset();
       } else {
         toast({
@@ -68,38 +70,56 @@ export function ContactForm() {
   };
 
   return (
-    <Card className="shadow-lg">
-      <CardHeader>
-        <CardTitle className="font-headline text-3xl">Send us a Message</CardTitle>
-        <CardDescription>Fill out the form below and we will get back to you as soon as possible.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField name="name" control={form.control} render={({ field }) => (
-              <FormItem><FormLabel>Your Name</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage /></FormItem>
-            )} />
-            <FormField name="email" control={form.control} render={({ field }) => (
-              <FormItem><FormLabel>Your Email</FormLabel><FormControl><Input type="email" placeholder="you@example.com" {...field} /></FormControl><FormMessage /></FormItem>
-            )} />
-            <FormField name="subject" control={form.control} render={({ field }) => (
-              <FormItem><FormLabel>Subject</FormLabel><FormControl><Input placeholder="Question about an event" {...field} /></FormControl><FormMessage /></FormItem>
-            )} />
-            <FormField name="message" control={form.control} render={({ field }) => (
-              <FormItem>
-                <FormLabel>Message</FormLabel>
-                <FormControl><Textarea rows={6} placeholder="Please type your message here..." {...field} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
-            
-            <Button type="submit" size="lg" disabled={isSubmitting}>
-              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Send Message
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+    <>
+      <Card className="shadow-lg">
+        <CardHeader>
+          <CardTitle className="font-headline text-3xl">Send us a Message</CardTitle>
+          <CardDescription>Fill out the form below and we will get back to you as soon as possible.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField name="name" control={form.control} render={({ field }) => (
+                <FormItem><FormLabel>Your Name</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage /></FormItem>
+              )} />
+              <FormField name="email" control={form.control} render={({ field }) => (
+                <FormItem><FormLabel>Your Email</FormLabel><FormControl><Input type="email" placeholder="you@example.com" {...field} /></FormControl><FormMessage /></FormItem>
+              )} />
+              <FormField name="subject" control={form.control} render={({ field }) => (
+                <FormItem><FormLabel>Subject</FormLabel><FormControl><Input placeholder="Question about an event" {...field} /></FormControl><FormMessage /></FormItem>
+              )} />
+              <FormField name="message" control={form.control} render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Message</FormLabel>
+                  <FormControl><Textarea rows={6} placeholder="Please type your message here..." {...field} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )} />
+              
+              <Button type="submit" size="lg" disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Send Message
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+      <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+          <AlertDialogContent>
+              <AlertDialogHeader>
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+                      <CheckCircle className="h-6 w-6 text-green-600" />
+                  </div>
+                  <AlertDialogTitle className="text-center">Message Sent!</AlertDialogTitle>
+                  <AlertDialogDescription className="text-center">
+                      {successMessage}
+                  </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                  <AlertDialogAction onClick={() => setShowSuccessDialog(false)}>Close</AlertDialogAction>
+              </AlertDialogFooter>
+          </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }

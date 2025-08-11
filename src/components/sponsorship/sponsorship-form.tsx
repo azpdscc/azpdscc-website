@@ -13,8 +13,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, CheckCircle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog';
+
 
 const formSchema = z.object({
   companyName: z.string().min(2, "Company name is required."),
@@ -31,6 +33,8 @@ type SponsorshipFormValues = z.infer<typeof formSchema>;
 
 export function SponsorshipForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const { toast } = useToast();
   const form = useForm<SponsorshipFormValues>({
     resolver: zodResolver(formSchema),
@@ -50,10 +54,8 @@ export function SponsorshipForm() {
       const response = await sendSponsorshipInquiry(data);
 
       if (response.success) {
-        toast({
-          title: "Inquiry Sent!",
-          description: response.message,
-        });
+        setSuccessMessage(response.message);
+        setShowSuccessDialog(true);
         form.reset();
       } else {
         toast({
@@ -74,61 +76,79 @@ export function SponsorshipForm() {
   };
 
   return (
-    <Card className="shadow-xl">
-        <CardHeader>
-            <CardTitle className="font-headline text-3xl text-center">Become a Sponsor</CardTitle>
-            <CardDescription className="text-center">
-                Fill out the form below to start the conversation. We'll be in touch shortly to discuss partnership opportunities.
-            </CardDescription>
-        </CardHeader>
-        <CardContent>
-            <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <FormField name="companyName" control={form.control} render={({ field }) => (
-                <FormItem><FormLabel>Company Name</FormLabel><FormControl><Input placeholder="Your Company Inc." {...field} /></FormControl><FormMessage /></FormItem>
-                )} />
-                <FormField name="contactName" control={form.control} render={({ field }) => (
-                <FormItem><FormLabel>Your Name</FormLabel><FormControl><Input placeholder="Jane Doe" {...field} /></FormControl><FormMessage /></FormItem>
-                )} />
-                <div className="grid md:grid-cols-2 gap-6">
-                    <FormField name="email" control={form.control} render={({ field }) => (
-                    <FormItem><FormLabel>Email Address</FormLabel><FormControl><Input type="email" placeholder="you@company.com" {...field} /></FormControl><FormMessage /></FormItem>
+    <>
+        <Card className="shadow-xl">
+            <CardHeader>
+                <CardTitle className="font-headline text-3xl text-center">Become a Sponsor</CardTitle>
+                <CardDescription className="text-center">
+                    Fill out the form below to start the conversation. We'll be in touch shortly to discuss partnership opportunities.
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    <FormField name="companyName" control={form.control} render={({ field }) => (
+                    <FormItem><FormLabel>Company Name</FormLabel><FormControl><Input placeholder="Your Company Inc." {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
-                    <FormField name="phone" control={form.control} render={({ field }) => (
-                    <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input type="tel" placeholder="(555) 555-5555" {...field} /></FormControl><FormMessage /></FormItem>
+                    <FormField name="contactName" control={form.control} render={({ field }) => (
+                    <FormItem><FormLabel>Your Name</FormLabel><FormControl><Input placeholder="Jane Doe" {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
-                </div>
-                <FormField name="sponsorshipLevel" control={form.control} render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Sponsorship Level of Interest</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl><SelectTrigger><SelectValue placeholder="Select a level" /></SelectTrigger></FormControl>
-                    <SelectContent>
-                        <SelectItem value="Diamond">Diamond ($20,000+)</SelectItem>
-                        <SelectItem value="Gold">Gold ($10,000)</SelectItem>
-                        <SelectItem value="Silver">Silver ($5,000)</SelectItem>
-                        <SelectItem value="Bronze">Bronze ($2,500)</SelectItem>
-                        <SelectItem value="Other">Other/Custom</SelectItem>
-                    </SelectContent>
-                    </Select>
-                    <FormMessage />
-                </FormItem>
-                )} />
-                <FormField name="message" control={form.control} render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Message (Optional)</FormLabel>
-                    <FormControl><Textarea placeholder="Tell us about your company or ask any questions you may have." {...field} /></FormControl>
-                    <FormMessage />
-                </FormItem>
-                )} />
-                
-                <Button type="submit" size="lg" disabled={isSubmitting}>
-                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Send Inquiry
-                </Button>
-            </form>
-            </Form>
-        </CardContent>
-    </Card>
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <FormField name="email" control={form.control} render={({ field }) => (
+                        <FormItem><FormLabel>Email Address</FormLabel><FormControl><Input type="email" placeholder="you@company.com" {...field} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                        <FormField name="phone" control={form.control} render={({ field }) => (
+                        <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input type="tel" placeholder="(555) 555-5555" {...field} /></FormControl><FormMessage /></FormItem>
+                        )} />
+                    </div>
+                    <FormField name="sponsorshipLevel" control={form.control} render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Sponsorship Level of Interest</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl><SelectTrigger><SelectValue placeholder="Select a level" /></SelectTrigger></FormControl>
+                        <SelectContent>
+                            <SelectItem value="Diamond">Diamond ($20,000+)</SelectItem>
+                            <SelectItem value="Gold">Gold ($10,000)</SelectItem>
+                            <SelectItem value="Silver">Silver ($5,000)</SelectItem>
+                            <SelectItem value="Bronze">Bronze ($2,500)</SelectItem>
+                            <SelectItem value="Other">Other/Custom</SelectItem>
+                        </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                    )} />
+                    <FormField name="message" control={form.control} render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Message (Optional)</FormLabel>
+                        <FormControl><Textarea placeholder="Tell us about your company or ask any questions you may have." {...field} /></FormControl>
+                        <FormMessage />
+                    </FormItem>
+                    )} />
+                    
+                    <Button type="submit" size="lg" disabled={isSubmitting}>
+                    {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Send Inquiry
+                    </Button>
+                </form>
+                </Form>
+            </CardContent>
+        </Card>
+        <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+                        <CheckCircle className="h-6 w-6 text-green-600" />
+                    </div>
+                    <AlertDialogTitle className="text-center">Inquiry Sent!</AlertDialogTitle>
+                    <AlertDialogDescription className="text-center">
+                        {successMessage}
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogAction onClick={() => setShowSuccessDialog(false)}>Close</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+    </>
   );
 }

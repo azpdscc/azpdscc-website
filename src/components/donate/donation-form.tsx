@@ -11,7 +11,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, CheckCircle } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog';
+
 
 const formSchema = z.object({
     amount: z.string().refine(val => !isNaN(parseFloat(val)) && parseFloat(val) > 0, { message: "Please enter a valid amount." }),
@@ -24,6 +26,7 @@ type ZelleDonationFormValues = z.infer<typeof formSchema>;
 
 export function DonationForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const { toast } = useToast();
   const form = useForm<ZelleDonationFormValues>({
     resolver: zodResolver(formSchema),
@@ -51,10 +54,7 @@ export function DonationForm() {
         });
 
         if (response.success) {
-            toast({
-                title: "Information Received!",
-                description: "Thank you! We will confirm your donation and send a receipt once the Zelle payment is verified by our team.",
-            });
+            setShowSuccessDialog(true);
             form.reset();
         } else {
              toast({
@@ -77,35 +77,53 @@ export function DonationForm() {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-6 border-t">
-        <p className="text-sm text-muted-foreground">Please fill out the form below so we can correctly attribute your Zelle donation and send your receipt.</p>
-        <FormField control={form.control} name="amount" render={({ field }) => (
-            <FormItem>
-                <FormLabel>Donation Amount (USD)</FormLabel>
-                <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-                    <FormControl>
-                        <Input {...field} type="number" placeholder="50.00" className="pl-8" />
-                    </FormControl>
-                </div>
-                <FormMessage />
-            </FormItem>
-        )} />
-        <FormField name="name" control={form.control} render={({ field }) => (
-            <FormItem><FormLabel>Full Name</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage /></FormItem>
-        )} />
-        <FormField name="email" control={form.control} render={({ field }) => (
-            <FormItem><FormLabel>Email Address</FormLabel><FormControl><Input type="email" placeholder="you@example.com" {...field} /></FormControl><FormDescription>Your tax receipt will be sent here.</FormDescription><FormMessage /></FormItem>
-        )} />
-         <FormField name="zelleSenderName" control={form.control} render={({ field }) => (
-            <FormItem><FormLabel>Name on Zelle Account</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormDescription>This is required to match your payment to your donation.</FormDescription><FormMessage /></FormItem>
-        )} />
-        <Button type="submit" size="lg" disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Submit Zelle Information
-        </Button>
-      </form>
-    </Form>
+    <>
+        <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 pt-6 border-t">
+            <p className="text-sm text-muted-foreground">Please fill out the form below so we can correctly attribute your Zelle donation and send your receipt.</p>
+            <FormField control={form.control} name="amount" render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Donation Amount (USD)</FormLabel>
+                    <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                        <FormControl>
+                            <Input {...field} type="number" placeholder="50.00" className="pl-8" />
+                        </FormControl>
+                    </div>
+                    <FormMessage />
+                </FormItem>
+            )} />
+            <FormField name="name" control={form.control} render={({ field }) => (
+                <FormItem><FormLabel>Full Name</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage /></FormItem>
+            )} />
+            <FormField name="email" control={form.control} render={({ field }) => (
+                <FormItem><FormLabel>Email Address</FormLabel><FormControl><Input type="email" placeholder="you@example.com" {...field} /></FormControl><FormDescription>Your tax receipt will be sent here.</FormDescription><FormMessage /></FormItem>
+            )} />
+            <FormField name="zelleSenderName" control={form.control} render={({ field }) => (
+                <FormItem><FormLabel>Name on Zelle Account</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormDescription>This is required to match your payment to your donation.</FormDescription><FormMessage /></FormItem>
+            )} />
+            <Button type="submit" size="lg" disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Submit Zelle Information
+            </Button>
+        </form>
+        </Form>
+        <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+                        <CheckCircle className="h-6 w-6 text-green-600" />
+                    </div>
+                    <AlertDialogTitle className="text-center">Information Received!</AlertDialogTitle>
+                    <AlertDialogDescription className="text-center">
+                       Thank you! We will confirm your donation and send a receipt once the Zelle payment is verified by our team.
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogAction onClick={() => setShowSuccessDialog(false)}>Close</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+    </>
   );
 }

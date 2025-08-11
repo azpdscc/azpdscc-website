@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -10,7 +11,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, CheckCircle } from 'lucide-react';
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog';
+
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address."),
@@ -20,6 +23,8 @@ type SubscribeFormValues = z.infer<typeof formSchema>;
 
 export function SubscribeForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const { toast } = useToast();
   const form = useForm<SubscribeFormValues>({
     resolver: zodResolver(formSchema),
@@ -34,10 +39,8 @@ export function SubscribeForm() {
       const response = await sendWelcomeEmail(data);
 
       if (response.success) {
-        toast({
-          title: "Subscription Successful!",
-          description: response.message,
-        });
+        setSuccessMessage(response.message);
+        setShowSuccessDialog(true);
         form.reset();
       } else {
         toast({
@@ -59,33 +62,51 @@ export function SubscribeForm() {
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full items-start gap-2">
-        <FormField
-          name="email"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem className="flex-1">
-              <FormControl>
-                <Input
-                  type="email"
-                  placeholder="Enter your email address..."
-                  {...field}
-                  className="bg-background h-12"
-                />
-              </FormControl>
-              <FormMessage className="text-left" />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" size="lg" className="h-12" disabled={isSubmitting}>
-          {isSubmitting ? (
-            <Loader2 className="h-5 w-5 animate-spin" />
-          ) : (
-            <span>Subscribe</span>
-          )}
-        </Button>
-      </form>
-    </Form>
+    <>
+        <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full items-start gap-2">
+            <FormField
+            name="email"
+            control={form.control}
+            render={({ field }) => (
+                <FormItem className="flex-1">
+                <FormControl>
+                    <Input
+                    type="email"
+                    placeholder="Enter your email address..."
+                    {...field}
+                    className="bg-background h-12"
+                    />
+                </FormControl>
+                <FormMessage className="text-left" />
+                </FormItem>
+            )}
+            />
+            <Button type="submit" size="lg" className="h-12" disabled={isSubmitting}>
+            {isSubmitting ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+                <span>Subscribe</span>
+            )}
+            </Button>
+        </form>
+        </Form>
+        <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+                        <CheckCircle className="h-6 w-6 text-green-600" />
+                    </div>
+                    <AlertDialogTitle className="text-center">Subscription Successful!</AlertDialogTitle>
+                    <AlertDialogDescription className="text-center">
+                        {successMessage}
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogAction onClick={() => setShowSuccessDialog(false)}>Close</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+    </>
   );
 }
