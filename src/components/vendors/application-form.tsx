@@ -70,13 +70,54 @@ function VendorFormContent({ baseUrl }: { baseUrl: string }) {
 
     return (
         <form action={formAction} className="space-y-8">
+            <fieldset className="space-y-4">
+                <legend className="font-headline text-2xl">Step 1: Your Information & Booth Details</legend>
+                <div>
+                    <Label htmlFor="name">Full Name</Label>
+                    <Input id="name" name="name" placeholder="John Doe" required />
+                    {state?.errors?.name && <p className="text-destructive text-sm mt-1">{state.errors.name.join(', ')}</p>}
+                </div>
+                <div>
+                    <Label htmlFor="organization">Organization (Optional)</Label>
+                    <Input id="organization" name="organization" placeholder="Your Company LLC" />
+                    {state?.errors?.organization && <p className="text-destructive text-sm mt-1">{state.errors.organization.join(', ')}</p>}
+                </div>
+                <div>
+                    <Label htmlFor="email">Email Address</Label>
+                    <Input id="email" name="email" type="email" placeholder="you@example.com" required />
+                    {state?.errors?.email && <p className="text-destructive text-sm mt-1">{state.errors.email.join(', ')}</p>}
+                </div>
+                <div>
+                    <Label htmlFor="phone">Phone Number</Label>
+                    <Input id="phone" name="phone" type="tel" placeholder="(555) 555-5555" required />
+                    {state?.errors?.phone && <p className="text-destructive text-sm mt-1">{state.errors.phone.join(', ')}</p>}
+                </div>
+                <div>
+                    <Label htmlFor="boothType">Booth Type</Label>
+                    <Select name="boothType" required>
+                        <SelectTrigger><SelectValue placeholder="Select a booth type" /></SelectTrigger>
+                        <SelectContent>
+                            {Object.entries(boothOptions).map(([value, label]) => (
+                                <SelectItem key={value} value={value}>{label}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    {state?.errors?.boothType && <p className="text-destructive text-sm mt-1">{state.errors.boothType.join(', ')}</p>}
+                </div>
+                <div>
+                    <Label htmlFor="productDescription">Product/Service Description</Label>
+                    <Textarea id="productDescription" name="productDescription" placeholder="Describe what you will be selling or offering..." required />
+                    {state?.errors?.productDescription && <p className="text-destructive text-sm mt-1">{state.errors.productDescription.join(', ')}</p>}
+                </div>
+            </fieldset>
+
             <fieldset className="space-y-6">
-                 <legend className="font-headline text-2xl">Step 1: Send Payment</legend>
+                 <legend className="font-headline text-2xl">Step 2: Send Payment</legend>
                  <div className="p-6 border-2 border-primary/50 rounded-lg bg-primary/5">
                     <h3 className="font-headline font-bold text-lg text-primary">Complete Your Booth Payment via Zelle</h3>
                     <p className="mt-2 text-muted-foreground">Please send your booth payment via Zelle to:</p>
                     <p className="text-2xl font-mono bg-background p-2 rounded-md text-center my-4">admin@azpdscc.org</p>
-                    <p className="font-bold text-destructive">Important: You must include your name or organization name in the Zelle memo for us to identify your payment.</p>
+                    <p className="font-bold text-destructive">Important: You must include your full name or organization name in the Zelle memo for us to identify your payment. It must match the name on this form.</p>
                 </div>
                  <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                     <Checkbox id="paymentSent" name="paymentSent" checked={paymentConfirmed} onCheckedChange={(checked) => setPaymentConfirmed(checked as boolean)} />
@@ -97,51 +138,10 @@ function VendorFormContent({ baseUrl }: { baseUrl: string }) {
                         className="space-y-8"
                     >
                          <fieldset className="space-y-4">
-                            <legend className="font-headline text-2xl">Step 2: Your Information</legend>
-                            <div>
-                                <Label htmlFor="name">Full Name</Label>
-                                <Input id="name" name="name" placeholder="John Doe" required />
-                                {state?.errors?.name && <p className="text-destructive text-sm mt-1">{state.errors.name.join(', ')}</p>}
-                            </div>
-                            <div>
-                                <Label htmlFor="organization">Organization (Optional)</Label>
-                                <Input id="organization" name="organization" placeholder="Your Company LLC" />
-                                {state?.errors?.organization && <p className="text-destructive text-sm mt-1">{state.errors.organization.join(', ')}</p>}
-                            </div>
-                            <div>
-                                <Label htmlFor="email">Email Address</Label>
-                                <Input id="email" name="email" type="email" placeholder="you@example.com" required />
-                                {state?.errors?.email && <p className="text-destructive text-sm mt-1">{state.errors.email.join(', ')}</p>}
-                            </div>
-                            <div>
-                                <Label htmlFor="phone">Phone Number</Label>
-                                <Input id="phone" name="phone" type="tel" placeholder="(555) 555-5555" required />
-                                {state?.errors?.phone && <p className="text-destructive text-sm mt-1">{state.errors.phone.join(', ')}</p>}
-                            </div>
-                        </fieldset>
-
-                        <fieldset className="space-y-4">
-                            <legend className="font-headline text-2xl">Step 3: Booth Details & Payment Info</legend>
-                            <div>
-                                <Label htmlFor="boothType">Booth Type</Label>
-                                <Select name="boothType" required>
-                                    <SelectTrigger><SelectValue placeholder="Select a booth type" /></SelectTrigger>
-                                    <SelectContent>
-                                        {Object.entries(boothOptions).map(([value, label]) => (
-                                            <SelectItem key={value} value={value}>{label}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                {state?.errors?.boothType && <p className="text-destructive text-sm mt-1">{state.errors.boothType.join(', ')}</p>}
-                            </div>
-                            <div>
-                                <Label htmlFor="productDescription">Product/Service Description</Label>
-                                <Textarea id="productDescription" name="productDescription" placeholder="Describe what you will be selling or offering..." required />
-                                {state?.errors?.productDescription && <p className="text-destructive text-sm mt-1">{state.errors.productDescription.join(', ')}</p>}
-                            </div>
+                            <legend className="font-headline text-2xl">Step 3: Zelle Payment Information</legend>
                              <div>
                                 <Label htmlFor="zelleSenderName">Name on Zelle Account</Label>
-                                <Input id="zelleSenderName" name="zelleSenderName" required />
+                                <Input id="zelleSenderName" name="zelleSenderName" placeholder="This must match the name you provided above" required />
                                 {state?.errors?.zelleSenderName && <p className="text-destructive text-sm mt-1">{state.errors.zelleSenderName.join(', ')}</p>}
                             </div>
                             
