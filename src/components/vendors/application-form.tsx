@@ -18,6 +18,7 @@ import { useToast } from '@/hooks/use-toast';
 import { CalendarIcon, Loader2, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const boothOptions: { [key: string]: string } = {
   '10x10-own': '10x10 Booth (Own Canopy) - $250',
@@ -29,7 +30,7 @@ const boothOptions: { [key: string]: string } = {
 function SubmitButton() {
     const { pending } = useFormStatus();
     return (
-        <Button type="submit" disabled={pending} className="w-full sm:w-auto">
+        <Button type="submit" disabled={pending} size="lg" className="w-full sm:w-auto">
             {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Submit Application
         </Button>
@@ -43,6 +44,7 @@ function VendorFormContent({ baseUrl }: { baseUrl: string }) {
     const [state, formAction] = useActionState(actionWithBaseUrl, initialState);
     
     const [zelleDate, setZelleDate] = useState<Date | undefined>();
+    const [paymentConfirmed, setPaymentConfirmed] = useState(false);
 
     useEffect(() => {
         if (!state) return;
@@ -51,10 +53,10 @@ function VendorFormContent({ baseUrl }: { baseUrl: string }) {
                 title: "Application Submitted!",
                 description: state.message,
             });
-             // A bit of a hack to reset the form since we are not using react-hook-form's reset method
              const form = document.querySelector('form');
              if (form) {
                 form.reset();
+                setPaymentConfirmed(false);
              }
              setZelleDate(undefined);
         } else if (state.message || state.errors?._form) {
@@ -68,101 +70,110 @@ function VendorFormContent({ baseUrl }: { baseUrl: string }) {
 
     return (
         <form action={formAction} className="space-y-8">
-            <fieldset className="space-y-4">
-                <legend className="font-headline text-2xl">Step 1: Contact Information</legend>
-                <div>
-                    <Label htmlFor="name">Full Name</Label>
-                    <Input id="name" name="name" placeholder="John Doe" required />
-                    {state?.errors?.name && <p className="text-destructive text-sm mt-1">{state.errors.name.join(', ')}</p>}
-                </div>
-                <div>
-                    <Label htmlFor="organization">Organization (Optional)</Label>
-                    <Input id="organization" name="organization" placeholder="Your Company LLC" />
-                    {state?.errors?.organization && <p className="text-destructive text-sm mt-1">{state.errors.organization.join(', ')}</p>}
-                </div>
-                <div>
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" name="email" type="email" placeholder="you@example.com" required />
-                     {state?.errors?.email && <p className="text-destructive text-sm mt-1">{state.errors.email.join(', ')}</p>}
-                </div>
-                <div>
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input id="phone" name="phone" type="tel" placeholder="(555) 555-5555" required />
-                    {state?.errors?.phone && <p className="text-destructive text-sm mt-1">{state.errors.phone.join(', ')}</p>}
-                </div>
-            </fieldset>
-
-            <fieldset className="space-y-4">
-                 <legend className="font-headline text-2xl">Step 2: Booth Details</legend>
-                 <div>
-                    <Label htmlFor="boothType">Booth Type</Label>
-                    <Select name="boothType" required>
-                        <SelectTrigger><SelectValue placeholder="Select a booth type" /></SelectTrigger>
-                        <SelectContent>
-                            {Object.entries(boothOptions).map(([value, label]) => (
-                                <SelectItem key={value} value={value}>{label}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    {state?.errors?.boothType && <p className="text-destructive text-sm mt-1">{state.errors.boothType.join(', ')}</p>}
-                 </div>
-                 <div>
-                    <Label htmlFor="productDescription">Product/Service Description</Label>
-                    <Textarea id="productDescription" name="productDescription" placeholder="Describe what you will be selling or offering..." required />
-                    {state?.errors?.productDescription && <p className="text-destructive text-sm mt-1">{state.errors.productDescription.join(', ')}</p>}
-                 </div>
-            </fieldset>
-
-             <fieldset className="space-y-6">
-                 <legend className="font-headline text-2xl">Step 3: Payment & Confirmation</legend>
+            <fieldset className="space-y-6">
+                 <legend className="font-headline text-2xl">Step 1: Send Payment</legend>
                  <div className="p-6 border-2 border-primary/50 rounded-lg bg-primary/5">
                     <h3 className="font-headline font-bold text-lg text-primary">Complete Your Booth Payment via Zelle</h3>
                     <p className="mt-2 text-muted-foreground">Please send your booth payment via Zelle to:</p>
                     <p className="text-2xl font-mono bg-background p-2 rounded-md text-center my-4">admin@azpdscc.org</p>
                     <p className="font-bold text-destructive">Important: You must include your name or organization name in the Zelle memo for us to identify your payment.</p>
                 </div>
-
-                <div>
-                    <Label htmlFor="zelleSenderName">Name on Zelle Account</Label>
-                    <Input id="zelleSenderName" name="zelleSenderName" required />
-                    {state?.errors?.zelleSenderName && <p className="text-destructive text-sm mt-1">{state.errors.zelleSenderName.join(', ')}</p>}
-                </div>
-                
-                 <div className="flex flex-col gap-2">
-                    <Label htmlFor="zelleDateSent">Date Sent</Label>
-                    <Popover>
-                        <PopoverTrigger asChild>
-                            <Button variant={"outline"} className={cn("w-full sm:w-[240px] pl-3 text-left font-normal", !zelleDate && "text-muted-foreground")}>
-                                {zelleDate ? format(zelleDate, "PPP") : <span>Pick a date</span>}
-                                <CalendarIcon className="h-4 w-4 opacity-50 ml-auto" />
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar mode="single" selected={zelleDate} onSelect={setZelleDate} disabled={(date) => date > new Date() || date < new Date("1900-01-01")} initialFocus />
-                        </PopoverContent>
-                    </Popover>
-                    <input type="hidden" name="zelleDateSent" value={zelleDate?.toISOString() ?? ''} />
-                    {state?.errors?.zelleDateSent && <p className="text-destructive text-sm mt-1">{state.errors.zelleDateSent.join(', ')}</p>}
-                </div>
-                 
                  <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                    <Checkbox id="paymentSent" name="paymentSent" />
+                    <Checkbox id="paymentSent" name="paymentSent" checked={paymentConfirmed} onCheckedChange={(checked) => setPaymentConfirmed(checked as boolean)} />
                     <div className="space-y-1 leading-none">
-                        <Label htmlFor="paymentSent">I confirm that I have sent the Zelle payment.</Label>
+                        <Label htmlFor="paymentSent" className="text-base">I confirm that I have sent the Zelle payment.</Label>
                         {state?.errors?.paymentSent && <p className="text-destructive text-sm mt-1">{state.errors.paymentSent.join(', ')}</p>}
                     </div>
                  </div>
              </fieldset>
 
-            {state?.errors?._form && (
-                <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Error</AlertTitle>
-                    <AlertDescription>{state.errors._form.join(', ')}</AlertDescription>
-                </Alert>
-            )}
+             <AnimatePresence>
+                {paymentConfirmed && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.3 }}
+                        className="space-y-8"
+                    >
+                         <fieldset className="space-y-4">
+                            <legend className="font-headline text-2xl">Step 2: Your Information</legend>
+                            <div>
+                                <Label htmlFor="name">Full Name</Label>
+                                <Input id="name" name="name" placeholder="John Doe" required />
+                                {state?.errors?.name && <p className="text-destructive text-sm mt-1">{state.errors.name.join(', ')}</p>}
+                            </div>
+                            <div>
+                                <Label htmlFor="organization">Organization (Optional)</Label>
+                                <Input id="organization" name="organization" placeholder="Your Company LLC" />
+                                {state?.errors?.organization && <p className="text-destructive text-sm mt-1">{state.errors.organization.join(', ')}</p>}
+                            </div>
+                            <div>
+                                <Label htmlFor="email">Email Address</Label>
+                                <Input id="email" name="email" type="email" placeholder="you@example.com" required />
+                                {state?.errors?.email && <p className="text-destructive text-sm mt-1">{state.errors.email.join(', ')}</p>}
+                            </div>
+                            <div>
+                                <Label htmlFor="phone">Phone Number</Label>
+                                <Input id="phone" name="phone" type="tel" placeholder="(555) 555-5555" required />
+                                {state?.errors?.phone && <p className="text-destructive text-sm mt-1">{state.errors.phone.join(', ')}</p>}
+                            </div>
+                        </fieldset>
 
-            <SubmitButton />
+                        <fieldset className="space-y-4">
+                            <legend className="font-headline text-2xl">Step 3: Booth Details & Payment Info</legend>
+                            <div>
+                                <Label htmlFor="boothType">Booth Type</Label>
+                                <Select name="boothType" required>
+                                    <SelectTrigger><SelectValue placeholder="Select a booth type" /></SelectTrigger>
+                                    <SelectContent>
+                                        {Object.entries(boothOptions).map(([value, label]) => (
+                                            <SelectItem key={value} value={value}>{label}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {state?.errors?.boothType && <p className="text-destructive text-sm mt-1">{state.errors.boothType.join(', ')}</p>}
+                            </div>
+                            <div>
+                                <Label htmlFor="productDescription">Product/Service Description</Label>
+                                <Textarea id="productDescription" name="productDescription" placeholder="Describe what you will be selling or offering..." required />
+                                {state?.errors?.productDescription && <p className="text-destructive text-sm mt-1">{state.errors.productDescription.join(', ')}</p>}
+                            </div>
+                             <div>
+                                <Label htmlFor="zelleSenderName">Name on Zelle Account</Label>
+                                <Input id="zelleSenderName" name="zelleSenderName" required />
+                                {state?.errors?.zelleSenderName && <p className="text-destructive text-sm mt-1">{state.errors.zelleSenderName.join(', ')}</p>}
+                            </div>
+                            
+                            <div className="flex flex-col gap-2">
+                                <Label htmlFor="zelleDateSent">Date Sent</Label>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button variant={"outline"} className={cn("w-full sm:w-[240px] pl-3 text-left font-normal", !zelleDate && "text-muted-foreground")}>
+                                            {zelleDate ? format(zelleDate, "PPP") : <span>Pick a date</span>}
+                                            <CalendarIcon className="h-4 w-4 opacity-50 ml-auto" />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                        <Calendar mode="single" selected={zelleDate} onSelect={setZelleDate} disabled={(date) => date > new Date() || date < new Date("1900-01-01")} initialFocus />
+                                    </PopoverContent>
+                                </Popover>
+                                <input type="hidden" name="zelleDateSent" value={zelleDate?.toISOString() ?? ''} />
+                                {state?.errors?.zelleDateSent && <p className="text-destructive text-sm mt-1">{state.errors.zelleDateSent.join(', ')}</p>}
+                            </div>
+                        </fieldset>
+
+                        {state?.errors?._form && (
+                            <Alert variant="destructive">
+                                <AlertCircle className="h-4 w-4" />
+                                <AlertTitle>Error</AlertTitle>
+                                <AlertDescription>{state.errors._form.join(', ')}</AlertDescription>
+                            </Alert>
+                        )}
+                        <SubmitButton />
+                    </motion.div>
+                )}
+             </AnimatePresence>
         </form>
     );
 }
