@@ -107,6 +107,7 @@ const sendDonationReceiptFlow = ai.defineFlow(
 
         Donation Details:
         - Amount: $${input.amount}
+        - Status: Pending Verification
         
         Zelle Information:
         - Sender Name: ${input.zelleSenderName || 'Not provided'}
