@@ -112,12 +112,12 @@ function VendorFormContent({ baseUrl }: { baseUrl: string }) {
             </fieldset>
 
             <fieldset className="space-y-6">
-                 <legend className="font-headline text-2xl">Step 2: Send Payment</legend>
+                 <legend className="font-headline text-2xl">Step 2: Send Payment & Confirm</legend>
                  <div className="p-6 border-2 border-primary/50 rounded-lg bg-primary/5">
                     <h3 className="font-headline font-bold text-lg text-primary">Complete Your Booth Payment via Zelle</h3>
                     <p className="mt-2 text-muted-foreground">Please send your booth payment via Zelle to:</p>
                     <p className="text-2xl font-mono bg-background p-2 rounded-md text-center my-4">admin@azpdscc.org</p>
-                    <p className="font-bold text-destructive">Important: You must include your full name or organization name in the Zelle memo for us to identify your payment. It must match the name on this form.</p>
+                    <p className="font-bold text-destructive">Important: You must include your full name or organization name in the Zelle memo for us to identify your payment. Below, please enter the name exactly as it appears on your Zelle account.</p>
                 </div>
                  <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                     <Checkbox id="paymentSent" name="paymentSent" checked={paymentConfirmed} onCheckedChange={(checked) => setPaymentConfirmed(checked as boolean)} />
@@ -141,7 +141,7 @@ function VendorFormContent({ baseUrl }: { baseUrl: string }) {
                             <legend className="font-headline text-2xl">Step 3: Zelle Payment Information</legend>
                              <div>
                                 <Label htmlFor="zelleSenderName">Name on Zelle Account</Label>
-                                <Input id="zelleSenderName" name="zelleSenderName" placeholder="This must match the name you provided above" required />
+                                <Input id="zelleSenderName" name="zelleSenderName" placeholder="This must match the name on your Zelle account" required />
                                 {state?.errors?.zelleSenderName && <p className="text-destructive text-sm mt-1">{state.errors.zelleSenderName.join(', ')}</p>}
                             </div>
                             
