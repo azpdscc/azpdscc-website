@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { HandHeart, Award, Paintbrush, Users, Heart, CreditCard, Banknote, Check } from 'lucide-react';
 import { DonationForm } from '@/components/donate/donation-form';
+import { CheckDonationForm } from '@/components/donate/check-donation-form';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
@@ -135,6 +136,7 @@ export default function DonatePage() {
                                                 </address>
                                             </div>
                                         </div>
+                                        <CheckDonationForm />
                                     </CardContent>
                                 </Card>
                             </AccordionContent>
