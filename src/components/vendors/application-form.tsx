@@ -117,7 +117,7 @@ function VendorFormContent({ baseUrl }: { baseUrl: string }) {
                     <h3 className="font-headline font-bold text-lg text-primary">Complete Your Booth Payment via Zelle</h3>
                     <p className="mt-2 text-muted-foreground">Please send your booth payment via Zelle to:</p>
                     <p className="text-2xl font-mono bg-background p-2 rounded-md text-center my-4">admin@azpdscc.org</p>
-                    <p className="font-bold text-destructive">Important: You must include your full name or organization name in the Zelle memo for us to identify your payment. Below, please enter the name exactly as it appears on your Zelle account.</p>
+                    <p className="font-bold text-destructive">Important: Below, after you confirm payment, please enter the name exactly as it appears on your Zelle account.</p>
                 </div>
                  <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                     <Checkbox id="paymentSent" name="paymentSent" checked={paymentConfirmed} onCheckedChange={(checked) => setPaymentConfirmed(checked as boolean)} />
