@@ -8,6 +8,7 @@
 // These users will ONLY be able to access the /admin/check-in page.
 // All other users who can log in will be treated as full administrators.
 const volunteerEmails: string[] = [
+    'booth@pdscc.org',
     // 'volunteer1@example.com',
     // 'volunteer2@example.com',
 ];
