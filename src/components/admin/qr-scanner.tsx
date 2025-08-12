@@ -50,7 +50,7 @@ export function QrScanner() {
             
             try {
                 const url = new URL(scannedData);
-                const ticketId = url.searchParams.get('id');
+                const ticketId = url.searchParams.get('ticketId');
 
                 if (ticketId) {
                     const fetchedTicket = await getVendorApplicationById(ticketId);
