@@ -1,6 +1,7 @@
 
 "use client";
 
+import * as React from 'react';
 import { useActionState, useEffect, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { vendorApplicationAction } from '@/app/admin/vendors/actions';
