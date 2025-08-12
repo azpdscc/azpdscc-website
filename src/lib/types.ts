@@ -61,6 +61,9 @@ export type VendorApplication = {
   name: string;
   organization?: string;
   boothType: string;
+  eventId: string;
+  eventName: string;
+  eventDate: string; // "Month Day, YYYY"
   createdAt: string; // Serialized as ISO string
   checkInStatus: 'pending' | 'checkedIn';
   checkedInAt?: string; // Serialized as ISO string

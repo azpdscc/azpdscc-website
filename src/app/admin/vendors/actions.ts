@@ -6,6 +6,7 @@ import { createVendorApplication } from '@/services/vendorApplications';
 import { sendVendorApplication } from '@/ai/flows/send-vendor-application-flow';
 import type { VendorApplicationFormData } from '@/lib/types';
 import { format } from 'date-fns';
+import { getEvents } from '@/services/events';
 
 export type VendorApplicationState = {
   errors?: {
@@ -85,18 +86,36 @@ export async function vendorApplicationAction(
     const boothTypeKey = validatedFields.data.boothType;
 
     try {
-        // 1. Create a ticket record in Firestore to get an ID
+        // 1. Determine the next upcoming event
+        const allEvents = await getEvents();
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+
+        const upcomingEvents = allEvents
+            .filter(e => new Date(e.date) >= now)
+            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        
+        const nextEvent = upcomingEvents.length > 0 ? upcomingEvents[0] : null;
+
+        if (!nextEvent) {
+             return { errors: { _form: ['There are no upcoming events available for registration.'] }};
+        }
+
+        // 2. Create a ticket record in Firestore to get an ID
         const ticketId = await createVendorApplication({
             name: validatedFields.data.name,
             organization: validatedFields.data.organization,
             boothType: boothOptions[boothTypeKey],
+            eventId: nextEvent.id,
+            eventName: nextEvent.name,
+            eventDate: nextEvent.date,
         });
 
-        // 2. Generate the verification and QR code URLs
+        // 3. Generate the verification and QR code URLs
         const verificationUrl = new URL(`/verify-ticket?id=${ticketId}`, baseUrl).toString();
         const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(verificationUrl)}`;
 
-        // 3. Prepare the full application data for the email flow
+        // 4. Prepare the full application data for the email flow
         const applicationData: VendorApplicationFormData = {
             name: validatedFields.data.name,
             organization: validatedFields.data.organization,
@@ -111,7 +130,7 @@ export async function vendorApplicationAction(
             qrCodeUrl: qrCodeUrl,
         };
 
-        // 4. Send the email with the QR code
+        // 5. Send the email with the QR code
         const emailResult = await sendVendorApplication(applicationData);
 
         if (emailResult.success) {

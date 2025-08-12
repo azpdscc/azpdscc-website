@@ -4,17 +4,24 @@
 import { useState, useTransition, useEffect } from 'react';
 import type { VendorApplication } from '@/lib/types';
 import { checkInVendorAction } from '@/app/verify-ticket/actions';
-import { format } from 'date-fns';
+import { format, isToday, isPast } from 'date-fns';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { CheckCircle2, Loader2, UserCheck, Calendar, XCircle, AlertCircle } from 'lucide-react';
+import { CheckCircle2, Loader2, UserCheck, Calendar, XCircle, AlertCircle, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface VerifyTicketClientProps {
     ticket: VendorApplication;
+}
+
+enum TicketStatus {
+    Valid,
+    AlreadyCheckedIn,
+    Expired,
+    NotYetActive,
 }
 
 export function VerifyTicketClient({ ticket }: VerifyTicketClientProps) {
@@ -22,6 +29,7 @@ export function VerifyTicketClient({ ticket }: VerifyTicketClientProps) {
     const { toast } = useToast();
     const [checkInStatus, setCheckInStatus] = useState(ticket.checkInStatus);
     const [checkedInAt, setCheckedInAt] = useState(ticket.checkedInAt);
+    const [ticketStatus, setTicketStatus] = useState<TicketStatus>(TicketStatus.Valid);
 
     // State to hold formatted dates, initialized to null or a placeholder
     const [formattedCreatedAt, setFormattedCreatedAt] = useState<string | null>(null);
@@ -29,11 +37,23 @@ export function VerifyTicketClient({ ticket }: VerifyTicketClientProps) {
 
     useEffect(() => {
         // This effect runs only on the client, after hydration
+        const eventDate = new Date(ticket.eventDate);
+        
+        if (checkInStatus === 'checkedIn') {
+            setTicketStatus(TicketStatus.AlreadyCheckedIn);
+        } else if (isPast(eventDate) && !isToday(eventDate)) {
+            setTicketStatus(TicketStatus.Expired);
+        } else if (!isToday(eventDate)) {
+            setTicketStatus(TicketStatus.NotYetActive);
+        } else {
+            setTicketStatus(TicketStatus.Valid);
+        }
+
         setFormattedCreatedAt(format(new Date(ticket.createdAt), 'PPP p'));
         if (checkedInAt) {
              setFormattedCheckedInAt(format(new Date(checkedInAt), 'PPP p'));
         }
-    }, [ticket.createdAt, checkedInAt]);
+    }, [ticket, checkInStatus, checkedInAt]);
     
     const handleCheckIn = () => {
         startTransition(async () => {
@@ -45,6 +65,7 @@ export function VerifyTicketClient({ ticket }: VerifyTicketClientProps) {
                     variant: 'default'
                 });
                 setCheckInStatus('checkedIn');
+                setTicketStatus(TicketStatus.AlreadyCheckedIn);
                 const now = new Date().toISOString();
                 setCheckedInAt(now); 
                 setFormattedCheckedInAt(format(new Date(now), 'PPP p'));
@@ -58,6 +79,44 @@ export function VerifyTicketClient({ ticket }: VerifyTicketClientProps) {
         });
     }
 
+    const renderFooter = () => {
+        switch (ticketStatus) {
+            case TicketStatus.Valid:
+                return (
+                     <Button className="w-full" size="lg" onClick={handleCheckIn} disabled={isPending}>
+                        {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle2 className="mr-2" />}
+                        Confirm and Check-In Vendor
+                    </Button>
+                );
+            case TicketStatus.AlreadyCheckedIn:
+                 return (
+                    <Alert variant="default" className="bg-green-50 border-green-200 text-green-800 w-full">
+                        <CheckCircle2 className="h-4 w-4 !text-green-800" />
+                        <AlertTitle>Already Checked In</AlertTitle>
+                        <AlertDescription>This vendor has already been checked in at {formattedCheckedInAt}.</AlertDescription>
+                    </Alert>
+                );
+            case TicketStatus.Expired:
+                 return (
+                    <Alert variant="destructive" className="w-full">
+                        <Clock className="h-4 w-4" />
+                        <AlertTitle>Ticket Expired</AlertTitle>
+                        <AlertDescription>This ticket was for a past event and is no longer valid.</AlertDescription>
+                    </Alert>
+                 );
+            case TicketStatus.NotYetActive:
+                 return (
+                    <Alert variant="destructive" className="bg-orange-50 border-orange-200 text-orange-800 w-full">
+                        <Calendar className="h-4 w-4 !text-orange-800" />
+                        <AlertTitle>Ticket Not Yet Active</AlertTitle>
+                        <AlertDescription>This ticket is for a future event and cannot be checked in yet.</AlertDescription>
+                    </Alert>
+                 );
+            default:
+                return null;
+        }
+    }
+
     return (
         <Card className="max-w-md mx-auto">
             <CardHeader>
@@ -68,6 +127,10 @@ export function VerifyTicketClient({ ticket }: VerifyTicketClientProps) {
             </CardHeader>
             <CardContent className="space-y-4">
                  <div>
+                    <p className="font-semibold">Event</p>
+                    <p className="text-muted-foreground">{ticket.eventName} ({ticket.eventDate})</p>
+                 </div>
+                 <div>
                     <p className="font-semibold">Vendor Name</p>
                     <p className="text-muted-foreground">{ticket.name}</p>
                  </div>
@@ -76,34 +139,14 @@ export function VerifyTicketClient({ ticket }: VerifyTicketClientProps) {
                     <p className="text-muted-foreground">{ticket.boothType}</p>
                  </div>
                  <div>
-                    <p className="font-semibold">Application Date</p>
-                    <p className="text-muted-foreground">{formattedCreatedAt || 'Loading date...'}</p>
-                 </div>
-                 <div>
                     <p className="font-semibold">Status</p>
                     <Badge variant={checkInStatus === 'checkedIn' ? 'default' : 'secondary'} className={checkInStatus === 'checkedIn' ? 'bg-green-600' : ''}>
                         {checkInStatus === 'checkedIn' ? 'Checked In' : 'Pending Check-In'}
                     </Badge>
-                    {checkInStatus === 'checkedIn' && formattedCheckedInAt && (
-                         <p className="text-xs text-muted-foreground mt-1">
-                            at {formattedCheckedInAt}
-                        </p>
-                    )}
                  </div>
             </CardContent>
             <CardFooter>
-                {checkInStatus === 'pending' ? (
-                    <Button className="w-full" size="lg" onClick={handleCheckIn} disabled={isPending}>
-                        {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle2 className="mr-2" />}
-                        Confirm and Check-In Vendor
-                    </Button>
-                ) : (
-                    <Alert variant="default" className="bg-green-50 border-green-200 text-green-800 w-full">
-                        <CheckCircle2 className="h-4 w-4 !text-green-800" />
-                        <AlertTitle>Already Checked In</AlertTitle>
-                        <AlertDescription>This vendor has already been checked in.</AlertDescription>
-                    </Alert>
-                )}
+               {renderFooter()}
             </CardFooter>
         </Card>
     );

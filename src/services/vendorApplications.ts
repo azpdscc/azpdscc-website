@@ -13,10 +13,10 @@ const vendorApplicationsCollectionRef = collection(db, 'vendorApplications');
 
 /**
  * Creates a new vendor application in Firestore for check-in purposes.
- * @param {Pick<VendorApplication, 'name' | 'organization' | 'boothType'>} appData - The basic data for the vendor.
+ * @param {Pick<VendorApplication, 'name' | 'organization' | 'boothType' | 'eventId' | 'eventName' | 'eventDate'>} appData - The basic data for the vendor.
  * @returns {Promise<string>} The ID of the newly created document.
  */
-export async function createVendorApplication(appData: Pick<VendorApplication, 'name' | 'organization' | 'boothType'>): Promise<string> {
+export async function createVendorApplication(appData: Pick<VendorApplication, 'name' | 'organization' | 'boothType' | 'eventId' | 'eventName' | 'eventDate'>): Promise<string> {
     const dataToSave = {
         ...appData,
         createdAt: serverTimestamp(),
