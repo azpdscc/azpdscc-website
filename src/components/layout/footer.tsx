@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Logo } from '@/components/logo';
-import { Instagram, Twitter, Facebook, Mail, Youtube, Lock, HandHeart } from 'lucide-react';
+import { Instagram, Twitter, Facebook, Mail, Youtube, Lock, HandHeart, UserCheck } from 'lucide-react';
 import { SubscribeForm } from './subscribe-form';
 import { Button } from '../ui/button';
 
@@ -73,6 +73,12 @@ export function Footer() {
                   <Link href="/admin" className="text-muted-foreground hover:text-primary flex items-center gap-1">
                       <Lock className="h-3 w-3" />
                       Admin
+                  </Link>
+                </li>
+                 <li>
+                  <Link href="/admin/check-in" className="text-muted-foreground hover:text-primary flex items-center gap-1">
+                      <UserCheck className="h-3 w-3" />
+                      Event Check-In
                   </Link>
                 </li>
               </ul>
