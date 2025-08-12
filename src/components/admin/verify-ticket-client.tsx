@@ -3,7 +3,6 @@
 
 import { useState, useTransition, useEffect } from 'react';
 import type { VendorApplication } from '@/lib/types';
-import { checkInVendorAction } from '@/app/admin/verify-ticket/actions';
 import { format, isToday, isPast } from 'date-fns';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,10 +10,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { CheckCircle2, Loader2, UserCheck, Calendar, XCircle, AlertCircle, Clock } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+
 
 interface VerifyTicketClientProps {
     ticket: VendorApplication;
+    onCheckIn: (ticketId: string) => Promise<void>;
 }
 
 enum TicketStatus {
@@ -24,22 +24,19 @@ enum TicketStatus {
     NotYetActive,
 }
 
-export function VerifyTicketClient({ ticket }: VerifyTicketClientProps) {
+export function VerifyTicketClient({ ticket, onCheckIn }: VerifyTicketClientProps) {
     const [isPending, startTransition] = useTransition();
-    const { toast } = useToast();
-    const [checkInStatus, setCheckInStatus] = useState(ticket.checkInStatus);
-    const [checkedInAt, setCheckedInAt] = useState(ticket.checkedInAt);
     const [ticketStatus, setTicketStatus] = useState<TicketStatus>(TicketStatus.Valid);
+    const [currentTicket, setCurrentTicket] = useState(ticket);
 
     // State to hold formatted dates, initialized to null or a placeholder
-    const [formattedCreatedAt, setFormattedCreatedAt] = useState<string | null>(null);
     const [formattedCheckedInAt, setFormattedCheckedInAt] = useState<string | null>(null);
 
     useEffect(() => {
         // This effect runs only on the client, after hydration
-        const eventDate = new Date(ticket.eventDate);
+        const eventDate = new Date(currentTicket.eventDate);
         
-        if (checkInStatus === 'checkedIn') {
+        if (currentTicket.checkInStatus === 'checkedIn') {
             setTicketStatus(TicketStatus.AlreadyCheckedIn);
         } else if (isPast(eventDate) && !isToday(eventDate)) {
             setTicketStatus(TicketStatus.Expired);
@@ -49,33 +46,19 @@ export function VerifyTicketClient({ ticket }: VerifyTicketClientProps) {
             setTicketStatus(TicketStatus.Valid);
         }
 
-        setFormattedCreatedAt(format(new Date(ticket.createdAt), 'PPP p'));
-        if (checkedInAt) {
-             setFormattedCheckedInAt(format(new Date(checkedInAt), 'PPP p'));
+        if (currentTicket.checkedInAt) {
+             setFormattedCheckedInAt(format(new Date(currentTicket.checkedInAt), 'PPP p'));
         }
-    }, [ticket, checkInStatus, checkedInAt]);
+    }, [currentTicket]);
     
     const handleCheckIn = () => {
         startTransition(async () => {
-            const result = await checkInVendorAction(ticket.id);
-            if (result.success) {
-                toast({
-                    title: 'Success!',
-                    description: result.message,
-                    variant: 'default'
-                });
-                setCheckInStatus('checkedIn');
-                setTicketStatus(TicketStatus.AlreadyCheckedIn);
-                const now = new Date().toISOString();
-                setCheckedInAt(now); 
-                setFormattedCheckedInAt(format(new Date(now), 'PPP p'));
-            } else {
-                 toast({
-                    title: 'Error',
-                    description: result.message,
-                    variant: 'destructive'
-                });
-            }
+            await onCheckIn(currentTicket.id);
+            setCurrentTicket(prev => ({
+                ...prev,
+                checkInStatus: 'checkedIn',
+                checkedInAt: new Date().toISOString()
+            }));
         });
     }
 
@@ -118,7 +101,7 @@ export function VerifyTicketClient({ ticket }: VerifyTicketClientProps) {
     }
 
     return (
-        <Card className="max-w-md mx-auto">
+        <Card className="max-w-md mx-auto w-full">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2 font-headline text-2xl">
                     <UserCheck /> Vendor Check-In
@@ -128,20 +111,20 @@ export function VerifyTicketClient({ ticket }: VerifyTicketClientProps) {
             <CardContent className="space-y-4">
                  <div>
                     <p className="font-semibold">Event</p>
-                    <p className="text-muted-foreground">{ticket.eventName} ({ticket.eventDate})</p>
+                    <p className="text-muted-foreground">{currentTicket.eventName} ({currentTicket.eventDate})</p>
                  </div>
                  <div>
                     <p className="font-semibold">Vendor Name</p>
-                    <p className="text-muted-foreground">{ticket.name}</p>
+                    <p className="text-muted-foreground">{currentTicket.name}</p>
                  </div>
                  <div>
                     <p className="font-semibold">Booth Type</p>
-                    <p className="text-muted-foreground">{ticket.boothType}</p>
+                    <p className="text-muted-foreground">{currentTicket.boothType}</p>
                  </div>
                  <div>
                     <p className="font-semibold">Status</p>
-                    <Badge variant={checkInStatus === 'checkedIn' ? 'default' : 'secondary'} className={checkInStatus === 'checkedIn' ? 'bg-green-600' : ''}>
-                        {checkInStatus === 'checkedIn' ? 'Checked In' : 'Pending Check-In'}
+                    <Badge variant={currentTicket.checkInStatus === 'checkedIn' ? 'default' : 'secondary'} className={currentTicket.checkInStatus === 'checkedIn' ? 'bg-green-600' : ''}>
+                        {currentTicket.checkInStatus === 'checkedIn' ? 'Checked In' : 'Pending Check-In'}
                     </Badge>
                  </div>
             </CardContent>

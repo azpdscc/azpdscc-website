@@ -77,15 +77,15 @@ export default function AdminDashboardPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
                 <UserCheck className="h-6 w-6" />
-                Check-In Dashboard
+                Event Check-In
             </CardTitle>
             <CardDescription>
-                View a live list of all vendor check-ins during an event.
+                Scan vendor QR codes and view a live list of check-ins.
             </CardDescription>
           </CardHeader>
           <CardContent>
              <Button asChild>
-                <Link href="/admin/check-in-dashboard">View Dashboard</Link>
+                <Link href="/admin/check-in">Open Check-In Tool</Link>
             </Button>
           </CardContent>
         </Card>

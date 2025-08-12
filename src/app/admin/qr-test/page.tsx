@@ -73,14 +73,14 @@ export default function QrTestPage() {
                                 <p><strong>QR Code URL (from qrserver.com):</strong></p>
                                 <Input readOnly value={state.result.qrCodeUrl} className="text-xs" />
                                 <p><strong>Secure Verification Link (encoded in QR):</strong></p>
-                                <Link href={state.result.verificationUrl} target="_blank" className="text-primary hover:underline break-all text-sm">{state.result.verificationUrl}</Link>
+                                <p className="text-muted-foreground text-sm break-all">{state.result.verificationUrl}</p>
                             </div>
                         </div>
                          <Alert className="mt-4">
                             <QrCode className="h-4 w-4" />
                             <AlertTitle>How to Test</AlertTitle>
                             <AlertDescription>
-                                Scan the QR code. You should be prompted to log in if you are not already. Once logged in, you will see the ticket details and be able to perform a check-in.
+                                Scan the QR code with your phone's camera. You will be taken to the new Check-In tool. Navigate to the "Scan QR Code" tab to verify the ticket.
                             </AlertDescription>
                         </Alert>
                     </CardFooter>

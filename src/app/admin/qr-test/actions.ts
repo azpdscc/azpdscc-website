@@ -68,8 +68,8 @@ export async function generateQrCodeAction(
         eventDate: nextEvent.date,
     });
 
-    // Point to the new SECURE admin verification page
-    const verificationUrl = new URL(`/admin/verify-ticket?id=${ticketId}`, baseUrl).toString();
+    // Point to the consolidated admin check-in page
+    const verificationUrl = new URL(`/admin/check-in?ticketId=${ticketId}`, baseUrl).toString();
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(verificationUrl)}`;
     
     return {
