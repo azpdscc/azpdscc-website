@@ -14,7 +14,7 @@ import { Badge } from '@/components/ui/badge';
 import { CheckCircle2, CircleOff, RefreshCw } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Skeleton } from '../ui/skeleton';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { VerifyTicketClient } from './verify-ticket-client';
 
 
@@ -127,6 +127,9 @@ export function CheckInList() {
             </Card>
 
             <DialogContent>
+                <DialogHeader>
+                    <DialogTitle className="sr-only">Vendor Check-In</DialogTitle>
+                </DialogHeader>
                 {selectedVendor && (
                     <VerifyTicketClient ticket={selectedVendor} onCheckIn={handleCheckIn} />
                 )}
