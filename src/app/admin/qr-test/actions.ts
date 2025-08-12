@@ -4,6 +4,7 @@
 import { z } from 'zod';
 import { createVendorApplication } from '@/services/vendorApplications';
 import { getEvents } from '@/services/events';
+import { format } from 'date-fns';
 
 export type QrTestFormState = {
   errors?: {

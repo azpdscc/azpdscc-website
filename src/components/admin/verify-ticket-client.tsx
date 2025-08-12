@@ -3,7 +3,7 @@
 
 import { useState, useTransition, useEffect } from 'react';
 import type { VendorApplication } from '@/lib/types';
-import { checkInVendorAction } from '@/app/verify-ticket/actions';
+import { checkInVendorAction } from '@/app/admin/verify-ticket/actions';
 import { format, isToday, isPast } from 'date-fns';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -43,7 +43,7 @@ export function VerifyTicketClient({ ticket }: VerifyTicketClientProps) {
             setTicketStatus(TicketStatus.AlreadyCheckedIn);
         } else if (isPast(eventDate) && !isToday(eventDate)) {
             setTicketStatus(TicketStatus.Expired);
-        } else if (!isToday(eventDate)) {
+        } else if (!isToday(eventDate) && !isPast(eventDate)) {
             setTicketStatus(TicketStatus.NotYetActive);
         } else {
             setTicketStatus(TicketStatus.Valid);
