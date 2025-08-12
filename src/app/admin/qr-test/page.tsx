@@ -1,8 +1,7 @@
+
 'use client';
 
 import { useActionState, useEffect, useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
 import type { QrTestFormState } from './actions';
 import { generateQrCodeAction } from './actions';
 
@@ -12,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { ActionSubmitButton } from '@/components/admin/submit-button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, QrCode } from 'lucide-react';
+import Link from 'next/link';
 
 const initialState: QrTestFormState = {};
 
@@ -72,7 +72,7 @@ export default function QrTestPage() {
                                 <p><strong>Ticket ID:</strong> {state.result.ticketId}</p>
                                 <p><strong>QR Code URL (from qrserver.com):</strong></p>
                                 <Input readOnly value={state.result.qrCodeUrl} className="text-xs" />
-                                <p><strong>Verification Link (encoded in QR):</strong></p>
+                                <p><strong>Secure Verification Link (encoded in QR):</strong></p>
                                 <Link href={state.result.verificationUrl} target="_blank" className="text-primary hover:underline break-all text-sm">{state.result.verificationUrl}</Link>
                             </div>
                         </div>
@@ -80,7 +80,7 @@ export default function QrTestPage() {
                             <QrCode className="h-4 w-4" />
                             <AlertTitle>How to Test</AlertTitle>
                             <AlertDescription>
-                                Open the camera app on your phone and point it at the QR code above, or click the verification link to simulate what your event staff will see.
+                                Scan the QR code. You should be prompted to log in if you are not already. Once logged in, you will see the ticket details and be able to perform a check-in.
                             </AlertDescription>
                         </Alert>
                     </CardFooter>

@@ -3,6 +3,7 @@
 
 import { z } from 'zod';
 import { createVendorApplication } from '@/services/vendorApplications';
+import { getEvents } from '@/services/events';
 
 export type QrTestFormState = {
   errors?: {
@@ -48,13 +49,26 @@ export async function generateQrCodeAction(
   }
 
   try {
+    // In a test environment, we'll just grab the next upcoming event
+    const allEvents = await getEvents();
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const upcomingEvents = allEvents
+        .filter(e => new Date(e.date) >= now)
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const nextEvent = upcomingEvents.length > 0 ? upcomingEvents[0] : { id: 'test-event', name: 'Test Event', date: format(new Date(), 'MMMM dd, yyyy') };
+
+
     const ticketId = await createVendorApplication({
         name: validatedFields.data.vendorName,
         boothType: validatedFields.data.boothType,
+        eventId: nextEvent.id,
+        eventName: nextEvent.name,
+        eventDate: nextEvent.date,
     });
 
-    // Point to the new public verification page
-    const verificationUrl = new URL(`/verify-ticket?id=${ticketId}`, baseUrl).toString();
+    // Point to the new SECURE admin verification page
+    const verificationUrl = new URL(`/admin/verify-ticket?id=${ticketId}`, baseUrl).toString();
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(verificationUrl)}`;
     
     return {

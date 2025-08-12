@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CalendarPlus, Users, Handshake, PenSquare, UserCheck } from 'lucide-react';
+import { CalendarPlus, Users, Handshake, PenSquare, UserCheck, QrCode } from 'lucide-react';
 
 export default function AdminDashboardPage() {
   return (
@@ -86,6 +86,22 @@ export default function AdminDashboardPage() {
           <CardContent>
              <Button asChild>
                 <Link href="/admin/check-in-dashboard">View Dashboard</Link>
+            </Button>
+          </CardContent>
+        </Card>
+         <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+                <QrCode className="h-6 w-6" />
+                Test QR Codes
+            </CardTitle>
+            <CardDescription>
+                Test the end-to-end QR code generation and secure verification flow.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+             <Button asChild>
+                <Link href="/admin/qr-test">Test System</Link>
             </Button>
           </CardContent>
         </Card>
