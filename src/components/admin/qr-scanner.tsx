@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { QrReader } from 'react-qr-reader';
+import QrScannerComponent from 'react-qr-scanner';
 import { getVendorApplicationById } from '@/services/vendorApplications';
 import { checkInVendorAction } from '@/app/admin/check-in/actions';
 import { useToast } from '@/hooks/use-toast';
@@ -125,18 +125,18 @@ export function QrScanner() {
         <div className="flex flex-col items-center gap-4">
             <p className="text-muted-foreground">Point your camera at a vendor's QR code.</p>
             <div className="w-full max-w-sm rounded-lg overflow-hidden border">
-                <QrReader
-                    onResult={(result, error) => {
-                        if (!!result && !scannedData) {
-                            stopProcessing.current = true; // Stop further processing
-                            setScannedData(result.getText());
-                        }
-                        if (!!error) {
-                            // console.info(error);
+                <QrScannerComponent
+                    onScan={(result: any) => {
+                        if (result && !scannedData) {
+                            stopProcessing.current = true;
+                            setScannedData(result.text);
                         }
                     }}
-                    constraints={{ facingMode: 'environment' }}
-                    containerStyle={{ width: '100%' }}
+                    onError={(error: any) => {
+                        // console.info(error);
+                    }}
+                    constraints={{ video: { facingMode: 'environment' } }}
+                    style={{ width: '100%' }}
                 />
             </div>
         </div>
