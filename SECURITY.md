@@ -20,36 +20,49 @@ You would typically create a new page at `/admin/login` and use the Firebase SDK
 ```javascript
 // src/app/admin/login/page.tsx
 'use client';
-import { useState } from 'react';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { app } from '@/lib/firebase'; // Your firebase config
+import { useActionState } from 'react';
+import { loginAction } from './actions';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
+import { useFormStatus } from 'react-dom';
 
-function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+function SubmitButton() {
+    const { pending } = useFormStatus();
+    return <Button type="submit" disabled={pending}>Login</Button>
+}
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    const auth = getAuth(app);
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // Redirect to admin dashboard on success
-      window.location.href = '/admin';
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+export default function LoginPage() {
+  const [state, formAction] = useActionState(loginAction, { errors: {} });
 
   return (
-    <form onSubmit={handleLogin}>
-      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
-      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
-      <button type="submit">Login</button>
-      {error && <p>{error}</p>}
+    <form action={formAction}>
+      <div>
+        <Label htmlFor="name">Your Name</Label>
+        <Input type="text" id="name" name="name" required />
+      </div>
+      <div>
+        <Label htmlFor="email">Email</Label>
+        <Input type="email" id="email" name="email" required />
+      </div>
+      <div>
+        <Label htmlFor="password">Password</Label>
+        <Input type="password" id="password" name="password" required />
+      </div>
+      {state.errors?._form && (
+        <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Login Failed</AlertTitle>
+            <AlertDescription>{state.errors._form.join(', ')}</AlertDescription>
+        </Alert>
+      )}
+      <SubmitButton />
     </form>
   );
 }
+
 ```
 
 ### Step 2: Update Firestore Security Rules
@@ -81,6 +94,11 @@ service cloud.firestore {
     match /blogPosts/{postId} {
       allow read: if true;
       allow write: if request.auth != null; // ONLY allows logged-in users to write
+    }
+    
+    // Allow only authenticated users to create admin logs
+    match /adminLogs/{logId} {
+        allow read, write: if request.auth != null;
     }
   }
 }
