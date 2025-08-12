@@ -5,13 +5,13 @@ import { useActionState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { volunteerLoginAction } from './actions';
 import { useFormStatus } from 'react-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle, Loader2, UserCheck } from 'lucide-react';
-import { Logo } from '@/components/logo';
+import { AlertCircle, Loader2, UserCheck, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 
 function SubmitButton() {
     const { pending } = useFormStatus();
@@ -65,6 +65,11 @@ export default function VolunteerLoginPage() {
                     <SubmitButton />
                 </form>
             </CardContent>
+             <CardFooter>
+                 <Button variant="link" asChild className="mx-auto">
+                    <Link href="/"><ArrowLeft className="mr-2 h-4 w-4" /> Go back to main site</Link>
+                </Button>
+            </CardFooter>
         </Card>
     </div>
   );
