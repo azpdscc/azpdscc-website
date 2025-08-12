@@ -30,13 +30,6 @@ const nextConfig: NextConfig = {
       }
     ],
   },
-  env: {
-    RESEND_API_KEY: process.env.RESEND_API_KEY,
-  },
-  // Make the API key available to the client-side
-  publicRuntimeConfig: {
-    firebaseApiKey: process.env.FIREBASE_API_KEY,
-  }
 };
 
 export default nextConfig;
