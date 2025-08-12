@@ -21,7 +21,7 @@ export function RootLayoutClient({ children }: { children: ReactNode }) {
 
     // The AdminLayout handles its own header/footer and auth logic.
     if (isAdminPage) {
-        return <AdminLayout>{children}</AdminLayout>;
+        return <>{children}</>;
     }
 
     // The verification page is a standalone page with no shared layout.
