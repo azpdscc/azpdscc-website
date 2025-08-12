@@ -1,16 +1,16 @@
-// This is a placeholder file.
-// In the next step, I will prompt you to get your Firebase config object.
-// We will then populate this file with the necessary Firebase initialization code.
 
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore }from 'firebase/firestore';
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
 
 // IMPORTANT: This is a placeholder configuration.
 const firebaseConfig = {
   "projectId": "azpdscc-hub",
   "appId": "1:594549470017:web:4c36f8e414cc3dcbc067c0",
   "storageBucket": "azpdscc-hub.firebasestorage.app",
-  "apiKey": process.env.FIREBASE_API_KEY,
+  "apiKey": publicRuntimeConfig.firebaseApiKey,
   "authDomain": "azpdscc-hub.firebaseapp.com",
   "measurementId": "",
   "messagingSenderId": "594549470017"

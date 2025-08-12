@@ -23,11 +23,19 @@ const nextConfig: NextConfig = {
         hostname: 'pdscc-images-website-2025.s3.us-east-1.amazonaws.com',
         port: '',
         pathname: '/**',
+      },
+       {
+        protocol: 'https',
+        hostname: 'api.qrserver.com',
       }
     ],
   },
   env: {
     RESEND_API_KEY: process.env.RESEND_API_KEY,
+  },
+  // Make the API key available to the client-side
+  publicRuntimeConfig: {
+    firebaseApiKey: process.env.FIREBASE_API_KEY,
   }
 };
 
