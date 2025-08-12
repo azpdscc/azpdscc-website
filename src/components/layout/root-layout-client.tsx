@@ -7,20 +7,29 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { ConditionalTicker } from './conditional-ticker';
 import { Breadcrumbs } from './breadcrumbs';
+import AdminLayout from '@/app/admin/layout';
 
 /**
- * @deprecated This component is no longer in use and will be removed.
- * The logic has been moved to `root-layout-client.tsx`.
+ * This client component determines which layout to render based on the current URL path.
+ * It's used within the main RootLayout to handle conditional rendering of layouts.
  */
-export function ConditionalLayout({ children }: { children: ReactNode }) {
+export function RootLayoutClient({ children }: { children: ReactNode }) {
     const pathname = usePathname();
+    const isAdminPage = pathname.startsWith('/admin');
     const isVerifyPage = pathname.startsWith('/verify-ticket');
     const isRootPage = pathname === '/';
 
+    // The AdminLayout handles its own header/footer and auth logic.
+    if (isAdminPage) {
+        return <AdminLayout>{children}</AdminLayout>;
+    }
+
+    // The verification page is a standalone page with no shared layout.
     if (isVerifyPage) {
         return <>{children}</>;
     }
     
+    // This is the default public-facing layout.
     return (
         <div className="flex min-h-screen flex-col">
             <Header />
