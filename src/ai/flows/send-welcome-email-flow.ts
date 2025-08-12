@@ -10,6 +10,7 @@ import 'dotenv/config';
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 import { Resend } from 'resend';
+import { addSubscriber, isSubscribed } from '@/services/subscribers';
 
 // Input schema for the welcome email flow
 const WelcomeEmailInputSchema = z.object({
@@ -30,8 +31,6 @@ export type WelcomeEmailOutput = z.infer<typeof WelcomeEmailOutputSchema>;
  * @returns A promise that resolves to the flow's output.
  */
 export async function sendWelcomeEmail(input: WelcomeEmailInput): Promise<WelcomeEmailOutput> {
-  // In a real app, you would first save the email to a database or mailing list service.
-  // For this prototype, we will just send the welcome email directly.
   return sendWelcomeEmailFlow(input);
 }
 
@@ -65,16 +64,25 @@ const sendWelcomeEmailFlow = ai.defineFlow(
     }
 
     try {
+      // 1. Check if the user is already subscribed
+      const alreadySubscribed = await isSubscribed(input.email);
+      if (alreadySubscribed) {
+        return { success: true, message: "This email is already subscribed. Thank you!" };
+      }
+
+      // 2. Add the new subscriber to the database
+      await addSubscriber(input.email);
+      
       const resend = new Resend(resendApiKey);
 
-      // 1. Generate the welcome email body for the user
+      // 3. Generate the welcome email body for the user
       const { output: welcomeEmailBody } = await welcomeEmailPrompt({});
       if (!welcomeEmailBody) {
         throw new Error("AI welcome email generation failed.");
       }
       const welcomeEmailHtml = (welcomeEmailBody).replace(/\n/g, '<br>');
 
-      // 2. Send the welcome email to the user
+      // 4. Send the welcome email to the user
       await resend.emails.send({
         from: 'PDSCC Info <info@azpdscc.org>',
         to: input.email,
@@ -82,7 +90,7 @@ const sendWelcomeEmailFlow = ai.defineFlow(
         html: welcomeEmailHtml,
       });
 
-      // 3. Send a notification email to the admin
+      // 5. Send a notification email to the admin
       await resend.emails.send({
         from: 'Newsletter Bot <noreply@azpdscc.org>',
         to: 'admin@azpdscc.org',

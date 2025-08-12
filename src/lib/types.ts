@@ -134,3 +134,8 @@ export type GenerateBlogPostOutput = {
   excerpt: string;
   content: string;
 };
+
+export type Subscriber = {
+  email: string; // This will also be the document ID
+  subscribedAt: Timestamp;
+};
