@@ -41,8 +41,8 @@ export default function LoginPage() {
                         {state.errors?.name && <p className="text-destructive text-sm mt-1">{state.errors.name.join(', ')}</p>}
                     </div>
                     <div>
-                        <Label htmlFor="email">Email</Label>
-                        <Input type="email" id="email" name="email" required placeholder="admin@example.com"/>
+                        <Label htmlFor="email">Username</Label>
+                        <Input type="text" id="email" name="email" required placeholder="admin or booth@pdscc.org"/>
                          {state.errors?.email && <p className="text-destructive text-sm mt-1">{state.errors.email.join(', ')}</p>}
                     </div>
                     <div>

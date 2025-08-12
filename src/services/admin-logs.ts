@@ -12,7 +12,7 @@ const adminLogsCollectionRef = collection(db, 'adminLogs');
 interface AdminLogData {
     action: 'admin-login';
     userId: string;
-    email: string;
+    username: string; // This is the user's email address
     name: string; // Name of the person logging in
     timestamp: any;
 }
@@ -21,16 +21,16 @@ interface AdminLogData {
  * Creates a log entry for a successful admin login.
  * @param {object} logData - The data for the log entry.
  * @param {string} logData.userId - The Firebase Auth UID of the user.
- * @param {string} logData.email - The email of the user.
+ * @param {string} logData.username - The email/username of the user.
  * @param {string} logData.name - The name entered during login.
  * @returns {Promise<void>}
  */
-export async function createAdminLoginLog(logData: { userId: string; email: string; name: string; }): Promise<void> {
+export async function createAdminLoginLog(logData: { userId: string; username: string; name: string; }): Promise<void> {
     try {
         const logEntry: AdminLogData = {
             action: 'admin-login',
             userId: logData.userId,
-            email: logData.email,
+            username: logData.username,
             name: logData.name,
             timestamp: serverTimestamp(),
         };

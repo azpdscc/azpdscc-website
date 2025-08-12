@@ -18,7 +18,8 @@ export type LoginFormState = {
 
 const loginSchema = z.object({
     name: z.string().min(2, "Name is required."),
-    email: z.string().email("Please enter a valid email."),
+    // The form field is named 'email' but labeled 'Username'. It must be a valid email format.
+    email: z.string().email("The username must be a valid email address (e.g., booth@pdscc.org)."),
     password: z.string().min(6, "Password must be at least 6 characters."),
 });
 
@@ -50,7 +51,7 @@ export async function loginAction(
     // If login is successful, create a log entry.
     await createAdminLoginLog({
         userId: user.uid,
-        email: user.email!,
+        username: user.email!, // The email is the unique username
         name: name,
     });
 
@@ -61,7 +62,7 @@ export async function loginAction(
             case 'auth/user-not-found':
             case 'auth/wrong-password':
             case 'auth/invalid-credential':
-                errorMessage = "Invalid email or password. Please try again.";
+                errorMessage = "Invalid username or password. Please try again.";
                 break;
             default:
                 errorMessage = "An error occurred during login. Please try again later.";
