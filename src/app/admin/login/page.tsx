@@ -1,7 +1,10 @@
 
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { onAuthStateChanged, type User } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 import { loginAction } from './actions';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -23,7 +26,20 @@ function SubmitButton() {
 }
 
 export default function LoginPage() {
+  const router = useRouter();
   const [state, formAction] = useActionState(loginAction, { errors: {} });
+
+  // This effect will run on the client side to redirect if the user is already logged in.
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // If user is detected, redirect them to the admin dashboard.
+            router.push('/admin');
+        }
+    });
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, [router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-secondary">

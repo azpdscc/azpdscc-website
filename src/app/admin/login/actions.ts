@@ -5,7 +5,6 @@ import { z } from 'zod';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { createAdminLoginLog } from '@/services/admin-logs';
-import { redirect } from 'next/navigation';
 
 export type LoginFormState = {
   errors?: {
@@ -79,6 +78,7 @@ export async function loginAction(
     };
   }
 
-  // Redirect to the admin dashboard on successful login.
-  redirect('/admin');
+  // On successful login, we don't redirect here.
+  // The client-side layout will detect the auth state change and handle the redirect.
+  return {};
 }

@@ -20,48 +20,50 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const isVolunteerPage = pathname === '/admin/check-in';
 
   useEffect(() => {
-    // This layout is for Firebase admin users, not volunteers.
-    // Volunteers have their own session-based logic on their pages.
-    if (isAuthPage || isVolunteerPage) {
+    // The volunteer check-in page has its own session logic, so we ignore it here.
+    if (isVolunteerPage) {
       setLoading(false);
       return;
     }
     
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-      } else {
-        // If not logged in, and trying to access a protected page, redirect
-        router.push('/admin/login');
-      }
+      setUser(currentUser);
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [pathname, router]); // Re-run effect if path changes
+  }, [isVolunteerPage]);
 
-
-  if (isAuthPage || isVolunteerPage) {
-    return <main>{children}</main>;
-  }
 
   if (loading) {
     return (
         <div className="flex h-screen items-center justify-center">
             <Loader2 className="h-16 w-16 animate-spin text-primary" />
         </div>
-    )
+    );
+  }
+
+  // If we are on an auth-related page (login), let it render.
+  // The login page itself will handle redirecting if the user is already logged in.
+  if (isAuthPage) {
+    return <main>{children}</main>;
   }
   
+  if (isVolunteerPage) {
+    return <main>{children}</main>;
+  }
+
+  // If we are not on an auth page and there is no user, redirect to login.
   if (!user) {
-      // This state is hit briefly during the redirect, show loader to prevent flicker
-      return (
+    router.push('/admin/login');
+    return ( // Return a loader while redirecting
         <div className="flex h-screen items-center justify-center">
             <Loader2 className="h-16 w-16 animate-spin text-primary" />
         </div>
-      );
+    );
   }
   
+  // If we have a user and are not on an auth page, show the protected content.
   return (
     <div className="flex min-h-screen flex-col bg-secondary/50">
         <AdminHeader user={user} />
