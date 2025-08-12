@@ -72,13 +72,13 @@ export function Footer() {
                 <li>
                   <Link href="/admin" className="text-muted-foreground hover:text-primary flex items-center gap-1">
                       <Lock className="h-3 w-3" />
-                      Admin
+                      Admin Login
                   </Link>
                 </li>
                  <li>
-                  <Link href="/admin/check-in" className="text-muted-foreground hover:text-primary flex items-center gap-1">
+                  <Link href="/admin/volunteer-login" className="text-muted-foreground hover:text-primary flex items-center gap-1">
                       <UserCheck className="h-3 w-3" />
-                      Event Check-In
+                      Volunteer Login
                   </Link>
                 </li>
               </ul>

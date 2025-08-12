@@ -2,15 +2,14 @@
 /**
  * @fileoverview This file contains a simple list of volunteer email addresses
  * for role-based access control.
+ * This file is no longer in use as a simpler, hardcoded volunteer login system was implemented.
+ * It is kept for historical purposes but can be safely deleted.
  */
 
-// IMPORTANT: Add the email addresses of your trusted check-in staff to this array.
-// These users will ONLY be able to access the /admin/check-in page.
-// All other users who can log in will be treated as full administrators.
+// IMPORTANT: This list is no longer used for authentication.
+// The hardcoded credentials are now stored in environment variables.
 const volunteerEmails: string[] = [
-    'booth@pdscc.org',
-    // 'volunteer1@example.com',
-    // 'volunteer2@example.com',
+    // 'booth@pdscc.org',
 ];
 
 

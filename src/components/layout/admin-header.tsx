@@ -5,10 +5,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getAuth, signOut, type User } from 'firebase/auth';
 import { app } from '@/lib/firebase';
-import { isVolunteer } from '@/lib/volunteers';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
-import { Home, LayoutDashboard, LogOut, UserCheck } from 'lucide-react';
+import { Home, LayoutDashboard, LogOut } from 'lucide-react';
 
 interface AdminHeaderProps {
     user: User | null;
@@ -17,7 +16,6 @@ interface AdminHeaderProps {
 export function AdminHeader({ user }: AdminHeaderProps) {
   const router = useRouter();
   const auth = getAuth(app);
-  const userIsVolunteer = isVolunteer(user?.email);
 
   const handleLogout = async () => {
     try {
@@ -25,7 +23,6 @@ export function AdminHeader({ user }: AdminHeaderProps) {
       router.push('/admin/login');
     } catch (error) {
       console.error("Error signing out: ", error);
-      // In a real app, you might show an error toast here.
     }
   };
 
@@ -34,22 +31,12 @@ export function AdminHeader({ user }: AdminHeaderProps) {
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <Logo showText={false} />
           <nav className="flex items-center gap-4">
-            {!userIsVolunteer && (
                 <Button variant="outline" asChild>
                     <Link href="/admin">
                         <LayoutDashboard className="mr-2 h-4 w-4" />
                         Dashboard
                     </Link>
                 </Button>
-            )}
-            {userIsVolunteer && (
-                 <Button variant="outline" asChild>
-                    <Link href="/admin/check-in">
-                        <UserCheck className="mr-2 h-4 w-4" />
-                        Check-In Tool
-                    </Link>
-                </Button>
-            )}
             <Button variant="ghost" asChild>
                 <Link href="/">
                     <Home className="mr-2 h-4 w-4" />

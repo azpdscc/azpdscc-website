@@ -5,7 +5,6 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { getAuth, onAuthStateChanged, type User } from 'firebase/auth';
 import { app } from '@/lib/firebase';
-import { isVolunteer } from '@/lib/volunteers';
 
 import { Loader2 } from 'lucide-react';
 import { AdminHeader } from '@/components/layout/admin-header';
@@ -18,35 +17,31 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const auth = getAuth(app);
 
+  const isUnprotectedPage = pathname === '/admin/login' || pathname === '/admin/volunteer-login';
+
   useEffect(() => {
+    // This layout is for Firebase admin users, not volunteers.
+    // Volunteers have their own session-based logic on their pages.
+    if (pathname.startsWith('/admin/volunteer-login') || pathname === '/admin/check-in') {
+      setLoading(false);
+      return;
+    }
+    
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        setUser(currentUser);
-        
-        // Role-based redirect logic
-        const userIsVolunteer = isVolunteer(currentUser.email);
-        const isCheckInPage = pathname === '/admin/check-in';
-
-        // If a volunteer tries to access a non-check-in admin page, redirect them.
-        if(userIsVolunteer && !isCheckInPage) {
-            router.push('/admin/check-in');
-        }
-
-      } else {
-        setUser(null);
-        // If user is not logged in and not on the login page, redirect them.
-        if (pathname !== '/admin/login') {
-          router.push('/admin/login');
-        }
+      setUser(currentUser);
+      if (!currentUser && !isUnprotectedPage) {
+        router.push('/admin/login');
       }
       setLoading(false);
     });
 
-    // Cleanup subscription on unmount
     return () => unsubscribe();
-  }, [auth, router, pathname]);
+  }, [auth, router, pathname, isUnprotectedPage]);
 
-  // If we are loading the auth state, show a loading spinner.
+  if (pathname.startsWith('/admin/volunteer-login') || pathname === '/admin/check-in') {
+    return <main>{children}</main>;
+  }
+
   if (loading) {
     return (
         <div className="flex h-screen items-center justify-center">
@@ -55,16 +50,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     )
   }
   
-  // If the user is not authenticated and is trying to access a page other than login,
-  // this will render null while the redirect happens.
-  if (!user && pathname !== '/admin/login') {
+  if (!user && !isUnprotectedPage) {
       return null;
   }
   
-  // If the user IS authenticated but tries to go to the login page, redirect to admin dashboard.
   if (user && pathname === '/admin/login') {
-      const targetPath = isVolunteer(user.email) ? '/admin/check-in' : '/admin';
-      router.push(targetPath);
+      router.push('/admin');
       return (
          <div className="flex h-screen items-center justify-center">
             <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -72,12 +63,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       );
   }
 
-  // Render the admin layout only for logged-in users or the login page itself.
   return (
     <div className="flex min-h-screen flex-col bg-secondary/50">
-        {pathname !== '/admin/login' && <AdminHeader user={user} />}
+        {!isUnprotectedPage && <AdminHeader user={user} />}
         <main className="flex-grow">{children}</main>
-        {pathname !== '/admin/login' && <Footer />}
+        {!isUnprotectedPage && <Footer />}
     </div>
   );
 }
