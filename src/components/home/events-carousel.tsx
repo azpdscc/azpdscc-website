@@ -27,12 +27,10 @@ export function EventsCarousel({ events }: EventsCarouselProps) {
       onMouseEnter={plugin.current.stop}
       onMouseLeave={plugin.current.reset}
     >
-      <CarouselContent>
+      <CarouselContent className="-ml-4 items-stretch">
         {events.map((event) => (
-          <CarouselItem key={event.id} className="md:basis-1/2 lg:basis-1/3">
-            <div className="p-1">
-              <EventCard event={event} />
-            </div>
+          <CarouselItem key={event.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
+            <EventCard event={event} />
           </CarouselItem>
         ))}
       </CarouselContent>
