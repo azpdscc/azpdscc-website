@@ -56,6 +56,8 @@ export async function loginAction(
 
   } catch (error: any) {
     let errorMessage = "An unknown error occurred.";
+    let debugMessage = '';
+
     if (error.code) {
         switch (error.code) {
             case 'auth/user-not-found':
@@ -65,12 +67,16 @@ export async function loginAction(
                 break;
             default:
                 errorMessage = "An error occurred during login. Please try again later.";
+                debugMessage = `(Debug: ${error.message})`;
                 break;
         }
+    } else {
+        debugMessage = `(Debug: ${error.toString()})`;
     }
+
     return {
       errors: {
-        _form: [errorMessage],
+        _form: [errorMessage, debugMessage].filter(Boolean),
       },
     };
   }
