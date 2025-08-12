@@ -24,14 +24,17 @@ export function QrScanner() {
     useEffect(() => {
         const checkCameraPermission = async () => {
             try {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    throw new Error('Camera API not available in this browser.');
+                }
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 setHasCameraPermission(true);
                 // We need to stop the tracks to release the camera for the QrReader
                 stream.getTracks().forEach(track => track.stop());
             } catch (err) {
-                console.error("Camera permission denied:", err);
+                console.error("Camera permission error:", err);
                 setHasCameraPermission(false);
-                setError("Camera access is required to scan QR codes. Please enable camera permissions in your browser settings.");
+                setError("A camera is required to scan QR codes. This feature is intended for mobile devices. Please enable camera permissions in your browser settings if you have a camera.");
             }
         };
         checkCameraPermission();
@@ -92,6 +95,16 @@ export function QrScanner() {
         setError(null);
         stopProcessing.current = false;
     };
+    
+    const handleError = (err: any) => {
+        console.error(err);
+        if (err.name === 'NotAllowedError' || err.name === 'NotFoundError') {
+             setError("Camera access is required. Please enable permissions in your browser settings.");
+        } else {
+             setError("Could not start video source. Ensure you have a working camera connected and enabled.");
+        }
+        setHasCameraPermission(false);
+    }
 
     if (hasCameraPermission === null) {
         return <div className="flex items-center justify-center p-4 text-muted-foreground"><Loader2 className="mr-2 h-4 w-4 animate-spin" />Checking for camera permissions...</div>;
@@ -101,9 +114,9 @@ export function QrScanner() {
         return (
             <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Camera Access Denied</AlertTitle>
+                <AlertTitle>Camera Issue Detected</AlertTitle>
                 <AlertDescription>
-                    Camera access is required to scan QR codes. Please enable camera permissions in your browser settings for this site and refresh the page.
+                    {error || "A camera is required to scan QR codes. This feature is intended for mobile devices. Please enable camera permissions in your browser settings if you have a camera."}
                 </AlertDescription>
             </Alert>
         );
@@ -132,9 +145,7 @@ export function QrScanner() {
                             setScannedData(result.text);
                         }
                     }}
-                    onError={(error: any) => {
-                        // console.info(error);
-                    }}
+                    onError={handleError}
                     constraints={{ video: { facingMode: 'environment' } }}
                     style={{ width: '100%' }}
                 />
