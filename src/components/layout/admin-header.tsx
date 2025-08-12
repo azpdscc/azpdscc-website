@@ -2,11 +2,27 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { getAuth, signOut } from 'firebase/auth';
+import { app } from '@/lib/firebase';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
-import { Home, LayoutDashboard } from 'lucide-react';
+import { Home, LayoutDashboard, LogOut } from 'lucide-react';
 
 export function AdminHeader() {
+  const router = useRouter();
+  const auth = getAuth(app);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      router.push('/admin/login');
+    } catch (error) {
+      console.error("Error signing out: ", error);
+      // In a real app, you might show an error toast here.
+    }
+  };
+
   return (
       <header className="bg-background border-b sticky top-0 z-10">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -23,6 +39,10 @@ export function AdminHeader() {
                     <Home className="mr-2 h-4 w-4" />
                     View Main Site
                 </Link>
+            </Button>
+             <Button variant="destructive" onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
             </Button>
           </nav>
         </div>
