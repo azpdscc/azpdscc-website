@@ -16,36 +16,32 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const isUnprotectedPage = pathname === '/admin/login' || pathname === '/admin/volunteer-login';
+  const isAuthPage = pathname === '/admin/login' || pathname === '/admin/volunteer-login';
+  const isVolunteerPage = pathname === '/admin/check-in';
 
   useEffect(() => {
     // This layout is for Firebase admin users, not volunteers.
     // Volunteers have their own session-based logic on their pages.
-    if (pathname.startsWith('/admin/volunteer-login') || pathname === '/admin/check-in') {
+    if (isAuthPage || isVolunteerPage) {
       setLoading(false);
       return;
     }
     
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setLoading(true);
       if (currentUser) {
         setUser(currentUser);
       } else {
-        setUser(null);
+        // If not logged in, and trying to access a protected page, redirect
+        router.push('/admin/login');
       }
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [auth]);
+  }, [pathname, router]); // Re-run effect if path changes
 
-  useEffect(() => {
-    if (!loading && !user && !isUnprotectedPage) {
-        router.push('/admin/login');
-    }
-  }, [loading, user, isUnprotectedPage, router]);
 
-  if (pathname.startsWith('/admin/volunteer-login') || pathname === '/admin/check-in') {
+  if (isAuthPage || isVolunteerPage) {
     return <main>{children}</main>;
   }
 
@@ -57,7 +53,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     )
   }
   
-  if (!user && !isUnprotectedPage) {
+  if (!user) {
+      // This state is hit briefly during the redirect, show loader to prevent flicker
       return (
         <div className="flex h-screen items-center justify-center">
             <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -65,20 +62,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       );
   }
   
-  if (user && pathname === '/admin/login') {
-      router.push('/admin');
-      return (
-         <div className="flex h-screen items-center justify-center">
-            <Loader2 className="h-16 w-16 animate-spin text-primary" />
-        </div>
-      );
-  }
-
   return (
     <div className="flex min-h-screen flex-col bg-secondary/50">
-        {!isUnprotectedPage && <AdminHeader user={user} />}
+        <AdminHeader user={user} />
         <main className="flex-grow">{children}</main>
-        {!isUnprotectedPage && <Footer />}
+        <Footer />
     </div>
   );
 }

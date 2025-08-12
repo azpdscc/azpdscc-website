@@ -19,7 +19,7 @@ export type LoginFormState = {
 const loginSchema = z.object({
     name: z.string().min(2, "Name is required."),
     // The form field is named 'email' but labeled 'Username'. It must be a valid email format.
-    email: z.string().email("The username must be a valid email address (e.g., booth@pdscc.org)."),
+    email: z.string().email("The username must be a valid email address (e.g., admin@pdscc.org)."),
     password: z.string().min(6, "Password must be at least 6 characters."),
 });
 
@@ -60,8 +60,6 @@ export async function loginAction(
 
     if (error.code) {
         switch (error.code) {
-            case 'auth/user-not-found':
-            case 'auth/wrong-password':
             case 'auth/invalid-credential':
                 errorMessage = "Invalid username or password. Please try again.";
                 break;
