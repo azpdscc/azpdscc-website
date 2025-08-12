@@ -7,7 +7,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { ConditionalTicker } from './conditional-ticker';
 import { Breadcrumbs } from './breadcrumbs';
-import { AdminHeader } from './admin-header';
+import AdminLayout from '@/app/admin/layout';
 
 export function ConditionalLayout({ children }: { children: ReactNode }) {
     const pathname = usePathname();
@@ -17,15 +17,7 @@ export function ConditionalLayout({ children }: { children: ReactNode }) {
 
     // Special layouts for admin and verification pages
     if (isAdminPage) {
-        return (
-            <div className="flex min-h-screen flex-col bg-secondary/50">
-                <AdminHeader />
-                <main className="flex-grow">
-                    {children}
-                </main>
-                <Footer />
-            </div>
-        )
+        return <AdminLayout>{children}</AdminLayout>;
     }
 
     if (isVerifyPage) {
@@ -42,5 +34,4 @@ export function ConditionalLayout({ children }: { children: ReactNode }) {
             <Footer />
         </div>
     )
-
 }

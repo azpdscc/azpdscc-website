@@ -3,27 +3,17 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { getAuth, signOut, type User } from 'firebase/auth';
-import { app } from '@/lib/firebase';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Home, LayoutDashboard, LogOut } from 'lucide-react';
 
-interface AdminHeaderProps {
-    user: User | null;
-}
-
-export function AdminHeader({ user }: AdminHeaderProps) {
+export function AdminHeader() {
   const router = useRouter();
-  const auth = getAuth(app);
 
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      router.push('/admin/login');
-    } catch (error) {
-      console.error("Error signing out: ", error);
-    }
+  const handleLogout = () => {
+    // Clear the session storage flag and redirect to the login page.
+    sessionStorage.removeItem('admin-authenticated');
+    router.push('/admin/login');
   };
 
   return (
