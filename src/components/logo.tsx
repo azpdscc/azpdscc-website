@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
-export function Logo({ className }: { className?: string }) {
+export function Logo({ className, showText = true }: { className?: string; showText?: boolean }) {
   return (
     <Link href="/" className={cn("flex items-center gap-2", className)}>
        <Image 
@@ -12,9 +12,11 @@ export function Logo({ className }: { className?: string }) {
         width={40}
         height={40}
       />
-      <span className="font-headline font-bold text-2xl text-primary">
-        PDSCC
-      </span>
+      {showText && (
+        <span className="font-headline font-bold text-2xl text-primary">
+          PDSCC
+        </span>
+      )}
     </Link>
   );
 }

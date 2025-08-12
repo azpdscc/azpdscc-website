@@ -10,7 +10,7 @@ export function AdminHeader() {
   return (
       <header className="bg-background border-b sticky top-0 z-10">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Logo />
+          <Logo showText={false} />
           <nav className="flex items-center gap-4">
             <Button variant="outline" asChild>
                 <Link href="/admin">
