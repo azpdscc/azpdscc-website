@@ -28,6 +28,7 @@ export function VerifyTicketClient({ ticket, onCheckIn }: VerifyTicketClientProp
     const [isPending, startTransition] = useTransition();
     const [ticketStatus, setTicketStatus] = useState<TicketStatus>(TicketStatus.Valid);
     const [currentTicket, setCurrentTicket] = useState(ticket);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     // State to hold formatted dates, initialized to null or a placeholder
     const [formattedCheckedInAt, setFormattedCheckedInAt] = useState<string | null>(null);
@@ -36,8 +37,15 @@ export function VerifyTicketClient({ ticket, onCheckIn }: VerifyTicketClientProp
         // This effect runs only on the client, after hydration
         const eventDate = new Date(currentTicket.eventDate);
         
+        // NEW: Check if the user is a full admin. This allows bypassing date checks.
+        const adminLoggedIn = sessionStorage.getItem('admin-authenticated') === 'true';
+        setIsAdmin(adminLoggedIn);
+
         if (currentTicket.checkInStatus === 'checkedIn') {
             setTicketStatus(TicketStatus.AlreadyCheckedIn);
+        } else if (adminLoggedIn) {
+            // If the user is an admin, the ticket is always considered valid for check-in.
+            setTicketStatus(TicketStatus.Valid);
         } else if (isPast(eventDate) && !isToday(eventDate)) {
             setTicketStatus(TicketStatus.Expired);
         } else if (!isToday(eventDate) && !isPast(eventDate)) {
