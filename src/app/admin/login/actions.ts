@@ -2,8 +2,8 @@
 'use server';
 
 import { z } from 'zod';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { app } from '@/lib/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 import { createAdminLoginLog } from '@/services/admin-logs';
 import { redirect } from 'next/navigation';
 
@@ -42,7 +42,6 @@ export async function loginAction(
   }
 
   const { name, email, password } = validatedFields.data;
-  const auth = getAuth(app);
 
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);

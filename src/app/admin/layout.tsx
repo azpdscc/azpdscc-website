@@ -3,8 +3,8 @@
 
 import { useEffect, useState, type ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { getAuth, onAuthStateChanged, type User } from 'firebase/auth';
-import { app } from '@/lib/firebase';
+import { onAuthStateChanged, type User } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 import { Loader2 } from 'lucide-react';
 import { AdminHeader } from '@/components/layout/admin-header';
@@ -15,7 +15,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
-  const auth = getAuth(app);
 
   const isUnprotectedPage = pathname === '/admin/login' || pathname === '/admin/volunteer-login';
 
@@ -28,15 +27,23 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     }
     
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      if (!currentUser && !isUnprotectedPage) {
-        router.push('/admin/login');
+      setLoading(true);
+      if (currentUser) {
+        setUser(currentUser);
+      } else {
+        setUser(null);
       }
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [auth, router, pathname, isUnprotectedPage]);
+  }, [auth]);
+
+  useEffect(() => {
+    if (!loading && !user && !isUnprotectedPage) {
+        router.push('/admin/login');
+    }
+  }, [loading, user, isUnprotectedPage, router]);
 
   if (pathname.startsWith('/admin/volunteer-login') || pathname === '/admin/check-in') {
     return <main>{children}</main>;
@@ -51,7 +58,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }
   
   if (!user && !isUnprotectedPage) {
-      return null;
+      return (
+        <div className="flex h-screen items-center justify-center">
+            <Loader2 className="h-16 w-16 animate-spin text-primary" />
+        </div>
+      );
   }
   
   if (user && pathname === '/admin/login') {
