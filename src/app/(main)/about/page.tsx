@@ -31,7 +31,7 @@ export default function AboutPage() {
             Our Mission for the Phoenix Punjabi Indian Community
           </h1>
           <p className="mt-4 max-w-3xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
-            To celebrate and share the vibrant culture of North India through sports and festivals in the Phoenix community.
+            To celebrate and share the vibrant culture of North India through sports and festivals in the Phoenix Punjabi Indian community.
           </p>
         </div>
       </section>
