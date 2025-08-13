@@ -184,7 +184,7 @@ export default function Home() {
               </div>
             </div>
             <div className="w-full h-full">
-               <Image src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/Home+Page/_R1_4738.JPG" alt="A large, happy crowd at a PDSCC community gathering" data-ai-hint="PDSCC community gathering" width={600} height={400} className="rounded-lg shadow-xl w-full" />
+               <Image src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/Home+Page/_R1_4738.jpeg" alt="A large, happy crowd at a PDSCC community gathering" data-ai-hint="PDSCC community gathering" width={600} height={400} className="rounded-lg shadow-xl w-full" />
             </div>
           </div>
         </div>
