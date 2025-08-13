@@ -1,35 +1,127 @@
 
+'use client';
+
+import { useEffect, useState } from 'react';
 import type { Metadata } from 'next';
 import { PerformanceRegistrationForm } from '@/components/performers/registration-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { getEvents } from '@/services/events';
+import type { Event } from '@/lib/types';
+import { differenceInDays, format } from 'date-fns';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Loader2, CalendarClock, Info } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
-export const metadata: Metadata = {
-  title: 'Performance Registration | PDSCC Events',
-  description: 'Apply to perform at our next Arizona Punjabi Indian festival. Complete our registration form to be considered for a spot on our stage.',
-};
+// export const metadata: Metadata = {
+//   title: 'Performance Registration | PDSCC Events',
+//   description: 'Apply to perform at our next Arizona Punjabi Indian festival. Complete our registration form to be considered for a spot on our stage.',
+// };
 
 export default function PerformanceRegistrationPage() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [nextEvent, setNextEvent] = useState<Event | null>(null);
+  const [registrationOpen, setRegistrationOpen] = useState(false);
+
+  useEffect(() => {
+    const checkRegistrationWindow = async () => {
+      const allEvents = await getEvents();
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+
+      const upcomingEvents = allEvents
+        .filter(e => new Date(e.date) >= now && (e.name.includes('Vaisakhi') || e.name.includes('Teeyan')))
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      
+      const firstUpcomingEvent = upcomingEvents.length > 0 ? upcomingEvents[0] : null;
+      setNextEvent(firstUpcomingEvent);
+
+      if (firstUpcomingEvent) {
+        const eventDate = new Date(firstUpcomingEvent.date);
+        const days = differenceInDays(eventDate, now);
+        if (days <= 60) {
+          setRegistrationOpen(true);
+        }
+      }
+      setIsLoading(false);
+    };
+
+    checkRegistrationWindow();
+  }, []);
+
+  const getRegistrationOpenDate = () => {
+    if (!nextEvent) return '';
+    const eventDate = new Date(nextEvent.date);
+    const openDate = new Date(eventDate.setDate(eventDate.getDate() - 60));
+    return format(openDate, 'MMMM dd, yyyy');
+  };
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-12 flex justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-12">
       <section className="text-center mb-12">
         <h1 className="font-headline text-4xl md:text-5xl font-bold">Performance Registration</h1>
-        <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
-          Thank you for your interest in performing! Please complete the form below. Our cultural team will review all applications and contact selected performers.
-        </p>
+        {registrationOpen && nextEvent ? (
+            <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
+                Applications are now open for <strong>{nextEvent.name}</strong>. Please complete the form below. Our cultural team will review all applications and contact selected performers.
+            </p>
+        ) : (
+             <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
+                Thank you for your interest in performing! Please see registration status below.
+            </p>
+        )}
       </section>
       
       <div className="max-w-4xl mx-auto">
-        <Card className="shadow-xl">
-          <CardHeader>
-            <CardTitle className="font-headline text-3xl">Application Form</CardTitle>
-            <CardDescription>
-              Provide as much detail as possible to help our team with the selection process.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <PerformanceRegistrationForm />
-          </CardContent>
-        </Card>
+        {registrationOpen && nextEvent ? (
+          <Card className="shadow-xl">
+            <CardHeader>
+              <CardTitle className="font-headline text-3xl">Application Form</CardTitle>
+              <CardDescription>
+                Provide as much detail as possible to help our team with the selection process.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <PerformanceRegistrationForm />
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="shadow-xl">
+            <CardHeader>
+              <CardTitle className="font-headline text-3xl text-center">Registration is Currently Closed</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Alert>
+                <CalendarClock className="h-4 w-4" />
+                <AlertTitle className="font-bold">
+                  {nextEvent ? `Applications for ${nextEvent.name} are not open yet.` : `No upcoming events are currently scheduled.`}
+                </AlertTitle>
+                <AlertDescription>
+                  {nextEvent ? (
+                    <>
+                      Performance registration will open approximately 60 days before the event date, around <strong>{getRegistrationOpenDate()}</strong>. Please check back then!
+                    </>
+                  ) : (
+                    "Please check back later for information on future performance opportunities."
+                  )}
+                </AlertDescription>
+              </Alert>
+
+              <div className="text-center mt-6">
+                <Button asChild variant="secondary">
+                    <Link href="/contact">Contact Our Cultural Team</Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
