@@ -139,3 +139,18 @@ export type Subscriber = {
   email: string; // This will also be the document ID
   subscribedAt: Timestamp;
 };
+
+export type PerformanceApplication = {
+    id: string;
+    groupName: string;
+    contactName: string;
+    email: string;
+    phone: string;
+    event: string;
+    performanceType: string;
+    participants: number;
+    auditionLink: string;
+    specialRequests?: string;
+    status: 'Pending' | 'Approved' | 'Declined';
+    submittedAt: string; // ISO String
+}
