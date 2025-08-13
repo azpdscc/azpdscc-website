@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Logo } from '@/components/logo';
-import { Instagram, Twitter, Facebook, Mail, Youtube, Lock, HandHeart, UserCheck } from 'lucide-react';
+import { Instagram, Twitter, Facebook, Mail, Youtube, Lock, HandHeart, UserCheck, Mic } from 'lucide-react';
 import { SubscribeForm } from './subscribe-form';
 import { Button } from '../ui/button';
 
@@ -79,6 +79,12 @@ export function Footer() {
                   <Link href="/admin/volunteer-login" className="text-muted-foreground hover:text-primary flex items-center gap-1">
                       <UserCheck className="h-3 w-3" />
                       Volunteer Login
+                  </Link>
+                </li>
+                 <li>
+                  <Link href="/admin/performances-login" className="text-muted-foreground hover:text-primary flex items-center gap-1">
+                      <Mic className="h-3 w-3" />
+                      Performers Login
                   </Link>
                 </li>
               </ul>
