@@ -86,7 +86,7 @@ export default function LoginPage() {
 }
 ```
 
-The system now includes an authentication guard in `/src/app/admin/layout.tsx` that will automatically redirect any unauthenticated users trying to access a page under `/admin/` to the login page.
+The system now includes an authentication guard in `/src/app/admin/layout.tsx` that will automatically redirect any unauthenticated users trying to access a page under `/admin/` to the appropriate login page.
 
 ### Step 2: Update Firestore Security Rules
 
@@ -96,37 +96,47 @@ Replace the content of `firestore.rules` with the following:
 
 ```
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow public read access to everyone for collections that need to be public
+    
+    // --- PUBLIC-READ, ADMIN-WRITE COLLECTIONS ---
     match /events/{eventId} {
       allow read: if true;
-      allow write: if request.auth != null; // ONLY allows logged-in users to write
+      allow write: if request.auth != null;
     }
 
     match /teamMembers/{memberId} {
       allow read: if true;
-      allow write: if request.auth != null; // ONLY allows logged-in users to write
+      allow write: if request.auth != null;
     }
 
     match /sponsors/{sponsorId} {
       allow read: if true;
-      allow write: if request.auth != null; // ONLY allows logged-in users to write
+      allow write: if request.auth != null;
     }
 
     match /blogPosts/{postId} {
       allow read: if true;
-      allow write: if request.auth != null; // ONLY allows logged-in users to write
+      allow write: if request.auth != null;
     }
-    
-    // Allow only authenticated users to create admin logs
+
+    match /subscribers/{subscriberId} {
+      allow read: if request.auth != null;
+      allow write: if true; // Allow anyone to subscribe
+    }
+
+    // --- ADMIN-ONLY COLLECTIONS ---
     match /adminLogs/{logId} {
         allow read, write: if request.auth != null;
     }
 
-    // Allow only authenticated users to manage vendor applications
     match /vendorApplications/{appId} {
         allow read, write: if request.auth != null;
+    }
+
+    match /performanceRegistrations/{appId} {
+      allow read, write: if request.auth != null;
     }
   }
 }
