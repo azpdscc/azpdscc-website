@@ -42,6 +42,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
                 priority
                 className="z-0 object-cover object-[center_40%]"
               />
+              <div className="absolute inset-0 bg-black/30" />
               <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4">
                 <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold !text-primary-foreground drop-shadow-lg">
                   Connecting the Arizona Punjabi Indian Community &amp; AZ Desis
@@ -72,6 +73,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
                   priority
                   className="z-0 object-cover object-[center_40%]"
                 />
+                <div className="absolute inset-0 bg-black/30" />
                 <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4">
                   <p className="font-bold uppercase tracking-widest !text-primary-foreground drop-shadow-md">Coming Soon</p>
                   <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold !text-primary-foreground drop-shadow-lg">
