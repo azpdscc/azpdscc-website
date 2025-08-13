@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CalendarPlus, Users, Handshake, PenSquare, UserCheck, QrCode } from 'lucide-react';
+import { CalendarPlus, Users, Handshake, PenSquare, UserCheck, QrCode, Mic } from 'lucide-react';
 
 export default function AdminDashboardPage() {
   return (
@@ -70,6 +70,22 @@ export default function AdminDashboardPage() {
           <CardContent>
              <Button asChild>
                 <Link href="/admin/blog">Go to Blog</Link>
+            </Button>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+                <Mic className="h-6 w-6" />
+                Manage Performances
+            </CardTitle>
+            <CardDescription>
+                Review and manage performance applications for events.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+             <Button asChild>
+                <Link href="/admin/performances">Go to Performances</Link>
             </Button>
           </CardContent>
         </Card>

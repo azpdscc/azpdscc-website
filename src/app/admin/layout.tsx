@@ -15,6 +15,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   const isLoginPage = pathname === '/admin/login';
   const isVolunteerLoginPage = pathname === '/admin/volunteer-login';
+  const isPerformersLoginPage = pathname === '/admin/performances-login';
   const isVolunteerCheckInPage = pathname === '/admin/check-in';
 
   useEffect(() => {
@@ -26,10 +27,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         // The check-in page has its own separate session logic.
         authenticated = sessionStorage.getItem('volunteer-authenticated') === 'true';
         if (!authenticated) router.push('/admin/volunteer-login');
+    } else if (pathname.startsWith('/admin/performances') && !isPerformersLoginPage) {
+        // The performance dashboard also has its own session logic.
+        authenticated = sessionStorage.getItem('performance-authenticated') === 'true' || sessionStorage.getItem('admin-authenticated') === 'true';
+        if (!authenticated) router.push('/admin/performances-login');
     } else {
         // All other admin pages use the main admin session.
         authenticated = sessionStorage.getItem('admin-authenticated') === 'true';
-        if (!authenticated && !isLoginPage && !isVolunteerLoginPage) {
+        if (!authenticated && !isLoginPage && !isVolunteerLoginPage && !isPerformersLoginPage) {
             router.push('/admin/login');
         }
     }
@@ -37,7 +42,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     setIsAuthenticated(authenticated);
     setLoading(false);
 
-  }, [pathname, router, isLoginPage, isVolunteerLoginPage, isVolunteerCheckInPage]);
+  }, [pathname, router, isLoginPage, isVolunteerLoginPage, isPerformersLoginPage, isVolunteerCheckInPage]);
 
 
   if (loading) {
@@ -49,7 +54,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }
 
   // If on a login page, just render the content without the main layout.
-  if (isLoginPage || isVolunteerLoginPage) {
+  if (isLoginPage || isVolunteerLoginPage || isPerformersLoginPage) {
       return <main>{children}</main>;
   }
 

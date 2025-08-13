@@ -84,7 +84,7 @@ export function Footer() {
                  <li>
                   <Link href="/admin/performances-login" className="text-muted-foreground hover:text-primary flex items-center gap-1">
                       <Mic className="h-3 w-3" />
-                      Performers Login
+                      Performers Admin
                   </Link>
                 </li>
               </ul>
