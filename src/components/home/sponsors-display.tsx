@@ -42,7 +42,7 @@ export function SponsorsDisplay({ sponsors }: SponsorsDisplayProps) {
             Our Valued Sponsors
           </h2>
           <p className="mt-4 max-w-3xl mx-auto text-lg text-muted-foreground">
-            We are grateful for the generous support of our sponsors who help make our events possible and support the Phoenix Indian community.
+            We are grateful for the generous support of our sponsors who help make our events possible and support the Phoenix Punjabi Indian community.
           </p>
         </div>
         <div className="mt-12 flex flex-wrap items-center justify-center gap-x-12 gap-y-8">

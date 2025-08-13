@@ -15,7 +15,7 @@ import { Label } from '@/components/ui/label';
 
 // export const metadata: Metadata = {
 //   title: 'Donate or Volunteer | Support the Phoenix Punjabi Indian Community',
-//   description: 'Support PDSCC by making a donation or volunteering your time. Your contribution helps us host Arizona Punjabi Indian festivals and support the AZ Punjabi India community.',
+//   description: 'Support PDSCC by making a donation or volunteering your time. Your contribution helps us host Arizona Punjabi Indian festivals and support the AZ Punjabi Indian community.',
 // };
 
 export default function DonatePage() {
@@ -31,7 +31,7 @@ export default function DonatePage() {
             Support the Phoenix Punjabi Indian Community
           </h1>
           <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
-            Your contribution empowers us to preserve culture, celebrate heritage, and strengthen the Phoenix Punjabi Indian community and AZ Punjabi India connections.
+            Your contribution empowers us to preserve culture, celebrate heritage, and strengthen the Phoenix Punjabi Indian community and AZ Punjabi Indian connections.
           </p>
         </div>
       </section>

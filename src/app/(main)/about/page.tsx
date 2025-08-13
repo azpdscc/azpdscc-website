@@ -12,7 +12,7 @@ import type { TeamMember } from '@/lib/types';
 
 // export const metadata: Metadata = {
 //   title: 'About PDSCC: Our Story & Mission for the Phoenix Punjabi Indian Community',
-//   description: 'Learn about the story, values, and team behind the Phoenix Desi Sports and Cultural Club (PDSCC), a non-profit organization dedicated to serving the AZ Punjabi India community and AZ Desis in Phoenix.',
+//   description: 'Learn about the story, values, and team behind the Phoenix Desi Sports and Cultural Club (PDSCC), a non-profit organization dedicated to serving the AZ Punjabi Indian community and AZ Desis in Phoenix.',
 // };
 
 export default function AboutPage() {
@@ -95,7 +95,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <h2 className="text-center font-headline text-3xl md:text-4xl font-bold">Meet Our Team</h2>
           <p className="text-center mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
-            We are a group of dedicated volunteers committed to serving the AZ Punjabi India community.
+            We are a group of dedicated volunteers committed to serving the AZ Punjabi Indian community.
           </p>
           <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
             {teamMembers.map((member) => (
