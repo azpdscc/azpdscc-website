@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, CalendarPlus, Users } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Vendor Opportunities for AZ India Events',
-  description: 'Become a vendor at Arizona Indian festivals. Find information on event-specific booths and join our vendor network for the Phoenix Indian community.',
+  title: 'Vendor Opportunities for AZ Punjabi India Events',
+  description: 'Become a vendor at Arizona Punjabi Indian festivals. Find information on event-specific booths and join our vendor network for the Phoenix Punjabi Indian community.',
 };
 
 export default function VendorsPage() {
@@ -16,9 +16,9 @@ export default function VendorsPage() {
       <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground bg-primary">
         <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20 bg-hero-pattern opacity-10" />
         <div className="relative z-10 p-4 container mx-auto">
-          <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">Vendor Booths for Arizona Indian Festivals</h1>
+          <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">Vendor Booths for Arizona Punjabi Indian Festivals</h1>
           <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
-            Showcase your business to the large and engaged Phoenix Indian community. We offer opportunities for event-specific vendor booths in Arizona and a general network for future AZ India events.
+            Showcase your business to the large and engaged Phoenix Punjabi Indian community. We offer opportunities for event-specific vendor booths in Arizona and a general network for future AZ Punjabi India events.
           </p>
         </div>
       </section>

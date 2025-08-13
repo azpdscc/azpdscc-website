@@ -13,8 +13,8 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 // export const metadata: Metadata = {
-//   title: 'Sponsor PDSCC | Partner with the Phoenix Indian Community',
-//   description: 'Become a sponsor of PDSCC and connect with the vibrant AZ India community. Explore our sponsorship packages and benefits for supporting Arizona Indian festivals.',
+//   title: 'Sponsor PDSCC | Partner with the Phoenix Punjabi Indian Community',
+//   description: 'Become a sponsor of PDSCC and connect with the vibrant AZ Punjabi India community. Explore our sponsorship packages and benefits for supporting Arizona Punjabi Indian festivals.',
 // };
 
 const sponsorshipTiers = [
@@ -88,7 +88,7 @@ export default function SponsorshipPage() {
             Partner with PDSCC
           </h1>
           <p className="mt-4 max-w-3xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
-            Align your brand with the heart of the Phoenix Indian community. Your support empowers cultural celebration and community connection.
+            Align your brand with the heart of the Phoenix Punjabi Indian community. Your support empowers cultural celebration and community connection.
           </p>
         </div>
       </section>

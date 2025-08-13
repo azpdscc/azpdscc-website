@@ -14,8 +14,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 
 // export const metadata: Metadata = {
-//   title: 'Donate or Volunteer | Support the Phoenix Indian Community',
-//   description: 'Support PDSCC by making a donation or volunteering your time. Your contribution helps us host Arizona Indian festivals and support the AZ India community.',
+//   title: 'Donate or Volunteer | Support the Phoenix Punjabi Indian Community',
+//   description: 'Support PDSCC by making a donation or volunteering your time. Your contribution helps us host Arizona Punjabi Indian festivals and support the AZ Punjabi India community.',
 // };
 
 export default function DonatePage() {
@@ -28,10 +28,10 @@ export default function DonatePage() {
         <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20 bg-hero-pattern opacity-10" />
         <div className="relative z-10 p-4 container mx-auto">
           <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">
-            Support the Phoenix Indian Community
+            Support the Phoenix Punjabi Indian Community
           </h1>
           <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
-            Your contribution empowers us to preserve culture, celebrate heritage, and strengthen the Phoenix Indian community and AZ India connections.
+            Your contribution empowers us to preserve culture, celebrate heritage, and strengthen the Phoenix Punjabi Indian community and AZ Punjabi India connections.
           </p>
         </div>
       </section>

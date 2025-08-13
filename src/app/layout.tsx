@@ -25,12 +25,12 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://www.azpdscc.org'),
   title: {
     template: '%s | PDSCC Hub',
-    default: 'PDSCC | Arizona Indian Community & Festivals Hub',
+    default: 'PDSCC | Arizona Punjabi Indian Community & Festivals Hub',
   },
-  description: "Your hub for Arizona Indian festivals, community events, and culture. Connect with the Phoenix Indian community, AZ Desis, and find vendor booths in Arizona.",
+  description: "Your hub for Arizona Punjabi Indian festivals, community events, and culture. Connect with the Phoenix Punjabi Indian community, AZ Desis, and find vendor booths in Arizona.",
   openGraph: {
-      title: 'PDSCC | Arizona Indian Community & Festivals Hub',
-      description: "Your hub for Arizona Indian festivals, community events, and culture.",
+      title: 'PDSCC | Arizona Punjabi Indian Community & Festivals Hub',
+      description: "Your hub for Arizona Punjabi Indian festivals, community events, and culture.",
       url: 'https://www.azpdscc.org',
       siteName: 'PDSCC Hub',
       images: [
@@ -46,8 +46,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PDSCC | Arizona Indian Community & Festivals Hub',
-    description: "Your hub for Arizona Indian festivals, community events, and culture.",
+    title: 'PDSCC | Arizona Punjabi Indian Community & Festivals Hub',
+    description: "Your hub for Arizona Punjabi Indian festivals, community events, and culture.",
     creator: '@azpdscc',
     images: ['https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/og-image.png'],
   },

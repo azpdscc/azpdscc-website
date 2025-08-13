@@ -39,7 +39,7 @@ const generateEventsFileFlow = ai.defineFlow(
   },
   async () => {
     const { output } = await ai.generate({
-      prompt: `You are an expert event planner for a community organization (PDSCC) that serves the Phoenix Indian community and AZ Desis. Your task is to generate a JSON data file containing a list of 6 realistic **past** events that the organization might have hosted between 2022 and 2024.
+      prompt: `You are an expert event planner for a community organization (PDSCC) that serves the Phoenix Punjabi Indian community and AZ Desis. Your task is to generate a JSON data file containing a list of 6 realistic **past** events that the organization might have hosted between 2022 and 2024.
 
       Instructions:
       1.  Create an array of 6 unique event objects.

@@ -30,15 +30,15 @@ import { Skeleton } from '@/components/ui/skeleton';
 //   if (!event) {
 //     return {
 //         title: 'Event Not Found | PDSCC Hub',
-//         description: 'The event you are looking for could not be found. Please check our main events page for upcoming Arizona Indian festivals.',
+//         description: 'The event you are looking for could not be found. Please check our main events page for upcoming Arizona Punjabi Indian festivals.',
 //     }
 //   }
 
 //   const previousImages = (await parent).openGraph?.images || [];
 
 //   return {
-//     title: `${event.name} | PDSCC Phoenix Indian Community`,
-//     description: `Get details for ${event.name}, a premier event for the AZ India community. Find date, time, location, and RSVP info for this top Arizona Indian festival.`,
+//     title: `${event.name} | PDSCC Phoenix Punjabi Indian Community`,
+//     description: `Get details for ${event.name}, a premier event for the AZ Punjabi India community. Find date, time, location, and RSVP info for this top Arizona Punjabi Indian festival.`,
 //     openGraph: {
 //       title: event.name,
 //       description: event.description,

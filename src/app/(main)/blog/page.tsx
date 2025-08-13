@@ -10,8 +10,8 @@ import { useEffect, useState } from 'react';
 import type { BlogPost } from '@/lib/types';
 
 // export const metadata: Metadata = {
-//   title: 'PDSCC Blog | Phoenix Indian Community Stories',
-//   description: 'Explore articles about Indian festivals, culture, food, and community stories from the PDSCC Hub for AZ Desis and the Phoenix Indian community.',
+//   title: 'PDSCC Blog | Phoenix Punjabi Indian Community Stories',
+//   description: 'Explore articles about Punjabi Indian festivals, culture, food, and community stories from the PDSCC Hub for AZ Desis and the Phoenix Punjabi Indian community.',
 // };
 
 export default function BlogPage() {
@@ -33,7 +33,7 @@ export default function BlogPage() {
             Our Community Blog
           </h1>
           <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
-            Stories, insights, and updates from the heart of the Phoenix Indian community.
+            Stories, insights, and updates from the heart of the Phoenix Punjabi Indian community.
           </p>
         </div>
       </section>

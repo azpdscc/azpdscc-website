@@ -2,8 +2,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Upcoming Arizona Indian Festivals & Events',
-  description: 'Discover and search for upcoming Arizona Indian festivals, food fairs, and cultural events for the Phoenix Indian community and AZ Desis.',
+  title: 'Upcoming Arizona Punjabi Indian Festivals & Events',
+  description: 'Discover and search for upcoming Arizona Punjabi Indian festivals, food fairs, and cultural events for the Phoenix Punjabi Indian community and AZ Desis.',
 };
 
 export default function EventsLayout({

@@ -4,8 +4,8 @@ import { ApplicationForm } from '@/components/vendors/application-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export const metadata: Metadata = {
-  title: 'Apply for Vendor Booths at Arizona Indian Festivals',
-  description: 'Apply for a vendor booth at upcoming Arizona Indian festivals. Showcase your products to the Phoenix Indian community by completing our simple application.',
+  title: 'Apply for Vendor Booths at Arizona Punjabi Indian Festivals',
+  description: 'Apply for a vendor booth at upcoming Arizona Punjabi Indian festivals. Showcase your products to the Phoenix Punjabi Indian community by completing our simple application.',
 };
 
 export default function VendorApplyPage() {
@@ -14,7 +14,7 @@ export default function VendorApplyPage() {
       <section className="text-center mb-12">
         <h1 className="font-headline text-4xl md:text-5xl font-bold">Apply for Vendor Booths at Arizona Events</h1>
         <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
-          Join our vibrant Arizona Indian festivals and showcase your products to thousands of attendees from the Phoenix Indian community. Please complete the form below to apply for a vendor booth at one of our upcoming events.
+          Join our vibrant Arizona Punjabi Indian festivals and showcase your products to thousands of attendees from the Phoenix Punjabi Indian community. Please complete the form below to apply for a vendor booth at one of our upcoming events.
         </p>
       </section>
       

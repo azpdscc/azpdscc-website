@@ -5,8 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { HandHeart } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Volunteer with AZPDSCC | Phoenix Indian Community',
-  description: 'Join our team of dedicated volunteers! Help us organize and run Arizona Indian festivals and support the AZ India community. Sign up today.',
+  title: 'Volunteer with AZPDSCC | Phoenix Punjabi Indian Community',
+  description: 'Join our team of dedicated volunteers! Help us organize and run Arizona Punjabi Indian festivals and support the AZ Punjabi India community. Sign up today.',
 };
 
 export default function VolunteerPage() {

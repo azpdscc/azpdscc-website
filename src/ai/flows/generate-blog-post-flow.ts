@@ -63,7 +63,7 @@ const writingPrompt = ai.definePrompt({
   name: 'blogPostWritingPrompt',
   input: { schema: GenerateBlogPostInputSchema },
   output: { schema: GenerateBlogPostOutputSchema },
-  prompt: `You are an expert content creator for PDSCC (Phoenix Desi Sports and Cultural Club), a non-profit organization that serves the Phoenix Indian community and AZ Desis.
+  prompt: `You are an expert content creator for PDSCC (Phoenix Desi Sports and Cultural Club), a non-profit organization that serves the Phoenix Punjabi Indian community and AZ Desis.
 
 Your task is to write a complete, engaging, and SEO-friendly blog post based on the provided topic. Use your general knowledge to create the content.
 
@@ -71,7 +71,7 @@ Your task is to write a complete, engaging, and SEO-friendly blog post based on 
 
 **Instructions:**
 1.  **Tone**: The tone must be warm, welcoming, informative, and community-focused.
-2.  **Keywords**: Naturally incorporate the following keywords throughout the post where relevant: "PDSCC", "Phoenix Indian community", "AZ Desis", "Arizona Indian festivals". This is crucial for SEO.
+2.  **Keywords**: Naturally incorporate the following keywords throughout the post where relevant: "PDSCC", "Phoenix Punjabi Indian community", "AZ Desis", "Arizona Punjabi Indian festivals". This is crucial for SEO.
 3.  **Title**: Create a catchy title (max 70 characters) based on the topic.
 4.  **Slug**: Generate a URL-friendly slug from the title.
 5.  **Excerpt**: Write a concise summary (max 160 characters).

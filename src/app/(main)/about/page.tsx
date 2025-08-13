@@ -11,8 +11,8 @@ import { useEffect, useState } from 'react';
 import type { TeamMember } from '@/lib/types';
 
 // export const metadata: Metadata = {
-//   title: 'About PDSCC: Our Story & Mission for the Phoenix Indian Community',
-//   description: 'Learn about the story, values, and team behind the Phoenix Desi Sports and Cultural Club (PDSCC), a non-profit organization dedicated to serving the AZ India community and AZ Desis in Phoenix.',
+//   title: 'About PDSCC: Our Story & Mission for the Phoenix Punjabi Indian Community',
+//   description: 'Learn about the story, values, and team behind the Phoenix Desi Sports and Cultural Club (PDSCC), a non-profit organization dedicated to serving the AZ Punjabi India community and AZ Desis in Phoenix.',
 // };
 
 export default function AboutPage() {
@@ -28,7 +28,7 @@ export default function AboutPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20 bg-hero-pattern opacity-10" />
         <div className="relative z-10 p-4 container mx-auto">
           <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">
-            Our Mission for the Phoenix Indian Community
+            Our Mission for the Phoenix Punjabi Indian Community
           </h1>
           <p className="mt-4 max-w-3xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
             To celebrate and share the vibrant culture of North India through sports and festivals in the Phoenix community.
@@ -42,10 +42,10 @@ export default function AboutPage() {
             <div>
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">Our Story: A Home for AZ Desis</h2>
               <p className="mt-4 text-lg text-muted-foreground">
-                The Phoenix Desi Sports and Cultural Club (PDSCC) was founded in 2010 by a group of passionate individuals who wanted to create a home away from home for the Phoenix Indian community and AZ Desis.
+                The Phoenix Desi Sports and Cultural Club (PDSCC) was founded in 2010 by a group of passionate individuals who wanted to create a home away from home for the Phoenix Punjabi Indian community and AZ Desis.
               </p>
               <p className="mt-4 text-lg text-muted-foreground">
-                What started as small gatherings has grown into a vibrant non-profit organization that hosts some of the largest <Link href="/events" className="text-primary hover:underline">Arizona Indian festivals</Link> in the state.
+                What started as small gatherings has grown into a vibrant non-profit organization that hosts some of the largest <Link href="/events" className="text-primary hover:underline">Arizona Punjabi Indian festivals</Link> in the state.
               </p>
             </div>
             <div className="w-full h-full">
@@ -95,7 +95,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <h2 className="text-center font-headline text-3xl md:text-4xl font-bold">Meet Our Team</h2>
           <p className="text-center mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
-            We are a group of dedicated volunteers committed to serving the AZ India community.
+            We are a group of dedicated volunteers committed to serving the AZ Punjabi India community.
           </p>
           <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
             {teamMembers.map((member) => (
@@ -118,7 +118,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <h2 className="font-headline text-3xl md:text-4xl font-bold">Get Involved</h2>
           <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
-            Inspired by our story? There are many ways to support our mission and the Phoenix Indian community. Explore our upcoming events or consider making a donation.
+            Inspired by our story? There are many ways to support our mission and the Phoenix Punjabi Indian community. Explore our upcoming events or consider making a donation.
           </p>
           <div className="mt-8 flex flex-wrap gap-4 justify-center">
             <Button asChild size="lg">

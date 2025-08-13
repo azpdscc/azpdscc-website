@@ -76,10 +76,10 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="text-center">
             <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">
-              Welcome to the Hub for AZ Indians
+              Welcome to the Hub for AZ Punjabi Indians
             </h2>
             <p className="mt-4 max-w-3xl mx-auto text-lg text-muted-foreground">
-              We are a <Link href="/about" className="text-primary hover:underline">non-profit organization</Link> dedicated to preserving and promoting Indian culture for the Phoenix Indian community. We bring AZ Indians together through vibrant festivals and events across Arizona.
+              We are a <Link href="/about" className="text-primary hover:underline">non-profit organization</Link> dedicated to preserving and promoting Punjabi Indian culture for the Phoenix Punjabi Indian community. We bring AZ Punjabi Indians together through vibrant festivals and events across Arizona.
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -94,7 +94,7 @@ export default function Home() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Experience the color, music, and joy of traditional Indian festivals right here in Arizona.
+                  Experience the color, music, and joy of traditional Punjabi Indian festivals right here in Arizona.
                 </p>
               </CardContent>
             </Card>
@@ -154,9 +154,9 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">Our Impact in the Phoenix Indian Community</h2>
+              <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">Our Impact in the Phoenix Punjabi Indian Community</h2>
               <p className="mt-4 text-muted-foreground">
-                We are proud of the Phoenix Indian community we've built and the positive impact we've made. Our events bring the AZ India community together, support local artisans, and create lasting memories.
+                We are proud of the Phoenix Punjabi Indian community we've built and the positive impact we've made. Our events bring the AZ Punjabi India community together, support local artisans, and create lasting memories.
               </p>
               <div className="mt-6">
                 <Button asChild>

@@ -4,15 +4,15 @@ import { GeneralRegistrationForm } from '@/components/vendors/general-registrati
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export const metadata: Metadata = {
-  title: 'Join Our AZ India Vendor Network',
-  description: 'Join our AZ India vendor network by registering your business. Get priority access to vendor booths at Arizona festivals and connect with AZ Desis.',
+  title: 'Join Our AZ Punjabi India Vendor Network',
+  description: 'Join our AZ Punjabi India vendor network by registering your business. Get priority access to vendor booths at Arizona festivals and connect with AZ Desis.',
 };
 
 export default function VendorJoinPage() {
   return (
     <div className="container mx-auto px-4 py-12">
       <section className="text-center mb-12">
-        <h1 className="font-headline text-4xl md:text-5xl font-bold">Join Our AZ India Vendor Network</h1>
+        <h1 className="font-headline text-4xl md:text-5xl font-bold">Join Our AZ Punjabi India Vendor Network</h1>
         <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
           Register your business to get priority notifications for vendor booths at Arizona events. Become part of our growing community of talented vendors serving AZ Desis.
         </p>

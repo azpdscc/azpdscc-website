@@ -45,7 +45,7 @@ const prompt = ai.definePrompt({
   output: { schema: GenerateEventDescriptionsOutputSchema },
   prompt: `You are an expert event marketer for a community organization (PDSCC). Your task is to write compelling descriptions for an event based on its name.
 
-      The tone should be vibrant, welcoming, and community-focused. The descriptions should appeal to the Phoenix Indian community and AZ Desis.
+      The tone should be vibrant, welcoming, and community-focused. The descriptions should appeal to the Phoenix Punjabi Indian community and AZ Desis.
 
       Event Name: "{{{prompt}}}"
 
