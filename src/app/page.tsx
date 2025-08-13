@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -9,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { HolidayBanner } from '@/components/holiday-banner';
 import { getEvents } from '@/services/events';
 import { getSponsors } from '@/services/sponsors';
-import { ArrowRight, Landmark, PartyPopper, Users } from 'lucide-react';
+import { ArrowRight, PartyPopper, Users, BookOpen } from 'lucide-react';
 import { PastEventBanner } from '@/components/past-event-banner';
 import { HeroCarousel } from '@/components/home/hero-carousel';
 import { EventsCarousel } from '@/components/home/events-carousel';
@@ -117,7 +116,7 @@ export default function Home() {
             <Card className="text-center shadow-lg bg-card">
               <CardHeader>
                 <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit">
-                  <Landmark className="h-8 w-8 text-primary" strokeWidth={1.5} />
+                  <BookOpen className="h-8 w-8 text-primary" strokeWidth={1.5} />
                 </div>
                 <CardTitle className="font-headline mt-4">
                   <Link href="/about" className="hover:underline">Cultural Preservation</Link>
