@@ -32,7 +32,7 @@ export function HolidayBanner() {
           className="container mx-auto px-4 -mt-12 mb-12 z-20 relative"
         >
           <Card
-            className="bg-gradient-to-r from-primary/80 to-accent/90 text-primary-foreground border-2 border-yellow-500/50 shadow-2xl"
+            className="bg-gradient-to-r from-primary to-accent text-primary-foreground border-2 border-yellow-500/50 shadow-2xl"
           >
             <CardContent className="p-4 flex items-center justify-center gap-4 text-center">
               <currentHoliday.icon className="h-8 w-8 text-primary-foreground flex-shrink-0" strokeWidth={1.5} />
