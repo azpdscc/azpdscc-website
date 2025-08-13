@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -101,6 +100,7 @@ export function Footer() {
           </div>
           <div className="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">
             <p>&copy; {new Date().getFullYear()} AZPDSCC.org. All rights reserved.</p>
+            <p className="mt-2">Web Development by Kulraj Singh</p>
           </div>
         </div>
       </div>
