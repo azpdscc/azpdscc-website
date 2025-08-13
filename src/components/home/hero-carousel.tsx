@@ -40,7 +40,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
                 fill
                 sizes="100vw"
                 priority
-                className="z-0 object-cover"
+                className="z-0 object-cover object-top"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
               <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4">
@@ -71,7 +71,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
                   fill
                   sizes="100vw"
                   priority
-                  className="z-0 object-cover"
+                  className="z-0 object-cover object-top"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                 <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4">
