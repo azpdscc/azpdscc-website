@@ -23,7 +23,7 @@ export const events: Event[] = [
     "time": "3:00 PM - 9:00 PM",
     "locationName": "Phoenix Convention Center",
     "locationAddress": "100 N 3rd St, Phoenix, AZ 85004",
-    "image": "https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/placeholder-2.png",
+    "image": "https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/events/vaisakhi-2024-optimized.jpg",
     "description": "Celebrate the harvest festival with vibrant music, dance, and food.",
     "fullDescription": "Vaisakhi Mela is back! Get ready for a day filled with high-energy Bhangra and Gidda performances, live music from famous Punjabi artists, and a wide variety of food stalls. It's a celebration of community, harvest, and our rich heritage.",
     "category": "Music"
@@ -75,7 +75,7 @@ export const events: Event[] = [
     "time": "11:00 AM - 4:00 PM",
     "locationName": "Tempe Beach Park",
     "locationAddress": "80 W Rio Salado Pkwy, Tempe, AZ 85281",
-    "image": "https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/placeholder-6.png",
+    "image": "https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/events/holi-2023-optimized.jpg",
     "description": "A vibrant and joyous celebration of spring with colors, music, and fun.",
     "fullDescription": "Experience the ultimate festival of colors! Join us for a day of fun where you can play with vibrant colors, dance to live DJ music, and enjoy delicious food. Holi is a celebration of love, friendship, and the arrival of spring.",
     "category": "Cultural"
