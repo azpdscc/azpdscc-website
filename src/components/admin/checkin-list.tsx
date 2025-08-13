@@ -4,8 +4,7 @@
 import { useEffect, useState, useTransition } from 'react';
 import { format } from 'date-fns';
 import type { VendorApplication } from '@/lib/types';
-import { getVendorApplications } from '@/services/vendorApplications';
-import { checkInVendorAction } from '@/app/admin/check-in/actions';
+import { getVendorApplicationsAction, checkInVendorAction } from '@/app/admin/check-in/actions';
 import { useToast } from '@/hooks/use-toast';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -38,14 +37,18 @@ export function CheckInList() {
 
     const fetchApplications = (selectVendorId?: string) => {
         setIsLoading(true);
-        getVendorApplications()
-            .then(apps => {
-                setApplications(apps);
-                if (selectVendorId) {
-                    const vendorToSelect = apps.find(app => app.id === selectVendorId);
-                    if (vendorToSelect) {
-                        setSelectedVendor(vendorToSelect);
+        getVendorApplicationsAction()
+            .then(result => {
+                if (result.success && result.data) {
+                    setApplications(result.data);
+                     if (selectVendorId) {
+                        const vendorToSelect = result.data.find(app => app.id === selectVendorId);
+                        if (vendorToSelect) {
+                            setSelectedVendor(vendorToSelect);
+                        }
                     }
+                } else {
+                    toast({ variant: 'destructive', title: 'Error', description: result.message });
                 }
             })
             .finally(() => setIsLoading(false));
