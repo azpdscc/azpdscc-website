@@ -78,7 +78,7 @@ export function Footer() {
                  <li>
                   <Link href="/admin/volunteer-login" className="text-muted-foreground hover:text-primary flex items-center gap-1">
                       <UserCheck className="h-3 w-3" />
-                      Volunteer Login
+                      Vendor Check-in Login
                   </Link>
                 </li>
                  <li>
