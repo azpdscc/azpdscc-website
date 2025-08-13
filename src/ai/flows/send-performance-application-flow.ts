@@ -23,7 +23,7 @@ const PerformanceApplicationInputSchema = z.object({
   event: z.string().describe("The event they are applying for (e.g., 'Vaisakhi Mela')."),
   performanceType: z.string().describe("The type of performance (e.g., 'Bhangra', 'Singing')."),
   participants: z.number().int().positive().describe("The number of participants in the performance."),
-  auditionLink: z.string().url().describe("A URL to the performer's audition video."),
+  auditionLink: z.string().url().optional().describe("An optional URL to the performer's audition video."),
   specialRequests: z.string().optional().describe("Any special requests or technical needs."),
 });
 export type PerformanceApplicationInput = z.infer<typeof PerformanceApplicationInputSchema>;
@@ -118,7 +118,7 @@ Performance Type: ${input.performanceType}
 Number of Participants: ${input.participants}
 
 Audition Link:
-${input.auditionLink}
+${input.auditionLink || 'Not provided'}
 
 Special Requests:
 ${input.specialRequests || 'None'}

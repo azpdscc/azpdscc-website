@@ -29,7 +29,7 @@ const formSchema = z.object({
     required_error: "Please select a performance type.",
   }),
   participants: z.string().refine(val => !isNaN(parseInt(val)) && parseInt(val) > 0, { message: "Please enter a valid number of participants." }),
-  auditionLink: z.string().url("Please provide a valid URL (e.g., YouTube, Google Drive)."),
+  auditionLink: z.string().url("Please provide a valid URL (e.g., YouTube, Google Drive).").optional().or(z.literal('')),
   specialRequests: z.string().max(500, "Message cannot exceed 500 characters.").optional(),
 });
 
@@ -144,7 +144,7 @@ export function PerformanceRegistrationForm() {
             )} />
 
              <FormField name="auditionLink" control={form.control} render={({ field }) => (
-                <FormItem><FormLabel>Audition Video Link</FormLabel><FormControl><Input placeholder="https://youtube.com/watch?v=..." {...field} /></FormControl><FormDescription>Please provide a link to a recent performance or rehearsal. This is required.</FormDescription><FormMessage /></FormItem>
+                <FormItem><FormLabel>Audition Video Link (Optional)</FormLabel><FormControl><Input placeholder="https://youtube.com/watch?v=..." {...field} /></FormControl><FormDescription>Please provide a link to a recent performance or rehearsal if you have one.</FormDescription><FormMessage /></FormItem>
             )} />
 
             <FormField name="specialRequests" control={form.control} render={({ field }) => (
