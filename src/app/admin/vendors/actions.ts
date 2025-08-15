@@ -40,7 +40,7 @@ const boothPrices: { [key: string]: number } = {
     '10x20-our': 650,
 };
 
-const formSchema = z.object({
+const VendorApplicationInputSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   organization: z.string().optional(),
   email: z.string().email(),
@@ -60,7 +60,7 @@ export async function vendorApplicationAction(
     formData: FormData
 ): Promise<VendorApplicationState> {
     
-    const validatedFields = formSchema.safeParse({
+    const validatedFields = VendorApplicationInputSchema.safeParse({
         name: formData.get('name'),
         organization: formData.get('organization'),
         email: formData.get('email'),

@@ -31,21 +31,7 @@ const VendorApplicationTicketSchema = z.object({
 
 // This is the public-facing schema for the form submission. `eventName` is optional here
 // because it's retrieved on the server.
-export const VendorApplicationInputSchema = z.object({
-  id: z.string().optional(),
-  name: z.string().describe("The full name of the contact person."),
-  organization: z.string().optional().describe("The name of the vendor's organization."),
-  email: z.string().email().describe("The vendor's email address."),
-  phone: z.string().describe("The vendor's phone number."),
-  boothType: z.string().describe("The type of booth selected, e.g., '10x10 Booth (Our Canopy) - $350'"),
-  totalPrice: z.number().describe("The total price for the selected booth."),
-  productDescription: z.string().describe("The description of products/services offered."),
-  zelleSenderName: z.string().describe("The name on the Zelle account used for payment."),
-  zelleDateSent: z.string().describe("The date the Zelle payment was sent."),
-  paymentConfirmed: z.boolean().optional().describe("Whether the vendor confirmed they sent the payment."),
-  eventName: z.string().optional(),
-});
-export type VendorApplicationInput = z.infer<typeof VendorApplicationInputSchema>;
+export type VendorApplicationInput = z.infer<typeof VendorApplicationTicketSchema>;
 
 
 // Output schema for the flow
@@ -168,7 +154,7 @@ const vendorReceiptEmailPrompt = ai.definePrompt({
 const sendVendorReceiptFlow = ai.defineFlow(
   {
     name: 'sendVendorReceiptFlow',
-    inputSchema: VendorApplicationInputSchema,
+    inputSchema: z.any(),
     outputSchema: VendorApplicationOutputSchema,
   },
   async (input) => {
