@@ -1,4 +1,3 @@
-
 rules_version = '2';
 
 service cloud.firestore {
@@ -27,24 +26,24 @@ service cloud.firestore {
 
     match /subscribers/{subscriberId} {
       allow read: if request.auth != null;
-      allow create: if true; 
+      allow create: if true;
+      allow update, delete: if request.auth != null;
     }
 
-    // --- ADMIN-ONLY COLLECTIONS ---
+    // --- ADMIN-ONLY COLLECTIONS (some with public create) ---
     match /adminLogs/{logId} {
         allow read, write: if request.auth != null;
     }
 
     match /vendorApplications/{appId} {
-      allow read: if true;
-      allow create: if true;
-      allow update, delete: if request.auth != null;
+        allow read, update: if true; // Allow admin panel to read and update
+        allow create: if true; // Allow public to submit the form
+        allow delete: if request.auth != null;
     }
 
     match /performanceRegistrations/{appId} {
-      allow read: if request.auth != null;
-      allow create: if true;
-      allow update, delete: if request.auth != null;
+      allow create: if true; // Allow public to submit the form
+      allow read, update, delete: if request.auth != null;
     }
   }
 }
