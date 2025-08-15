@@ -20,7 +20,7 @@ const VendorApplicationTicketSchema = z.object({
   email: z.string().email().describe("The vendor's email address."),
   phone: z.string().describe("The vendor's phone number."),
   boothType: z.string().describe("The type of booth selected, e.g., '10x10 Booth (Our Canopy) - $350'"),
-  totalPrice: z.number().describe("The total price for the selected booth."),
+  totalPrice: z.string().describe("The total price for the selected booth."),
   productDescription: z.string().describe("The description of products/services offered."),
   zelleSenderName: z.string().describe("The name on the Zelle account used for payment."),
   zelleDateSent: z.string().describe("The date the Zelle payment was sent."),

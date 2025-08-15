@@ -48,7 +48,7 @@ export type VendorApplicationFormData = {
   email: string;
   phone: string;
   boothType: string;
-  totalPrice: number;
+  totalPrice: string;
   productDescription: string;
   zelleSenderName: string;
   zelleDateSent: string;
@@ -67,7 +67,7 @@ export type VendorApplication = {
   email: string;
   phone: string;
   boothType: string;
-  totalPrice: number;
+  totalPrice: string;
   productDescription: string;
   zelleSenderName: string;
   zelleDateSent: string;

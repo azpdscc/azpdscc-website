@@ -4,7 +4,7 @@
 import { z } from 'zod';
 import { createVendorApplicationForReview } from '@/services/vendorApplications';
 import { sendVendorApplication, sendVendorApplicationReceipt } from '@/ai/flows/send-vendor-application-flow';
-import type { VendorApplicationFormData } from '@/lib/types';
+import type { VendorApplication, VendorApplicationFormData } from '@/lib/types';
 import { format } from 'date-fns';
 import { getEvents } from '@/services/events';
 import { revalidatePath } from 'next/cache';
@@ -101,7 +101,7 @@ export async function vendorApplicationAction(
             eventName: nextEvent.name,
             eventDate: nextEvent.date,
             boothType: boothOptions[boothTypeKey],
-            totalPrice: boothPrices[boothTypeKey],
+            totalPrice: String(boothPrices[boothTypeKey]),
             zelleDateSent: format(validatedFields.data.zelleDateSent, "PPP"),
         };
         
@@ -126,7 +126,7 @@ export async function vendorApplicationAction(
 }
 
 
-export async function verifyAndSendTicketAction(baseUrl: string, application: VendorApplicationFormData): Promise<{ success: boolean, message: string }> {
+export async function verifyAndSendTicketAction(baseUrl: string, application: VendorApplication): Promise<{ success: boolean, message: string }> {
     if (!baseUrl) {
         return { success: false, message: 'Could not determine the application URL. Cannot send ticket.' };
     }
@@ -137,7 +137,6 @@ export async function verifyAndSendTicketAction(baseUrl: string, application: Ve
     try {
         const verificationUrl = new URL(`/admin/check-in?ticketId=${application.id}`, baseUrl).toString();
         
-        // Pass the full application object, now including the QR code URL
         const applicationWithQr = {
             ...application,
             qrCodeUrl: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(verificationUrl)}`,

@@ -1,7 +1,7 @@
 
 'use client';
 import { useState, useEffect, useTransition } from 'react';
-import type { VendorApplication, VendorApplicationFormData } from '@/lib/types';
+import type { VendorApplication } from '@/lib/types';
 import { getVendorApplications } from '@/services/vendorApplications';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -24,7 +24,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
-function VerifyButton({ application, onVerify }: { application: VendorApplicationFormData, onVerify: (app: VendorApplicationFormData) => void }) {
+function VerifyButton({ application, onVerify }: { application: VendorApplication, onVerify: (app: VendorApplication) => void }) {
     const [isPending, startTransition] = useTransition();
 
     const handleVerify = () => {
@@ -79,7 +79,7 @@ export default function ManageVendorsPage() {
             .finally(() => setIsLoading(false));
     };
     
-    const handleVerifyAndSend = async (application: VendorApplicationFormData) => {
+    const handleVerifyAndSend = async (application: VendorApplication) => {
         if (!application.id) {
              toast({ variant: "destructive", title: "Error", description: "Application ID is missing." });
              return;
@@ -145,7 +145,7 @@ export default function ManageVendorsPage() {
                                             <div className="text-sm text-muted-foreground">Sent on: {app.zelleDateSent}</div>
                                         </TableCell>
                                         <TableCell className="text-right">
-                                            <VerifyButton application={app as VendorApplicationFormData} onVerify={handleVerifyAndSend} />
+                                            <VerifyButton application={app} onVerify={handleVerifyAndSend} />
                                         </TableCell>
                                     </TableRow>
                                 ))}
