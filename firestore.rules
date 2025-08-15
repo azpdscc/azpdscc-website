@@ -1,3 +1,4 @@
+
 rules_version = '2';
 
 service cloud.firestore {
@@ -26,25 +27,21 @@ service cloud.firestore {
 
     match /subscribers/{subscriberId} {
       allow read: if request.auth != null;
-      allow write: if true; // Allow anyone to subscribe
+      allow create: if true;
     }
 
-    // --- ADMIN-ONLY COLLECTIONS (except for creates) ---
+    // --- ADMIN-ONLY COLLECTIONS ---
     match /adminLogs/{logId} {
         allow read, write: if request.auth != null;
     }
 
     match /vendorApplications/{appId} {
-        // Allow anyone to create (submit) an application.
-        allow create: if true;
-        // Only allow admins to read, update, or delete applications.
-        allow read, update, delete: if request.auth != null;
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
     }
 
     match /performanceRegistrations/{appId} {
-      // Allow anyone to create (submit) an application.
       allow create: if true;
-      // Only allow admins to read, update, or delete applications.
       allow read, update, delete: if request.auth != null;
     }
   }
