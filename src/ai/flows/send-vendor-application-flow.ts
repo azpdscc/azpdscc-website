@@ -11,8 +11,9 @@ import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 import { Resend } from 'resend';
 
-// Add eventName to the input schema for the email prompt
-const VendorApplicationInputWithEventSchema = z.object({
+// This is the most complete schema, including the optional QR code and required eventName.
+// It is used for generating the final ticket email.
+const VendorApplicationTicketSchema = z.object({
   id: z.string().optional(),
   name: z.string().describe("The full name of the contact person."),
   organization: z.string().optional().describe("The name of the vendor's organization."),
@@ -28,8 +29,9 @@ const VendorApplicationInputWithEventSchema = z.object({
   eventName: z.string().describe("The name of the event the vendor is applying for."),
 });
 
-// Input schema for the public-facing flow
-const VendorApplicationInputSchema = z.object({
+// This is the public-facing schema for the form submission. `eventName` is optional here
+// because it's retrieved on the server.
+export const VendorApplicationInputSchema = z.object({
   id: z.string().optional(),
   name: z.string().describe("The full name of the contact person."),
   organization: z.string().optional().describe("The name of the vendor's organization."),
@@ -41,7 +43,6 @@ const VendorApplicationInputSchema = z.object({
   zelleSenderName: z.string().describe("The name on the Zelle account used for payment."),
   zelleDateSent: z.string().describe("The date the Zelle payment was sent."),
   paymentConfirmed: z.boolean().optional().describe("Whether the vendor confirmed they sent the payment."),
-  qrCodeUrl: z.string().url().optional().describe("The URL of the QR code image to include in the ticket."),
   eventName: z.string().optional(),
 });
 export type VendorApplicationInput = z.infer<typeof VendorApplicationInputSchema>;
@@ -56,11 +57,12 @@ export type VendorApplicationOutput = z.infer<typeof VendorApplicationOutputSche
 
 /**
  * Public function to trigger the vendor ticket sending flow AFTER admin verification.
- * @param input The vendor application details including QR code.
+ * This now expects the full application object.
+ * @param input The vendor application details including QR code and eventName.
  * @returns A promise that resolves to the flow's output.
  */
-export async function sendVendorApplication(input: VendorApplicationInput): Promise<VendorApplicationOutput> {
-  return sendVendorTicketFlow(input as z.infer<typeof VendorApplicationInputWithEventSchema>);
+export async function sendVendorApplication(input: z.infer<typeof VendorApplicationTicketSchema>): Promise<VendorApplicationOutput> {
+  return sendVendorTicketFlow(input);
 }
 
 /**
@@ -76,7 +78,7 @@ export async function sendVendorApplicationReceipt(input: VendorApplicationInput
 // AI prompt to generate a vendor ticket email
 const vendorTicketEmailPrompt = ai.definePrompt({
   name: 'vendorTicketEmailPrompt',
-  input: { schema: VendorApplicationInputWithEventSchema },
+  input: { schema: VendorApplicationTicketSchema },
   output: { format: 'text' },
   prompt: `
     Generate an HTML email to be sent to a vendor as their event ticket and confirmation.
@@ -107,7 +109,7 @@ const vendorTicketEmailPrompt = ai.definePrompt({
 const sendVendorTicketFlow = ai.defineFlow(
   {
     name: 'sendVendorTicketFlow',
-    inputSchema: VendorApplicationInputWithEventSchema,
+    inputSchema: VendorApplicationTicketSchema, // Use the correct, strict schema
     outputSchema: VendorApplicationOutputSchema,
   },
   async (input) => {
@@ -146,7 +148,7 @@ const sendVendorTicketFlow = ai.defineFlow(
 
 const vendorReceiptEmailPrompt = ai.definePrompt({
   name: 'vendorReceiptEmailPrompt',
-  input: { schema: VendorApplicationInputWithEventSchema },
+  input: { schema: VendorApplicationTicketSchema },
   output: { format: 'text' },
   prompt: `
     Generate a simple, professional HTML email to be sent to a vendor confirming their application has been received and is pending payment verification.
@@ -179,7 +181,18 @@ const sendVendorReceiptFlow = ai.defineFlow(
     try {
         const eventName = input.eventName || "our upcoming event";
 
-        const { output: vendorEmailHtml } = await vendorReceiptEmailPrompt({ ...input, eventName });
+        // Cast the input to the schema expected by the prompt
+        const promptInput = {
+            ...input,
+            eventName,
+            totalPrice: input.totalPrice, 
+            zelleSenderName: input.zelleSenderName || '',
+            zelleDateSent: input.zelleDateSent || '',
+            productDescription: input.productDescription || ''
+        } as z.infer<typeof VendorApplicationTicketSchema>;
+
+
+        const { output: vendorEmailHtml } = await vendorReceiptEmailPrompt(promptInput);
         
         if (!vendorEmailHtml) {
             return { success: false, message: 'Failed to generate receipt email.' };

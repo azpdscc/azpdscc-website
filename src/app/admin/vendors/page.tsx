@@ -80,8 +80,8 @@ export default function ManageVendorsPage() {
     };
     
     const handleVerifyAndSend = async (application: VendorApplicationFormData) => {
-        if (!application.id || !application.eventName) {
-             toast({ variant: "destructive", title: "Error", description: "Application ID or Event Name is missing." });
+        if (!application.id) {
+             toast({ variant: "destructive", title: "Error", description: "Application ID is missing." });
              return;
         }
         if (!baseUrl) {
@@ -92,7 +92,7 @@ export default function ManageVendorsPage() {
         // First, mark as verified in DB
         await verifyVendorPayment(application.id);
         
-        // Then, trigger the flow to send the email
+        // Then, trigger the server action to send the email, passing the full application object
         const result = await verifyAndSendTicketAction(baseUrl, application);
 
         if (result.success) {
@@ -209,5 +209,3 @@ export default function ManageVendorsPage() {
         </div>
     )
 }
-
-    

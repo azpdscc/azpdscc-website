@@ -130,18 +130,20 @@ export async function verifyAndSendTicketAction(baseUrl: string, application: Ve
     if (!baseUrl) {
         return { success: false, message: 'Could not determine the application URL. Cannot send ticket.' };
     }
-    if (!application.id || !application.eventName) {
-         return { success: false, message: 'Application ID or Event Name is missing.' };
+    if (!application.id) {
+         return { success: false, message: 'Application ID is missing.' };
     }
 
     try {
         const verificationUrl = new URL(`/admin/check-in?ticketId=${application.id}`, baseUrl).toString();
-        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(verificationUrl)}`;
-
-        const emailResult = await sendVendorApplication({
+        
+        // Pass the full application object, now including the QR code URL
+        const applicationWithQr = {
             ...application,
-            qrCodeUrl,
-        });
+            qrCodeUrl: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(verificationUrl)}`,
+        };
+
+        const emailResult = await sendVendorApplication(applicationWithQr);
         
         if (!emailResult.success) {
             throw new Error(emailResult.message);
