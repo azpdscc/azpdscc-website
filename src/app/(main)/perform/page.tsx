@@ -124,7 +124,7 @@ export default function PerformersPage() {
                               <Button asChild size="sm" variant="outline">
                                 <Link href={createCalendarLink(registrationOpenDate, nextEvent.name)} target="_blank" rel="noopener noreferrer">
                                   <CalendarPlus className="mr-2"/>
-                                  Add to Calendar
+                                  Add Reminder to Calendar
                                 </Link>
                               </Button>
                             </div>
