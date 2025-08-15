@@ -60,7 +60,7 @@ export type VendorApplicationOutput = z.infer<typeof VendorApplicationOutputSche
  * @returns A promise that resolves to the flow's output.
  */
 export async function sendVendorApplication(input: VendorApplicationInput): Promise<VendorApplicationOutput> {
-  return sendVendorTicketFlow(input);
+  return sendVendorTicketFlow(input as z.infer<typeof VendorApplicationInputWithEventSchema>);
 }
 
 /**
@@ -107,7 +107,7 @@ const vendorTicketEmailPrompt = ai.definePrompt({
 const sendVendorTicketFlow = ai.defineFlow(
   {
     name: 'sendVendorTicketFlow',
-    inputSchema: VendorApplicationInputSchema,
+    inputSchema: VendorApplicationInputWithEventSchema,
     outputSchema: VendorApplicationOutputSchema,
   },
   async (input) => {
@@ -118,12 +118,7 @@ const sendVendorTicketFlow = ai.defineFlow(
     }
 
     try {
-      const eventName = input.eventName || "our upcoming PDSCC event";
-
-      const { output: vendorEmailHtml } = await vendorTicketEmailPrompt({
-          ...input,
-          eventName: eventName,
-      });
+      const { output: vendorEmailHtml } = await vendorTicketEmailPrompt(input);
 
       if (!vendorEmailHtml) {
         return { success: false, message: 'Failed to generate vendor ticket.' };
@@ -134,7 +129,7 @@ const sendVendorTicketFlow = ai.defineFlow(
       await resend.emails.send({
         from: 'PDSCC Vendors <vendors@azpdscc.org>',
         to: input.email,
-        subject: `Your Vendor Booth Confirmation for ${eventName}`,
+        subject: `Your Vendor Booth Confirmation for ${input.eventName}`,
         html: vendorEmailHtml,
       });
 
@@ -236,5 +231,3 @@ Action Required: Please verify the Zelle payment and then approve this applicati
     }
   }
 );
-
-    
