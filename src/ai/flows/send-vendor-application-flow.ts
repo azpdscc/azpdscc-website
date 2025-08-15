@@ -10,7 +10,6 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 import { Resend } from 'resend';
-import { getEvents } from '@/services/events';
 
 // Add eventName to the input schema for the email prompt
 const VendorApplicationInputWithEventSchema = z.object({
@@ -43,6 +42,7 @@ const VendorApplicationInputSchema = z.object({
   zelleDateSent: z.string().describe("The date the Zelle payment was sent."),
   paymentConfirmed: z.boolean().optional().describe("Whether the vendor confirmed they sent the payment."),
   qrCodeUrl: z.string().url().optional().describe("The URL of the QR code image to include in the ticket."),
+  eventName: z.string().optional(),
 });
 export type VendorApplicationInput = z.infer<typeof VendorApplicationInputSchema>;
 
@@ -236,3 +236,5 @@ Action Required: Please verify the Zelle payment and then approve this applicati
     }
   }
 );
+
+    

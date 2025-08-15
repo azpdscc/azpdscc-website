@@ -36,6 +36,7 @@ export async function createVendorApplicationForReview(appData: VendorApplicatio
     const dataToSave = {
         ...appData,
         status: 'Pending Verification',
+        checkInStatus: 'pending',
         createdAt: serverTimestamp(),
     };
     const docRef = await addDoc(vendorApplicationsCollectionRef, dataToSave);
@@ -56,6 +57,7 @@ export async function getVendorApplications(): Promise<VendorApplication[]> {
             const serializedData = {
                 ...data,
                 createdAt: data.createdAt?.toDate().toISOString(),
+                verifiedAt: data.verifiedAt ? data.verifiedAt.toDate().toISOString() : undefined,
                 checkedInAt: data.checkedInAt ? data.checkedInAt.toDate().toISOString() : undefined,
             }
             return { id: doc.id, ...serializedData } as VendorApplication;
@@ -89,6 +91,7 @@ export async function getVendorApplicationById(id: string): Promise<VendorApplic
         const serializedData = {
             ...data,
             createdAt: data.createdAt?.toDate().toISOString(),
+            verifiedAt: data.verifiedAt ? data.verifiedAt.toDate().toISOString() : undefined,
             checkedInAt: data.checkedInAt ? data.checkedInAt.toDate().toISOString() : undefined,
         }
 
@@ -123,3 +126,5 @@ export async function checkInVendor(id: string): Promise<void> {
         checkedInAt: serverTimestamp(),
     });
 }
+
+    
