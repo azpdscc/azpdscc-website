@@ -7,7 +7,7 @@ import { PerformanceRegistrationForm } from '@/components/performers/registratio
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { getEvents } from '@/services/events';
 import type { Event } from '@/lib/types';
-import { differenceInDays, format } from 'date-fns';
+import { differenceInDays, format, subDays } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Loader2, CalendarClock, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -39,7 +39,7 @@ export default function PerformanceRegistrationPage() {
       if (firstUpcomingEvent) {
         const eventDate = new Date(firstUpcomingEvent.date);
         const days = differenceInDays(eventDate, now);
-        if (days <= 60) {
+        if (days <= 90) { // Updated to 90 days
           setRegistrationOpen(true);
         }
       }
@@ -52,7 +52,7 @@ export default function PerformanceRegistrationPage() {
   const getRegistrationOpenDate = () => {
     if (!nextEvent) return '';
     const eventDate = new Date(nextEvent.date);
-    const openDate = new Date(eventDate.setDate(eventDate.getDate() - 60));
+    const openDate = subDays(eventDate, 90);
     return format(openDate, 'MMMM dd, yyyy');
   };
 
@@ -106,7 +106,7 @@ export default function PerformanceRegistrationPage() {
                 <AlertDescription>
                   {nextEvent ? (
                     <>
-                      Performance registration will open approximately 60 days before the event date, around <strong>{getRegistrationOpenDate()}</strong>. Please check back then!
+                      Performance registration will open approximately 90 days before the event date, around <strong>{getRegistrationOpenDate()}</strong>. Please check back then!
                     </>
                   ) : (
                     "Please check back later for information on future performance opportunities."

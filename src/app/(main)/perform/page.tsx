@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Mic, CalendarClock, Loader2 } from 'lucide-react';
 import { getEvents } from '@/services/events';
 import type { Event } from '@/lib/types';
-import { differenceInDays, format } from 'date-fns';
+import { differenceInDays, format, subDays } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 // export const metadata: Metadata = {
@@ -38,7 +38,7 @@ export default function PerformersPage() {
       if (firstUpcomingEvent) {
         const eventDate = new Date(firstUpcomingEvent.date);
         const days = differenceInDays(eventDate, now);
-        if (days <= 60) {
+        if (days <= 90) { // Updated to 90 days
           setRegistrationOpen(true);
         }
       }
@@ -51,7 +51,7 @@ export default function PerformersPage() {
   const getRegistrationOpenDate = () => {
     if (!nextEvent) return '';
     const eventDate = new Date(nextEvent.date);
-    const openDate = new Date(eventDate.setDate(eventDate.getDate() - 60));
+    const openDate = subDays(eventDate, 90);
     return format(openDate, 'MMMM dd, yyyy');
   };
 
