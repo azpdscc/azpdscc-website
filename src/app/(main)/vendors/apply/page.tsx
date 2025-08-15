@@ -21,11 +21,9 @@ import Link from 'next/link';
 export default function VendorApplyPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [nextEvent, setNextEvent] = useState<Event | null>(null);
-  const [registrationOpen, setRegistrationOpen] = useState(false);
-  const [daysUntil, setDaysUntil] = useState(0);
 
   useEffect(() => {
-    const checkRegistrationWindow = async () => {
+    const findNextEvent = async () => {
       const allEvents = await getEvents();
       const now = new Date();
       now.setHours(0, 0, 0, 0);
@@ -36,27 +34,12 @@ export default function VendorApplyPage() {
       
       const firstUpcomingEvent = upcomingEvents.length > 0 ? upcomingEvents[0] : null;
       setNextEvent(firstUpcomingEvent);
-
-      if (firstUpcomingEvent) {
-        const eventDate = new Date(firstUpcomingEvent.date);
-        const days = differenceInDays(eventDate, now);
-        setDaysUntil(days);
-        if (days <= 60) {
-          setRegistrationOpen(true);
-        }
-      }
       setIsLoading(false);
     };
 
-    checkRegistrationWindow();
+    findNextEvent();
   }, []);
 
-  const getRegistrationOpenDate = () => {
-    if (!nextEvent) return '';
-    const eventDate = new Date(nextEvent.date);
-    const openDate = new Date(eventDate.setDate(eventDate.getDate() - 60));
-    return format(openDate, 'MMMM dd, yyyy');
-  };
 
   if (isLoading) {
     return (
@@ -70,15 +53,19 @@ export default function VendorApplyPage() {
     <div className="container mx-auto px-4 py-12">
       <section className="text-center mb-12">
         <h1 className="font-headline text-4xl md:text-5xl font-bold">Apply for an Event Vendor Booth</h1>
-        {registrationOpen && nextEvent && (
+        {nextEvent ? (
             <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
-                Applications are now open for <strong>{nextEvent.name}</strong> on {nextEvent.date}. Please complete the form below.
+                Applications are open for <strong>{nextEvent.name}</strong> on {nextEvent.date}. Please complete the form below.
+            </p>
+        ) : (
+             <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
+                There are currently no upcoming events accepting vendor applications. You can join our network to be notified of future opportunities.
             </p>
         )}
       </section>
       
       <div className="max-w-4xl mx-auto">
-        {registrationOpen && nextEvent ? (
+        {nextEvent ? (
             <Card className="shadow-xl">
                 <CardHeader>
                     <CardTitle className="font-headline text-3xl">Vendor Application</CardTitle>
@@ -93,22 +80,16 @@ export default function VendorApplyPage() {
         ) : (
             <Card className="shadow-xl">
                 <CardHeader>
-                    <CardTitle className="font-headline text-3xl text-center">Registration is Currently Closed</CardTitle>
+                    <CardTitle className="font-headline text-3xl text-center">No Upcoming Events</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <Alert>
                         <CalendarClock className="h-4 w-4" />
                         <AlertTitle className="font-bold">
-                             {nextEvent ? `Applications for ${nextEvent.name} are not open yet.` : `No upcoming events are currently scheduled.`}
+                            No upcoming events are currently scheduled for vendors.
                         </AlertTitle>
                         <AlertDescription>
-                            {nextEvent ? (
-                                <>
-                                Vendor registration for this event will open approximately 60 days before the event date, around <strong>{getRegistrationOpenDate()}</strong>. Please check back then!
-                                </>
-                            ) : (
-                                "Please check back later for information on future events."
-                            )}
+                            Please check back later for information on future events.
                         </AlertDescription>
                     </Alert>
 
