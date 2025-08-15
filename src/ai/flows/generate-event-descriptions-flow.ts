@@ -7,7 +7,6 @@
  * - GenerateEventDescriptionsInput: The input type for the flow.
  * - GenerateEventDescriptionsOutput: The return type for the flow.
  */
-import 'dotenv/config';
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 
