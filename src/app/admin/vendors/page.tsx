@@ -80,8 +80,8 @@ export default function ManageVendorsPage() {
     };
     
     const handleVerifyAndSend = async (application: VendorApplicationFormData) => {
-        if (!application.id) {
-             toast({ variant: "destructive", title: "Error", description: "Application ID is missing." });
+        if (!application.id || !application.eventName) {
+             toast({ variant: "destructive", title: "Error", description: "Application ID or Event Name is missing." });
              return;
         }
         if (!baseUrl) {

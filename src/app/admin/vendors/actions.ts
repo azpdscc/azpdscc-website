@@ -130,8 +130,8 @@ export async function verifyAndSendTicketAction(baseUrl: string, application: Ve
     if (!baseUrl) {
         return { success: false, message: 'Could not determine the application URL. Cannot send ticket.' };
     }
-    if (!application.id) {
-         return { success: false, message: 'Application ID is missing.' };
+    if (!application.id || !application.eventName) {
+         return { success: false, message: 'Application ID or Event Name is missing.' };
     }
 
     try {
@@ -156,5 +156,3 @@ export async function verifyAndSendTicketAction(baseUrl: string, application: Ve
         return { success: false, message };
     }
 }
-
-    
