@@ -6,7 +6,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Mic, CalendarClock, Loader2 } from 'lucide-react';
+import { ArrowRight, Mic, CalendarClock, Loader2, CalendarPlus } from 'lucide-react';
 import { getEvents } from '@/services/events';
 import type { Event } from '@/lib/types';
 import { differenceInDays, format, subDays } from 'date-fns';
@@ -38,7 +38,7 @@ export default function PerformersPage() {
       if (firstUpcomingEvent) {
         const eventDate = new Date(firstUpcomingEvent.date);
         const days = differenceInDays(eventDate, now);
-        if (days <= 90) { // Updated to 90 days
+        if (days <= 90) {
           setRegistrationOpen(true);
         }
       }
@@ -49,10 +49,26 @@ export default function PerformersPage() {
   }, []);
 
   const getRegistrationOpenDate = () => {
-    if (!nextEvent) return '';
+    if (!nextEvent) return null;
     const eventDate = new Date(nextEvent.date);
-    const openDate = subDays(eventDate, 90);
-    return format(openDate, 'MMMM dd, yyyy');
+    return subDays(eventDate, 90);
+  };
+  
+  const registrationOpenDate = getRegistrationOpenDate();
+
+  const createCalendarLink = (openDate: Date | null, eventName: string): string => {
+      if (!openDate) return '#';
+      const start = format(openDate, "yyyyMMdd");
+      const details = `Time to apply to perform at the upcoming ${eventName}. Apply at https://www.azpdscc.org/perform/register`;
+
+      const params = new URLSearchParams({
+          action: 'TEMPLATE',
+          text: `Performer Registration Opens for ${eventName}`,
+          dates: `${start}/${start}`, // All-day event
+          details: details,
+          trp: 'false',
+      });
+      return `https://calendar.google.com/calendar/render?${params.toString()}`;
   };
 
   return (
@@ -102,10 +118,16 @@ export default function PerformersPage() {
                         <CalendarClock className="h-4 w-4" />
                         <AlertTitle className="font-bold">Applications are not yet open.</AlertTitle>
                         <AlertDescription>
-                           {nextEvent ? (
-                            <>
-                              Registration for {nextEvent.name} opens around <strong>{getRegistrationOpenDate()}</strong>.
-                            </>
+                           {nextEvent && registrationOpenDate ? (
+                            <div className="flex flex-col items-center gap-2 mt-2">
+                              <span>Registration for {nextEvent.name} opens around <strong>{format(registrationOpenDate, 'MMMM dd, yyyy')}</strong>.</span>
+                              <Button asChild size="sm" variant="outline">
+                                <Link href={createCalendarLink(registrationOpenDate, nextEvent.name)} target="_blank" rel="noopener noreferrer">
+                                  <CalendarPlus className="mr-2"/>
+                                  Add to Calendar
+                                </Link>
+                              </Button>
+                            </div>
                           ) : (
                             "No upcoming performance events are scheduled."
                           )}

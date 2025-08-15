@@ -9,7 +9,7 @@ import { getEvents } from '@/services/events';
 import type { Event } from '@/lib/types';
 import { differenceInDays, format, subDays } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, CalendarClock, Info } from 'lucide-react';
+import { Loader2, CalendarClock, Info, CalendarPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
@@ -50,10 +50,26 @@ export default function VendorApplyPage() {
   }, []);
 
   const getRegistrationOpenDate = () => {
-    if (!nextEvent) return '';
+    if (!nextEvent) return null;
     const eventDate = new Date(nextEvent.date);
-    const openDate = subDays(eventDate, 90);
-    return format(openDate, 'MMMM dd, yyyy');
+    return subDays(eventDate, 90);
+  };
+  
+  const registrationOpenDate = getRegistrationOpenDate();
+
+  const createCalendarLink = (openDate: Date | null, eventName: string): string => {
+      if (!openDate) return '#';
+      const start = format(openDate, "yyyyMMdd");
+      const details = `Time to apply for a vendor booth at the upcoming ${eventName}. Apply at https://www.azpdscc.org/vendors/apply`;
+
+      const params = new URLSearchParams({
+          action: 'TEMPLATE',
+          text: `Vendor Registration Opens for ${eventName}`,
+          dates: `${start}/${start}`, // All-day event
+          details: details,
+          trp: 'false',
+      });
+      return `https://calendar.google.com/calendar/render?${params.toString()}`;
   };
 
   if (isLoading) {
@@ -104,10 +120,16 @@ export default function VendorApplyPage() {
                             {nextEvent ? `Applications for ${nextEvent.name} are not open yet.` : `No upcoming events are currently scheduled for vendors.`}
                         </AlertTitle>
                         <AlertDescription>
-                          {nextEvent ? (
-                            <>
-                              Registration for {nextEvent.name} opens around <strong>{getRegistrationOpenDate()}</strong>. Please check back then!
-                            </>
+                          {nextEvent && registrationOpenDate ? (
+                            <div className="flex flex-col items-center gap-2 mt-2">
+                              <span>Registration for {nextEvent.name} opens around <strong>{format(registrationOpenDate, 'MMMM dd, yyyy')}</strong>. Please check back then!</span>
+                               <Button asChild size="sm" variant="outline">
+                                <Link href={createCalendarLink(registrationOpenDate, nextEvent.name)} target="_blank" rel="noopener noreferrer">
+                                  <CalendarPlus className="mr-2"/>
+                                  Add to Calendar
+                                </Link>
+                              </Button>
+                            </div>
                           ) : (
                             "Please check back later for information on future events."
                           )}

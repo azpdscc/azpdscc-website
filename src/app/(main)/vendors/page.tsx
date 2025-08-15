@@ -50,10 +50,26 @@ export default function VendorsPage() {
   }, []);
 
   const getRegistrationOpenDate = () => {
-    if (!nextEvent) return '';
+    if (!nextEvent) return null;
     const eventDate = new Date(nextEvent.date);
-    const openDate = subDays(eventDate, 90);
-    return format(openDate, 'MMMM dd, yyyy');
+    return subDays(eventDate, 90);
+  };
+
+  const registrationOpenDate = getRegistrationOpenDate();
+
+  const createCalendarLink = (openDate: Date | null, eventName: string): string => {
+      if (!openDate) return '#';
+      const start = format(openDate, "yyyyMMdd");
+      const details = `Time to apply for a vendor booth at the upcoming ${eventName}. Apply at https://www.azpdscc.org/vendors/apply`;
+
+      const params = new URLSearchParams({
+          action: 'TEMPLATE',
+          text: `Vendor Registration Opens for ${eventName}`,
+          dates: `${start}/${start}`, // All-day event
+          details: details,
+          trp: 'false',
+      });
+      return `https://calendar.google.com/calendar/render?${params.toString()}`;
   };
 
   return (
@@ -103,10 +119,16 @@ export default function VendorsPage() {
                         <CalendarClock className="h-4 w-4" />
                         <AlertTitle className="font-bold">Applications are not yet open.</AlertTitle>
                         <AlertDescription>
-                           {nextEvent ? (
-                            <>
-                              Registration for {nextEvent.name} opens around <strong>{getRegistrationOpenDate()}</strong>.
-                            </>
+                           {nextEvent && registrationOpenDate ? (
+                             <div className="flex flex-col items-center gap-2 mt-2">
+                               <span>Registration for {nextEvent.name} opens around <strong>{format(registrationOpenDate, 'MMMM dd, yyyy')}</strong>.</span>
+                               <Button asChild size="sm" variant="outline">
+                                <Link href={createCalendarLink(registrationOpenDate, nextEvent.name)} target="_blank" rel="noopener noreferrer">
+                                  <CalendarPlus className="mr-2"/>
+                                  Add to Calendar
+                                </Link>
+                              </Button>
+                             </div>
                           ) : (
                             "No upcoming vendor events are scheduled."
                           )}
