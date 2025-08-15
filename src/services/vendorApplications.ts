@@ -5,7 +5,7 @@
  */
 
 import { db } from '@/lib/firebase';
-import type { VendorApplication } from '@/lib/types';
+import type { VendorApplication, VendorApplicationFormData } from '@/lib/types';
 import { collection, doc, getDoc, addDoc, updateDoc, Timestamp, serverTimestamp, query, getDocs, orderBy } from 'firebase/firestore';
 
 // This collection will store all vendor applications for events.
@@ -25,6 +25,23 @@ export async function createVendorApplication(appData: Pick<VendorApplication, '
     const docRef = await addDoc(vendorApplicationsCollectionRef, dataToSave);
     return docRef.id;
 }
+
+
+/**
+ * Creates a new vendor application for admin review.
+ * @param appData The full application data from the form.
+ * @returns The ID of the newly created document.
+ */
+export async function createVendorApplicationForReview(appData: VendorApplicationFormData): Promise<string> {
+    const dataToSave = {
+        ...appData,
+        status: 'Pending Verification',
+        createdAt: serverTimestamp(),
+    };
+    const docRef = await addDoc(vendorApplicationsCollectionRef, dataToSave);
+    return docRef.id;
+}
+
 
 /**
  * Fetches all vendor applications from Firestore, ordered by creation date.
@@ -80,6 +97,18 @@ export async function getVendorApplicationById(id: string): Promise<VendorApplic
         console.error("Error fetching vendor application by id:", error);
         return null;
     }
+}
+
+/**
+ * Updates the verification status of a vendor application in Firestore.
+ * @param id The ID of the application document to update.
+ */
+export async function verifyVendorPayment(id: string): Promise<void> {
+    const appDoc = doc(db, 'vendorApplications', id);
+    await updateDoc(appDoc, {
+        status: 'Verified',
+        verifiedAt: serverTimestamp(),
+    });
 }
 
 /**

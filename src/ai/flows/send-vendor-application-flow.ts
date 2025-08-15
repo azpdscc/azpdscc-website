@@ -14,6 +14,7 @@ import { getEvents } from '@/services/events';
 
 // Add eventName to the input schema for the email prompt
 const VendorApplicationInputWithEventSchema = z.object({
+  id: z.string().optional(),
   name: z.string().describe("The full name of the contact person."),
   organization: z.string().optional().describe("The name of the vendor's organization."),
   email: z.string().email().describe("The vendor's email address."),
@@ -23,13 +24,14 @@ const VendorApplicationInputWithEventSchema = z.object({
   productDescription: z.string().describe("The description of products/services offered."),
   zelleSenderName: z.string().describe("The name on the Zelle account used for payment."),
   zelleDateSent: z.string().describe("The date the Zelle payment was sent."),
-  paymentConfirmed: z.boolean().describe("Whether the vendor confirmed they sent the payment."),
-  qrCodeUrl: z.string().url().describe("The URL of the QR code image to include in the ticket."),
+  paymentConfirmed: z.boolean().optional().describe("Whether the vendor confirmed they sent the payment."),
+  qrCodeUrl: z.string().url().optional().describe("The URL of the QR code image to include in the ticket."),
   eventName: z.string().describe("The name of the event the vendor is applying for."),
 });
 
 // Input schema for the public-facing flow
 const VendorApplicationInputSchema = z.object({
+  id: z.string().optional(),
   name: z.string().describe("The full name of the contact person."),
   organization: z.string().optional().describe("The name of the vendor's organization."),
   email: z.string().email().describe("The vendor's email address."),
@@ -39,8 +41,8 @@ const VendorApplicationInputSchema = z.object({
   productDescription: z.string().describe("The description of products/services offered."),
   zelleSenderName: z.string().describe("The name on the Zelle account used for payment."),
   zelleDateSent: z.string().describe("The date the Zelle payment was sent."),
-  paymentConfirmed: z.boolean().describe("Whether the vendor confirmed they sent the payment."),
-  qrCodeUrl: z.string().url().describe("The URL of the QR code image to include in the ticket."),
+  paymentConfirmed: z.boolean().optional().describe("Whether the vendor confirmed they sent the payment."),
+  qrCodeUrl: z.string().url().optional().describe("The URL of the QR code image to include in the ticket."),
 });
 export type VendorApplicationInput = z.infer<typeof VendorApplicationInputSchema>;
 
@@ -53,19 +55,29 @@ const VendorApplicationOutputSchema = z.object({
 export type VendorApplicationOutput = z.infer<typeof VendorApplicationOutputSchema>;
 
 /**
- * Public function to trigger the vendor application flow.
- * @param input The vendor application details.
+ * Public function to trigger the vendor ticket sending flow AFTER admin verification.
+ * @param input The vendor application details including QR code.
  * @returns A promise that resolves to the flow's output.
  */
 export async function sendVendorApplication(input: VendorApplicationInput): Promise<VendorApplicationOutput> {
-  return sendVendorApplicationFlow(input);
+  return sendVendorTicketFlow(input);
 }
+
+/**
+ * Public function to trigger the vendor application receipt flow.
+ * @param input The vendor application details.
+ * @returns A promise that resolves to the flow's output.
+ */
+export async function sendVendorApplicationReceipt(input: VendorApplicationInput): Promise<VendorApplicationOutput> {
+  return sendVendorReceiptFlow(input);
+}
+
 
 // AI prompt to generate a vendor ticket email
 const vendorTicketEmailPrompt = ai.definePrompt({
   name: 'vendorTicketEmailPrompt',
-  input: { schema: VendorApplicationInputWithEventSchema }, // Use the schema with eventName
-  output: { format: 'text' }, // We are generating HTML, so text is fine.
+  input: { schema: VendorApplicationInputWithEventSchema },
+  output: { format: 'text' },
   prompt: `
     Generate an HTML email to be sent to a vendor as their event ticket and confirmation.
     The email should be professional, welcoming, and clearly structured.
@@ -77,7 +89,7 @@ const vendorTicketEmailPrompt = ai.definePrompt({
     The email must contain the following sections:
     1.  A header with the "PDSCC" logo text and the title "Vendor Confirmation & Ticket".
     2.  A personalized greeting: "Dear {{{name}}},".
-    3.  A confirmation message: "Thank you for registering as a vendor for the upcoming {{{eventName}}}! We've received your application and are excited to have you."
+    3.  A confirmation message: "Thank you for registering as a vendor for the upcoming {{{eventName}}}! Your payment has been confirmed, and we're excited to have you."
     4.  A "Ticket Details" section with the following information in a styled table or divs:
         -   **Vendor Name:** {{{name}}}
         -   **Organization:** {{{organization}}} (Show only if provided)
@@ -91,34 +103,23 @@ const vendorTicketEmailPrompt = ai.definePrompt({
   `,
 });
 
-// The main Genkit flow
-const sendVendorApplicationFlow = ai.defineFlow(
+// The main Genkit flow for sending the final ticket
+const sendVendorTicketFlow = ai.defineFlow(
   {
-    name: 'sendVendorApplicationFlow',
+    name: 'sendVendorTicketFlow',
     inputSchema: VendorApplicationInputSchema,
     outputSchema: VendorApplicationOutputSchema,
   },
   async (input) => {
     const resendApiKey = process.env.RESEND_API_KEY;
     if (!resendApiKey) {
-        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set.");
+        console.error("Resend API key is not configured.");
         return { success: false, message: "Server configuration error. Please contact support." };
     }
 
     try {
-      // 1. Determine the next upcoming event
-      const allEvents = await getEvents();
-      const now = new Date();
-      now.setHours(0, 0, 0, 0);
+      const eventName = input.eventName || "our upcoming PDSCC event";
 
-      const upcomingEvents = allEvents
-        .filter(e => new Date(e.date) >= now)
-        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-      
-      const nextEvent = upcomingEvents.length > 0 ? upcomingEvents[0] : null;
-      const eventName = nextEvent ? nextEvent.name : "our upcoming PDSCC event";
-
-      // 2. Generate the vendor's ticket email, passing in the event name
       const { output: vendorEmailHtml } = await vendorTicketEmailPrompt({
           ...input,
           eventName: eventName,
@@ -128,9 +129,69 @@ const sendVendorApplicationFlow = ai.defineFlow(
         return { success: false, message: 'Failed to generate vendor ticket.' };
       }
 
-      // 3. Prepare the notification email for the admin
-      const adminEmailText = `
-A new vendor application has been submitted and paid for the event: ${eventName}.
+      const resend = new Resend(resendApiKey);
+
+      await resend.emails.send({
+        from: 'PDSCC Vendors <vendors@azpdscc.org>',
+        to: input.email,
+        subject: `Your Vendor Booth Confirmation for ${eventName}`,
+        html: vendorEmailHtml,
+      });
+
+      return { success: true, message: "Ticket sent to vendor." };
+    } catch (error) {
+      console.error('Vendor ticket flow failed:', error);
+      return { success: false, message: 'An error occurred while sending the ticket.' };
+    }
+  }
+);
+
+
+// --- New Flow for Initial Application Receipt ---
+
+const vendorReceiptEmailPrompt = ai.definePrompt({
+  name: 'vendorReceiptEmailPrompt',
+  input: { schema: VendorApplicationInputWithEventSchema },
+  output: { format: 'text' },
+  prompt: `
+    Generate a simple, professional HTML email to be sent to a vendor confirming their application has been received and is pending payment verification.
+    The subject line should be: "We've Received Your Vendor Application for {{{eventName}}}".
+
+    Use modern, clean HTML.
+    
+    The email must contain:
+    1.  A greeting: "Dear {{{name}}},".
+    2.  A confirmation message: "Thank you for applying to be a vendor at the upcoming {{{eventName}}}. We have received your application and Zelle payment information."
+    3.  Next Steps: "Our team will now verify your payment. Once confirmed, you will receive a separate email containing your official booth ticket and QR code for check-in. This process may take 1-2 business days."
+    4.  A closing: "We appreciate your interest and will be in touch soon," followed by "The PDSCC Team".
+  `,
+});
+
+// The flow that sends the initial receipt and admin notification
+const sendVendorReceiptFlow = ai.defineFlow(
+  {
+    name: 'sendVendorReceiptFlow',
+    inputSchema: VendorApplicationInputSchema,
+    outputSchema: VendorApplicationOutputSchema,
+  },
+  async (input) => {
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+        console.error("Resend API key is not configured.");
+        return { success: false, message: "Server configuration error. Please contact support." };
+    }
+
+    try {
+        const eventName = input.eventName || "our upcoming event";
+
+        const { output: vendorEmailHtml } = await vendorReceiptEmailPrompt({ ...input, eventName });
+        
+        if (!vendorEmailHtml) {
+            return { success: false, message: 'Failed to generate receipt email.' };
+        }
+
+        const adminEmailText = `
+A new vendor application has been submitted and is awaiting payment verification for the event: ${eventName}.
 
 Here are the details:
 
@@ -148,34 +209,30 @@ Payment Information:
 - Total Price: $${input.totalPrice}
 - Zelle Sender Name: ${input.zelleSenderName}
 - Date Sent: ${input.zelleDateSent}
-- Payment Confirmed by Vendor: ${input.paymentConfirmed ? 'Yes' : 'No'}
 
-Please verify the Zelle payment and update records accordingly.
+Action Required: Please verify the Zelle payment and then approve this application in the admin vendor dashboard to send their ticket.
       `;
 
-      // 4. Send the emails
       const resend = new Resend(resendApiKey);
 
-      // Send to vendor
       await resend.emails.send({
         from: 'PDSCC Vendors <vendors@azpdscc.org>',
         to: input.email,
-        subject: `Your Vendor Booth Confirmation for ${eventName}`,
+        subject: `We've Received Your Vendor Application for ${eventName}`,
         html: vendorEmailHtml,
       });
 
-      // Send to admin
       await resend.emails.send({
         from: 'Vendor Bot <noreply@azpdscc.org>',
         to: 'admin@azpdscc.org',
-        subject: `New Paid Vendor Application for ${eventName}!`,
+        subject: `New VENDOR APP for ${eventName} - PENDING VERIFICATION`,
         text: adminEmailText,
       });
 
-      return { success: true, message: "Application submitted! A confirmation ticket has been sent to your email." };
+      return { success: true, message: "Application submitted! A confirmation receipt has been sent to your email. You will receive your official ticket once payment is verified." };
     } catch (error) {
-      console.error('Vendor application flow failed:', error);
-      return { success: false, message: 'An error occurred while processing your application.' };
+        console.error('Vendor receipt flow failed:', error);
+        return { success: false, message: 'An error occurred while sending your application receipt.' };
     }
   }
 );

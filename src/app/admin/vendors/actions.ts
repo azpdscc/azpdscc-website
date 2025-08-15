@@ -2,11 +2,12 @@
 'use server';
 
 import { z } from 'zod';
-import { createVendorApplication } from '@/services/vendorApplications';
-import { sendVendorApplication } from '@/ai/flows/send-vendor-application-flow';
+import { createVendorApplicationForReview } from '@/services/vendorApplications';
+import { sendVendorApplication, sendVendorApplicationReceipt } from '@/ai/flows/send-vendor-application-flow';
 import type { VendorApplicationFormData } from '@/lib/types';
 import { format } from 'date-fns';
 import { getEvents } from '@/services/events';
+import { revalidatePath } from 'next/cache';
 
 export type VendorApplicationState = {
   errors?: {
@@ -55,15 +56,9 @@ const formSchema = z.object({
 
 
 export async function vendorApplicationAction(
-    baseUrl: string,
     prevState: VendorApplicationState,
     formData: FormData
 ): Promise<VendorApplicationState> {
-    if (!baseUrl) {
-      return {
-        errors: { _form: ['Could not determine the base URL. Please try again.'] },
-      };
-    }
     
     const validatedFields = formSchema.safeParse({
         name: formData.get('name'),
@@ -86,7 +81,6 @@ export async function vendorApplicationAction(
     const boothTypeKey = validatedFields.data.boothType;
 
     try {
-        // 1. Determine the next upcoming event
         const allEvents = await getEvents();
         const now = new Date();
         now.setHours(0, 0, 0, 0);
@@ -101,37 +95,19 @@ export async function vendorApplicationAction(
              return { errors: { _form: ['There are no upcoming events available for registration.'] }};
         }
 
-        // 2. Create a ticket record in Firestore to get an ID
-        const ticketId = await createVendorApplication({
-            name: validatedFields.data.name,
-            organization: validatedFields.data.organization,
-            boothType: boothOptions[boothTypeKey],
+        const applicationData: VendorApplicationFormData = {
+            ...validatedFields.data,
             eventId: nextEvent.id,
             eventName: nextEvent.name,
             eventDate: nextEvent.date,
-        });
-
-        // 3. Generate the verification and QR code URLs
-        const verificationUrl = new URL(`/admin/check-in?ticketId=${ticketId}`, baseUrl).toString();
-        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(verificationUrl)}`;
-
-        // 4. Prepare the full application data for the email flow
-        const applicationData: VendorApplicationFormData = {
-            name: validatedFields.data.name,
-            organization: validatedFields.data.organization,
-            email: validatedFields.data.email,
-            phone: validatedFields.data.phone,
             boothType: boothOptions[boothTypeKey],
             totalPrice: boothPrices[boothTypeKey],
-            productDescription: validatedFields.data.productDescription,
-            zelleSenderName: validatedFields.data.zelleSenderName,
             zelleDateSent: format(validatedFields.data.zelleDateSent, "PPP"),
-            paymentConfirmed: validatedFields.data.paymentSent,
-            qrCodeUrl: qrCodeUrl,
         };
+        
+        await createVendorApplicationForReview(applicationData);
 
-        // 5. Send the email with the QR code
-        const emailResult = await sendVendorApplication(applicationData);
+        const emailResult = await sendVendorApplicationReceipt(applicationData);
 
         if (emailResult.success) {
           return { success: true, message: emailResult.message };
@@ -146,5 +122,37 @@ export async function vendorApplicationAction(
                 _form: ['Failed to process application.', message],
             },
         };
+    }
+}
+
+
+export async function verifyAndSendTicketAction(baseUrl: string, application: VendorApplicationFormData): Promise<{ success: boolean, message: string }> {
+    if (!baseUrl) {
+        return { success: false, message: 'Could not determine the application URL. Cannot send ticket.' };
+    }
+    if (!application.id) {
+         return { success: false, message: 'Application ID is missing.' };
+    }
+
+    try {
+        const verificationUrl = new URL(`/admin/check-in?ticketId=${application.id}`, baseUrl).toString();
+        const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(verificationUrl)}`;
+
+        const emailResult = await sendVendorApplication({
+            ...application,
+            qrCodeUrl,
+        });
+        
+        if (!emailResult.success) {
+            throw new Error(emailResult.message);
+        }
+        
+        revalidatePath('/admin/vendors');
+
+        return { success: true, message: "Verification successful! Ticket has been sent to the vendor." };
+
+    } catch (error) {
+        const message = error instanceof Error ? error.message : "An unknown error occurred while sending the ticket."
+        return { success: false, message };
     }
 }

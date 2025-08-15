@@ -40,11 +40,10 @@ function SubmitButton() {
     )
 }
 
-function VendorFormContent({ baseUrl }: { baseUrl: string }) {
+export function ApplicationForm() {
     const { toast } = useToast();
     const initialState: VendorApplicationState = { errors: {}, message: '' };
-    const actionWithBaseUrl = vendorApplicationAction.bind(null, baseUrl);
-    const [state, formAction] = useActionState(actionWithBaseUrl, initialState);
+    const [state, formAction] = useActionState(vendorApplicationAction, initialState);
     
     const [zelleDate, setZelleDate] = useState<Date | undefined>();
     const [paymentConfirmed, setPaymentConfirmed] = useState(false);
@@ -189,7 +188,7 @@ function VendorFormContent({ baseUrl }: { baseUrl: string }) {
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
                         <CheckCircle className="h-6 w-6 text-green-600" />
                     </div>
-                    <AlertDialogTitle className="text-center">Application Submitted!</AlertDialogTitle>
+                    <AlertDialogTitle className="text-center">Application Received!</AlertDialogTitle>
                     <AlertDialogDescription className="text-center">
                         {state?.message}
                     </AlertDialogDescription>
@@ -201,21 +200,4 @@ function VendorFormContent({ baseUrl }: { baseUrl: string }) {
         </AlertDialog>
       </>
     );
-}
-
-export function ApplicationForm() {
-  const [baseUrl, setBaseUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    // This effect runs only on the client, ensuring window is available.
-    setBaseUrl(window.location.origin);
-  }, []);
-
-  if (!baseUrl) {
-    // Render a loading state or a skeleton while waiting for the base URL.
-    return <div className="flex justify-center items-center h-40"><Loader2 className="h-8 w-8 animate-spin" /></div>;
-  }
-  
-  // Only render the form content once the base URL is available.
-  return <VendorFormContent baseUrl={baseUrl} />;
 }

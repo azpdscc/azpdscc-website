@@ -42,6 +42,7 @@ export type Sponsor = {
 
 // This represents the data coming from the live application form
 export type VendorApplicationFormData = {
+  id?: string;
   name: string;
   organization?: string;
   email: string;
@@ -51,8 +52,11 @@ export type VendorApplicationFormData = {
   productDescription: string;
   zelleSenderName: string;
   zelleDateSent: string;
-  paymentConfirmed: boolean;
-  qrCodeUrl: string;
+  paymentConfirmed?: boolean;
+  qrCodeUrl?: string;
+  eventId: string;
+  eventName: string;
+  eventDate: string;
 };
 
 // This represents the data stored in Firestore for verification
@@ -60,11 +64,19 @@ export type VendorApplication = {
   id: string;
   name: string;
   organization?: string;
+  email: string;
+  phone: string;
   boothType: string;
+  totalPrice: number;
+  productDescription: string;
+  zelleSenderName: string;
+  zelleDateSent: string;
   eventId: string;
   eventName: string;
-  eventDate: string; // "Month Day, YYYY"
+  eventDate: string; 
   createdAt: string; // Serialized as ISO string
+  status: 'Pending Verification' | 'Verified';
+  verifiedAt?: string; // Serialized as ISO string
   checkInStatus: 'pending' | 'checkedIn';
   checkedInAt?: string; // Serialized as ISO string
 };
