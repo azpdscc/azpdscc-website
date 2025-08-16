@@ -1,10 +1,10 @@
-
 /**
  * @fileoverview Centralized configuration for AI flows and services.
  *
  * This file provides a robust way to access external services like Resend
  * by ensuring that API keys are loaded correctly from the server environment.
  */
+import 'dotenv/config';
 import { Resend } from 'resend';
 
 class AppConfig {
