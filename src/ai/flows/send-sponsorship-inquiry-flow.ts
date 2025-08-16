@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { Resend } from 'resend';
+import { getResend } from '@/ai/config';
 
 // Input schema for the sponsorship inquiry flow
 const SponsorshipInquiryInputSchema = z.object({
@@ -69,13 +69,9 @@ const sendSponsorshipInquiryFlow = ai.defineFlow(
     outputSchema: SponsorshipInquiryOutputSchema,
   },
   async (input) => {
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set.");
-        return { success: false, message: "Server configuration error. Please contact support." };
-    }
-
     try {
+      const resend = getResend();
+      
       // 1. Generate the confirmation email for the potential sponsor
       const { output: sponsorEmailBody } = await confirmationEmailPrompt({
           contactName: input.contactName,
@@ -104,8 +100,6 @@ const sendSponsorshipInquiryFlow = ai.defineFlow(
       `;
 
       // 3. Send the emails
-      const resend = new Resend(resendApiKey);
-
       // Send to potential sponsor
       await resend.emails.send({
         from: 'PDSCC Partnerships <info@azpdscc.org>',

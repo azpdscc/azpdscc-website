@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { Resend } from 'resend';
+import { getResend } from '@/ai/config';
 
 // Input schema for the check notification flow
 const CheckNotificationInputSchema = z.object({
@@ -44,14 +44,8 @@ const sendCheckNotificationFlow = ai.defineFlow(
     outputSchema: CheckNotificationOutputSchema,
   },
   async (input) => {
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set.");
-        return { success: false, message: "Server configuration error. Please contact support." };
-    }
-
     try {
-      const resend = new Resend(resendApiKey);
+      const resend = getResend();
 
       // Prepare and send the notification email to the admin
       const adminEmailText = `

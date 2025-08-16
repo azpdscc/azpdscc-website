@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { Resend } from 'resend';
+import { getResend } from '@/ai/config';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
@@ -77,13 +77,9 @@ const sendPerformanceApplicationFlow = ai.defineFlow(
     outputSchema: PerformanceApplicationOutputSchema,
   },
   async (input) => {
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-        console.error("Resend API key is not configured.");
-        return { success: false, message: "Server configuration error. Please contact support." };
-    }
-
     try {
+      const resend = getResend();
+      
       // 1. Save the application to Firestore
       await addDoc(collection(db, 'performanceRegistrations'), {
           ...input,
@@ -126,8 +122,6 @@ Action Required: Please review this application in the performance dashboard.
       `;
 
       // 4. Send the emails
-      const resend = new Resend(resendApiKey);
-
       // Send to performer
       await resend.emails.send({
         from: 'PDSCC Cultural Team <info@azpdscc.org>',

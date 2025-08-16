@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { Resend } from 'resend';
+import { getResend } from '@/ai/config';
 
 // Input schema for the donation receipt flow
 const DonationReceiptInputSchema = z.object({
@@ -72,14 +72,8 @@ const sendDonationReceiptFlow = ai.defineFlow(
     outputSchema: DonationReceiptOutputSchema,
   },
   async (input) => {
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set.");
-        return { success: false, message: "Server configuration error. Please contact support." };
-    }
-
     try {
-      const resend = new Resend(resendApiKey);
+      const resend = getResend();
 
       // 1. Generate the email content for the donor
       const { output: emailBody } = await receiptEmailPrompt(input);

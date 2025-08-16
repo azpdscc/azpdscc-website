@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { Resend } from 'resend';
+import { getResend } from '@/ai/config';
 
 // This is the most complete schema, including the optional QR code and required eventName.
 // It is used for generating the final ticket email.
@@ -99,20 +99,13 @@ const sendVendorTicketFlow = ai.defineFlow(
     outputSchema: VendorApplicationOutputSchema,
   },
   async (input) => {
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-        console.error("Resend API key is not configured.");
-        return { success: false, message: "Server configuration error. Please contact support." };
-    }
-
     try {
+      const resend = getResend();
       const { output: vendorEmailHtml } = await vendorTicketEmailPrompt(input);
 
       if (!vendorEmailHtml) {
         return { success: false, message: 'Failed to generate vendor ticket.' };
       }
-
-      const resend = new Resend(resendApiKey);
 
       await resend.emails.send({
         from: 'PDSCC Vendors <vendors@azpdscc.org>',
@@ -158,13 +151,8 @@ const sendVendorReceiptFlow = ai.defineFlow(
     outputSchema: VendorApplicationOutputSchema,
   },
   async (input) => {
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-        console.error("Resend API key is not configured.");
-        return { success: false, message: "Server configuration error. Please contact support." };
-    }
-
     try {
+        const resend = getResend();
         const eventName = input.eventName || "our upcoming event";
 
         // Cast the input to the schema expected by the prompt
@@ -206,8 +194,6 @@ Payment Information:
 
 Action Required: Please verify the Zelle payment and then approve this application in the admin vendor dashboard to send their ticket.
       `;
-
-      const resend = new Resend(resendApiKey);
 
       await resend.emails.send({
         from: 'PDSCC Vendors <vendors@azpdscc.org>',
