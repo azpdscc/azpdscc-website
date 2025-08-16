@@ -33,9 +33,9 @@ export default function CheckInPage() {
 
     useEffect(() => {
         // This effect runs on the client-side
-        const volunteerLoggedIn = sessionStorage.getItem('volunteer-authenticated') === 'true';
-        if (!volunteerLoggedIn) {
-            router.push('/admin/volunteer-login');
+        const checkinLoggedIn = sessionStorage.getItem('vendor-checkin-authenticated') === 'true';
+        if (!checkinLoggedIn) {
+            router.push('/admin/vendor-check-in-login');
         } else {
             setIsAuthenticated(true);
         }

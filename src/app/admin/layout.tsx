@@ -14,19 +14,19 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   const isLoginPage = pathname === '/admin/login';
-  const isVolunteerLoginPage = pathname === '/admin/volunteer-login';
+  const isVendorCheckInLoginPage = pathname === '/admin/vendor-check-in-login';
   const isPerformersLoginPage = pathname === '/admin/performances-login';
-  const isVolunteerCheckInPage = pathname === '/admin/check-in';
+  const isCheckInPage = pathname === '/admin/check-in';
 
   useEffect(() => {
     // This code runs only on the client.
     // It checks for a session flag to determine auth state.
     let authenticated = false;
 
-    if (isVolunteerCheckInPage) {
+    if (isCheckInPage) {
         // The check-in page has its own separate session logic.
-        authenticated = sessionStorage.getItem('volunteer-authenticated') === 'true';
-        if (!authenticated) router.push('/admin/volunteer-login');
+        authenticated = sessionStorage.getItem('vendor-checkin-authenticated') === 'true';
+        if (!authenticated) router.push('/admin/vendor-check-in-login');
     } else if (pathname.startsWith('/admin/performances') && !isPerformersLoginPage) {
         // The performance dashboard also has its own session logic.
         authenticated = sessionStorage.getItem('performance-authenticated') === 'true' || sessionStorage.getItem('admin-authenticated') === 'true';
@@ -34,7 +34,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     } else {
         // All other admin pages use the main admin session.
         authenticated = sessionStorage.getItem('admin-authenticated') === 'true';
-        if (!authenticated && !isLoginPage && !isVolunteerLoginPage && !isPerformersLoginPage) {
+        if (!authenticated && !isLoginPage && !isVendorCheckInLoginPage && !isPerformersLoginPage) {
             router.push('/admin/login');
         }
     }
@@ -42,7 +42,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     setIsAuthenticated(authenticated);
     setLoading(false);
 
-  }, [pathname, router, isLoginPage, isVolunteerLoginPage, isPerformersLoginPage, isVolunteerCheckInPage]);
+  }, [pathname, router, isLoginPage, isVendorCheckInLoginPage, isPerformersLoginPage, isCheckInPage]);
 
 
   if (loading) {
@@ -54,7 +54,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }
 
   // If on a login page, just render the content without the main layout.
-  if (isLoginPage || isVolunteerLoginPage || isPerformersLoginPage) {
+  if (isLoginPage || isVendorCheckInLoginPage || isPerformersLoginPage) {
       return <main>{children}</main>;
   }
 

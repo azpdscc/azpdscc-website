@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -76,7 +77,7 @@ export function Footer() {
                   </Link>
                 </li>
                  <li>
-                  <Link href="/admin/volunteer-login" className="text-muted-foreground hover:text-primary flex items-center gap-1">
+                  <Link href="/admin/vendor-check-in-login" className="text-muted-foreground hover:text-primary flex items-center gap-1">
                       <UserCheck className="h-3 w-3" />
                       Vendor Check-in Login
                   </Link>
