@@ -61,14 +61,16 @@ const sendWelcomeEmailFlow = ai.defineFlow(
         console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in the server environment.");
         throw new Error("Server configuration error for sending emails.");
     }
-    const resend = new Resend(resendApiKey);
     
     try {
       // 1. Check if the user is already subscribed
       const alreadySubscribed = await isSubscribed(input.email);
       if (alreadySubscribed) {
-        return { success: true, message: "This email is already subscribed. Thank you!" };
+        return { success: true, message: "This email is already on our mailing list. Thank you!" };
       }
+
+      // If not subscribed, create the Resend client
+      const resend = new Resend(resendApiKey);
 
       // 2. Add the new subscriber to the database
       await addSubscriber(input.email);
@@ -100,7 +102,6 @@ const sendWelcomeEmailFlow = ai.defineFlow(
     } catch (error) {
       console.error('Welcome email flow failed:', error);
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-      // Do not re-throw the specific error message from the initial check
       if (errorMessage.includes("Server configuration error")) {
           throw new Error("Server configuration error for sending emails.");
       }
