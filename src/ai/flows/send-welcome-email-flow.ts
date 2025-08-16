@@ -58,7 +58,7 @@ const sendWelcomeEmailFlow = ai.defineFlow(
   async (input) => {
     const resendApiKey = process.env.RESEND_API_KEY;
     if (!resendApiKey) {
-        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set.");
+        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in your environment.");
         return { success: false, message: "Server configuration error. Please contact support." };
     }
 
