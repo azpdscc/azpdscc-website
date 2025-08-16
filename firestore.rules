@@ -1,3 +1,4 @@
+
 rules_version = '2';
 
 service cloud.firestore {
@@ -25,9 +26,9 @@ service cloud.firestore {
     }
 
     match /subscribers/{subscriberId} {
-      allow read: if request.auth != null;
+      allow get: if true; // Allow checking if a specific email exists
+      allow list: if request.auth != null; // Only admins can list all subscribers
       allow create: if true; // Allow anyone to subscribe
-      allow update, delete: if request.auth != null; // Only admins can modify/delete
     }
 
     // --- ADMIN-ONLY COLLECTIONS ---
