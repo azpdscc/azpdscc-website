@@ -8,7 +8,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { Resend } from 'resend';
+import { getResend } from '@/ai/config';
 import { addSubscriber, isSubscribed } from '@/services/subscribers';
 
 // Input schema for the welcome email flow
@@ -56,23 +56,17 @@ const sendWelcomeEmailFlow = ai.defineFlow(
     outputSchema: WelcomeEmailOutputSchema,
   },
   async (input) => {
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in your environment.");
-        return { success: false, message: "Server configuration error. Please contact support." };
-    }
-
     try {
       // 1. Check if the user is already subscribed
       const alreadySubscribed = await isSubscribed(input.email);
       if (alreadySubscribed) {
         return { success: true, message: "This email is already subscribed. Thank you!" };
       }
+      
+      const resend = getResend();
 
       // 2. Add the new subscriber to the database
       await addSubscriber(input.email);
-      
-      const resend = new Resend(resendApiKey);
 
       // 3. Generate the welcome email body for the user
       const { output: welcomeEmailBody } = await welcomeEmailPrompt({});
@@ -100,7 +94,8 @@ const sendWelcomeEmailFlow = ai.defineFlow(
       return { success: true, message: "Subscription successful! A welcome email has been sent." };
     } catch (error) {
       console.error('Welcome email flow failed:', error);
-      return { success: false, message: 'An error occurred while subscribing.' };
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+      return { success: false, message: `An error occurred while subscribing: ${errorMessage}` };
     }
   }
 );
