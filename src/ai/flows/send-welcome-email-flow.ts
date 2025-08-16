@@ -14,6 +14,7 @@ import { addSubscriber, isSubscribed } from '@/services/subscribers';
 // Input schema for the welcome email flow
 const WelcomeEmailInputSchema = z.object({
   email: z.string().email().describe("The new subscriber's email address."),
+  resendApiKey: z.string().optional().describe("The Resend API key for sending emails."),
 });
 export type WelcomeEmailInput = z.infer<typeof WelcomeEmailInputSchema>;
 
@@ -26,11 +27,13 @@ export type WelcomeEmailOutput = z.infer<typeof WelcomeEmailOutputSchema>;
 
 /**
  * Public function to trigger the welcome email flow.
+ * This function now reads the API key from the environment and passes it to the flow.
  * @param input The subscriber details.
  * @returns A promise that resolves to the flow's output.
  */
-export async function sendWelcomeEmail(input: WelcomeEmailInput): Promise<WelcomeEmailOutput> {
-  return sendWelcomeEmailFlow(input);
+export async function sendWelcomeEmail(input: Omit<WelcomeEmailInput, 'resendApiKey'>): Promise<WelcomeEmailOutput> {
+  const apiKey = process.env.RESEND_API_KEY;
+  return sendWelcomeEmailFlow({ ...input, resendApiKey: apiKey });
 }
 
 // AI prompt to generate a confirmation email
@@ -56,8 +59,7 @@ const sendWelcomeEmailFlow = ai.defineFlow(
     outputSchema: WelcomeEmailOutputSchema,
   },
   async (input) => {
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
+    if (!input.resendApiKey) {
         console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in your environment.");
         return { success: false, message: "Server configuration error. Please contact support." };
     }
@@ -72,7 +74,7 @@ const sendWelcomeEmailFlow = ai.defineFlow(
       // 2. Add the new subscriber to the database
       await addSubscriber(input.email);
       
-      const resend = new Resend(resendApiKey);
+      const resend = new Resend(input.resendApiKey);
 
       // 3. Generate the welcome email body for the user
       const { output: welcomeEmailBody } = await welcomeEmailPrompt({});
