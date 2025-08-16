@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { getResend } from '@/ai/config';
+import { Resend } from 'resend';
 
 // Input schema for the donation receipt flow
 const DonationReceiptInputSchema = z.object({
@@ -72,9 +72,14 @@ const sendDonationReceiptFlow = ai.defineFlow(
     outputSchema: DonationReceiptOutputSchema,
   },
   async (input) => {
-    try {
-      const resend = getResend();
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in the server environment.");
+        throw new Error("Server configuration error for sending emails.");
+    }
+    const resend = new Resend(resendApiKey);
 
+    try {
       // 1. Generate the email content for the donor
       const { output: emailBody } = await receiptEmailPrompt(input);
 
@@ -120,6 +125,9 @@ const sendDonationReceiptFlow = ai.defineFlow(
       console.error('Donation flow failed:', error);
       // It's helpful to see the actual error in the server logs
       const errorMessage = error instanceof Error ? error.message : String(error);
+       if (errorMessage.includes("Server configuration error")) {
+          throw new Error("Server configuration error for sending emails.");
+      }
       return { success: false, message: `Failed to process donation. Error: ${errorMessage}` };
     }
   }

@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { getResend } from '@/ai/config';
+import { Resend } from 'resend';
 
 // Input schema for the check notification flow
 const CheckNotificationInputSchema = z.object({
@@ -44,9 +44,14 @@ const sendCheckNotificationFlow = ai.defineFlow(
     outputSchema: CheckNotificationOutputSchema,
   },
   async (input) => {
-    try {
-      const resend = getResend();
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in the server environment.");
+        throw new Error("Server configuration error for sending emails.");
+    }
+    const resend = new Resend(resendApiKey);
 
+    try {
       // Prepare and send the notification email to the admin
       const adminEmailText = `
         You have received a new Check Donation notification. Please look for this check in the mail.

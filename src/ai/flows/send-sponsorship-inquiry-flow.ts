@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { getResend } from '@/ai/config';
+import { Resend } from 'resend';
 
 // Input schema for the sponsorship inquiry flow
 const SponsorshipInquiryInputSchema = z.object({
@@ -69,9 +69,14 @@ const sendSponsorshipInquiryFlow = ai.defineFlow(
     outputSchema: SponsorshipInquiryOutputSchema,
   },
   async (input) => {
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in the server environment.");
+        throw new Error("Server configuration error for sending emails.");
+    }
+    const resend = new Resend(resendApiKey);
+
     try {
-      const resend = getResend();
-      
       // 1. Generate the confirmation email for the potential sponsor
       const { output: sponsorEmailBody } = await confirmationEmailPrompt({
           contactName: input.contactName,
@@ -119,6 +124,10 @@ const sendSponsorshipInquiryFlow = ai.defineFlow(
       return { success: true, message: "Thank you for your interest! A confirmation has been sent to your email." };
     } catch (error) {
       console.error('Sponsorship inquiry flow failed:', error);
+       const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage.includes("Server configuration error")) {
+          throw new Error("Server configuration error for sending emails.");
+      }
       return { success: false, message: 'An error occurred during your inquiry.' };
     }
   }

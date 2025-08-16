@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { getResend } from '@/ai/config';
+import { Resend } from 'resend';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
@@ -77,9 +77,14 @@ const sendPerformanceApplicationFlow = ai.defineFlow(
     outputSchema: PerformanceApplicationOutputSchema,
   },
   async (input) => {
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in the server environment.");
+        throw new Error("Server configuration error for sending emails.");
+    }
+    const resend = new Resend(resendApiKey);
+
     try {
-      const resend = getResend();
-      
       // 1. Save the application to Firestore
       await addDoc(collection(db, 'performanceRegistrations'), {
           ...input,
@@ -142,6 +147,9 @@ Action Required: Please review this application in the performance dashboard.
     } catch (error) {
       console.error('Performance application flow failed:', error);
       const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+      if (errorMessage.includes("Server configuration error")) {
+          throw new Error("Server configuration error for sending emails.");
+      }
       return { success: false, message: `An error occurred: ${errorMessage}` };
     }
   }

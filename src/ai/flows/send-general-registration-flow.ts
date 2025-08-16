@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { getResend } from '@/ai/config';
+import { Resend } from 'resend';
 
 // Input schema for the general registration flow
 const GeneralRegistrationInputSchema = z.object({
@@ -69,9 +69,14 @@ const sendGeneralRegistrationFlow = ai.defineFlow(
     outputSchema: GeneralRegistrationOutputSchema,
   },
   async (input) => {
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in the server environment.");
+        throw new Error("Server configuration error for sending emails.");
+    }
+    const resend = new Resend(resendApiKey);
+
     try {
-      const resend = getResend();
-      
       // 1. Generate the vendor confirmation email
       const { output: vendorEmailBody } = await registrationEmailPrompt({
           businessName: input.businessName,
@@ -119,6 +124,9 @@ const sendGeneralRegistrationFlow = ai.defineFlow(
     } catch (error) {
       console.error('General registration flow failed:', error);
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+       if (errorMessage.includes("Server configuration error")) {
+          throw new Error("Server configuration error for sending emails.");
+      }
       return { success: false, message: `An error occurred during registration: ${errorMessage}` };
     }
   }

@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { getResend } from '@/ai/config';
+import { Resend } from 'resend';
 
 // This is the most complete schema, including the optional QR code and required eventName.
 // It is used for generating the final ticket email.
@@ -99,8 +99,14 @@ const sendVendorTicketFlow = ai.defineFlow(
     outputSchema: VendorApplicationOutputSchema,
   },
   async (input) => {
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in the server environment.");
+        throw new Error("Server configuration error for sending emails.");
+    }
+    const resend = new Resend(resendApiKey);
+
     try {
-      const resend = getResend();
       const { output: vendorEmailHtml } = await vendorTicketEmailPrompt(input);
 
       if (!vendorEmailHtml) {
@@ -117,6 +123,10 @@ const sendVendorTicketFlow = ai.defineFlow(
       return { success: true, message: "Ticket sent to vendor." };
     } catch (error) {
       console.error('Vendor ticket flow failed:', error);
+       const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage.includes("Server configuration error")) {
+          throw new Error("Server configuration error for sending emails.");
+      }
       return { success: false, message: 'An error occurred while sending the ticket.' };
     }
   }
@@ -151,8 +161,14 @@ const sendVendorReceiptFlow = ai.defineFlow(
     outputSchema: VendorApplicationOutputSchema,
   },
   async (input) => {
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in the server environment.");
+        throw new Error("Server configuration error for sending emails.");
+    }
+    const resend = new Resend(resendApiKey);
+
     try {
-        const resend = getResend();
         const eventName = input.eventName || "our upcoming event";
 
         // Cast the input to the schema expected by the prompt
@@ -212,6 +228,10 @@ Action Required: Please verify the Zelle payment and then approve this applicati
       return { success: true, message: "Application submitted! A confirmation receipt has been sent to your email. You will receive your official ticket once payment is verified." };
     } catch (error) {
         console.error('Vendor receipt flow failed:', error);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        if (errorMessage.includes("Server configuration error")) {
+            throw new Error("Server configuration error for sending emails.");
+        }
         return { success: false, message: 'An error occurred while sending your application receipt.' };
     }
   }
