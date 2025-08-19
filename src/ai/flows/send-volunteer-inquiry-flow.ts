@@ -18,6 +18,7 @@ const VolunteerInquiryInputSchema = z.object({
   phone: z.string().optional().describe("The volunteer's phone number."),
   interests: z.array(z.string()).describe("The areas the volunteer is interested in."),
   message: z.string().optional().describe("An optional message from the volunteer."),
+  smsConsent: z.boolean().optional().describe("Whether the user agreed to receive SMS messages."),
 });
 export type VolunteerInquiryInput = z.infer<typeof VolunteerInquiryInputSchema>;
 
@@ -83,6 +84,7 @@ const sendVolunteerInquiryFlow = ai.defineFlow(
         Name: ${input.name}
         Email: ${input.email}
         Phone: ${input.phone || 'Not provided'}
+        SMS Consent: ${input.smsConsent ? 'Yes' : 'No'}
         
         Areas of Interest:
         - ${input.interests.join('\n- ')}

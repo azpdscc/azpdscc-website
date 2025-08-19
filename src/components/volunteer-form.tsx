@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -34,6 +35,7 @@ const volunteerFormSchema = z.object({
     message: "You have to select at least one area of interest.",
   }),
   message: z.string().max(500, "Message cannot exceed 500 characters.").optional(),
+  smsConsent: z.boolean().default(false).optional(),
 });
 
 type VolunteerFormValues = z.infer<typeof volunteerFormSchema>;
@@ -51,6 +53,7 @@ export function VolunteerForm() {
       phone: "",
       interests: [],
       message: "",
+      smsConsent: false,
     },
   });
 
@@ -157,6 +160,32 @@ export function VolunteerForm() {
                 <FormMessage />
             </FormItem>
             )} />
+
+            <FormField
+              control={form.control}
+              name="smsConsent"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      Yes, keep me updated! Send me important information about my application, deadlines, and related PDSCC events via email and SMS.
+                    </FormLabel>
+                    <FormDescription>
+                      Message and data rates may apply. You can opt-out at any time. {' '}
+                      <Link href="/sms-policy" target="_blank" className="text-primary hover:underline">
+                        Learn More
+                      </Link>
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
             
             <Button type="submit" size="lg" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
