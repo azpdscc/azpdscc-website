@@ -65,7 +65,7 @@ const volunteerLetterPrompt = ai.definePrompt({
         {{/if}}
     8.  A closing paragraph: "Your contribution was invaluable to the success of our event and to our mission of serving the community. We look forward to your continued support."
     9.  A formal closing: "Sincerely,".
-    10. The signature: "Rana Singh, President, PDSCC".
+    10. The signature: "PDSCC Team".
 
     The entire response must be ONLY the full HTML code for the email body. Do not include any text before or after the <html> tag.
   `,
