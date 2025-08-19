@@ -3,26 +3,54 @@
 
 import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { holidays, type Holiday } from '@/lib/holidays';
+import { fixedHolidays, variableHolidayDetails, type Holiday } from '@/lib/holidays';
+import { calculateHolidaysForYear } from '@/ai/flows/calculate-holidays-flow';
 import { Card, CardContent } from '@/components/ui/card';
 
 export function HolidayBanner() {
   const [currentHoliday, setCurrentHoliday] = useState<Holiday | null>(null);
 
   useEffect(() => {
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth() + 1; // getMonth() is 0-indexed
-    const currentDay = today.getDate();
+    const findCurrentHoliday = async () => {
+      const today = new Date();
+      const currentYear = today.getFullYear();
+      const currentMonth = today.getMonth() + 1; // getMonth() is 0-indexed
+      const currentDay = today.getDate();
 
-    const holiday = holidays.find((h) => {
-      // If the holiday has a specific year, it must match the current year.
-      // Otherwise (for fixed-date holidays), we ignore the year.
-      const yearMatches = !h.year || h.year === currentYear;
-      return yearMatches && h.month === currentMonth && h.day === currentDay;
-    });
+      // 1. Check for a fixed holiday first
+      const fixedHoliday = fixedHolidays.find(h => h.month === currentMonth && h.day === currentDay);
+      if (fixedHoliday) {
+        setCurrentHoliday(fixedHoliday);
+        return;
+      }
+      
+      try {
+        // 2. If no fixed holiday, fetch the variable holidays for the current year
+        const { holidays: calculatedHolidays } = await calculateHolidaysForYear({ year: currentYear });
+        
+        // 3. Find if today is a calculated holiday
+        const calculatedHoliday = calculatedHolidays.find(h => h.month === currentMonth && h.day === currentDay);
 
-    setCurrentHoliday(holiday || null);
+        if (calculatedHoliday) {
+          // 4. Find the matching message and icon for the holiday
+          const details = variableHolidayDetails.find(d => d.name === calculatedHoliday.name);
+          if (details) {
+            setCurrentHoliday({
+              ...calculatedHoliday,
+              message: details.message,
+              icon: details.icon,
+            });
+          }
+        }
+      } catch (error) {
+          console.error("Failed to fetch or process variable holidays:", error);
+          // Don't display a banner if the AI call fails.
+          setCurrentHoliday(null);
+      }
+    };
+    
+    findCurrentHoliday();
+
   }, []);
 
   return (
