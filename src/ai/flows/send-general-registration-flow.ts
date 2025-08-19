@@ -19,6 +19,7 @@ const GeneralRegistrationInputSchema = z.object({
   phone: z.string().describe("The vendor's phone number."),
   category: z.string().describe("The primary product category."),
   description: z.string().describe("A short description of the business."),
+  smsConsent: z.boolean().optional().describe("Whether the user agreed to receive SMS messages."),
 });
 export type GeneralRegistrationInput = z.infer<typeof GeneralRegistrationInputSchema>;
 
@@ -97,6 +98,7 @@ const sendGeneralRegistrationFlow = ai.defineFlow(
         - Contact Name: ${input.contactName}
         - Email: ${input.email}
         - Phone: ${input.phone}
+        - SMS Consent: ${input.smsConsent ? 'Yes' : 'No'}
         - Category: ${input.category}
         - Description: ${input.description}
 

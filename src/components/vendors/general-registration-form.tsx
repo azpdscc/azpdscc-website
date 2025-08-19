@@ -10,11 +10,13 @@ import { sendGeneralRegistration } from '@/ai/flows/send-general-registration-fl
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, CheckCircle } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog';
+import { Checkbox } from '../ui/checkbox';
+import Link from 'next/link';
 
 
 const formSchema = z.object({
@@ -26,6 +28,7 @@ const formSchema = z.object({
     required_error: "Please select a product category.",
   }),
   description: z.string().min(10, "Description must be at least 10 characters.").max(300),
+  smsConsent: z.boolean().default(false).optional(),
 });
 
 type GeneralRegistrationFormValues = z.infer<typeof formSchema>;
@@ -44,6 +47,7 @@ export function GeneralRegistrationForm() {
       phone: "",
       category: undefined,
       description: "",
+      smsConsent: false,
     },
   });
 
@@ -116,6 +120,32 @@ export function GeneralRegistrationForm() {
                 <FormMessage />
             </FormItem>
             )} />
+
+             <FormField
+              control={form.control}
+              name="smsConsent"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      Yes, keep me updated! Send me important information about my application, deadlines, and related PDSCC events via email and SMS.
+                    </FormLabel>
+                    <FormDescription>
+                      Message and data rates may apply. You can opt-out at any time. {' '}
+                      <Link href="/sms-policy" target="_blank" className="text-primary hover:underline">
+                        Learn More
+                      </Link>
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
             
             <Button type="submit" size="lg" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
