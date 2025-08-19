@@ -11,12 +11,16 @@ export function HolidayBanner() {
 
   useEffect(() => {
     const today = new Date();
+    const currentYear = today.getFullYear();
     const currentMonth = today.getMonth() + 1; // getMonth() is 0-indexed
     const currentDay = today.getDate();
 
-    const holiday = holidays.find(
-      (h) => h.month === currentMonth && h.day === currentDay
-    );
+    const holiday = holidays.find((h) => {
+      // If the holiday has a specific year, it must match the current year.
+      // Otherwise (for fixed-date holidays), we ignore the year.
+      const yearMatches = !h.year || h.year === currentYear;
+      return yearMatches && h.month === currentMonth && h.day === currentDay;
+    });
 
     setCurrentHoliday(holiday || null);
   }, []);
