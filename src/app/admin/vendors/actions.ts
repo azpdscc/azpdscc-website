@@ -52,6 +52,7 @@ const VendorApplicationInputSchema = z.object({
   paymentSent: z.boolean().refine(val => val === true, {
     message: 'You must confirm payment has been sent.',
   }),
+  smsConsent: z.boolean().default(false).optional(),
 });
 
 
@@ -70,6 +71,7 @@ export async function vendorApplicationAction(
         zelleSenderName: formData.get('zelleSenderName'),
         zelleDateSent: formData.get('zelleDateSent'),
         paymentSent: formData.get('paymentSent') === 'on',
+        smsConsent: formData.get('smsConsent') === 'on',
     });
 
     if (!validatedFields.success) {

@@ -53,6 +53,7 @@ export type VendorApplicationFormData = {
   zelleSenderName: string;
   zelleDateSent: string;
   paymentConfirmed?: boolean;
+  smsConsent?: boolean;
   qrCodeUrl?: string;
   eventId: string;
   eventName: string;
@@ -79,6 +80,7 @@ export type VendorApplication = {
   verifiedAt?: string; // Serialized as ISO string
   checkInStatus: 'pending' | 'checkedIn';
   checkedInAt?: string; // Serialized as ISO string
+  smsConsent?: boolean;
 };
 
 export type DonationFormValues = {
@@ -163,7 +165,7 @@ export type PerformanceApplication = {
     event: string;
     performanceType: string;
     participants: number;
-    auditionLink: string;
+    auditionLink?: string;
     specialRequests?: string;
     status: 'Pending' | 'Approved' | 'Declined';
     submittedAt: string; // ISO String

@@ -21,6 +21,7 @@ import { format } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog';
+import Link from 'next/link';
 
 
 const boothOptions: { [key: string]: string } = {
@@ -168,6 +169,21 @@ export function ApplicationForm() {
                                 {state?.errors?.zelleDateSent && <p className="text-destructive text-sm mt-1">{state.errors.zelleDateSent.join(', ')}</p>}
                             </div>
                         </fieldset>
+
+                        <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                            <Checkbox id="smsConsent" name="smsConsent" />
+                             <div className="space-y-1 leading-none">
+                                <Label htmlFor="smsConsent" className="font-bold">
+                                    Yes, keep me updated! Send me important information about my application, deadlines, and related PDSCC events via email and SMS.
+                                </Label>
+                                <p className="text-sm text-muted-foreground">
+                                Message and data rates may apply. You can opt-out at any time. {' '}
+                                <Link href="/sms-policy" target="_blank" className="text-primary hover:underline">
+                                    Learn More
+                                </Link>
+                                </p>
+                            </div>
+                        </div>
 
                         {state?.errors?._form && (
                             <Alert variant="destructive">

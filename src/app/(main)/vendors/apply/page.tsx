@@ -36,13 +36,9 @@ export default function VendorApplyPage() {
       const firstUpcomingEvent = upcomingEvents.length > 0 ? upcomingEvents[0] : null;
       setNextEvent(firstUpcomingEvent);
 
-      if (firstUpcomingEvent) {
-          const eventDate = new Date(firstUpcomingEvent.date);
-          const daysUntilEvent = differenceInDays(eventDate, now);
-          if (daysUntilEvent <= 90) {
-              setRegistrationOpen(true);
-          }
-      }
+      // Temporarily open for testing
+      setRegistrationOpen(true);
+      
       setIsLoading(false);
     };
 
