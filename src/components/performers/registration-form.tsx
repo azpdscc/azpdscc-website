@@ -172,7 +172,7 @@ export function PerformanceRegistrationForm() {
                   </FormControl>
                   <div className="space-y-1 leading-none">
                     <FormLabel>
-                      I agree to receive limited email and SMS messages from PDSCC about my application and related events.
+                      I agree to receive limited email and SMS messages from PDSCC about my application and related events and activities.
                     </FormLabel>
                     <FormDescription>
                       Message and data rates may apply. You can opt-out at any time. {' '}
