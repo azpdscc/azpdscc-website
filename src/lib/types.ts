@@ -148,7 +148,9 @@ export type GenerateBlogPostOutput = {
 };
 
 export type Subscriber = {
-  email: string; // This will also be the document ID
+  id: string; // Firestore document ID (email)
+  email: string;
+  name?: string;
   subscribedAt: Timestamp;
 };
 

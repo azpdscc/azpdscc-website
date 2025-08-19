@@ -21,9 +21,9 @@ export function Footer() {
             <>
               <div className="text-center mb-12">
                   <Mail className="mx-auto h-12 w-12 text-primary mb-4" strokeWidth={1.5}/>
-                  <h2 className="font-headline text-3xl font-bold text-foreground">Stay Connected</h2>
+                  <h2 className="font-headline text-3xl font-bold text-foreground">Never Miss an Update</h2>
                   <p className="mt-2 max-w-2xl mx-auto text-muted-foreground">
-                      Never miss an update. Subscribe to our mailing list for the latest news on festivals, community events, and special announcements.
+                      Subscribe to our mailing list for the latest news on festivals, community events, and special announcements.
                   </p>
                   <div className="mt-6 max-w-lg mx-auto">
                       <SubscribeForm />

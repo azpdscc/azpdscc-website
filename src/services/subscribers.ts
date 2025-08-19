@@ -30,13 +30,14 @@ export async function isSubscribed(email: string): Promise<boolean> {
 /**
  * Adds a new email to the subscribers collection.
  * Uses the email as the document ID to prevent duplicates.
- * @param {string} email - The email address to add.
+ * @param {{ email: string, name?: string }} subscriberData - The subscriber's data.
  * @returns {Promise<void>}
  */
-export async function addSubscriber(email: string): Promise<void> {
-    const subscriberDoc = doc(db, 'subscribers', email);
+export async function addSubscriber(subscriberData: { email: string, name?: string }): Promise<void> {
+    const subscriberDoc = doc(db, 'subscribers', subscriberData.email);
     await setDoc(subscriberDoc, {
-        email: email,
+        email: subscriberData.email,
+        name: subscriberData.name || '',
         subscribedAt: serverTimestamp()
     });
 }

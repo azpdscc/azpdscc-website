@@ -6,6 +6,7 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { sendWelcomeEmail } from '@/ai/flows/send-welcome-email-flow';
+import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,6 +17,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescript
 
 
 const formSchema = z.object({
+  name: z.string().optional(),
   email: z.string().email("Please enter a valid email address."),
 });
 
@@ -29,6 +31,7 @@ export function SubscribeForm() {
   const form = useForm<SubscribeFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: "",
       email: "",
     },
   });
@@ -64,31 +67,39 @@ export function SubscribeForm() {
   return (
     <>
         <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full items-start gap-2">
-            <FormField
-            name="email"
-            control={form.control}
-            render={({ field }) => (
-                <FormItem className="flex-1">
-                <FormControl>
-                    <Input
-                    type="email"
-                    placeholder="Enter your email address..."
-                    {...field}
-                    className="bg-background h-12"
-                    />
-                </FormControl>
-                <FormMessage className="text-left" />
-                </FormItem>
-            )}
-            />
-            <Button type="submit" size="lg" className="h-12" disabled={isSubmitting}>
-            {isSubmitting ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
-            ) : (
-                <span>Subscribe</span>
-            )}
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="flex flex-col sm:flex-row w-full items-start gap-2">
+                <FormField name="name" control={form.control} render={({ field }) => (
+                    <FormItem className="w-full sm:w-1/3">
+                        <FormControl>
+                            <Input placeholder="First Name (Optional)" {...field} className="bg-background h-12"/>
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )} />
+                <FormField name="email" control={form.control} render={({ field }) => (
+                    <FormItem className="flex-1">
+                        <FormControl>
+                            <Input type="email" placeholder="Enter your email address..." {...field} className="bg-background h-12" required/>
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )} />
+            </div>
+            <Button type="submit" size="lg" className="w-full h-12" disabled={isSubmitting}>
+                {isSubmitting ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                    <span>Subscribe</span>
+                )}
             </Button>
+             <p className="text-xs text-muted-foreground text-center pt-2">
+                We respect your privacy. Read our{' '}
+                <Link href="/privacy-policy" className="underline hover:text-primary">
+                    Privacy Policy
+                </Link>
+                .
+            </p>
         </form>
         </Form>
         <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>

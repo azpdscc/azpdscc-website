@@ -11,9 +11,10 @@ import { z } from 'zod';
 import { Resend } from 'resend';
 import { addSubscriber, isSubscribed } from '@/services/subscribers';
 
-// Input schema for the welcome email flow
+// Input schema for the welcome email flow, now including an optional name.
 const WelcomeEmailInputSchema = z.object({
   email: z.string().email().describe("The new subscriber's email address."),
+  name: z.string().optional().describe("The new subscriber's first name, if provided."),
 });
 export type WelcomeEmailInput = z.infer<typeof WelcomeEmailInputSchema>;
 
@@ -33,15 +34,21 @@ export async function sendWelcomeEmail(input: WelcomeEmailInput): Promise<Welcom
   return sendWelcomeEmailFlow(input);
 }
 
-// AI prompt to generate a confirmation email
+// AI prompt to generate a confirmation email, now personalized.
 const welcomeEmailPrompt = ai.definePrompt({
   name: 'welcomeEmailPrompt',
+  input: { schema: WelcomeEmailInputSchema },
   output: { format: 'text' },
   prompt: `
     Generate a warm and friendly welcome email body for a new subscriber to the PDSCC mailing list.
     The tone should be celebratory and inviting.
-
+    
+    {{#if name}}
+    Start the email with a big, friendly "Welcome to the community, {{{name}}}!".
+    {{else}}
     Start the email with a big, friendly "Welcome to the community!".
+    {{/if}}
+
     Thank them for subscribing and let them know they'll now be the first to hear about upcoming festivals, events, and community news.
     Encourage them to connect on social media (without providing links).
     End with "Warmly," followed by "The PDSCC Team".
@@ -73,10 +80,10 @@ const sendWelcomeEmailFlow = ai.defineFlow(
       const resend = new Resend(resendApiKey);
 
       // 2. Add the new subscriber to the database
-      await addSubscriber(input.email);
+      await addSubscriber({ email: input.email, name: input.name });
 
       // 3. Generate the welcome email body for the user
-      const { output: welcomeEmailBody } = await welcomeEmailPrompt({});
+      const { output: welcomeEmailBody } = await welcomeEmailPrompt(input);
       if (!welcomeEmailBody) {
         throw new Error("AI welcome email generation failed.");
       }
@@ -95,7 +102,7 @@ const sendWelcomeEmailFlow = ai.defineFlow(
         from: 'Newsletter Bot <noreply@azpdscc.org>',
         to: 'admin@azpdscc.org',
         subject: 'New Newsletter Subscriber',
-        text: `A new user has subscribed to the newsletter:\n\nEmail: ${input.email}`,
+        text: `A new user has subscribed to the newsletter:\n\nEmail: ${input.email}\nName: ${input.name || 'Not provided'}`,
       });
      
       return { success: true, message: "Subscription successful! A welcome email has been sent." };
