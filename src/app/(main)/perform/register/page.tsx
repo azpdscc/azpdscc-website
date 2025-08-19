@@ -37,11 +37,13 @@ export default function PerformanceRegistrationPage() {
       setNextEvent(firstUpcomingEvent);
 
       if (firstUpcomingEvent) {
-        const eventDate = new Date(firstUpcomingEvent.date);
-        const days = differenceInDays(eventDate, now);
-        if (days <= 90) { 
-          setRegistrationOpen(true);
-        }
+        // const eventDate = new Date(firstUpcomingEvent.date);
+        // const days = differenceInDays(eventDate, now);
+        // if (days <= 90) { 
+        //   setRegistrationOpen(true);
+        // }
+        // Temporarily open for testing
+        setRegistrationOpen(true);
       }
       setIsLoading(false);
     };

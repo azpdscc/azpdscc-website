@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import Link from 'next/link';
 import { sendPerformanceApplication } from '@/ai/flows/send-performance-application-flow';
 
 import { Button } from '@/components/ui/button';
@@ -12,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, CheckCircle } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog';
@@ -31,6 +33,7 @@ const formSchema = z.object({
   participants: z.string().refine(val => !isNaN(parseInt(val)) && parseInt(val) > 0, { message: "Please enter a valid number of participants." }),
   auditionLink: z.string().url("Please provide a valid URL (e.g., YouTube, Google Drive).").optional().or(z.literal('')),
   specialRequests: z.string().max(500, "Message cannot exceed 500 characters.").optional(),
+  smsConsent: z.boolean().default(false).optional(),
 });
 
 type PerformanceRegistrationFormValues = z.infer<typeof formSchema>;
@@ -52,6 +55,7 @@ export function PerformanceRegistrationForm() {
       participants: "1",
       auditionLink: "",
       specialRequests: "",
+      smsConsent: false,
     },
     mode: 'onBlur',
   });
@@ -154,6 +158,32 @@ export function PerformanceRegistrationForm() {
                 <FormMessage />
             </FormItem>
             )} />
+
+            <FormField
+              control={form.control}
+              name="smsConsent"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      I agree to receive SMS messages from PDSCC about events and raffles.
+                    </FormLabel>
+                    <FormDescription>
+                      Message and data rates may apply. {' '}
+                      <Link href="/sms-policy" target="_blank" className="text-primary hover:underline">
+                        Learn More
+                      </Link>
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
             
             <Button type="submit" size="lg" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

@@ -165,4 +165,5 @@ export type PerformanceApplication = {
     specialRequests?: string;
     status: 'Pending' | 'Approved' | 'Declined';
     submittedAt: string; // ISO String
+    smsConsent?: boolean;
 }
