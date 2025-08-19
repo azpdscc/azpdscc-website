@@ -40,7 +40,7 @@ export const holidays: Holiday[] = [
   // US Independence Day: Blue to Red
   { name: "US Independence Day", month: 7, day: 4, message: "Happy 4th of July!", icon: Flame, primaryColor: '221.2 83.2% 53.3%', accentColor: '0 84.2% 60.2%' },
   // Raksha Bandhan (2024)
-  { name: "Raksha Bandhan", month: 8, day: 19, message: "Happy Raksha Bandhan!", icon: Hand, primaryColor: '300 80% 60%', accentColor: '320 90% 80%' },
+  { name: "Raksha Bandhan", month: 8, day: 9, message: "Happy Raksha Bandhan!", icon: Hand, primaryColor: '300 80% 60%', accentColor: '320 90% 80%' },
   // Janmashtami
   { name: "Janmashtami", month: 8, day: 26, message: "Happy Janmashtami!", icon: Sun, primaryColor: '210 90% 65%', accentColor: '45 86% 59%' },
   // Labor Day
