@@ -95,7 +95,7 @@ export default function VendorsPage() {
                   Have a specific upcoming event in mind? Apply for a booth to sell your products and services.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="flex-grow flex flex-col items-center justify-center w-full px-6 pb-6">
+              <CardContent className="flex-grow flex flex-col items-center justify-end w-full px-6 pb-6">
                 {isLoading ? (
                   <Button size="lg" className="w-full" disabled>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -146,7 +146,7 @@ export default function VendorsPage() {
                   Not ready for a specific event? Join our network to be notified of future vendor opportunities.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="flex-grow flex items-end justify-center">
+              <CardContent className="flex-grow flex items-end justify-center w-full px-6 pb-6">
                 <Button asChild size="lg" className="w-full">
                   <Link href="/vendors/join">Register Your Business <ArrowRight className="ml-2 h-4 w-4" strokeWidth={1.5} /></Link>
                 </Button>
