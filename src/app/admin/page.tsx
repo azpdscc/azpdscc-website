@@ -2,13 +2,29 @@
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CalendarPlus, Users, Handshake, PenSquare, UserCheck, QrCode, Mic, ShoppingCart, Clock, CheckSquare, ShieldCheck } from 'lucide-react';
+import { CalendarPlus, Users, Handshake, PenSquare, UserCheck, QrCode, Mic, ShoppingCart, Clock, CheckSquare, ShieldCheck, HelpCircle } from 'lucide-react';
 
 export default function AdminDashboardPage() {
   return (
     <div className="container mx-auto p-4 md:p-8">
       <h1 className="font-headline text-3xl font-bold mb-8">Admin Dashboard</h1>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <Card className="bg-primary/10 border-primary/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+                <HelpCircle className="h-6 w-6 text-primary" />
+                Admin Guide
+            </CardTitle>
+            <CardDescription>
+                New to the dashboard? Start here. A complete guide to all admin functions.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+             <Button asChild>
+                <Link href="/admin/guide">Read the Guide</Link>
+            </Button>
+          </CardContent>
+        </Card>
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
