@@ -173,15 +173,9 @@ export function ApplicationForm() {
                         <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                             <Checkbox id="smsConsent" name="smsConsent" />
                              <div className="space-y-1 leading-none">
-                                <Label htmlFor="smsConsent" className="font-bold">
-                                    Yes, keep me updated! Send me important information about my application, deadlines, and related PDSCC events via email and SMS.
+                                <Label htmlFor="smsConsent">
+                                  By providing your phone number, you agree to receive SMS notifications about our events and raffle updates. Msg & data rates may apply. You can reply STOP at any time to opt-out.
                                 </Label>
-                                <p className="text-sm text-muted-foreground">
-                                Message and data rates may apply. You can opt-out at any time. {' '}
-                                <Link href="/sms-policy" target="_blank" className="text-primary hover:underline">
-                                    Learn More
-                                </Link>
-                                </p>
                             </div>
                         </div>
 

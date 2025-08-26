@@ -19,6 +19,7 @@ const SponsorshipInquiryInputSchema = z.object({
   phone: z.string().describe("The contact person's phone number."),
   sponsorshipLevel: z.string().describe("The sponsorship level they are interested in."),
   message: z.string().optional().describe("An optional message from the potential sponsor."),
+  smsConsent: z.boolean().optional().describe("Whether the user agreed to receive SMS messages."),
 });
 export type SponsorshipInquiryInput = z.infer<typeof SponsorshipInquiryInputSchema>;
 
@@ -96,6 +97,7 @@ const sendSponsorshipInquiryFlow = ai.defineFlow(
         - Contact Name: ${input.contactName}
         - Email: ${input.email}
         - Phone: ${input.phone}
+        - SMS Consent: ${input.smsConsent ? 'Yes' : 'No'}
 
         Inquiry Details:
         - Sponsorship Level of Interest: ${input.sponsorshipLevel}

@@ -16,6 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, CheckCircle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog';
+import { Checkbox } from '../ui/checkbox';
 
 
 const formSchema = z.object({
@@ -27,6 +28,7 @@ const formSchema = z.object({
     required_error: "Please select a sponsorship level.",
   }),
   message: z.string().max(1000, "Message cannot exceed 1000 characters.").optional(),
+  smsConsent: z.boolean().default(false).optional(),
 });
 
 type SponsorshipFormValues = z.infer<typeof formSchema>;
@@ -45,6 +47,7 @@ export function SponsorshipForm() {
       phone: "",
       sponsorshipLevel: undefined,
       message: "",
+      smsConsent: false,
     },
   });
 
@@ -125,6 +128,26 @@ export function SponsorshipForm() {
                     </FormItem>
                     )} />
                     
+                    <FormField
+                      control={form.control}
+                      name="smsConsent"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <div className="space-y-1 leading-none">
+                            <FormLabel>
+                              By providing your phone number, you agree to receive SMS notifications about our events and raffle updates. Msg & data rates may apply. You can reply STOP at any time to opt-out.
+                            </FormLabel>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+
                     <Button type="submit" size="lg" disabled={isSubmitting}>
                     {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Send Inquiry
