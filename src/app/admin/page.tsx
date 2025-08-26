@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CalendarPlus, Users, Handshake, PenSquare, UserCheck, QrCode, Mic, ShoppingCart, Clock, CheckSquare } from 'lucide-react';
+import { CalendarPlus, Users, Handshake, PenSquare, UserCheck, QrCode, Mic, ShoppingCart, Clock, CheckSquare, ShieldCheck } from 'lucide-react';
 
 export default function AdminDashboardPage() {
   return (
@@ -156,6 +156,22 @@ export default function AdminDashboardPage() {
         <Card className="bg-primary/10">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
+                <ShieldCheck className="h-6 w-6" />
+                Alpha Testing Plan
+            </CardTitle>
+            <CardDescription>
+                Review the internal pre-launch checklist for developers.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+             <Button asChild>
+                <Link href="/admin/alpha-testing-plan">View Plan</Link>
+            </Button>
+          </CardContent>
+        </Card>
+        <Card className="bg-primary/10">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
                 <CheckSquare className="h-6 w-6" />
                 Beta Testing Plan
             </CardTitle>
@@ -168,10 +184,8 @@ export default function AdminDashboardPage() {
                 <Link href="/admin/beta-testing-plan">View Plan</Link>
             </Button>
           </CardContent>
-        </Card>
+        </card>
       </div>
     </div>
   );
 }
-
-    
