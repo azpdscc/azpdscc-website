@@ -6,7 +6,7 @@ import { Separator } from '@/components/ui/separator';
 
 const ChecklistItem = ({ children }: { children: React.ReactNode }) => (
     <div className="flex items-start gap-3">
-        <Checkbox id={children?.toString()} className="mt-1" disabled />
+        <Checkbox id={children?.toString()} className="mt-1" />
         <Label htmlFor={children?.toString()} className="text-base leading-snug text-muted-foreground">{children}</Label>
     </div>
 )
