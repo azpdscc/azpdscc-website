@@ -184,7 +184,7 @@ export default function AdminDashboardPage() {
                 <Link href="/admin/beta-testing-plan">View Plan</Link>
             </Button>
           </CardContent>
-        </card>
+        </Card>
       </div>
     </div>
   );
