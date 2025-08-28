@@ -25,7 +25,7 @@ const VendorApplicationTicketSchema = z.object({
   zelleSenderName: z.string().describe("The name on the Zelle account used for payment."),
   zelleDateSent: z.string().describe("The date the Zelle payment was sent."),
   paymentConfirmed: z.boolean().optional().describe("Whether the vendor confirmed they sent the payment."),
-  smsConsent: z.boolean().optional().describe("Whether the user agreed to receive SMS messages."),
+  smsConsent: z.boolean().describe("Whether the user agreed to receive SMS messages."),
   qrCodeUrl: z.string().url().optional().describe("The URL of the QR code image to include in the ticket."),
   eventName: z.string().describe("The name of the event the vendor is applying for."),
 });

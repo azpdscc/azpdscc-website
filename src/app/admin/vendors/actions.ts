@@ -20,6 +20,7 @@ export type VendorApplicationState = {
     zelleSenderName?: string[];
     zelleDateSent?: string[];
     paymentSent?: string[];
+    smsConsent?: string[];
     _form?: string[];
   };
   success?: boolean;
@@ -52,7 +53,9 @@ const VendorApplicationInputSchema = z.object({
   paymentSent: z.boolean().refine(val => val === true, {
     message: 'You must confirm payment has been sent.',
   }),
-  smsConsent: z.boolean().default(false).optional(),
+  smsConsent: z.boolean().refine(val => val === true, {
+    message: 'You must consent to receive text messages to continue.',
+  }),
 });
 
 

@@ -28,7 +28,9 @@ const formSchema = z.object({
     required_error: "Please select a product category.",
   }),
   description: z.string().min(10, "Description must be at least 10 characters.").max(300),
-  smsConsent: z.boolean().default(false).optional(),
+  smsConsent: z.boolean().refine(val => val === true, {
+    message: 'You must consent to receive text messages to continue.',
+  }),
 });
 
 type GeneralRegistrationFormValues = z.infer<typeof formSchema>;
@@ -125,18 +127,25 @@ export function GeneralRegistrationForm() {
               control={form.control}
               name="smsConsent"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      By providing your phone number, you agree to receive SMS notifications about our events and raffle updates. Msg & data rates may apply. You can reply STOP at any time to opt-out.
-                    </FormLabel>
+                <FormItem className="flex flex-col gap-3 rounded-md border p-4">
+                  <div className="flex items-start gap-3">
+                     <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        id="sms-consent-general"
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <Label htmlFor="sms-consent-general" className="font-normal">
+                          By providing your phone number, you agree to receive text messages from Phoenix Desi Sports and Cultural Club about events and promotions. Message and data rates may apply. Message frequency varies. You can reply STOP at any time to opt out.
+                      </Label>
+                    </div>
                   </div>
+                  <div className="text-sm ml-7">
+                    <Link href="/terms-of-service" className="underline hover:text-primary">Terms of Service</Link> | <Link href="/privacy-policy" className="underline hover:text-primary">Privacy Policy</Link>
+                  </div>
+                  <FormMessage />
                 </FormItem>
               )}
             />

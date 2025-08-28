@@ -24,7 +24,7 @@ const PerformanceApplicationInputSchema = z.object({
   participants: z.number().int().positive().describe("The number of participants in the performance."),
   auditionLink: z.string().url().optional().describe("An optional URL to the performer's audition video."),
   specialRequests: z.string().optional().describe("Any special requests or technical needs."),
-  smsConsent: z.boolean().optional().describe("Whether the user agreed to receive SMS messages."),
+  smsConsent: z.boolean().describe("Whether the user agreed to receive SMS messages."),
 });
 export type PerformanceApplicationInput = z.infer<typeof PerformanceApplicationInputSchema>;
 

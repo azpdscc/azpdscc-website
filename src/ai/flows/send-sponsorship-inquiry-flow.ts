@@ -19,7 +19,7 @@ const SponsorshipInquiryInputSchema = z.object({
   phone: z.string().describe("The contact person's phone number."),
   sponsorshipLevel: z.string().describe("The sponsorship level they are interested in."),
   message: z.string().optional().describe("An optional message from the potential sponsor."),
-  smsConsent: z.boolean().optional().describe("Whether the user agreed to receive SMS messages."),
+  smsConsent: z.boolean().describe("Whether the user agreed to receive SMS messages."),
 });
 export type SponsorshipInquiryInput = z.infer<typeof SponsorshipInquiryInputSchema>;
 
