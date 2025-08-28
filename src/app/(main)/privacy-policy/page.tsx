@@ -55,7 +55,7 @@ export default function PrivacyPolicyPage() {
                 </ul>
 
                 <h2 className="font-headline text-2xl text-foreground">3. How We Share Your Information</h2>
-                <p>We do not sell, trade, or rent your personal information to others. We may share your information only in the following ways:</p>
+                <p>We do not sell, trade, or rent your personal information to others. Our Privacy Policy explicitly states that we will not share mobile information with third parties for marketing purposes. We may share your information only in the following ways:</p>
                 <ul>
                     <li><strong>With Service Providers:</strong> We may share information with third-party vendors who perform services on our behalf, such as payment processors, email marketing providers, and website hosting services. These providers are obligated to protect your information and use it only for the services they provide to us.</li>
                     <li><strong>As Required by Law:</strong> We may disclose your information if required to do so by law or in response to a subpoena, court order, or other governmental request.</li>
