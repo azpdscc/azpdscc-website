@@ -4,27 +4,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { CalendarPlus, Users, Handshake, PenSquare, UserCheck, QrCode, Mic, ShoppingCart, Clock, CheckSquare, ShieldCheck, HelpCircle } from 'lucide-react';
 
+const SectionWrapper = ({ children, title }: { children: React.ReactNode, title: string }) => (
+    <section className="mb-12">
+        <h2 className="text-2xl font-headline font-bold mb-6 pb-2 border-b">{title}</h2>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {children}
+        </div>
+    </section>
+);
+
+
 export default function AdminDashboardPage() {
   return (
     <div className="container mx-auto p-4 md:p-8">
-      <h1 className="font-headline text-3xl font-bold mb-8">Admin Dashboard</h1>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <Card className="bg-primary/10 border-primary/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-                <HelpCircle className="h-6 w-6 text-primary" />
-                Admin Guide
-            </CardTitle>
-            <CardDescription>
-                New to the dashboard? Start here. A complete guide to all admin functions.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-             <Button asChild>
-                <Link href="/admin/guide">Read the Guide</Link>
-            </Button>
-          </CardContent>
-        </Card>
+      <h1 className="font-headline text-4xl font-bold mb-8">Admin Dashboard</h1>
+      
+      <SectionWrapper title="Core Content Management">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -38,6 +33,22 @@ export default function AdminDashboardPage() {
           <CardContent>
             <Button asChild>
                 <Link href="/admin/events">Go to Events</Link>
+            </Button>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+                <PenSquare className="h-6 w-6" />
+                Manage Blog
+            </CardTitle>
+            <CardDescription>
+                Create, edit, or delete blog posts. Use the AI generator to create drafts.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+             <Button asChild>
+                <Link href="/admin/blog">Go to Blog</Link>
             </Button>
           </CardContent>
         </Card>
@@ -64,7 +75,7 @@ export default function AdminDashboardPage() {
                 Manage Sponsors
             </CardTitle>
             <CardDescription>
-                Update the sponsors displayed on the homepage.
+                Update the sponsors displayed on the homepage and sponsor page.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -73,30 +84,17 @@ export default function AdminDashboardPage() {
             </Button>
           </CardContent>
         </Card>
+      </SectionWrapper>
+
+      <SectionWrapper title="User & Application Management">
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-                <PenSquare className="h-6 w-6" />
-                Manage Blog
-            </CardTitle>
-            <CardDescription>
-                Create, edit, or delete blog posts for the website. Use the AI generator to create drafts.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-             <Button asChild>
-                <Link href="/admin/blog">Go to Blog</Link>
-            </Button>
-          </CardContent>
-        </Card>
-         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
                 <ShoppingCart className="h-6 w-6" />
                 Manage Vendors
             </CardTitle>
             <CardDescription>
-                Review and verify vendor applications and payments.
+                Review vendor applications, verify payments, and send tickets.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -137,6 +135,9 @@ export default function AdminDashboardPage() {
             </Button>
           </CardContent>
         </Card>
+      </SectionWrapper>
+
+      <SectionWrapper title="Live Event Operations">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -153,7 +154,26 @@ export default function AdminDashboardPage() {
             </Button>
           </CardContent>
         </Card>
-         <Card>
+      </SectionWrapper>
+
+       <SectionWrapper title="System & Testing">
+         <Card className="bg-primary/10 border-primary/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+                <HelpCircle className="h-6 w-6 text-primary" />
+                Admin Guide
+            </CardTitle>
+            <CardDescription>
+                New to the dashboard? Start here. A complete guide to all admin functions.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+             <Button asChild>
+                <Link href="/admin/guide">Read the Guide</Link>
+            </Button>
+          </CardContent>
+        </Card>
+        <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
                 <QrCode className="h-6 w-6" />
@@ -169,7 +189,7 @@ export default function AdminDashboardPage() {
             </Button>
           </CardContent>
         </Card>
-        <Card className="bg-primary/10">
+        <Card className="bg-secondary/70">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
                 <ShieldCheck className="h-6 w-6" />
@@ -185,7 +205,7 @@ export default function AdminDashboardPage() {
             </Button>
           </CardContent>
         </Card>
-        <Card className="bg-primary/10">
+        <Card className="bg-secondary/70">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
                 <CheckSquare className="h-6 w-6" />
@@ -201,7 +221,7 @@ export default function AdminDashboardPage() {
             </Button>
           </CardContent>
         </Card>
-      </div>
+      </SectionWrapper>
     </div>
   );
 }
