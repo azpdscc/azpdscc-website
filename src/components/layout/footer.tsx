@@ -7,6 +7,7 @@ import { Logo } from '@/components/logo';
 import { Instagram, Twitter, Facebook, Mail, Youtube, Lock, HandHeart, UserCheck, Mic, MessageSquareText, Ticket } from 'lucide-react';
 import { SubscribeForm } from './subscribe-form';
 import { Button } from '../ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 
 export function Footer() {
   const pathname = usePathname();
@@ -18,21 +19,22 @@ export function Footer() {
       <div className="relative z-10">
         <div className="container mx-auto px-4 pt-16 pb-8">
           {!isAdminPage && (
-            <>
-              <div className="text-center mb-12">
-                  <div className="flex items-center justify-center gap-4 mb-4">
-                    <Mail className="h-12 w-12 text-primary" strokeWidth={1.5}/>
-                    <Ticket className="h-12 w-12 text-primary" strokeWidth={1.5}/>
-                  </div>
-                  <h2 className="font-headline text-3xl font-bold text-foreground">Stay Connected</h2>
-                  <p className="mt-2 max-w-2xl mx-auto text-muted-foreground">
-                      Subscribe for the latest news on festivals and community events. Opt-in with your phone number to get your electronic raffle tickets!
-                  </p>
-                  <div className="mt-6 max-w-lg mx-auto">
-                      <SubscribeForm />
-                  </div>
-              </div>
-            </>
+            <div className="mb-16">
+                 <Card className="max-w-3xl mx-auto shadow-lg">
+                    <CardHeader className="text-center">
+                         <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit mb-4">
+                            <Mail className="h-10 w-10 text-primary" strokeWidth={1.5} />
+                        </div>
+                        <CardTitle className="font-headline text-3xl">Stay Connected</CardTitle>
+                        <CardDescription>
+                            Subscribe for the latest news on festivals and community events. Opt-in with your phone number to get your electronic raffle tickets!
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <SubscribeForm />
+                    </CardContent>
+                </Card>
+            </div>
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
