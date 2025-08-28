@@ -61,7 +61,7 @@ const sendRaffleTicketFlow = ai.defineFlow(
         Phone: ${input.phone}
         SMS Consent: ${input.smsConsent ? 'Yes' : 'No'}
 
-        Action Required: Please process this registration in the Honest Raffles system.
+        Action Required: Please process this registration.
       `;
 
       await resend.emails.send({
