@@ -17,11 +17,12 @@ import { Loader2, CheckCircle } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog';
 import { Checkbox } from '../ui/checkbox';
 import Link from 'next/link';
+import { Label } from '../ui/label';
 
 
 const formSchema = z.object({
   businessName: z.string().min(2, "Business name must be at least 2 characters."),
-  contactName: z.string().min(2, "Contact name must be at least 2 characters."),
+  contactName: z.string().min(2, "Contact name is required."),
   email: z.string().email(),
   phone: z.string().min(10, "Please enter a valid phone number."),
   category: z.enum(['Food', 'Apparel', 'Jewelry', 'Crafts', 'Services', 'Other'], {

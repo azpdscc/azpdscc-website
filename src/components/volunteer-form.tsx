@@ -16,6 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import { sendVolunteerInquiry } from '@/ai/flows/send-volunteer-inquiry-flow';
 import { Loader2, CheckCircle } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from './ui/alert-dialog';
+import { Label } from './ui/label';
 
 
 const interests = [
