@@ -75,10 +75,6 @@ export default function EventsPage() {
       
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto mb-12">
-            <RaffleRegistrationForm />
-          </div>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-lg bg-card shadow-md mb-12">
             <Input 
               placeholder="Search for events..."
@@ -113,6 +109,11 @@ export default function EventsPage() {
               <p className="md:col-span-3 text-center text-muted-foreground">No events found. Try adjusting your search or filters.</p>
             )}
           </div>
+          
+          <div className="max-w-4xl mx-auto mt-16 pt-16 border-t">
+            <RaffleRegistrationForm />
+          </div>
+
         </div>
       </section>
     </div>
