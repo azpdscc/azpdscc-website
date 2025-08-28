@@ -9,7 +9,6 @@ import { getEvents } from '@/services/events';
 import type { Event, EventCategory } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RaffleRegistrationForm } from '@/components/events/raffle-registration-form';
-import { Card, CardContent } from '@/components/ui/card';
 
 const categories: EventCategory[] = ['Cultural', 'Food', 'Music', 'Dance'];
 

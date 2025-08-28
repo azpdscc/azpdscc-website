@@ -9,7 +9,7 @@ import { sendRaffleTicket } from '@/ai/flows/send-raffle-ticket-flow';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, CheckCircle, Ticket } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '../ui/alert-dialog';
@@ -82,10 +82,10 @@ export function RaffleRegistrationForm() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-lg mx-auto">
               <FormField name="name" control={form.control} render={({ field }) => (
-                <FormItem><FormLabel>Your Name</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage /></FormItem>
+                <FormItem><FormControl><Input placeholder="Your Name" {...field} /></FormControl><FormMessage /></FormItem>
               )} />
                <FormField name="phone" control={form.control} render={({ field }) => (
-                <FormItem><FormLabel>Your Phone Number</FormLabel><FormControl><Input type="tel" placeholder="(555) 555-5555" {...field} /></FormControl><FormMessage /></FormItem>
+                <FormItem><FormControl><Input type="tel" placeholder="Your Phone Number" {...field} /></FormControl><FormMessage /></FormItem>
               )} />
               
               <FormField
@@ -102,13 +102,13 @@ export function RaffleRegistrationForm() {
                         />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                        <Label htmlFor="sms-consent-raffle" className="font-normal">
-                            By providing your phone number, you agree to receive SMS notifications from PDSCC and Honest Raffles about your electronic raffle tickets and raffle updates. Msg & data rates may apply. Msg freq varies. Reply STOP to opt-out.
+                        <Label htmlFor="sms-consent-raffle" className="font-normal text-xs">
+                          By providing your phone number, you agree to receive SMS notifications from PDSCC and Honest Raffles about your electronic raffle tickets and raffle updates. Msg & data rates may apply. Msg freq varies. Reply STOP to opt-out.
                         </Label>
                         </div>
                     </div>
-                    <div className="text-sm ml-7">
-                        <Link href="/terms-of-service" className="underline hover:text-primary">Terms of Service</Link> | <Link href="/privacy-policy" className="underline hover:text-primary">Privacy Policy</Link> | <Link href="/sms-policy" className="underline hover:text-primary">SMS Policy</Link>
+                    <div className="text-xs ml-7">
+                        <Link href="/terms-of-service" className="underline hover:text-primary">Terms</Link> | <Link href="/privacy-policy" className="underline hover:text-primary">Privacy</Link> | <Link href="/sms-policy" className="underline hover:text-primary">SMS Policy</Link>
                     </div>
                     <FormMessage />
                   </FormItem>
