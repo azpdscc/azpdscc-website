@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { getEvents } from '@/services/events';
 import type { Event, EventCategory } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { RaffleRegistrationForm } from '@/components/events/raffle-registration-form';
+import { Card, CardContent } from '@/components/ui/card';
 
 const categories: EventCategory[] = ['Cultural', 'Food', 'Music', 'Dance'];
 
@@ -74,6 +76,10 @@ export default function EventsPage() {
       
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto mb-12">
+            <RaffleRegistrationForm />
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-lg bg-card shadow-md mb-12">
             <Input 
               placeholder="Search for events..."
