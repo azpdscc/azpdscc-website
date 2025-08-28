@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { getEvents } from '@/services/events';
 import type { Event, EventCategory } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { RaffleRegistrationForm } from '@/components/events/raffle-registration-form';
 
 const categories: EventCategory[] = ['Cultural', 'Food', 'Music', 'Dance'];
 
@@ -108,10 +107,6 @@ export default function EventsPage() {
             ) : (
               <p className="md:col-span-3 text-center text-muted-foreground">No events found. Try adjusting your search or filters.</p>
             )}
-          </div>
-          
-          <div className="max-w-4xl mx-auto mt-16 pt-16 border-t">
-            <RaffleRegistrationForm />
           </div>
 
         </div>

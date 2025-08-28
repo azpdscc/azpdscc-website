@@ -1,9 +1,9 @@
 
 'use server';
 /**
- * @fileOverview A flow to handle a new email subscription.
+ * @fileOverview A flow to handle a new email subscription and optional SMS opt-in.
  *
- * - sendWelcomeEmail: Processes a new subscriber, sends a welcome email, and returns a status.
+ * - sendWelcomeEmail: Processes a new subscriber, sends emails, and returns a status.
  * - WelcomeEmailInput: The input type for the flow.
  */
 import { ai } from '@/ai/genkit';
@@ -11,10 +11,12 @@ import { z } from 'zod';
 import { Resend } from 'resend';
 import { addSubscriber, isSubscribed } from '@/services/subscribers';
 
-// Input schema for the welcome email flow, now including an optional name.
+// Input schema for the welcome email flow, now including an optional name and phone fields.
 const WelcomeEmailInputSchema = z.object({
   email: z.string().email().describe("The new subscriber's email address."),
   name: z.string().optional().describe("The new subscriber's first name, if provided."),
+  phone: z.string().optional().describe("The new subscriber's phone number, if provided for SMS."),
+  smsConsent: z.boolean().optional().describe("Whether the user agreed to receive SMS messages."),
 });
 export type WelcomeEmailInput = z.infer<typeof WelcomeEmailInputSchema>;
 
@@ -51,6 +53,11 @@ const welcomeEmailPrompt = ai.definePrompt({
 
     Thank them for subscribing and let them know they'll now be the first to hear about upcoming festivals, events, and community news.
     Encourage them to connect on social media (without providing links).
+    
+    {{#if phone}}
+    Also, thank them for providing their phone number and mention that they will receive their electronic raffle tickets via SMS for upcoming events.
+    {{/if}}
+
     End with "Warmly," followed by "The PDSCC Team".
   `,
 });
@@ -68,19 +75,17 @@ const sendWelcomeEmailFlow = ai.defineFlow(
         console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in the server environment.");
         throw new Error("Server configuration error for sending emails.");
     }
-    
+    const resend = new Resend(resendApiKey);
+
     try {
-      // 1. Check if the user is already subscribed
+      // 1. Check if the email is already subscribed
       const alreadySubscribed = await isSubscribed(input.email);
       if (alreadySubscribed) {
         return { success: true, message: "This email is already on our mailing list. Thank you!" };
       }
 
-      // If not subscribed, create the Resend client
-      const resend = new Resend(resendApiKey);
-
       // 2. Add the new subscriber to the database
-      await addSubscriber({ email: input.email, name: input.name });
+      await addSubscriber({ email: input.email, name: input.name, phone: input.phone, smsConsent: input.smsConsent });
 
       // 3. Generate the welcome email body for the user
       const { output: welcomeEmailBody } = await welcomeEmailPrompt(input);
@@ -98,11 +103,16 @@ const sendWelcomeEmailFlow = ai.defineFlow(
       });
 
       // 5. Send a notification email to the admin
+      let adminEmailText = `A new user has subscribed to the newsletter:\n\nEmail: ${input.email}\nName: ${input.name || 'Not provided'}`;
+      if (input.phone && input.smsConsent) {
+        adminEmailText += `\n\nThis user also opted-in for SMS raffle tickets:\nPhone: ${input.phone}`;
+      }
+      
       await resend.emails.send({
         from: 'Newsletter Bot <noreply@azpdscc.org>',
         to: 'admin@azpdscc.org',
         subject: 'New Newsletter Subscriber',
-        text: `A new user has subscribed to the newsletter:\n\nEmail: ${input.email}\nName: ${input.name || 'Not provided'}`,
+        text: adminEmailText,
       });
      
       return { success: true, message: "Subscription successful! A welcome email has been sent." };

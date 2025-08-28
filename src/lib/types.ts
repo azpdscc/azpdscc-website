@@ -153,6 +153,8 @@ export type Subscriber = {
   id: string; // Firestore document ID (email)
   email: string;
   name?: string;
+  phone?: string;
+  smsConsent?: boolean;
   subscribedAt: Timestamp;
 };
 

@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Logo } from '@/components/logo';
-import { Instagram, Twitter, Facebook, Mail, Youtube, Lock, HandHeart, UserCheck, Mic, MessageSquareText } from 'lucide-react';
+import { Instagram, Twitter, Facebook, Mail, Youtube, Lock, HandHeart, UserCheck, Mic, MessageSquareText, Ticket } from 'lucide-react';
 import { SubscribeForm } from './subscribe-form';
 import { Button } from '../ui/button';
 
@@ -20,10 +20,13 @@ export function Footer() {
           {!isAdminPage && (
             <>
               <div className="text-center mb-12">
-                  <Mail className="mx-auto h-12 w-12 text-primary mb-4" strokeWidth={1.5}/>
-                  <h2 className="font-headline text-3xl font-bold text-foreground">Never Miss an Update</h2>
+                  <div className="flex items-center justify-center gap-4 mb-4">
+                    <Mail className="h-12 w-12 text-primary" strokeWidth={1.5}/>
+                    <Ticket className="h-12 w-12 text-primary" strokeWidth={1.5}/>
+                  </div>
+                  <h2 className="font-headline text-3xl font-bold text-foreground">Stay Connected</h2>
                   <p className="mt-2 max-w-2xl mx-auto text-muted-foreground">
-                      Subscribe to our mailing list for the latest news on festivals, community events, and special announcements.
+                      Subscribe for the latest news on festivals and community events. Opt-in with your phone number to get your electronic raffle tickets!
                   </p>
                   <div className="mt-6 max-w-lg mx-auto">
                       <SubscribeForm />

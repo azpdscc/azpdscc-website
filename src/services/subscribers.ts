@@ -30,14 +30,16 @@ export async function isSubscribed(email: string): Promise<boolean> {
 /**
  * Adds a new email to the subscribers collection.
  * Uses the email as the document ID to prevent duplicates.
- * @param {{ email: string, name?: string }} subscriberData - The subscriber's data.
+ * @param {{ email: string, name?: string, phone?: string, smsConsent?: boolean }} subscriberData - The subscriber's data.
  * @returns {Promise<void>}
  */
-export async function addSubscriber(subscriberData: { email: string, name?: string }): Promise<void> {
+export async function addSubscriber(subscriberData: { email: string, name?: string, phone?: string, smsConsent?: boolean }): Promise<void> {
     const subscriberDoc = doc(db, 'subscribers', subscriberData.email);
     await setDoc(subscriberDoc, {
         email: subscriberData.email,
         name: subscriberData.name || '',
+        phone: subscriberData.phone || '',
+        smsConsent: subscriberData.smsConsent || false,
         subscribedAt: serverTimestamp()
-    });
+    }, { merge: true }); // Use merge to avoid overwriting phone if they re-subscribe
 }
