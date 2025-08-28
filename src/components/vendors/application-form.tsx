@@ -180,7 +180,7 @@ export function ApplicationForm() {
                                 </div>
                             </div>
                             <div className="text-sm ml-7">
-                                <Link href="/terms-of-service" className="underline hover:text-primary">Terms of Service</Link> | <Link href="/privacy-policy" className="underline hover:text-primary">Privacy Policy</Link>
+                                <Link href="/terms-of-service" className="underline hover:text-primary">Terms of Service</Link> | <Link href="/privacy-policy" className="underline hover:text-primary">Privacy Policy</Link> | <Link href="/sms-policy" className="underline hover:text-primary">SMS Policy</Link>
                             </div>
                         </div>
 
