@@ -2,7 +2,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, Twitter, Facebook, Instagram, Youtube } from 'lucide-react';
+import { Menu, Twitter, Facebook, Instagram, Youtube, Mail } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -51,16 +51,19 @@ export function Header() {
             <Link href="/donate">Donate</Link>
           </Button>
           <div className="flex items-center space-x-4">
-              <Link href="https://x.com/AZPDSCC" className="text-muted-foreground hover:text-primary">
+              <Link href="/contact" className="text-muted-foreground hover:text-primary" aria-label="Contact Us">
+                <Mail className="h-5 w-5" strokeWidth={1.5} />
+              </Link>
+              <Link href="https://x.com/AZPDSCC" className="text-muted-foreground hover:text-primary" aria-label="Twitter">
                 <Twitter className="h-5 w-5" strokeWidth={1.5} />
               </Link>
-              <Link href="https://www.facebook.com/pdscc" className="text-muted-foreground hover:text-primary">
+              <Link href="https://www.facebook.com/pdscc" className="text-muted-foreground hover:text-primary" aria-label="Facebook">
                 <Facebook className="h-5 w-5" strokeWidth={1.5} />
               </Link>
-              <Link href="https://www.instagram.com/azpdscc/" className="text-muted-foreground hover:text-primary">
+              <Link href="https://www.instagram.com/azpdscc/" className="text-muted-foreground hover:text-primary" aria-label="Instagram">
                 <Instagram className="h-5 w-5" strokeWidth={1.5} />
               </Link>
-              <Link href="https://www.youtube.com/@AZPDSCC" className="text-muted-foreground hover:text-primary">
+              <Link href="https://www.youtube.com/@AZPDSCC" className="text-muted-foreground hover:text-primary" aria-label="YouTube">
                 <Youtube className="h-5 w-5" strokeWidth={1.5} />
               </Link>
             </div>
@@ -97,16 +100,19 @@ export function Header() {
                   <Link href="/donate">Donate</Link>
                 </Button>
                 <div className="flex items-center justify-center space-x-4 pt-4 border-t">
-                  <Link href="https://x.com/AZPDSCC" className="text-muted-foreground hover:text-primary">
+                  <Link href="/contact" className="text-muted-foreground hover:text-primary" aria-label="Contact Us">
+                      <Mail className="h-5 w-5" strokeWidth={1.5} />
+                  </Link>
+                  <Link href="https://x.com/AZPDSCC" className="text-muted-foreground hover:text-primary" aria-label="Twitter">
                       <Twitter className="h-5 w-5" strokeWidth={1.5} />
                   </Link>
-                  <Link href="https://www.facebook.com/pdscc" className="text-muted-foreground hover:text-primary">
+                  <Link href="https://www.facebook.com/pdscc" className="text-muted-foreground hover:text-primary" aria-label="Facebook">
                       <Facebook className="h-5 w-5" strokeWidth={1.5} />
                   </Link>
-                  <Link href="https://www.instagram.com/azpdscc/" className="text-muted-foreground hover:text-primary">
+                  <Link href="https://www.instagram.com/azpdscc/" className="text-muted-foreground hover:text-primary" aria-label="Instagram">
                       <Instagram className="h-5 w-5" strokeWidth={1.5} />
                   </Link>
-                  <Link href="https://www.youtube.com/@AZPDSCC" className="text-muted-foreground hover:text-primary">
+                  <Link href="https://www.youtube.com/@AZPDSCC" className="text-muted-foreground hover:text-primary" aria-label="YouTube">
                     <Youtube className="h-5 w-5" strokeWidth={1.5} />
                   </Link>
                 </div>

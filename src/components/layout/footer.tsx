@@ -27,7 +27,7 @@ export function Footer() {
                         </div>
                         <CardTitle className="font-headline text-3xl">Stay Connected</CardTitle>
                         <CardDescription>
-                            Subscribe for the latest news on festivals and community events. Opt-in with your phone number to get your electronic raffle tickets!
+                            Subscribe for the latest news on festivals, community events, and special announcements. Opt-in to receive your electronic raffle tickets by phone!
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -44,16 +44,19 @@ export function Footer() {
                 To celebrate and share the vibrant culture of North India through sports and festivals in the Phoenix community.
               </p>
               <div className="mt-4 flex space-x-4">
-                <Link href="https://x.com/AZPDSCC" className="text-muted-foreground hover:text-primary">
+                <Link href="/contact" className="text-muted-foreground hover:text-primary" aria-label="Contact Us">
+                  <Mail className="h-5 w-5" strokeWidth={1.5} />
+                </Link>
+                <Link href="https://x.com/AZPDSCC" className="text-muted-foreground hover:text-primary" aria-label="Twitter">
                   <Twitter className="h-5 w-5" strokeWidth={1.5} />
                 </Link>
-                <Link href="https://www.facebook.com/pdscc" className="text-muted-foreground hover:text-primary">
+                <Link href="https://www.facebook.com/pdscc" className="text-muted-foreground hover:text-primary" aria-label="Facebook">
                   <Facebook className="h-5 w-5" strokeWidth={1.5} />
                 </Link>
-                <Link href="https://www.instagram.com/azpdscc/" className="text-muted-foreground hover:text-primary">
+                <Link href="https://www.instagram.com/azpdscc/" className="text-muted-foreground hover:text-primary" aria-label="Instagram">
                   <Instagram className="h-5 w-5" strokeWidth={1.5} />
                 </Link>
-                <Link href="https://www.youtube.com/@AZPDSCC" className="text-muted-foreground hover:text-primary">
+                <Link href="https://www.youtube.com/@AZPDSCC" className="text-muted-foreground hover:text-primary" aria-label="YouTube">
                   <Youtube className="h-5 w-5" strokeWidth={1.5} />
                 </Link>
               </div>
