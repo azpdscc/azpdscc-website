@@ -8,6 +8,7 @@ import { Instagram, Twitter, Facebook, Mail, Youtube, Lock, HandHeart, UserCheck
 import { SubscribeForm } from './subscribe-form';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { Separator } from '../ui/separator';
 
 export function Footer() {
   const pathname = usePathname();
@@ -19,7 +20,7 @@ export function Footer() {
       <div className="relative z-10">
         <div className="container mx-auto px-4 pt-16 pb-8">
           {!isAdminPage && (
-            <div className="mb-16">
+            <div className="mb-12">
                  <Card className="max-w-3xl mx-auto shadow-lg">
                     <CardHeader className="text-center">
                          <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit mb-4">
@@ -36,6 +37,8 @@ export function Footer() {
                 </Card>
             </div>
           )}
+          
+          {!isAdminPage && <Separator className="my-12" />}
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-1">
