@@ -108,7 +108,7 @@ export function SubscribeForm() {
                 <FormItem>
                     <FormLabel className="sr-only">Phone Number</FormLabel>
                     <FormControl>
-                        <Input type="tel" placeholder="Phone Number (for Raffle Tickets)" {...field} />
+                        <Input type="tel" placeholder="Phone Number" {...field} />
                     </FormControl>
                     <FormMessage />
                 </FormItem>
