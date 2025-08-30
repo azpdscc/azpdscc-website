@@ -47,9 +47,6 @@ export function Header() {
         </div>
 
         <div className="hidden md:flex items-center gap-4">
-          <Button asChild size="lg">
-            <Link href="/donate">Donate</Link>
-          </Button>
           <div className="flex items-center space-x-4">
               <Link href="/contact" className="text-muted-foreground hover:text-primary" aria-label="Contact Us">
                 <Mail className="h-5 w-5" strokeWidth={1.5} />
@@ -67,6 +64,9 @@ export function Header() {
                 <Youtube className="h-5 w-5" strokeWidth={1.5} />
               </Link>
             </div>
+            <Button asChild size="lg">
+                <Link href="/donate">Donate</Link>
+            </Button>
         </div>
 
         <div className="md:hidden">
