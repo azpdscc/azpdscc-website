@@ -147,7 +147,7 @@ export function SponsorshipForm() {
                             </FormControl>
                             <div className="space-y-1 leading-none">
                               <Label htmlFor="sms-consent-sponsor" className="font-normal">
-                                By providing your phone number, you agree to receive text messages from Phoenix Desi Sports and Cultural Club about events and promotions. Message and data rates may apply. Message frequency varies. You can reply STOP at any time to opt out.
+                                  By providing your phone number, you agree to receive text messages from Phoenix Desi Sports and Cultural Club about events and promotions. Message and data rates may apply. Message frequency varies. You can reply STOP at any time to opt out.
                               </Label>
                             </div>
                           </div>

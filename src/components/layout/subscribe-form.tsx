@@ -129,7 +129,7 @@ export function SubscribeForm() {
                         </FormControl>
                         <div className="space-y-1 leading-none">
                         <FormLabel htmlFor="sms-consent-footer" className="font-normal text-xs text-muted-foreground">
-                            By providing your phone number, you agree to receive SMS notifications from PDSCC about your electronic raffle tickets and raffle updates. Msg & data rates may apply. Msg freq varies. Reply STOP to opt-out.
+                            By providing your phone number, you agree to receive SMS notifications from PDSCC about your electronic raffle tickets, raffle updates, and our events. Msg & data rates may apply. Msg freq varies. Reply STOP to opt-out.
                         </FormLabel>
                         </div>
                     </div>
