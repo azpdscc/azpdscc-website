@@ -89,10 +89,7 @@ const sendVolunteerInquiryFlow = ai.defineFlow(
         Areas of Interest:
         - ${input.interests.join('\n- ')}
 
-        Message:
-        -----------------
-        ${input.message || 'No message provided.'}
-        -----------------
+        Message: ${input.message || 'No message provided.'}
       `;
 
       // 3. Send both emails
