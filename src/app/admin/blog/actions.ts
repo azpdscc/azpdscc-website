@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { revalidateTag, revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { getBlogPostById } from '@/services/blog';
+import { verifyIdToken } from '@/lib/firebase-admin';
 
 // This is the URL of our new, secure API route.
 // It will be called by our server actions.
@@ -25,6 +26,7 @@ export type BlogFormState = {
     content?: string[];
     status?: string[];
     _form?: string[];
+    token?: string[];
   };
   message?: string;
 };
@@ -38,6 +40,7 @@ const blogPostSchema = z.object({
   excerpt: z.string().min(1, "Excerpt is required"),
   content: z.string().min(1, "Content is required"),
   status: z.enum(['Draft', 'Published']),
+  token: z.string().min(1, "Authentication token is missing."),
 });
 
 const createSlug = (title: string) => {
@@ -68,8 +71,9 @@ async function makeAdminApiRequest(endpoint: string, method: 'POST' | 'PUT' | 'D
     });
 
     if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `API request failed with status ${response.status}`);
+        const errorText = await response.text();
+        // The error might be HTML, so we don't try to parse it as JSON
+        throw new Error(errorText || `API request failed with status ${response.status}`);
     }
 
     return response.json();
@@ -91,6 +95,7 @@ export async function createBlogPostAction(
     excerpt: formData.get('excerpt'),
     content: formData.get('content'),
     status: formData.get('status'),
+    token: formData.get('token'),
   });
 
   if (!validatedFields.success) {
@@ -101,7 +106,10 @@ export async function createBlogPostAction(
   }
   
   try {
-    const { date, ...restOfData } = validatedFields.data;
+    // We only need to verify the user's token here. The server API key handles the actual request auth.
+    await verifyIdToken(validatedFields.data.token);
+    
+    const { token, date, ...restOfData } = validatedFields.data;
     const postToSave = {
         ...restOfData,
         date: date.toISOString(), // Send as ISO string
@@ -139,6 +147,7 @@ export async function updateBlogPostAction(
     excerpt: formData.get('excerpt'),
     content: formData.get('content'),
     status: formData.get('status'),
+    token: formData.get('token'),
   });
 
   if (!validatedFields.success) {
@@ -148,7 +157,8 @@ export async function updateBlogPostAction(
   }
   
   try {
-    const { date, ...restOfData } = validatedFields.data;
+    await verifyIdToken(validatedFields.data.token);
+    const { token, date, ...restOfData } = validatedFields.data;
      const postToUpdate = {
         ...restOfData,
         date: date.toISOString(), // Send as ISO string
@@ -168,8 +178,11 @@ export async function updateBlogPostAction(
   redirect('/admin/blog');
 }
 
-export async function deleteBlogPostAction(id: string) {
+export async function deleteBlogPostAction(id: string, token: string) {
     try {
+        if (!token) throw new Error("Authentication token is missing.");
+        await verifyIdToken(token);
+
         const postToDelete = await getBlogPostById(id);
         if (!postToDelete) {
              return { success: false, message: 'Could not find the post to delete.' };
