@@ -4,12 +4,8 @@
 import { z } from 'zod';
 import { revalidateTag, revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-
-const getAbsoluteUrl = (path: string) => {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-  return `${baseUrl}${path}`;
-};
-
+import { adminDb } from '@/lib/firebase-admin';
+import { verifyIdToken } from '@/lib/firebase-admin';
 
 export type BlogFormState = {
   errors?: {
@@ -49,42 +45,6 @@ const createSlug = (title: string) => {
         .replace(/-+$/, '');
 }
 
-async function makeAdminApiRequest(endpoint: string, method: 'POST' | 'PUT' | 'DELETE', token: string, body: any) {
-    const apiUrl = getAbsoluteUrl(endpoint);
-    const apiKey = process.env.ADMIN_API_KEY;
-
-    if (!apiKey) {
-        throw new Error('Admin API key is not configured on the server.');
-    }
-    
-    const response = await fetch(apiUrl, {
-        method: method,
-        headers: {
-            'Content-Type': 'application/json',
-            'x-admin-api-key': apiKey,
-            'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(body),
-    });
-
-    if (!response.ok) {
-        const errorText = await response.text();
-        let errorMessage = errorText;
-        try {
-            // Try to parse the error as JSON, as our API route should return JSON errors
-            const errorJson = JSON.parse(errorText);
-            errorMessage = errorJson.message || errorText;
-        } catch (e) {
-            // If parsing fails, it's likely an HTML error page, so we return a generic message
-             errorMessage = `The server returned a ${response.status} error.`;
-        }
-        throw new Error(errorMessage);
-    }
-
-    return response.json();
-}
-
-
 export async function createBlogPostAction(
   prevState: BlogFormState,
   formData: FormData
@@ -112,12 +72,14 @@ export async function createBlogPostAction(
   
   try {
     const { token, ...restOfData } = validatedFields.data;
+    await verifyIdToken(token);
+    
     const postToSave = {
         ...restOfData,
         date: restOfData.date.toISOString(),
     };
 
-    await makeAdminApiRequest('/api/admin/blog', 'POST', token, postToSave);
+    await adminDb.collection('blogPosts').add(postToSave);
 
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
@@ -129,6 +91,8 @@ export async function createBlogPostAction(
   }
 
   revalidateTag('blogPosts');
+  revalidatePath('/blog');
+  revalidatePath('/admin/blog');
   redirect('/admin/blog');
 }
 
@@ -161,11 +125,14 @@ export async function updateBlogPostAction(
   
   try {
     const { token, ...restOfData } = validatedFields.data;
+    await verifyIdToken(token);
+
      const postToUpdate = {
         ...restOfData,
         date: restOfData.date.toISOString(),
     };
-    await makeAdminApiRequest(`/api/admin/blog`, 'PUT', token, { id, ...postToUpdate });
+    await adminDb.collection('blogPosts').doc(id).update(postToUpdate);
+
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {
@@ -177,16 +144,20 @@ export async function updateBlogPostAction(
   
   revalidateTag('blogPosts');
   revalidatePath(`/blog/${validatedFields.data.slug}`);
+  revalidatePath('/admin/blog');
   redirect('/admin/blog');
 }
 
 export async function deleteBlogPostAction(id: string, token: string): Promise<{ success: boolean; message: string }> {
     try {
         if (!token) throw new Error("Authentication token is missing.");
+        await verifyIdToken(token);
         
-        await makeAdminApiRequest(`/api/admin/blog`, 'DELETE', token, { id });
+        await adminDb.collection('blogPosts').doc(id).delete();
         
         revalidateTag('blogPosts');
+        revalidatePath('/blog');
+        revalidatePath('/admin/blog');
         
         return { success: true, message: 'Blog post deleted successfully.' };
     } catch (error) {
