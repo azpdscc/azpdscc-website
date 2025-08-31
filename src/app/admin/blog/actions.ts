@@ -4,9 +4,15 @@
 import { z } from 'zod';
 import { revalidateTag, revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { verifyIdToken, adminDb } from '@/lib/firebase-admin';
 import { getBlogPostById } from '@/services/blog';
-import { Timestamp } from 'firebase-admin/firestore';
+
+// This is the URL of our new, secure API route.
+// It will be called by our server actions.
+const getAbsoluteUrl = (path: string) => {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+  return `${baseUrl}${path}`;
+};
+
 
 export type BlogFormState = {
   errors?: {
@@ -19,7 +25,6 @@ export type BlogFormState = {
     content?: string[];
     status?: string[];
     _form?: string[];
-    token?: string[];
   };
   message?: string;
 };
@@ -33,7 +38,6 @@ const blogPostSchema = z.object({
   excerpt: z.string().min(1, "Excerpt is required"),
   content: z.string().min(1, "Content is required"),
   status: z.enum(['Draft', 'Published']),
-  token: z.string().min(1, "Authentication token is missing."),
 });
 
 const createSlug = (title: string) => {
@@ -46,17 +50,29 @@ const createSlug = (title: string) => {
         .replace(/-+$/, '');
 }
 
-async function createBlogPost(postData: any) {
-    const docRef = await adminDb.collection('blogPosts').add(postData);
-    return docRef.id;
-}
+async function makeAdminApiRequest(endpoint: string, method: 'POST' | 'PUT' | 'DELETE', body: any) {
+    const apiUrl = getAbsoluteUrl(endpoint);
+    const apiKey = process.env.ADMIN_API_KEY;
 
-async function updateBlogPost(id: string, postData: any) {
-    await adminDb.collection('blogPosts').doc(id).update(postData);
-}
+    if (!apiKey) {
+        throw new Error('Admin API key is not configured on the server.');
+    }
+    
+    const response = await fetch(apiUrl, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+            'x-admin-api-key': apiKey,
+        },
+        body: JSON.stringify(body),
+    });
 
-async function deleteBlogPost(id: string) {
-    await adminDb.collection('blogPosts').doc(id).delete();
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `API request failed with status ${response.status}`);
+    }
+
+    return response.json();
 }
 
 
@@ -75,7 +91,6 @@ export async function createBlogPostAction(
     excerpt: formData.get('excerpt'),
     content: formData.get('content'),
     status: formData.get('status'),
-    token: formData.get('token'),
   });
 
   if (!validatedFields.success) {
@@ -86,13 +101,13 @@ export async function createBlogPostAction(
   }
   
   try {
-    await verifyIdToken(validatedFields.data.token);
-    const { token, date, ...restOfData } = validatedFields.data;
+    const { date, ...restOfData } = validatedFields.data;
     const postToSave = {
         ...restOfData,
-        date: Timestamp.fromDate(date)
+        date: date.toISOString(), // Send as ISO string
     };
-    await createBlogPost(postToSave);
+    await makeAdminApiRequest('/api/admin/blog', 'POST', postToSave);
+
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {
@@ -124,7 +139,6 @@ export async function updateBlogPostAction(
     excerpt: formData.get('excerpt'),
     content: formData.get('content'),
     status: formData.get('status'),
-    token: formData.get('token'),
   });
 
   if (!validatedFields.success) {
@@ -134,13 +148,12 @@ export async function updateBlogPostAction(
   }
   
   try {
-    await verifyIdToken(validatedFields.data.token);
-    const { token, date, ...restOfData } = validatedFields.data;
+    const { date, ...restOfData } = validatedFields.data;
      const postToUpdate = {
         ...restOfData,
-        date: Timestamp.fromDate(date)
+        date: date.toISOString(), // Send as ISO string
     };
-    await updateBlogPost(id, postToUpdate);
+    await makeAdminApiRequest(`/api/admin/blog`, 'PUT', { id, ...postToUpdate });
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {
@@ -155,18 +168,14 @@ export async function updateBlogPostAction(
   redirect('/admin/blog');
 }
 
-export async function deleteBlogPostAction(id: string, token: string) {
+export async function deleteBlogPostAction(id: string) {
     try {
-        if (!token) throw new Error("Authentication token is missing.");
-        await verifyIdToken(token);
-
-        // Fetching post to get slug for revalidation, now uses client SDK getBlogPostById
         const postToDelete = await getBlogPostById(id);
         if (!postToDelete) {
              return { success: false, message: 'Could not find the post to delete.' };
         }
         
-        await deleteBlogPost(id);
+        await makeAdminApiRequest(`/api/admin/blog`, 'DELETE', { id });
         
         revalidateTag('blogPosts');
         if (postToDelete.slug) {
