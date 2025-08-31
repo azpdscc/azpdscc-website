@@ -1,13 +1,22 @@
 
 /**
  * @fileoverview This file contains functions for interacting with the blogPosts
- * collection in Firebase Firestore.
+ * collection in Firebase Firestore. It now uses the Firebase Admin SDK for write
+ * operations to ensure server-side actions have the correct permissions.
  */
 
 import { db } from '@/lib/firebase';
+import { getFirestore as getAdminFirestore } from 'firebase-admin/firestore';
 import type { BlogPost, BlogPostFormData } from '@/lib/types';
 import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, query, where, orderBy, Timestamp, writeBatch } from 'firebase/firestore';
 import { format } from 'date-fns';
+
+// Use the client SDK for reads, which is fine for public data
+const clientDb = db; 
+
+// Use the admin SDK for any write operations (create, update, delete)
+// This requires the service account credentials to be configured on the server.
+const adminDb = getAdminFirestore();
 
 /**
  * Fetches all blog posts from the Firestore database, ordered by date descending.
@@ -15,7 +24,7 @@ import { format } from 'date-fns';
  */
 export async function getBlogPosts(): Promise<BlogPost[]> {
     try {
-      const q = query(collection(db, 'blogPosts'), orderBy('date', 'desc'));
+      const q = query(collection(clientDb, 'blogPosts'), orderBy('date', 'desc'));
       const querySnapshot = await getDocs(q);
       const posts = querySnapshot.docs.map(doc => {
         const data = doc.data();
@@ -44,7 +53,7 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
  */
 export async function getBlogPostById(id: string): Promise<BlogPost | null> {
     try {
-        const docRef = doc(db, 'blogPosts', id);
+        const docRef = doc(clientDb, 'blogPosts', id);
         const docSnap = await getDoc(docRef);
 
         if (!docSnap.exists()) {
@@ -69,7 +78,7 @@ export async function getBlogPostById(id: string): Promise<BlogPost | null> {
  */
 export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
     try {
-        const q = query(collection(db, 'blogPosts'), where('slug', '==', slug));
+        const q = query(collection(clientDb, 'blogPosts'), where('slug', '==', slug));
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
@@ -91,7 +100,7 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
 
 
 /**
- * Creates a new blog post in Firestore.
+ * Creates a new blog post in Firestore using the Admin SDK.
  * @param {BlogPostFormData} postData - The data for the new post. The status will be added.
  * @returns {Promise<string>} The ID of the newly created document.
  */
@@ -100,33 +109,33 @@ export async function createBlogPost(postData: BlogPostFormData): Promise<string
         ...postData,
         date: Timestamp.fromDate(postData.date), // Store as a Timestamp for correct querying
     };
-    const docRef = await addDoc(collection(db, 'blogPosts'), dataToSave);
+    const docRef = await adminDb.collection('blogPosts').add(dataToSave);
     return docRef.id;
 }
 
 
 /**
- * Updates an existing blog post in Firestore.
+ * Updates an existing blog post in Firestore using the Admin SDK.
  * @param {string} id - The ID of the post document to update.
  * @param {Partial<BlogPostFormData>} postData - An object with the fields to update.
  * @returns {Promise<void>}
  */
 export async function updateBlogPost(id: string, postData: Partial<BlogPostFormData>): Promise<void> {
-    const postDoc = doc(db, 'blogPosts', id);
+    const postDoc = adminDb.collection('blogPosts').doc(id);
     const dataToUpdate: any = { ...postData };
     if (postData.date) {
         // Ensure date is a Timestamp for consistency
         dataToUpdate.date = Timestamp.fromDate(postData.date);
     }
-    await updateDoc(postDoc, dataToUpdate);
+    await postDoc.update(dataToUpdate);
 }
 
 /**
- * Deletes a blog post from Firestore.
+ * Deletes a blog post from Firestore using the Admin SDK.
  * @param {string} id - The ID of the post document to delete.
  * @returns {Promise<void>}
  */
 export async function deleteBlogPost(id: string): Promise<void> {
-    const postDoc = doc(db, 'blogPosts', id);
-    await deleteDoc(postDoc);
+    const postDoc = adminDb.collection('blogPosts').doc(id);
+    await postDoc.delete();
 }
