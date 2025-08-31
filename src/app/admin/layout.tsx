@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, type ReactNode } from 'react';
@@ -6,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { AdminHeader } from '@/components/layout/admin-header';
 import { Footer } from '@/components/layout/footer';
-import { AuthProvider, useAuth } from '@/hooks/use-auth';
+import { AuthProvider, useAuth } from '@/hooks/use-auth.tsx';
 
 function AdminLayoutContent({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();

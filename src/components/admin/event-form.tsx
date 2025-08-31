@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useActionState, useEffect, useRef } from 'react';
@@ -20,7 +19,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertCircle, CalendarIcon, Loader2, Sparkles } from 'lucide-react';
 import { ActionSubmitButton } from './submit-button';
-import { useAuth } from '@/hooks/use-auth';
+import { useAuth } from '@/hooks/use-auth.tsx';
 
 interface EventFormProps {
   event?: Event;

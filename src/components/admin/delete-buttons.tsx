@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useTransition } from 'react';
@@ -20,7 +19,7 @@ import { deleteEventAction } from '@/app/admin/events/actions';
 import { deleteTeamMemberAction } from '@/app/admin/team/actions';
 import { deleteSponsorAction } from '@/app/admin/sponsors/actions';
 import { deleteBlogPostAction } from '@/app/admin/blog/actions';
-import { useAuth } from '@/hooks/use-auth';
+import { useAuth } from '@/hooks/use-auth.tsx';
 
 interface DeleteButtonProps {
     id: string;

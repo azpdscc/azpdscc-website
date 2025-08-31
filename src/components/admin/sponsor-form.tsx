@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useActionState, useRef, useEffect } from 'react';
@@ -14,7 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertCircle } from 'lucide-react';
 import { ActionSubmitButton } from './submit-button';
-import { useAuth } from '@/hooks/use-auth';
+import { useAuth } from '@/hooks/use-auth.tsx';
 
 interface SponsorFormProps {
   sponsor?: Sponsor;
