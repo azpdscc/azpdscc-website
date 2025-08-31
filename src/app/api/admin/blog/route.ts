@@ -1,16 +1,44 @@
-
 import { NextResponse } from 'next/server';
-import { adminDb } from '@/lib/firebase-admin';
-import { Timestamp } from 'firebase-admin/firestore';
+import { initializeApp, getApps, cert, App, ServiceAccount } from 'firebase-admin/app';
+import { getFirestore, Timestamp } from 'firebase-admin/firestore';
+
+// Define a function to initialize Firebase Admin SDK and return the DB instance
+// This ensures it's only initialized once.
+function getAdminDb() {
+    if (getApps().length) {
+        return getFirestore(getApps()[0]);
+    }
+
+    const serviceAccountString = process.env.FIREBASE_SERVICE_ACCOUNT;
+    if (!serviceAccountString) {
+        throw new Error('The FIREBASE_SERVICE_ACCOUNT environment variable is not set.');
+    }
+
+    try {
+        const decodedServiceAccount = Buffer.from(serviceAccountString, 'base64').toString('utf8');
+        const serviceAccount: ServiceAccount = JSON.parse(decodedServiceAccount);
+        
+        const app = initializeApp({
+            credential: cert(serviceAccount),
+        });
+        return getFirestore(app);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'An unknown error occurred during JSON parsing or initialization.';
+        console.error("Firebase Admin SDK initialization failed:", message);
+        throw new Error(`Firebase Admin SDK initialization failed: ${message}`);
+    }
+}
+
 
 async function handler(req: Request) {
     const apiKey = req.headers.get('x-admin-api-key');
 
     if (apiKey !== process.env.ADMIN_API_KEY) {
-        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+        return NextResponse.json({ message: 'Unauthorized: Invalid API Key' }, { status: 401 });
     }
 
     try {
+        const adminDb = getAdminDb(); // Get the initialized DB instance
         const body = await req.json();
 
         if (req.method === 'POST') {

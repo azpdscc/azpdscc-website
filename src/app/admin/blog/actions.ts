@@ -1,4 +1,3 @@
-
 'use server';
 
 import { z } from 'zod';
@@ -55,6 +54,7 @@ const createSlug = (title: string) => {
 
 async function makeAdminApiRequest(endpoint: string, method: 'POST' | 'PUT' | 'DELETE', body: any) {
     const apiUrl = getAbsoluteUrl(endpoint);
+    // Explicitly read the API key from process.env here in the server action.
     const apiKey = process.env.ADMIN_API_KEY;
 
     if (!apiKey) {
