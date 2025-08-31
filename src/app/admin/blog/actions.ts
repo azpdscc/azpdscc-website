@@ -62,14 +62,23 @@ async function makeAdminApiRequest(endpoint: string, method: 'POST' | 'PUT' | 'D
         headers: {
             'Content-Type': 'application/json',
             'x-admin-api-key': apiKey,
-            'Authorization': `Bearer ${token}`, // Pass the user's token for verification in the API
+            'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(body),
     });
 
     if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(errorText || `API request failed with status ${response.status}`);
+        let errorMessage = errorText;
+        try {
+            // Try to parse the error as JSON, as our API route should return JSON errors
+            const errorJson = JSON.parse(errorText);
+            errorMessage = errorJson.message || errorText;
+        } catch (e) {
+            // If parsing fails, it's likely an HTML error page, so we return a generic message
+             errorMessage = `The server returned a ${response.status} error.`;
+        }
+        throw new Error(errorMessage);
     }
 
     return response.json();

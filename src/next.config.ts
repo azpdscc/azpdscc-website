@@ -31,10 +31,6 @@ const nextConfig: NextConfig = {
       }
     ],
   },
-  env: {
-    FIREBASE_SERVICE_ACCOUNT: process.env.FIREBASE_SERVICE_ACCOUNT,
-    ADMIN_API_KEY: process.env.ADMIN_API_KEY,
-  }
 };
 
 export default nextConfig;
