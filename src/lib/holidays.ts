@@ -30,22 +30,56 @@ export const fixedHolidays: Holiday[] = [
 ];
 
 /**
- * This maps the calculated holiday names to their message and icon.
+ * This contains pre-calculated dates for variable holidays to avoid API calls.
  */
-export const variableHolidayDetails: Omit<Holiday, 'year' | 'month' | 'day'>[] = [
-  { name: "Martin Luther King Jr. Day", message: "Honor & Remember.", icon: Users },
-  { name: "Presidents' Day", message: "Happy Presidents' Day!", icon: Landmark },
-  { name: "Holi", message: "Happy Holi!", icon: Paintbrush },
-  { name: "Easter", message: "Happy Easter!", icon: Rabbit },
-  { name: "Memorial Day", message: "Remember and Honor.", icon: Medal },
-  { name: "Raksha Bandhan", message: "Happy Raksha Bandhan!", icon: Hand },
-  { name: "Janmashtami", message: "Happy Janmashtami!", icon: Sun },
-  { name: "Labor Day", message: "Happy Labor Day!", icon: HardHat },
-  { name: "Ganesh Chaturthi", message: "Happy Ganesh Chaturthi!", icon: Flame },
-  { name: "Navratri", message: "Happy Navratri!", icon: Paintbrush },
-  { name: "Dussehra", message: "Happy Dussehra!", icon: Sun },
-  { name: "Karva Chauth", message: "Happy Karva Chauth!", icon: Heart },
-  { name: "Diwali", message: "Happy Diwali!", icon: Flame },
-  { name: "Guru Nanak Jayanti", message: "Happy Guru Nanak Jayanti!", icon: Sun },
-  { name: "Thanksgiving", message: "Happy Thanksgiving!", icon: Utensils },
-]
+export const variableHolidays: Holiday[] = [
+    // 2024
+    { name: "Martin Luther King Jr. Day", year: 2024, month: 1, day: 15, message: "Honor & Remember.", icon: Users },
+    { name: "Presidents' Day", year: 2024, month: 2, day: 19, message: "Happy Presidents' Day!", icon: Landmark },
+    { name: "Holi", year: 2024, month: 3, day: 25, message: "Happy Holi!", icon: Paintbrush },
+    { name: "Easter", year: 2024, month: 3, day: 31, message: "Happy Easter!", icon: Rabbit },
+    { name: "Memorial Day", year: 2024, month: 5, day: 27, message: "Remember and Honor.", icon: Medal },
+    { name: "Labor Day", year: 2024, month: 9, day: 2, message: "Happy Labor Day!", icon: HardHat },
+    { name: "Thanksgiving", year: 2024, month: 11, day: 28, message: "Happy Thanksgiving!", icon: Utensils },
+    { name: "Diwali", year: 2024, month: 11, day: 1, message: "Happy Diwali!", icon: Flame },
+
+    // 2025
+    { name: "Martin Luther King Jr. Day", year: 2025, month: 1, day: 20, message: "Honor & Remember.", icon: Users },
+    { name: "Presidents' Day", year: 2025, month: 2, day: 17, message: "Happy Presidents' Day!", icon: Landmark },
+    { name: "Holi", year: 2025, month: 3, day: 14, message: "Happy Holi!", icon: Paintbrush },
+    { name: "Easter", year: 2025, month: 4, day: 20, message: "Happy Easter!", icon: Rabbit },
+    { name: "Memorial Day", year: 2025, month: 5, day: 26, message: "Remember and Honor.", icon: Medal },
+    { name: "Labor Day", year: 2025, month: 9, day: 1, message: "Happy Labor Day!", icon: HardHat },
+    { name: "Thanksgiving", year: 2025, month: 11, day: 27, message: "Happy Thanksgiving!", icon: Utensils },
+    { name: "Diwali", year: 2025, month: 10, day: 21, message: "Happy Diwali!", icon: Flame },
+    
+    // 2026
+    { name: "Martin Luther King Jr. Day", year: 2026, month: 1, day: 19, message: "Honor & Remember.", icon: Users },
+    { name: "Presidents' Day", year: 2026, month: 2, day: 16, message: "Happy Presidents' Day!", icon: Landmark },
+    { name: "Holi", year: 2026, month: 3, day: 4, message: "Happy Holi!", icon: Paintbrush },
+    { name: "Easter", year: 2026, month: 4, day: 5, message: "Happy Easter!", icon: Rabbit },
+    { name: "Memorial Day", year: 2026, month: 5, day: 25, message: "Remember and Honor.", icon: Medal },
+    { name: "Labor Day", year: 2026, month: 9, day: 7, message: "Happy Labor Day!", icon: HardHat },
+    { name: "Thanksgiving", year: 2026, month: 11, day: 26, message: "Happy Thanksgiving!", icon: Utensils },
+    { name: "Diwali", year: 2026, month: 11, day: 8, message: "Happy Diwali!", icon: Flame },
+
+    // 2027
+    { name: "Martin Luther King Jr. Day", year: 2027, month: 1, day: 18, message: "Honor & Remember.", icon: Users },
+    { name: "Presidents' Day", year: 2027, month: 2, day: 15, message: "Happy Presidents' Day!", icon: Landmark },
+    { name: "Holi", year: 2027, month: 3, day: 22, message: "Happy Holi!", icon: Paintbrush },
+    { name: "Easter", year: 2027, month: 3, day: 28, message: "Happy Easter!", icon: Rabbit },
+    { name: "Memorial Day", year: 2027, month: 5, day: 31, message: "Remember and Honor.", icon: Medal },
+    { name: "Labor Day", year: 2027, month: 9, day: 6, message: "Happy Labor Day!", icon: HardHat },
+    { name: "Thanksgiving", year: 2027, month: 11, day: 25, message: "Happy Thanksgiving!", icon: Utensils },
+    { name: "Diwali", year: 2027, month: 10, day: 29, message: "Happy Diwali!", icon: Flame },
+
+    // 2028
+    { name: "Martin Luther King Jr. Day", year: 2028, month: 1, day: 17, message: "Honor & Remember.", icon: Users },
+    { name: "Presidents' Day", year: 2028, month: 2, day: 21, message: "Happy Presidents' Day!", icon: Landmark },
+    { name: "Holi", year: 2028, month: 3, day: 10, message: "Happy Holi!", icon: Paintbrush },
+    { name: "Easter", year: 2028, month: 4, day: 16, message: "Happy Easter!", icon: Rabbit },
+    { name: "Memorial Day", year: 2028, month: 5, day: 29, message: "Remember and Honor.", icon: Medal },
+    { name: "Labor Day", year: 2028, month: 9, day: 4, message: "Happy Labor Day!", icon: HardHat },
+    { name: "Thanksgiving", year: 2028, month: 11, day: 23, message: "Happy Thanksgiving!", icon: Utensils },
+    { name: "Diwali", year: 2028, month: 10, day: 17, message: "Happy Diwali!", icon: Flame },
+];
