@@ -6,14 +6,20 @@ import { useRouter } from 'next/navigation';
 import { Logo } from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Home, LayoutDashboard, LogOut } from 'lucide-react';
+import { auth } from '@/lib/firebase';
+import { signOut } from 'firebase/auth';
 
 export function AdminHeader() {
   const router = useRouter();
 
-  const handleLogout = () => {
-    // Clear the session storage flag and redirect to the login page.
-    sessionStorage.removeItem('admin-authenticated');
-    router.push('/admin/login');
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      // The auth state listener in the layout will handle the redirect.
+      router.push('/admin/login');
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
   };
 
   return (

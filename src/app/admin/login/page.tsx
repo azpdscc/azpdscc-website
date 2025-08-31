@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useActionState, useEffect } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { loginAction } from './actions';
 import { useFormStatus } from 'react-dom';
@@ -12,6 +12,8 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, ArrowLeft, Loader2, Lock } from 'lucide-react';
 import Link from 'next/link';
+import { auth } from '@/lib/firebase';
+import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 
 function SubmitButton() {
     const { pending } = useFormStatus();
@@ -25,24 +27,47 @@ function SubmitButton() {
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [state, formAction] = useActionState(loginAction, { success: false, errors: {} });
+  const [formState, formAction] = useActionState(loginAction, { success: false, errors: {} });
+  const [clientError, setClientError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // On successful login from the server action, set a flag in session storage
-    // and redirect to the admin dashboard.
-    if (state.success) {
-      sessionStorage.setItem('admin-authenticated', 'true');
-      router.push('/admin');
-    }
-  }, [state.success, router]);
-
-  // This effect checks if the user is already logged in via sessionStorage
+  // This effect checks if the user is already logged in via Firebase Auth
   // and redirects them if they try to access the login page.
   useEffect(() => {
-    if (sessionStorage.getItem('admin-authenticated') === 'true') {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
         router.push('/admin');
-    }
+      }
+    });
+    return () => unsubscribe();
   }, [router]);
+  
+  // This handles the actual Firebase sign-in on the client
+  // after the server action has validated the form.
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      const formData = new FormData(event.currentTarget);
+      
+      // We still call the server action for validation
+      const validationState = await loginAction({ success: false, errors: {} }, formData);
+
+      if (validationState.success) {
+          try {
+              const email = formData.get('email') as string;
+              const password = formData.get('password') as string;
+              await signInWithEmailAndPassword(auth, email, password);
+              // The onAuthStateChanged listener above will handle redirection
+          } catch (error: any) {
+              let message = "An unknown error occurred.";
+              if (error.code === 'auth/invalid-credential') {
+                  message = "Invalid email or password. Please try again.";
+              }
+              setClientError(message);
+          }
+      } else {
+         // The useActionState hook will update formState with validation errors
+         // and they will be displayed by the form fields.
+      }
+  };
 
 
   return (
@@ -54,22 +79,22 @@ export default function AdminLoginPage() {
                 <CardDescription>Enter your administrator credentials to access the dashboard.</CardDescription>
             </CardHeader>
             <CardContent>
-                <form action={formAction} className="space-y-4">
-                    <div>
-                        <Label htmlFor="username">Username</Label>
-                        <Input type="text" id="username" name="username" required />
-                        {state.errors?.username && <p className="text-destructive text-sm mt-1">{state.errors.username.join(', ')}</p>}
+                <form action={formAction} onSubmit={handleFormSubmit} className="space-y-4">
+                     <div>
+                        <Label htmlFor="email">Email</Label>
+                        <Input type="email" id="email" name="email" required />
+                        {formState.errors?.email && <p className="text-destructive text-sm mt-1">{formState.errors.email.join(', ')}</p>}
                     </div>
                     <div>
                         <Label htmlFor="password">Password</Label>
                         <Input type="password" id="password" name="password" required />
-                        {state.errors?.password && <p className="text-destructive text-sm mt-1">{state.errors.password.join(', ')}</p>}
+                        {formState.errors?.password && <p className="text-destructive text-sm mt-1">{formState.errors.password.join(', ')}</p>}
                     </div>
-                    {state.errors?._form && (
+                    {clientError && (
                         <Alert variant="destructive">
                             <AlertCircle className="h-4 w-4" />
                             <AlertTitle>Login Failed</AlertTitle>
-                            <AlertDescription>{state.errors._form.join(', ')}</AlertDescription>
+                            <AlertDescription>{clientError}</AlertDescription>
                         </Alert>
                     )}
                     <SubmitButton />

@@ -6,9 +6,11 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { AdminHeader } from '@/components/layout/admin-header';
 import { Footer } from '@/components/layout/footer';
+import { auth } from '@/lib/firebase';
+import { onAuthStateChanged, type User } from 'firebase/auth';
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
@@ -19,29 +21,30 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const isCheckInPage = pathname === '/admin/check-in';
 
   useEffect(() => {
-    // This code runs only on the client.
-    // It checks for a session flag to determine auth state.
-    let authenticated = false;
+    // This listener handles Firebase Auth state changes.
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      let sessionAuthenticated = false;
 
-    if (isCheckInPage) {
-        // The check-in page has its own separate session logic.
-        authenticated = sessionStorage.getItem('vendor-checkin-authenticated') === 'true';
-        if (!authenticated) router.push('/admin/vendor-check-in-login');
-    } else if (pathname.startsWith('/admin/performances') && !isPerformersLoginPage) {
-        // The performance dashboard also has its own session logic.
-        authenticated = sessionStorage.getItem('performance-authenticated') === 'true' || sessionStorage.getItem('admin-authenticated') === 'true';
-        if (!authenticated) router.push('/admin/performances-login');
-    } else {
-        // All other admin pages use the main admin session.
-        authenticated = sessionStorage.getItem('admin-authenticated') === 'true';
-        if (!authenticated && !isLoginPage && !isVendorCheckInLoginPage && !isPerformersLoginPage) {
-            router.push('/admin/login');
-        }
-    }
-    
-    setIsAuthenticated(authenticated);
-    setLoading(false);
+      // Handle special session-based logins
+      if (isCheckInPage) {
+        sessionAuthenticated = sessionStorage.getItem('vendor-checkin-authenticated') === 'true';
+        if (!sessionAuthenticated) router.push('/admin/vendor-check-in-login');
+      } else if (pathname.startsWith('/admin/performances') && !isPerformersLoginPage) {
+        sessionAuthenticated = sessionStorage.getItem('performance-authenticated') === 'true';
+        if (!sessionAuthenticated && !currentUser) router.push('/admin/performances-login');
+      }
 
+      // Handle main Firebase admin login
+      if (!currentUser && !isLoginPage && !isVendorCheckInLoginPage && !isPerformersLoginPage && !sessionAuthenticated) {
+        router.push('/admin/login');
+      }
+      
+      setLoading(false);
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
   }, [pathname, router, isLoginPage, isVendorCheckInLoginPage, isPerformersLoginPage, isCheckInPage]);
 
 
@@ -58,8 +61,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       return <main>{children}</main>;
   }
 
-  // If the user is not authenticated, render a loader while redirecting.
-  if (!isAuthenticated) {
+  // If the user is not authenticated for a protected route, render a loader while redirecting.
+  if (!user && !pathname.startsWith('/admin/check-in') && !pathname.startsWith('/admin/performances')) {
       return (
         <div className="flex h-screen items-center justify-center">
             <Loader2 className="h-16 w-16 animate-spin text-primary" />
