@@ -34,7 +34,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
           <CarouselItem>
             <div className="relative h-[60vh] min-h-[400px] w-full">
               <Image
-                src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/IMG_2919.jpeg"
+                src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/Home+Page/IMG_3370.jpeg"
                 alt="Vaisakhi festival celebration"
                 data-ai-hint="festival celebration"
                 fill
