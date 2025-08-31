@@ -1,7 +1,33 @@
 # Settings to manage and configure a Firebase App Hosting backend.
 # https://firebase.google.com/docs/app-hosting/configure
-
 runConfig:
   # Increase this value if you'd like to automatically spin up
   # more instances in response to increased traffic.
-  maxInstances: 1
+  maxInstances: 10
+# Secrets are handled by Firebase Secret Manager.
+# Make sure you have set these secrets in your Firebase Project:
+# FIREBASE_SERVICE_ACCOUNT
+# RESEND_API_KEY
+# ADMIN_API_KEY
+# VOLUNTEER_USERNAME
+# VOLUNTEER_PASSWORD
+# PERFORMER_USERNAME
+# PERFORMER_PASSWORD
+# You can set them using the gcloud CLI:
+# gcloud secrets versions access latest --secret=SECRET_NAME --project=azpdscc-hub
+# https://firebase.google.com/docs/app-hosting/configure-backend#access-secrets
+secretEnvironmentVariables:
+  - key: FIREBASE_SERVICE_ACCOUNT
+    secret: FIREBASE_SERVICE_ACCOUNT
+  - key: RESEND_API_KEY
+    secret: RESEND_API_KEY
+  - key: ADMIN_API_KEY
+    secret: ADMIN_API_KEY
+  - key: VOLUNTEER_USERNAME
+    secret: VOLUNTEER_USERNAME
+  - key: VOLUNTEER_PASSWORD
+    secret: VOLUNTEER_PASSWORD
+  - key: PERFORMER_USERNAME
+    secret: PERFORMER_USERNAME
+  - key: PERFORMER_PASSWORD
+    secret: PERFORMER_PASSWORD

@@ -30,10 +30,6 @@ const nextConfig: NextConfig = {
       }
     ],
   },
-  env: {
-    RESEND_API_KEY: process.env.RESEND_API_KEY,
-    ADMIN_API_KEY: process.env.ADMIN_API_KEY,
-  }
 };
 
 export default nextConfig;
