@@ -1,4 +1,3 @@
-
 /**
  * @fileoverview This file contains server-side Firebase Admin SDK functions.
  * It is used for operations that require admin privileges, such as verifying
@@ -7,32 +6,27 @@
  */
 import { initializeApp, getApps, cert, App } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
+import { getFirestore } from 'firebase-admin/firestore';
 
 // This is a server-side only file. The client does not have access to this.
 const serviceAccount = {
-    "type": "service_account",
-    "project_id": process.env.FIREBASE_PROJECT_ID,
-    "private_key_id": process.env.FIREBASE_PRIVATE_KEY_ID,
-    "private_key": process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    "client_email": process.env.FIREBASE_CLIENT_EMAIL,
-    "client_id": process.env.FIREBASE_CLIENT_ID,
-    "auth_uri": process.env.FIREBASE_AUTH_URI,
-    "token_uri": process.env.FIREBASE_TOKEN_URI,
-    "auth_provider_x509_cert_url": process.env.FIREBASE_AUTH_PROVIDER_X509_CERT_URL,
-    "client_x509_cert_url": process.env.FIREBASE_CLIENT_X509_CERT_URL,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
 };
 
-let app: App;
+let adminApp: App;
 
 if (getApps().length === 0) {
-    app = initializeApp({
+    adminApp = initializeApp({
         credential: cert(serviceAccount)
     });
 } else {
-    app = getApps()[0];
+    adminApp = getApps()[0];
 }
 
-const adminAuth = getAuth(app);
+const adminAuth = getAuth(adminApp);
+const adminDb = getFirestore(adminApp);
 
 /**
  * Verifies a Firebase ID token.
@@ -49,3 +43,6 @@ export async function verifyIdToken(idToken: string) {
         throw new Error("Invalid or expired authentication token.");
     }
 }
+
+// Export the admin database instance for use in server actions
+export { adminDb };

@@ -1,4 +1,3 @@
-
 /**
  * @fileoverview This file contains functions for interacting with the blogPosts
  * collection in Firebase Firestore. All functions in this file use the client SDK
@@ -23,7 +22,6 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
       const querySnapshot = await getDocs(q);
       const posts = querySnapshot.docs.map(doc => {
         const data = doc.data();
-        // Firestore Timestamps need to be converted to JS Dates, then formatted.
         const date = data.date instanceof Timestamp ? data.date.toDate() : new Date(data.date);
         
         return {
@@ -89,51 +87,4 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
         console.error("Error fetching blog post by slug:", error);
         return null;
     }
-}
-
-// NOTE: The following CUD functions are now only for use by Server Actions
-// that have properly authenticated with the Admin SDK.
-
-/**
- * Creates a new blog post in Firestore.
- * This should ONLY be called from a Server Action.
- * @param {BlogPostFormData} postData - The data for the new post.
- * @returns {Promise<string>} The ID of the newly created document.
- */
-export async function createBlogPost(postData: BlogPostFormData): Promise<string> {
-    const dataToSave = {
-        ...postData,
-        date: Timestamp.fromDate(postData.date), // Store as a Timestamp for correct querying
-    };
-    const docRef = await addDoc(blogPostsCollectionRef, dataToSave);
-    return docRef.id;
-}
-
-
-/**
- * Updates an existing blog post in Firestore.
- * This should ONLY be called from a Server Action.
- * @param {string} id - The ID of the post document to update.
- * @param {Partial<BlogPostFormData>} postData - An object with the fields to update.
- * @returns {Promise<void>}
- */
-export async function updateBlogPost(id: string, postData: Partial<BlogPostFormData>): Promise<void> {
-    const postDoc = doc(db, 'blogPosts', id);
-    const dataToUpdate: any = { ...postData };
-    if (postData.date) {
-        // Ensure date is a Timestamp for consistency
-        dataToUpdate.date = Timestamp.fromDate(postData.date);
-    }
-    await updateDoc(postDoc, dataToUpdate);
-}
-
-/**
- * Deletes a blog post from Firestore.
- * This should ONLY be called from a Server Action.
- * @param {string} id - The ID of the post document to delete.
- * @returns {Promise<void>}
- */
-export async function deleteBlogPost(id: string): Promise<void> {
-    const postDoc = doc(db, 'blogPosts', id);
-    await deleteDoc(postDoc);
 }

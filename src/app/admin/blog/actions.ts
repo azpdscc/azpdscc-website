@@ -2,10 +2,11 @@
 'use server';
 
 import { z } from 'zod';
-import { createBlogPost, updateBlogPost, deleteBlogPost, getBlogPostById } from '@/services/blog';
 import { revalidateTag, revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { verifyIdToken } from '@/lib/firebase-admin';
+import { verifyIdToken, adminDb } from '@/lib/firebase-admin';
+import { getBlogPostById } from '@/services/blog';
+import { Timestamp } from 'firebase-admin/firestore';
 
 export type BlogFormState = {
   errors?: {
@@ -23,10 +24,9 @@ export type BlogFormState = {
   message?: string;
 };
 
-// This schema is used for both creating and updating posts.
 const blogPostSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  slug: z.string(), // Slug is now generated on the server, so it doesn't need validation here.
+  slug: z.string(), 
   author: z.string().min(1, "Author is required"),
   date: z.coerce.date({ required_error: 'Please select a date.'}),
   image: z.string().url("Must be a valid URL"),
@@ -46,17 +46,29 @@ const createSlug = (title: string) => {
         .replace(/-+$/, '');
 }
 
+async function createBlogPost(postData: any) {
+    const docRef = await adminDb.collection('blogPosts').add(postData);
+    return docRef.id;
+}
+
+async function updateBlogPost(id: string, postData: any) {
+    await adminDb.collection('blogPosts').doc(id).update(postData);
+}
+
+async function deleteBlogPost(id: string) {
+    await adminDb.collection('blogPosts').doc(id).delete();
+}
+
+
 export async function createBlogPostAction(
   prevState: BlogFormState,
   formData: FormData
 ): Promise<BlogFormState> {
-
-  // Generate slug on the server from the title
   const title = formData.get('title') as string;
   
   const validatedFields = blogPostSchema.safeParse({
     title: title,
-    slug: createSlug(title), // Generate and include slug here
+    slug: createSlug(title),
     author: formData.get('author'),
     date: formData.get('date'),
     image: formData.get('image'),
@@ -74,11 +86,13 @@ export async function createBlogPostAction(
   }
   
   try {
-    // Secure the action by verifying the user's ID token.
     await verifyIdToken(validatedFields.data.token);
-    // Destructure out the token before saving to the database
-    const { token, ...postData } = validatedFields.data;
-    await createBlogPost(postData);
+    const { token, date, ...restOfData } = validatedFields.data;
+    const postToSave = {
+        ...restOfData,
+        date: Timestamp.fromDate(date)
+    };
+    await createBlogPost(postToSave);
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {
@@ -103,7 +117,7 @@ export async function updateBlogPostAction(
 
   const validatedFields = blogPostSchema.safeParse({
     title: title,
-    slug: createSlug(title), // Always regenerate slug on update
+    slug: createSlug(title),
     author: formData.get('author'),
     date: formData.get('date'),
     image: formData.get('image'),
@@ -120,10 +134,13 @@ export async function updateBlogPostAction(
   }
   
   try {
-    // Secure the action by verifying the user's ID token.
     await verifyIdToken(validatedFields.data.token);
-    const { token, ...postData } = validatedFields.data;
-    await updateBlogPost(id, postData);
+    const { token, date, ...restOfData } = validatedFields.data;
+     const postToUpdate = {
+        ...restOfData,
+        date: Timestamp.fromDate(date)
+    };
+    await updateBlogPost(id, postToUpdate);
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {
@@ -134,7 +151,6 @@ export async function updateBlogPostAction(
   }
   
   revalidateTag('blogPosts');
-  // Revalidate the specific post path if the slug might have changed
   revalidatePath(`/blog/${validatedFields.data.slug}`);
   redirect('/admin/blog');
 }
@@ -144,10 +160,12 @@ export async function deleteBlogPostAction(id: string, token: string) {
         if (!token) throw new Error("Authentication token is missing.");
         await verifyIdToken(token);
 
+        // Fetching post to get slug for revalidation, now uses client SDK getBlogPostById
         const postToDelete = await getBlogPostById(id);
         if (!postToDelete) {
              return { success: false, message: 'Could not find the post to delete.' };
         }
+        
         await deleteBlogPost(id);
         
         revalidateTag('blogPosts');
