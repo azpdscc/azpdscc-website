@@ -1,3 +1,4 @@
+
 /**
  * @fileoverview Initializes the Firebase Admin SDK for server-side operations.
  * This is the single source of truth for the admin app instance. It now robustly
