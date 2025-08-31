@@ -30,9 +30,9 @@ export function EventForm({ event }: EventFormProps) {
   const { user } = useAuth();
   const tokenRef = useRef<HTMLInputElement>(null);
 
-  const action = isEditing ? updateEventAction.bind(null, event.id) : createEventAction;
+  const actionToUse = isEditing && event ? updateEventAction.bind(null, event.id) : createEventAction;
   const initialState: FormState = { errors: {}, message: '' };
-  const [formState, formAction] = useActionState(action, initialState);
+  const [formState, formAction] = useActionState(actionToUse, initialState);
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [description, setDescription] = useState(event?.description || '');
@@ -41,10 +41,13 @@ export function EventForm({ event }: EventFormProps) {
   const [date, setDate] = useState<Date | undefined>(event?.date ? new Date(event.date) : undefined);
   
   useEffect(() => {
-    if (!event?.date) {
+    if (isEditing && event?.date) {
+        setDate(new Date(event.date));
+    }
+    if (!event?.date && !isEditing) {
       setDate(new Date());
     }
-  }, [event?.date]);
+  }, [event?.date, isEditing]);
 
   useEffect(() => {
     const setToken = async () => {
@@ -154,7 +157,7 @@ export function EventForm({ event }: EventFormProps) {
         <div className="grid md:grid-cols-2 gap-4">
             <div>
                 <Label htmlFor="image">Image URL</Label>
-                <Input id="image" name="image" defaultValue={event?.image} required />
+                <Input id="image" name="image" defaultValue={event?.image || 'https://placehold.co/600x400.png'} required />
                 {formState.errors?.image && <p className="text-destructive text-sm mt-1">{formState.errors.image.join(', ')}</p>}
             </div>
             <div>

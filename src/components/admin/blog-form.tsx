@@ -30,9 +30,9 @@ export function BlogForm({ post }: BlogFormProps) {
   const { user } = useAuth();
   const tokenRef = useRef<HTMLInputElement>(null);
 
-  const action = isEditing ? updateBlogPostAction.bind(null, post.id) : createBlogPostAction;
+  const actionToUse = isEditing && post ? updateBlogPostAction.bind(null, post.id) : createBlogPostAction;
   const initialState: BlogFormState = { errors: {}, message: '' };
-  const [formState, formAction] = useActionState(action, initialState);
+  const [formState, formAction] = useActionState(actionToUse, initialState);
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [topic, setTopic] = useState('');
@@ -182,7 +182,7 @@ export function BlogForm({ post }: BlogFormProps) {
           )}
 
           <div className="flex items-center gap-4">
-              <ActionSubmitButton isEditing={isEditing} />
+              <ActionSubmitButton isEditing={isEditing} disabled={!user} />
               <Button type="button" variant="outline" asChild>
                   <Link href="/admin/blog">Cancel</Link>
               </Button>

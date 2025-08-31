@@ -13,7 +13,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Label } from '@/components/ui/label';
 import { AlertCircle } from 'lucide-react';
 import { ActionSubmitButton } from './submit-button';
-import { useAuth } from '@/hooks/use-auth.tsx';
+import { useAuth } from '@/hooks/use-auth';
 
 interface TeamFormProps {
   member?: TeamMember;
@@ -24,9 +24,9 @@ export function TeamForm({ member }: TeamFormProps) {
   const { user } = useAuth();
   const tokenRef = useRef<HTMLInputElement>(null);
 
-  const action = isEditing ? updateTeamMemberAction.bind(null, member.id) : createTeamMemberAction;
+  const actionToUse = isEditing && member ? updateTeamMemberAction.bind(null, member.id) : createTeamMemberAction;
   const initialState: TeamFormState = { errors: {}, message: '' };
-  const [formState, formAction] = useActionState(action, initialState);
+  const [formState, formAction] = useActionState(actionToUse, initialState);
 
   useEffect(() => {
     const setToken = async () => {
