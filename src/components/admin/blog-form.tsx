@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useActionState, useEffect } from 'react';
+import { useState, useActionState, useEffect, useRef } from 'react';
 import type { BlogPost } from '@/lib/types';
 import type { BlogFormState } from '@/app/admin/blog/actions';
 import { createBlogPostAction, updateBlogPostAction } from '@/app/admin/blog/actions';
@@ -19,6 +19,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertCircle, CalendarIcon, Loader2, Sparkles } from 'lucide-react';
 import { ActionSubmitButton } from './submit-button';
+import { useAuth } from '@/hooks/use-auth';
 
 interface BlogFormProps {
   post?: BlogPost;
@@ -26,6 +27,8 @@ interface BlogFormProps {
 
 export function BlogForm({ post }: BlogFormProps) {
   const isEditing = !!post;
+  const { user } = useAuth();
+  const tokenRef = useRef<HTMLInputElement>(null);
 
   const action = isEditing ? updateBlogPostAction.bind(null, post.id) : createBlogPostAction;
   const initialState: BlogFormState = { errors: {}, message: '' };
@@ -50,6 +53,16 @@ export function BlogForm({ post }: BlogFormProps) {
         setStatus('Draft');
     }
   }, [isEditing, post?.date]);
+
+  useEffect(() => {
+    const setToken = async () => {
+        if (user && tokenRef.current) {
+            const token = await user.getIdToken();
+            tokenRef.current.value = token;
+        }
+    }
+    setToken();
+  }, [user]);
 
 
   const handleGeneratePost = async () => {
@@ -89,6 +102,7 @@ export function BlogForm({ post }: BlogFormProps) {
         </div>
 
       <form action={formAction} className="space-y-6">
+          <input type="hidden" name="token" ref={tokenRef} />
           <div>
               <Label htmlFor="title">Post Title</Label>
               <Input id="title" name="title" value={title} onChange={(e) => setTitle(e.target.value)} required />

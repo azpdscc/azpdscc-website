@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useTransition, useRef } from 'react';
+import { useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Trash2, Loader2 } from 'lucide-react';
 import {
@@ -24,23 +24,6 @@ import { useAuth } from '@/hooks/use-auth';
 
 interface DeleteButtonProps {
     id: string;
-}
-
-// This component now includes a hidden input to pass the user's auth token
-// to the server action, which is required for verification.
-const AuthTokenInput = () => {
-    const { user } = useAuth();
-    const tokenRef = useRef<string | null>(null);
-
-    // This effect ensures the token is fetched when the component mounts
-    // and is ready when the delete action is triggered.
-    if (user && !tokenRef.current) {
-        user.getIdToken().then(token => {
-            tokenRef.current = token;
-        });
-    }
-
-    return <input type="hidden" name="token" value={tokenRef.current || ''} />;
 }
 
 export function DeleteEventButton({ id }: DeleteButtonProps) {
