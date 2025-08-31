@@ -1,22 +1,28 @@
+
 /**
  * @fileoverview This file contains server-side Firebase Admin SDK functions.
  * It is used for operations that require admin privileges, such as verifying
  * user ID tokens on the server. This file should only be imported in
- * server-side code (e.g., Next.js Server Actions).
+ * server-side code (e.g., Next.js API Routes).
  */
 import { initializeApp, getApps, cert, App, ServiceAccount } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
+import { getFirestore } from 'firebase-admin/firestore';
+
 
 let adminApp: App;
 let adminAuth: import('firebase-admin/auth').Auth;
+let adminDb: import('firebase-admin/firestore').Firestore;
 
-// This function initializes the admin app and auth. It's designed to be
+// This function initializes the admin app and its services. It's designed to be
 // called only when needed, and it ensures that initialization only happens once.
 function initializeAdmin() {
-    if (!getApps().length) {
+    if (getApps().length > 0) {
+        adminApp = getApps()[0];
+    } else {
         const serviceAccountString = process.env.FIREBASE_SERVICE_ACCOUNT;
         if (!serviceAccountString) {
-            throw new Error('The FIREBASE_SERVICE_ACCOUNT environment variable is not set. This is required for user authentication checks.');
+            throw new Error('The FIREBASE_SERVICE_ACCOUNT environment variable is not set. This is required for server-side operations.');
         }
         
         try {
@@ -27,17 +33,18 @@ function initializeAdmin() {
                 credential: cert(serviceAccount),
             });
         } catch (error) {
-             const message = error instanceof Error ? error.message : 'An unknown error occurred during JSON parsing or initialization.';
+            const message = error instanceof Error ? error.message : 'An unknown error occurred during JSON parsing or initialization.';
             console.error("Firebase Admin SDK initialization failed:", message);
             throw new Error(`Firebase Admin SDK initialization failed: ${message}`);
         }
-
-    } else {
-        adminApp = getApps()[0];
     }
+    
     adminAuth = getAuth(adminApp);
+    adminDb = getFirestore(adminApp);
 }
 
+// Ensure initialization is run when the module is loaded.
+initializeAdmin();
 
 /**
  * Verifies a Firebase ID token.
@@ -48,7 +55,7 @@ function initializeAdmin() {
  */
 export async function verifyIdToken(idToken: string) {
     if (!adminAuth) {
-        initializeAdmin();
+        throw new Error("Admin Auth not initialized.");
     }
     try {
         const decodedToken = await adminAuth.verifyIdToken(idToken);
@@ -58,3 +65,6 @@ export async function verifyIdToken(idToken: string) {
         throw new Error("Invalid or expired authentication token.");
     }
 }
+
+// Export the initialized admin DB instance for use in API routes.
+export { adminDb };

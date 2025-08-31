@@ -1,13 +1,10 @@
+
 'use server';
 
 import { z } from 'zod';
 import { revalidateTag, revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { getBlogPostById } from '@/services/blog';
-import { verifyIdToken } from '@/lib/firebase-admin';
 
-// This is the URL of our new, secure API route.
-// It will be called by our server actions.
 const getAbsoluteUrl = (path: string) => {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
   return `${baseUrl}${path}`;
@@ -52,9 +49,8 @@ const createSlug = (title: string) => {
         .replace(/-+$/, '');
 }
 
-async function makeAdminApiRequest(endpoint: string, method: 'POST' | 'PUT' | 'DELETE', body: any) {
+async function makeAdminApiRequest(endpoint: string, method: 'POST' | 'PUT' | 'DELETE', token: string, body: any) {
     const apiUrl = getAbsoluteUrl(endpoint);
-    // Explicitly read the API key from process.env here in the server action.
     const apiKey = process.env.ADMIN_API_KEY;
 
     if (!apiKey) {
@@ -66,13 +62,13 @@ async function makeAdminApiRequest(endpoint: string, method: 'POST' | 'PUT' | 'D
         headers: {
             'Content-Type': 'application/json',
             'x-admin-api-key': apiKey,
+            'Authorization': `Bearer ${token}`, // Pass the user's token for verification in the API
         },
         body: JSON.stringify(body),
     });
 
     if (!response.ok) {
         const errorText = await response.text();
-        // The error might be HTML, so we don't try to parse it as JSON
         throw new Error(errorText || `API request failed with status ${response.status}`);
     }
 
@@ -106,15 +102,13 @@ export async function createBlogPostAction(
   }
   
   try {
-    // We only need to verify the user's token here. The server API key handles the actual request auth.
-    await verifyIdToken(validatedFields.data.token);
-    
     const { token, date, ...restOfData } = validatedFields.data;
     const postToSave = {
         ...restOfData,
-        date: date.toISOString(), // Send as ISO string
+        date: date.toISOString(),
     };
-    await makeAdminApiRequest('/api/admin/blog', 'POST', postToSave);
+
+    await makeAdminApiRequest('/api/admin/blog', 'POST', token, postToSave);
 
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
@@ -157,13 +151,12 @@ export async function updateBlogPostAction(
   }
   
   try {
-    await verifyIdToken(validatedFields.data.token);
     const { token, date, ...restOfData } = validatedFields.data;
      const postToUpdate = {
         ...restOfData,
-        date: date.toISOString(), // Send as ISO string
+        date: date.toISOString(),
     };
-    await makeAdminApiRequest(`/api/admin/blog`, 'PUT', { id, ...postToUpdate });
+    await makeAdminApiRequest(`/api/admin/blog`, 'PUT', token, { id, ...postToUpdate });
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {
@@ -178,22 +171,13 @@ export async function updateBlogPostAction(
   redirect('/admin/blog');
 }
 
-export async function deleteBlogPostAction(id: string, token: string) {
+export async function deleteBlogPostAction(id: string, token: string): Promise<{ success: boolean; message: string }> {
     try {
         if (!token) throw new Error("Authentication token is missing.");
-        await verifyIdToken(token);
-
-        const postToDelete = await getBlogPostById(id);
-        if (!postToDelete) {
-             return { success: false, message: 'Could not find the post to delete.' };
-        }
         
-        await makeAdminApiRequest(`/api/admin/blog`, 'DELETE', { id });
+        await makeAdminApiRequest(`/api/admin/blog`, 'DELETE', token, { id });
         
         revalidateTag('blogPosts');
-        if (postToDelete.slug) {
-            revalidatePath(`/blog/${postToDelete.slug}`);
-        }
         
         return { success: true, message: 'Blog post deleted successfully.' };
     } catch (error) {
