@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { createBlogPost, updateBlogPost, deleteBlogPost, getBlogPostById } from '@/services/blog';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { verifyIdToken } from '@/lib/firebase-admin';
 
 export type BlogFormState = {
   errors?: {
@@ -17,6 +18,7 @@ export type BlogFormState = {
     content?: string[];
     status?: string[];
     _form?: string[];
+    token?: string[];
   };
   message?: string;
 };
@@ -31,6 +33,7 @@ const blogPostSchema = z.object({
   excerpt: z.string().min(1, "Excerpt is required"),
   content: z.string().min(1, "Content is required"),
   status: z.enum(['Draft', 'Published']),
+  token: z.string().min(1, "Authentication token is missing."),
 });
 
 const createSlug = (title: string) => {
@@ -60,6 +63,7 @@ export async function createBlogPostAction(
     excerpt: formData.get('excerpt'),
     content: formData.get('content'),
     status: formData.get('status'),
+    token: formData.get('token'),
   });
 
   if (!validatedFields.success) {
@@ -70,7 +74,11 @@ export async function createBlogPostAction(
   }
   
   try {
-    await createBlogPost(validatedFields.data);
+    // Secure the action by verifying the user's ID token.
+    await verifyIdToken(validatedFields.data.token);
+    // Destructure out the token before saving to the database
+    const { token, ...postData } = validatedFields.data;
+    await createBlogPost(postData);
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {
@@ -102,6 +110,7 @@ export async function updateBlogPostAction(
     excerpt: formData.get('excerpt'),
     content: formData.get('content'),
     status: formData.get('status'),
+    token: formData.get('token'),
   });
 
   if (!validatedFields.success) {
@@ -111,7 +120,10 @@ export async function updateBlogPostAction(
   }
   
   try {
-    await updateBlogPost(id, validatedFields.data);
+    // Secure the action by verifying the user's ID token.
+    await verifyIdToken(validatedFields.data.token);
+    const { token, ...postData } = validatedFields.data;
+    await updateBlogPost(id, postData);
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {
@@ -127,8 +139,11 @@ export async function updateBlogPostAction(
   redirect('/admin/blog');
 }
 
-export async function deleteBlogPostAction(id: string) {
+export async function deleteBlogPostAction(id: string, token: string) {
     try {
+        if (!token) throw new Error("Authentication token is missing.");
+        await verifyIdToken(token);
+
         const postToDelete = await getBlogPostById(id);
         if (!postToDelete) {
              return { success: false, message: 'Could not find the post to delete.' };
@@ -143,6 +158,7 @@ export async function deleteBlogPostAction(id: string) {
         return { success: true, message: 'Blog post deleted successfully.' };
     } catch (error) {
         console.error('Failed to delete blog post:', error);
-        return { success: false, message: 'Failed to delete blog post.' };
+        const message = error instanceof Error ? error.message : 'Failed to delete blog post.';
+        return { success: false, message };
     }
 }

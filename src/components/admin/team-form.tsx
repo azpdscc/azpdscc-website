@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useRef, useEffect } from 'react';
 import type { TeamMember } from '@/lib/types';
 import type { TeamFormState } from '@/app/admin/team/actions';
 import { createTeamMemberAction, updateTeamMemberAction } from '@/app/admin/team/actions';
@@ -14,6 +14,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Label } from '@/components/ui/label';
 import { AlertCircle } from 'lucide-react';
 import { ActionSubmitButton } from './submit-button';
+import { useAuth } from '@/hooks/use-auth';
 
 interface TeamFormProps {
   member?: TeamMember;
@@ -21,13 +22,26 @@ interface TeamFormProps {
 
 export function TeamForm({ member }: TeamFormProps) {
   const isEditing = !!member;
+  const { user } = useAuth();
+  const tokenRef = useRef<HTMLInputElement>(null);
 
   const action = isEditing ? updateTeamMemberAction.bind(null, member.id) : createTeamMemberAction;
   const initialState: TeamFormState = { errors: {}, message: '' };
   const [formState, formAction] = useActionState(action, initialState);
 
+  useEffect(() => {
+    const setToken = async () => {
+        if (user && tokenRef.current) {
+            const token = await user.getIdToken();
+            tokenRef.current.value = token;
+        }
+    }
+    setToken();
+  }, [user]);
+
   return (
     <form action={formAction} className="space-y-6">
+        <input type="hidden" name="token" ref={tokenRef} />
         <div className="grid md:grid-cols-3 gap-6">
             <div className="md:col-span-2">
                 <Label htmlFor="name">Full Name</Label>
@@ -68,7 +82,7 @@ export function TeamForm({ member }: TeamFormProps) {
         )}
 
         <div className="flex items-center gap-4">
-            <ActionSubmitButton isEditing={isEditing} />
+            <ActionSubmitButton isEditing={isEditing} disabled={!user} />
             <Button variant="outline" asChild>
                 <Link href="/admin/team">Cancel</Link>
             </Button>

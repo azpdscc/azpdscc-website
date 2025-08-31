@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { createTeamMember, updateTeamMember, deleteTeamMember } from '@/services/team';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { verifyIdToken } from '@/lib/firebase-admin';
 
 export type TeamFormState = {
   errors?: {
@@ -14,6 +15,7 @@ export type TeamFormState = {
     bio?: string[];
     order?: string[];
     _form?: string[];
+    token?: string[];
   };
   message?: string;
 };
@@ -24,6 +26,7 @@ const teamMemberSchema = z.object({
   image: z.string().url("Must be a valid image URL").optional().or(z.literal('')),
   bio: z.string().min(1, "Bio is required"),
   order: z.coerce.number().default(99),
+  token: z.string().min(1, "Authentication token is missing."),
 });
 
 const placeholderImage = 'https://placehold.co/400x400.png';
@@ -38,6 +41,7 @@ export async function createTeamMemberAction(
     image: formData.get('image'),
     bio: formData.get('bio'),
     order: formData.get('order'),
+    token: formData.get('token'),
   });
 
   if (!validatedFields.success) {
@@ -47,12 +51,13 @@ export async function createTeamMemberAction(
     };
   }
 
-  const memberData = {
-    ...validatedFields.data,
-    image: validatedFields.data.image || placeholderImage,
-  }
-
   try {
+    await verifyIdToken(validatedFields.data.token);
+    const { token, ...memberDataFromForm } = validatedFields.data;
+    const memberData = {
+      ...memberDataFromForm,
+      image: memberDataFromForm.image || placeholderImage,
+    };
     await createTeamMember(memberData);
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
@@ -79,6 +84,7 @@ export async function updateTeamMemberAction(
     image: formData.get('image'),
     bio: formData.get('bio'),
     order: formData.get('order'),
+    token: formData.get('token'),
   });
 
   if (!validatedFields.success) {
@@ -86,13 +92,14 @@ export async function updateTeamMemberAction(
       errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-
-  const memberData = {
-    ...validatedFields.data,
-    image: validatedFields.data.image || placeholderImage,
-  }
-
+  
   try {
+    await verifyIdToken(validatedFields.data.token);
+    const { token, ...memberDataFromForm } = validatedFields.data;
+    const memberData = {
+      ...memberDataFromForm,
+      image: memberDataFromForm.image || placeholderImage,
+    };
     await updateTeamMember(id, memberData);
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
@@ -108,14 +115,17 @@ export async function updateTeamMemberAction(
   redirect('/admin/team');
 }
 
-export async function deleteTeamMemberAction(id: string) {
+export async function deleteTeamMemberAction(id: string, token: string) {
     try {
+        if (!token) throw new Error("Authentication token is missing.");
+        await verifyIdToken(token);
         await deleteTeamMember(id);
         revalidatePath('/admin/team');
         revalidatePath('/about');
         return { success: true, message: 'Team member deleted successfully.' };
     } catch (error) {
         console.error('Failed to delete team member:', error);
-        return { success: false, message: 'Failed to delete team member.' };
+        const message = error instanceof Error ? error.message : 'Failed to delete team member.';
+        return { success: false, message };
     }
 }

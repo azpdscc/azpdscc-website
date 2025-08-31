@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useActionState, useEffect } from 'react';
+import { useState, useActionState, useEffect, useRef } from 'react';
 import type { Event } from '@/lib/types';
 import type { FormState } from '@/app/admin/events/actions';
 import { createEventAction, updateEventAction } from '@/app/admin/events/actions';
@@ -20,6 +20,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertCircle, CalendarIcon, Loader2, Sparkles } from 'lucide-react';
 import { ActionSubmitButton } from './submit-button';
+import { useAuth } from '@/hooks/use-auth';
 
 interface EventFormProps {
   event?: Event;
@@ -27,6 +28,8 @@ interface EventFormProps {
 
 export function EventForm({ event }: EventFormProps) {
   const isEditing = !!event;
+  const { user } = useAuth();
+  const tokenRef = useRef<HTMLInputElement>(null);
 
   const action = isEditing ? updateEventAction.bind(null, event.id) : createEventAction;
   const initialState: FormState = { errors: {}, message: '' };
@@ -43,6 +46,16 @@ export function EventForm({ event }: EventFormProps) {
       setDate(new Date());
     }
   }, [event?.date]);
+
+  useEffect(() => {
+    const setToken = async () => {
+        if (user && tokenRef.current) {
+            const token = await user.getIdToken();
+            tokenRef.current.value = token;
+        }
+    }
+    setToken();
+  }, [user]);
 
   const handleGenerateDescriptions = async () => {
     if (!name) {
@@ -67,6 +80,7 @@ export function EventForm({ event }: EventFormProps) {
 
   return (
     <form action={formAction} className="space-y-6">
+        <input type="hidden" name="token" ref={tokenRef} />
         <div>
             <Label htmlFor="name">Event Name</Label>
             <Input id="name" name="name" value={name} onChange={(e) => setName(e.target.value)} required />
@@ -170,7 +184,7 @@ export function EventForm({ event }: EventFormProps) {
         )}
 
         <div className="flex items-center gap-4">
-            <ActionSubmitButton isEditing={isEditing} />
+            <ActionSubmitButton isEditing={isEditing} disabled={!user} />
             <Button type="button" variant="outline" asChild>
                 <Link href="/admin/events">Cancel</Link>
             </Button>

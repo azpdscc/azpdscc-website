@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useRef, useEffect } from 'react';
 import type { Sponsor } from '@/lib/types';
 import type { SponsorFormState } from '@/app/admin/sponsors/actions';
 import { createSponsorAction, updateSponsorAction } from '@/app/admin/sponsors/actions';
@@ -14,6 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertCircle } from 'lucide-react';
 import { ActionSubmitButton } from './submit-button';
+import { useAuth } from '@/hooks/use-auth';
 
 interface SponsorFormProps {
   sponsor?: Sponsor;
@@ -21,13 +22,26 @@ interface SponsorFormProps {
 
 export function SponsorForm({ sponsor }: SponsorFormProps) {
   const isEditing = !!sponsor;
+  const { user } = useAuth();
+  const tokenRef = useRef<HTMLInputElement>(null);
 
   const action = isEditing ? updateSponsorAction.bind(null, sponsor.id) : createSponsorAction;
   const initialState: SponsorFormState = { errors: {}, message: '' };
   const [formState, formAction] = useActionState(action, initialState);
 
+  useEffect(() => {
+    const setToken = async () => {
+        if (user && tokenRef.current) {
+            const token = await user.getIdToken();
+            tokenRef.current.value = token;
+        }
+    }
+    setToken();
+  }, [user]);
+
   return (
     <form action={formAction} className="space-y-6">
+        <input type="hidden" name="token" ref={tokenRef} />
         <div>
             <Label htmlFor="name">Sponsor Name</Label>
             <Input id="name" name="name" defaultValue={sponsor?.name} required />
@@ -73,7 +87,7 @@ export function SponsorForm({ sponsor }: SponsorFormProps) {
         )}
 
         <div className="flex items-center gap-4">
-            <ActionSubmitButton isEditing={isEditing} />
+            <ActionSubmitButton isEditing={isEditing} disabled={!user} />
             <Button variant="outline" asChild>
                 <Link href="/admin/sponsors">Cancel</Link>
             </Button>

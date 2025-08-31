@@ -1,17 +1,15 @@
 
 'use client';
 
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { AdminHeader } from '@/components/layout/admin-header';
 import { Footer } from '@/components/layout/footer';
-import { auth } from '@/lib/firebase';
-import { onAuthStateChanged, type User } from 'firebase/auth';
+import { AuthProvider, useAuth } from '@/hooks/use-auth';
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+function AdminLayoutContent({ children }: { children: ReactNode }) {
+  const { user, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -21,31 +19,25 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const isCheckInPage = pathname === '/admin/check-in';
 
   useEffect(() => {
-    // This listener handles Firebase Auth state changes.
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      let sessionAuthenticated = false;
+    if (loading) return; // Wait until Firebase auth state is loaded
 
-      // Handle special session-based logins
-      if (isCheckInPage) {
-        sessionAuthenticated = sessionStorage.getItem('vendor-checkin-authenticated') === 'true';
-        if (!sessionAuthenticated) router.push('/admin/vendor-check-in-login');
-      } else if (pathname.startsWith('/admin/performances') && !isPerformersLoginPage) {
-        sessionAuthenticated = sessionStorage.getItem('performance-authenticated') === 'true';
-        if (!sessionAuthenticated && !currentUser) router.push('/admin/performances-login');
-      }
+    let sessionAuthenticated = false;
 
-      // Handle main Firebase admin login
-      if (!currentUser && !isLoginPage && !isVendorCheckInLoginPage && !isPerformersLoginPage && !sessionAuthenticated) {
-        router.push('/admin/login');
-      }
-      
-      setLoading(false);
-    });
+    // Handle special session-based logins
+    if (isCheckInPage) {
+      sessionAuthenticated = sessionStorage.getItem('vendor-checkin-authenticated') === 'true';
+      if (!sessionAuthenticated) router.push('/admin/vendor-check-in-login');
+    } else if (pathname.startsWith('/admin/performances') && !isPerformersLoginPage) {
+      sessionAuthenticated = sessionStorage.getItem('performance-authenticated') === 'true';
+      if (!sessionAuthenticated) router.push('/admin/performances-login');
+    }
 
-    // Cleanup subscription on unmount
-    return () => unsubscribe();
-  }, [pathname, router, isLoginPage, isVendorCheckInLoginPage, isPerformersLoginPage, isCheckInPage]);
+    // Handle main Firebase admin login for all other admin pages
+    if (!user && !isLoginPage && !isVendorCheckInLoginPage && !isPerformersLoginPage && !sessionAuthenticated) {
+      router.push('/admin/login');
+    }
+
+  }, [user, loading, pathname, router, isLoginPage, isVendorCheckInLoginPage, isPerformersLoginPage, isCheckInPage]);
 
 
   if (loading) {
@@ -78,4 +70,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <Footer />
     </div>
   );
+}
+
+
+export default function AdminLayout({ children }: { children: ReactNode }) {
+    return (
+        <AuthProvider>
+            <AdminLayoutContent>{children}</AdminLayoutContent>
+        </AuthProvider>
+    )
 }

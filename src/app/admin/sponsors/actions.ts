@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { createSponsor, updateSponsor, deleteSponsor } from '@/services/sponsors';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { verifyIdToken } from '@/lib/firebase-admin';
 
 export type SponsorFormState = {
   errors?: {
@@ -13,6 +14,7 @@ export type SponsorFormState = {
     level?: string[];
     website?: string[];
     _form?: string[];
+    token?: string[];
   };
   message?: string;
 };
@@ -22,6 +24,7 @@ const sponsorSchema = z.object({
   logo: z.string().url("Must be a valid image URL"),
   level: z.enum(['Diamond', 'Gold', 'Silver', 'Bronze', 'Other'], { required_error: 'Please select a level.'}),
   website: z.string().url("Must be a valid URL").optional().or(z.literal('')),
+  token: z.string().min(1, "Authentication token is missing."),
 });
 
 export async function createSponsorAction(
@@ -33,6 +36,7 @@ export async function createSponsorAction(
     logo: formData.get('logo'),
     level: formData.get('level'),
     website: formData.get('website'),
+    token: formData.get('token'),
   });
 
   if (!validatedFields.success) {
@@ -43,7 +47,9 @@ export async function createSponsorAction(
   }
 
   try {
-    await createSponsor(validatedFields.data);
+    await verifyIdToken(validatedFields.data.token);
+    const { token, ...sponsorData } = validatedFields.data;
+    await createSponsor(sponsorData);
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {
@@ -69,6 +75,7 @@ export async function updateSponsorAction(
     logo: formData.get('logo'),
     level: formData.get('level'),
     website: formData.get('website'),
+    token: formData.get('token'),
   });
 
   if (!validatedFields.success) {
@@ -78,7 +85,9 @@ export async function updateSponsorAction(
   }
 
   try {
-    await updateSponsor(id, validatedFields.data);
+    await verifyIdToken(validatedFields.data.token);
+    const { token, ...sponsorData } = validatedFields.data;
+    await updateSponsor(id, sponsorData);
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {
@@ -94,8 +103,10 @@ export async function updateSponsorAction(
   redirect('/admin/sponsors');
 }
 
-export async function deleteSponsorAction(id: string) {
+export async function deleteSponsorAction(id: string, token: string) {
     try {
+        if (!token) throw new Error("Authentication token is missing.");
+        await verifyIdToken(token);
         await deleteSponsor(id);
         revalidatePath('/admin/sponsors');
         revalidatePath('/');
@@ -103,6 +114,7 @@ export async function deleteSponsorAction(id: string) {
         return { success: true, message: 'Sponsor deleted successfully.' };
     } catch (error) {
         console.error('Failed to delete sponsor:', error);
-        return { success: false, message: 'Failed to delete sponsor.' };
+        const message = error instanceof Error ? error.message : 'Failed to delete sponsor.';
+        return { success: false, message };
     }
 }

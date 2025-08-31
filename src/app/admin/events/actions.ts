@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { createEvent, updateEvent, deleteEvent } from '@/services/events';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { verifyIdToken } from '@/lib/firebase-admin';
 
 export type FormState = {
   errors?: {
@@ -18,6 +19,7 @@ export type FormState = {
     fullDescription?: string[];
     category?: string[];
     _form?: string[];
+    token?: string[];
   };
   message?: string;
 };
@@ -42,6 +44,7 @@ const eventSchema = z.object({
   description: z.string().min(1, "Short description is required"),
   fullDescription: z.string().min(1, "Full description is required"),
   category: z.enum(['Cultural', 'Food', 'Music', 'Dance']),
+  token: z.string().min(1, "Authentication token is missing."),
 });
 
 export async function createEventAction(
@@ -58,6 +61,7 @@ export async function createEventAction(
     description: formData.get('description'),
     fullDescription: formData.get('fullDescription'),
     category: formData.get('category'),
+    token: formData.get('token'),
   });
 
   if (!validatedFields.success) {
@@ -69,13 +73,10 @@ export async function createEventAction(
 
   const slug = createSlug(validatedFields.data.name);
   
-  const eventData = {
-      ...validatedFields.data,
-      slug
-  };
-
   try {
-    await createEvent(eventData);
+    await verifyIdToken(validatedFields.data.token);
+    const { token, ...eventData } = validatedFields.data;
+    await createEvent({ ...eventData, slug });
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {
@@ -107,6 +108,7 @@ export async function updateEventAction(
     description: formData.get('description'),
     fullDescription: formData.get('fullDescription'),
     category: formData.get('category'),
+    token: formData.get('token'),
   });
 
   if (!validatedFields.success) {
@@ -117,13 +119,10 @@ export async function updateEventAction(
 
   const slug = createSlug(validatedFields.data.name);
 
-  const eventData = {
-      ...validatedFields.data,
-      slug
-  };
-
   try {
-    await updateEvent(id, eventData);
+    await verifyIdToken(validatedFields.data.token);
+    const { token, ...eventData } = validatedFields.data;
+    await updateEvent(id, { ...eventData, slug });
   } catch (err) {
      const message = err instanceof Error ? err.message : 'An unknown error occurred.';
      return {
@@ -139,8 +138,10 @@ export async function updateEventAction(
   redirect('/admin/events');
 }
 
-export async function deleteEventAction(id: string) {
+export async function deleteEventAction(id: string, token: string) {
     try {
+        if (!token) throw new Error("Authentication token is missing.");
+        await verifyIdToken(token);
         await deleteEvent(id);
         revalidatePath('/admin/events');
         revalidatePath('/events');
@@ -148,6 +149,7 @@ export async function deleteEventAction(id: string) {
         return { success: true, message: 'Event deleted successfully.' };
     } catch (error) {
         console.error('Failed to delete event:', error);
-        return { success: false, message: 'Failed to delete event.' };
+        const message = error instanceof Error ? error.message : 'Failed to delete event.';
+        return { success: false, message };
     }
 }
