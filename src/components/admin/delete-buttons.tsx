@@ -21,8 +21,6 @@ import { deleteTeamMemberAction } from '@/app/admin/team/actions';
 import { deleteSponsorAction } from '@/app/admin/sponsors/actions';
 import { deleteBlogPostAction } from '@/app/admin/blog/actions';
 import { useAuth } from '@/hooks/use-auth';
-import { getBlogPostById } from '@/services/blog';
-import { revalidatePath } from 'next/cache';
 
 interface DeleteButtonProps {
     id: string;
@@ -187,16 +185,10 @@ export function DeleteBlogPostButton({ id }: DeleteButtonProps) {
     }
     const token = await user.getIdToken();
 
-    // Get post slug before deleting to revalidate the path
-    const postToDelete = await getBlogPostById(id);
-
     startTransition(async () => {
       const result = await deleteBlogPostAction(id, token);
       if (result.success) {
         toast({ title: "Success", description: result.message });
-        if (postToDelete?.slug) {
-            // This needs to be handled by the server action revalidation
-        }
       } else {
         toast({ variant: 'destructive', title: "Error", description: result.message });
       }

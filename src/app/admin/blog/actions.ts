@@ -102,10 +102,10 @@ export async function createBlogPostAction(
   }
   
   try {
-    const { token, date, ...restOfData } = validatedFields.data;
+    const { token, ...restOfData } = validatedFields.data;
     const postToSave = {
         ...restOfData,
-        date: date.toISOString(),
+        date: restOfData.date.toISOString(),
     };
 
     await makeAdminApiRequest('/api/admin/blog', 'POST', token, postToSave);
@@ -151,10 +151,10 @@ export async function updateBlogPostAction(
   }
   
   try {
-    const { token, date, ...restOfData } = validatedFields.data;
+    const { token, ...restOfData } = validatedFields.data;
      const postToUpdate = {
         ...restOfData,
-        date: date.toISOString(),
+        date: restOfData.date.toISOString(),
     };
     await makeAdminApiRequest(`/api/admin/blog`, 'PUT', token, { id, ...postToUpdate });
   } catch (err) {
