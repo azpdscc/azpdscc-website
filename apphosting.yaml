@@ -13,6 +13,7 @@ runConfig:
 # VOLUNTEER_PASSWORD
 # PERFORMER_USERNAME
 # PERFORMER_PASSWORD
+# GEMINI_API_KEY
 # You can set them using the gcloud CLI:
 # gcloud secrets versions access latest --secret=SECRET_NAME --project=azpdscc-hub
 # https://firebase.google.com/docs/app-hosting/configure-backend#access-secrets
@@ -31,3 +32,5 @@ secretEnvironmentVariables:
     secret: PERFORMER_USERNAME
   - key: PERFORMER_PASSWORD
     secret: PERFORMER_PASSWORD
+  - key: GEMINI_API_KEY
+    secret: GEMINI_API_KEY
