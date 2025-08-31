@@ -1,7 +1,6 @@
 
 import { NextResponse } from 'next/server';
 import { adminDb, verifyIdToken } from '@/lib/firebase-admin';
-import { Timestamp } from 'firebase-admin/firestore';
 
 async function handler(req: Request) {
     try {
@@ -16,29 +15,24 @@ async function handler(req: Request) {
         if (!authToken) {
             return NextResponse.json({ message: 'Unauthorized: Missing user token' }, { status: 401 });
         }
-        await verifyIdToken(authToken); // This confirms the user is a valid, logged-in user
+        await verifyIdToken(authToken);
 
         // 3. Process the request based on the method
         const body = await req.json();
 
         if (req.method === 'POST') {
-            const { date, ...rest } = body;
-            const docRef = await adminDb.collection('blogPosts').add({
-                ...rest,
-                date: Timestamp.fromDate(new Date(date)),
-            });
+            // Firestore can handle ISO date strings directly. No conversion needed.
+            const docRef = await adminDb.collection('blogPosts').add(body);
             return NextResponse.json({ success: true, id: docRef.id });
         }
 
         if (req.method === 'PUT') {
-            const { id, date, ...rest } = body;
+            const { id, ...rest } = body;
             if (!id) {
                 return NextResponse.json({ message: 'Document ID is required for update.' }, { status: 400 });
             }
-            await adminDb.collection('blogPosts').doc(id).update({
-                ...rest,
-                date: Timestamp.fromDate(new Date(date)),
-            });
+            // Firestore can handle ISO date strings directly. No conversion needed.
+            await adminDb.collection('blogPosts').doc(id).update(rest);
             return NextResponse.json({ success: true, id });
         }
 
@@ -55,8 +49,7 @@ async function handler(req: Request) {
 
     } catch (error) {
         const message = error instanceof Error ? error.message : 'An unknown internal error occurred';
-        console.error('Admin Blog API Error:', message);
-        // Ensure a clear error is sent back
+        console.error('Admin Blog API Error:', message, error);
         return NextResponse.json({ message: `Server error: ${message}` }, { status: 500 });
     }
 }
