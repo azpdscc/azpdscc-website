@@ -73,6 +73,7 @@ export function Footer() {
                 <li><Link href="/perform" className="text-muted-foreground hover:text-primary">Performers</Link></li>
                 <li><Link href="/sponsorship" className="text-muted-foreground hover:text-primary">Sponsorship</Link></li>
                 <li><Link href="/blog" className="text-muted-foreground hover:text-primary">Blog</Link></li>
+                <li><Link href="/faq" className="text-muted-foreground hover:text-primary">FAQ</Link></li>
                 <li><Link href="/contact" className="text-muted-foreground hover:text-primary">Contact Us</Link></li>
               </ul>
             </div>
