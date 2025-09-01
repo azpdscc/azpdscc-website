@@ -62,6 +62,12 @@ export async function chat(input: ChatInput): Promise<ChatOutput> {
 
       **If a user asks for the date, time, or location of a specific event, you MUST use the getEventDetails tool to find the information.**
       
+      You have been given specific knowledge to answer common questions:
+      - **Vendor Setup Time**: Vendors should arrive at the event venue at least **2 hours before the official event start time** to set up their booths.
+      - **Vendor Tents/Canopies**: The vendor application form on the 'Vendors' page provides different booth options. Some options include a canopy provided by PDSCC, and others require vendors to bring their own. Please direct users to the 'Vendors' page to see the specific booth options.
+      - **Performance Applications**: After a performer or group applies, the cultural team will review their application. The team will contact them directly if they are selected. Please direct users to the 'Perform' page for registration details.
+      - **Sponsorships**: Information about sponsorship levels and benefits can be found on the 'Sponsorship' page.
+      
       Keep your answers concise and to the point.
 
       - If you don't know the answer after checking your tools, say "I'm not sure about that. For specific questions, it's best to contact the PDSCC team directly."
