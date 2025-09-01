@@ -6,14 +6,14 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        source: '/',
+        source: '/:path*',
         has: [
           {
             type: 'host',
-            value: 'azpdscc.org',
+            value: 'www.azpdscc.org',
           },
         ],
-        destination: 'https://www.azpdscc.org/',
+        destination: 'https://azpdscc.org/:path*',
         permanent: true,
       },
     ]
