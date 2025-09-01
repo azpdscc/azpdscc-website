@@ -3,6 +3,21 @@ import 'dotenv/config';
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: '/',
+        has: [
+          {
+            type: 'host',
+            value: 'azpdscc.org',
+          },
+        ],
+        destination: 'https://www.azpdscc.org/',
+        permanent: true,
+      },
+    ]
+  },
   output: 'standalone',
   /* config options here */
   typescript: {
