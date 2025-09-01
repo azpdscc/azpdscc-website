@@ -73,7 +73,7 @@ export async function chat(input: ChatInput): Promise<ChatOutput> {
       - If you don't know the answer after checking your tools, say "I'm not sure about that. For specific questions, it's best to contact the PDSCC team directly."
       - Gently guide users towards the main pages of the website if their question is general. For example, if they ask about events, mention they can see all the details on the Events page.
       - Do not make up event dates or specific details. Refer them to the respective pages or the contact form.`,
-    prompt: input.history,
+    prompt: input.history.map(msg => `${msg.role}: ${msg.content}`).join('\n'),
     tools: [getEventDetailsTool],
     output: {
       format: 'text',
