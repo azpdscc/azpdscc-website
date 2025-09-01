@@ -8,7 +8,6 @@ import { Footer } from '@/components/layout/footer';
 import { ConditionalTicker } from './conditional-ticker';
 import { Breadcrumbs } from './breadcrumbs';
 import AdminLayout from '@/app/admin/layout';
-import { Chatbot } from '@/components/chatbot/chatbot';
 
 /**
  * This client component determines which layout to render based on the current URL path.
@@ -37,7 +36,6 @@ export function RootLayoutClient({ children }: { children: ReactNode }) {
             <ConditionalTicker />
             { !isRootPage && <Breadcrumbs /> }
             <main className="flex-1">{children}</main>
-            <Chatbot />
             <Footer />
         </div>
     )
