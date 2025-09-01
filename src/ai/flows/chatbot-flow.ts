@@ -6,7 +6,7 @@
  * - chat: Takes a history of messages and generates the next response.
  */
 import { ai } from '@/ai/genkit';
-import { type ChatInput, type ChatOutput } from '@/ai/schemas/chatbot-schema';
+import type { ChatInput, ChatOutput } from '@/ai/schemas/chatbot-schema';
 import { getEvents } from '@/services/events';
 import { z } from 'zod';
 
