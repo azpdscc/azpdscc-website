@@ -57,7 +57,7 @@ const getEventDetailsTool = ai.defineTool(
  */
 export async function chat(input: ChatInput): Promise<ChatOutput> {
   const llmResponse = await ai.generate({
-    prompt: `You are a friendly and helpful assistant for the PDSCC (Phoenix Desi Sports and Cultural Club) website.
+    system: `You are a friendly and helpful assistant for the PDSCC (Phoenix Desi Sports and Cultural Club) website.
       Your goal is to answer user questions based on the general knowledge of a non-profit community organization that runs events like Vaisakhi Mela and Teeyan Da Mela, offers vendor booths, performance slots, and sponsorships.
 
       **If a user asks for the date, time, or location of a specific event, you MUST use the getEventDetails tool to find the information.**
@@ -73,7 +73,9 @@ export async function chat(input: ChatInput): Promise<ChatOutput> {
       - If you don't know the answer after checking your tools, say "I'm not sure about that. For specific questions, it's best to contact the PDSCC team directly."
       - Gently guide users towards the main pages of the website if their question is general. For example, if they ask about events, mention they can see all the details on the Events page.
       - Do not make up event dates or specific details. Refer them to the respective pages or the contact form.`,
-    history: input.history,
+    prompt: {
+        history: input.history,
+    },
     tools: [getEventDetailsTool],
     output: {
       format: 'text',
