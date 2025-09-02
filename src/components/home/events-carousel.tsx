@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '@/components/ui/carousel';
 import { EventCard } from '@/components/events/event-card';
 import type { Event } from '@/lib/types';
@@ -12,20 +12,20 @@ interface EventsCarouselProps {
 }
 
 export function EventsCarousel({ events }: EventsCarouselProps) {
-  const plugin = useRef(
+  const [api, setApi] = useState<CarouselApi>()
+   const plugin = useRef(
     Autoplay({ delay: 4000, stopOnInteraction: true, stopOnMouseEnter: true })
   );
-  const [api, setApi] = useState<CarouselApi>()
  
   useEffect(() => {
     if (!api) {
       return
     }
+    // Note: The 'useEffect' logic for api can be expanded here if needed.
   }, [api])
 
-  // This check prevents the component from crashing if the events array is empty on initial render.
   if (!events || events.length === 0) {
-    return null; // Or a loading/skeleton component
+    return null;
   }
 
   return (
