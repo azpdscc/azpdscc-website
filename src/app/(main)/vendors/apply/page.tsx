@@ -1,4 +1,3 @@
-
 import type { Metadata } from 'next';
 import { VendorApplicationPageClient } from '@/components/vendors/vendor-application-page-client';
 
