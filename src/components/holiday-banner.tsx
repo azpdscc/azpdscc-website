@@ -1,16 +1,13 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { fixedHolidays, variableHolidays, type Holiday } from '@/lib/holidays';
 import { Card, CardContent } from '@/components/ui/card';
-import { Fireworks } from './fireworks';
 
 
 export function HolidayBanner() {
   const [currentHoliday, setCurrentHoliday] = useState<Holiday | null>(null);
-  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     const findCurrentHoliday = () => {
@@ -45,8 +42,6 @@ export function HolidayBanner() {
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="container mx-auto px-4 -mt-12 mb-12 z-20 relative"
-          onHoverStart={() => setIsHovered(true)}
-          onHoverEnd={() => setIsHovered(false)}
         >
           <motion.div
             animate={{
@@ -63,7 +58,6 @@ export function HolidayBanner() {
              <Card
                 className="p-0 text-primary-foreground shadow-2xl relative overflow-hidden bg-primary rounded-lg"
              >
-                {isHovered && <Fireworks />}
                 <CardContent className="p-4 flex items-center justify-center gap-4 text-center">
                     <currentHoliday.icon className="h-8 w-8 text-primary-foreground flex-shrink-0" strokeWidth={1.5} />
                     <p className="text-xl md:text-2xl font-bold">
