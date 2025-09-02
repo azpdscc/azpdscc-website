@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
@@ -9,36 +8,35 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { Calendar, Ticket } from 'lucide-react';
 import type { Event } from '@/lib/types';
 import Autoplay from 'embla-carousel-autoplay';
-import useEmblaCarousel from 'embla-carousel-react';
 
 interface HeroCarouselProps {
   nextEvent: Event | null;
 }
 
 export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
+  const [api, setApi] = useState<CarouselApi>()
   const plugin = useRef(
     Autoplay({ playOnInit: true, delay: 5000, stopOnInteraction: true, stopOnMouseEnter: true })
   );
-  
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [plugin.current]);
-  const [api, setApi] = useState<CarouselApi>()
  
   useEffect(() => {
     if (!api) {
       return
     }
-    setApi(emblaApi);
-  }, [api, emblaApi])
+  }, [api])
 
   
   return (
     <section className="relative w-full h-[60vh] min-h-[400px]">
       <Carousel 
-        ref={emblaRef} 
         setApi={setApi}
+        plugins={[plugin.current]}
         className="h-full"
         onMouseEnter={plugin.current.stop}
         onMouseLeave={plugin.current.play}
+        opts={{
+          loop: true,
+        }}
       >
         <CarouselContent className="min-h-[400px] h-full">
           <CarouselItem className="min-h-[400px]">
