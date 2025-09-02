@@ -89,6 +89,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={cn(montserrat.variable, openSans.variable)}>
       <head>
+        <link rel="preconnect" href="https://firestore.googleapis.com" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
