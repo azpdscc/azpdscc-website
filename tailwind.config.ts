@@ -18,6 +18,7 @@ export default {
     extend: {
       backgroundImage: {
         'hero-pattern': "url('/rounded-plus-connected.svg')",
+        'gradient-aurora': 'linear-gradient(to right, hsl(var(--primary)), hsl(var(--chart-1)), hsl(var(--chart-2)), hsl(var(--chart-4)), hsl(var(--chart-1)), hsl(var(--primary)))',
       },
       fontFamily: {
         body: ['var(--font-body)', 'sans-serif'],
@@ -87,10 +88,15 @@ export default {
             height: '0',
           },
         },
+        'aurora-bg': {
+          from: { 'background-position': '0% 50%' },
+          to: { 'background-position': '200% 50%' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'aurora-bg': 'aurora-bg 8s linear infinite',
       },
     },
   },

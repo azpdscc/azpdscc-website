@@ -24,6 +24,12 @@ export function HolidayBanner() {
         (h.year ? h.year === currentYear : true)
       );
       
+      // FOR TESTING:
+      // if (!holiday) {
+      //   setCurrentHoliday(allHolidays.find(h => h.name === "Diwali"));
+      // } else {
+      //   setCurrentHoliday(holiday);
+      // }
       if (holiday) {
         setCurrentHoliday(holiday);
       }
@@ -37,34 +43,23 @@ export function HolidayBanner() {
     <AnimatePresence>
       {currentHoliday && (
         <motion.div
-          initial={{ opacity: 0, y: 0 }}
-          animate={{ 
-            opacity: 1,
-            y: [0, -5, 0], // Creates the wobble effect
-          }}
-          exit={{ opacity: 0 }}
-          transition={{ 
-            y: {
-                duration: 4, // A longer duration makes it more subtle
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "easeInOut"
-            },
-            opacity: {
-              duration: 0.5
-            }
-          }}
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
           className="container mx-auto px-4 -mt-12 mb-12 z-20 relative"
         >
           <Card
-            className="bg-gradient-to-r from-primary to-accent text-primary-foreground border-2 shadow-2xl"
+            className="p-[2px] bg-gradient-aurora animate-aurora-bg text-primary-foreground shadow-2xl"
           >
-            <CardContent className="p-4 flex items-center justify-center gap-4 text-center">
-              <currentHoliday.icon className="h-8 w-8 text-primary-foreground flex-shrink-0" strokeWidth={1.5} />
-              <p className="text-xl md:text-2xl font-bold">
-                {currentHoliday.message}
-              </p>
-            </CardContent>
+             <div className="bg-primary rounded-[var(--radius)]">
+                <CardContent className="p-4 flex items-center justify-center gap-4 text-center">
+                <currentHoliday.icon className="h-8 w-8 text-primary-foreground flex-shrink-0" strokeWidth={1.5} />
+                <p className="text-xl md:text-2xl font-bold">
+                    {currentHoliday.message}
+                </p>
+                </CardContent>
+             </div>
           </Card>
         </motion.div>
       )}
