@@ -37,14 +37,24 @@ export function HolidayBanner() {
     <AnimatePresence>
       {currentHoliday && (
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.5 }}
+          initial={{ opacity: 0, y: -20, scale: 1 }}
+          animate={{ 
+            opacity: 1, 
+            y: 0, 
+            scale: [1, 1.02, 1], // Keyframes for size pulse
+            borderColor: ["hsl(var(--primary))", "hsl(var(--primary-foreground))", "hsl(var(--primary))"] // Keyframes for color pulse
+          }}
+          exit={{ opacity: 0, y: -20, scale: 1 }}
+          transition={{ 
+            duration: 2.5, // Total duration for one pulse cycle
+            repeat: Infinity, // Repeat the animation forever
+            repeatType: "loop",
+            ease: "easeInOut"
+          }}
           className="container mx-auto px-4 -mt-12 mb-12 z-20 relative"
         >
           <Card
-            className="bg-gradient-to-r from-primary to-accent text-primary-foreground border-2 border-yellow-500/50 shadow-2xl"
+            className="bg-gradient-to-r from-primary to-accent text-primary-foreground border-2 shadow-2xl"
           >
             <CardContent className="p-4 flex items-center justify-center gap-4 text-center">
               <currentHoliday.icon className="h-8 w-8 text-primary-foreground flex-shrink-0" strokeWidth={1.5} />
