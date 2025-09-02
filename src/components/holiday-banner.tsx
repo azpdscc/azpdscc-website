@@ -44,39 +44,28 @@ export function HolidayBanner() {
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="container mx-auto px-4 -mt-12 mb-12 z-20 relative"
         >
-          <Card
-            className="p-0 text-primary-foreground shadow-2xl relative overflow-hidden bg-transparent border-0"
+          <motion.div
+            animate={{
+                y: [0, -5, 0],
+            }}
+            transition={{
+                duration: 3,
+                ease: 'easeInOut',
+                repeat: Infinity,
+                repeatType: 'loop',
+            }}
           >
-             {/* Orbiting Glow Effect */}
-             <motion.div
-                className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%]"
-                animate={{
-                    rotate: 360,
-                }}
-                transition={{
-                    duration: 10,
-                    ease: 'linear',
-                    repeat: Infinity,
-                }}
+             <Card
+                className="p-0 text-primary-foreground shadow-2xl relative overflow-hidden bg-primary rounded-lg"
              >
-                <div 
-                    className="absolute inset-0"
-                    style={{
-                        backgroundImage: `conic-gradient(from 90deg at 50% 50%, hsl(var(--primary)) 0%, hsl(var(--chart-1)) 20%, hsl(var(--chart-2)) 40%, hsl(var(--chart-4)) 60%, hsl(var(--primary)) 100%)`,
-                        filter: 'blur(80px) saturate(2)',
-                    }}
-                />
-             </motion.div>
-
-             <div className="bg-primary rounded-[calc(var(--radius)-4px)] relative z-10 m-1">
                 <CardContent className="p-4 flex items-center justify-center gap-4 text-center">
                     <currentHoliday.icon className="h-8 w-8 text-primary-foreground flex-shrink-0" strokeWidth={1.5} />
                     <p className="text-xl md:text-2xl font-bold">
                         {currentHoliday.message}
                     </p>
                 </CardContent>
-             </div>
-          </Card>
+             </Card>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
