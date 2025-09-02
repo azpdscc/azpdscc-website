@@ -32,7 +32,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
       <Carousel
         setApi={setApi}
         plugins={[plugin.current]}
-        className="h-full"
+        className="w-full h-full"
         onMouseEnter={plugin.current.stop}
         onMouseLeave={plugin.current.play}
         opts={{
@@ -45,8 +45,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
               src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/Home+Page/IMG_3370.jpeg"
               alt="Vaisakhi festival celebration"
               data-ai-hint="festival celebration"
-              width={1600}
-              height={600}
+              fill
               priority
               className="z-0 object-cover w-full h-full"
             />
@@ -74,8 +73,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
                 src={nextEvent.image}
                 alt={nextEvent.name}
                 data-ai-hint="upcoming event"
-                width={1600}
-                height={600}
+                fill
                 priority
                 className="z-0 object-cover w-full h-full"
               />
