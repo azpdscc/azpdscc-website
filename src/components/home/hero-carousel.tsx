@@ -22,7 +22,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
   const shouldLoop = !!nextEvent;
 
   return (
-    <section className="relative w-full h-[60vh] min-h-[400px]">
+    <section className="relative w-full h-[600px]">
       <Carousel
         plugins={[plugin.current]}
         opts={{
