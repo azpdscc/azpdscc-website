@@ -27,7 +27,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
   }, [api])
 
   return (
-    <section>
+    <section className="relative w-full">
       <Carousel
         setApi={setApi}
         plugins={[plugin.current]}
@@ -37,69 +37,71 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
           loop: true,
         }}
       >
-        <CarouselContent className="m-0">
-            <CarouselItem className="p-0">
-                <div className="relative h-[600px] w-full">
-                    <Image
-                        src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/Home+Page/IMG_3370.jpeg"
-                        alt="Vaisakhi festival celebration"
-                        data-ai-hint="festival celebration"
-                        fill
-                        priority
-                        className="z-0 object-cover object-top"
-                    />
-                    <div className="absolute inset-0 bg-black/30" />
-                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center text-primary-foreground p-4">
-                        <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold !text-primary-foreground drop-shadow-lg">
-                        Connecting the Arizona Punjabi Indian Community &amp; AZ Desis
-                        </h1>
-                        <p className="mt-4 max-w-2xl text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
-                        Your home for vibrant Arizona Punjabi Indian festivals, culture, and community outreach in Phoenix.
-                        </p>
-                        <div className="mt-8 flex flex-wrap gap-4 justify-center">
-                        <Button asChild size="lg">
-                            <Link href="/events">Explore Events</Link>
-                        </Button>
-                        <Button asChild size="lg" variant="secondary">
-                            <Link href="/vendors">Become a Vendor</Link>
-                        </Button>
-                        </div>
-                    </div>
-                </div>
+        <CarouselContent className="-m-0">
+          <CarouselItem className="p-0">
+            <div className="relative h-[600px] w-full">
+              <Image
+                  src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/Home+Page/IMG_3370.jpeg"
+                  alt="Vaisakhi festival celebration"
+                  data-ai-hint="festival celebration"
+                  fill
+                  priority
+                  className="z-0 object-cover"
+                  style={{ objectPosition: 'center 40%' }}
+              />
+              <div className="absolute inset-0 bg-black/30" />
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center text-primary-foreground p-4">
+                  <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold !text-primary-foreground drop-shadow-lg">
+                  Connecting the Arizona Punjabi Indian Community &amp; AZ Desis
+                  </h1>
+                  <p className="mt-4 max-w-2xl text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
+                  Your home for vibrant Arizona Punjabi Indian festivals, culture, and community outreach in Phoenix.
+                  </p>
+                  <div className="mt-8 flex flex-wrap gap-4 justify-center">
+                  <Button asChild size="lg">
+                      <Link href="/events">Explore Events</Link>
+                  </Button>
+                  <Button asChild size="lg" variant="secondary">
+                      <Link href="/vendors">Become a Vendor</Link>
+                  </Button>
+                  </div>
+              </div>
+            </div>
           </CarouselItem>
           {nextEvent && (
             <CarouselItem className="p-0">
-                <div className="relative h-[600px] w-full">
-                    <Image
-                        src={nextEvent.image}
-                        alt={nextEvent.name}
-                        data-ai-hint="upcoming event"
-                        fill
-                        priority
-                        className="z-0 object-cover object-top"
-                    />
-                    <div className="absolute inset-0 bg-black/30" />
-                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center text-primary-foreground p-4">
-                        <p className="font-bold uppercase tracking-widest !text-primary-foreground drop-shadow-md">Coming Soon</p>
-                        <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold !text-primary-foreground drop-shadow-lg">
-                        {nextEvent.name}
-                        </h1>
-                        <div className="mt-4 flex items-center gap-4 text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
-                        <div className="flex items-center gap-2">
-                            <Calendar className="h-5 w-5" />
-                            <span>{nextEvent.date}</span>
-                        </div>
-                        </div>
-                        <div className="mt-8 flex flex-wrap gap-4 justify-center">
-                        <Button asChild size="lg">
-                            <Link href={`/events/${nextEvent.slug}`}>
-                            <Ticket className="mr-2 h-5 w-5" />
-                            Learn More
-                            </Link>
-                        </Button>
-                        </div>
-                    </div>
-                </div>
+              <div className="relative h-[600px] w-full">
+                  <Image
+                      src={nextEvent.image}
+                      alt={nextEvent.name}
+                      data-ai-hint="upcoming event"
+                      fill
+                      priority
+                      className="z-0 object-cover"
+                      style={{ objectPosition: 'center 40%' }}
+                  />
+                  <div className="absolute inset-0 bg-black/30" />
+                  <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center text-primary-foreground p-4">
+                      <p className="font-bold uppercase tracking-widest !text-primary-foreground drop-shadow-md">Coming Soon</p>
+                      <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold !text-primary-foreground drop-shadow-lg">
+                      {nextEvent.name}
+                      </h1>
+                      <div className="mt-4 flex items-center gap-4 text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
+                      <div className="flex items-center gap-2">
+                          <Calendar className="h-5 w-5" />
+                          <span>{nextEvent.date}</span>
+                      </div>
+                      </div>
+                      <div className="mt-8 flex flex-wrap gap-4 justify-center">
+                      <Button asChild size="lg">
+                          <Link href={`/events/${nextEvent.slug}`}>
+                          <Ticket className="mr-2 h-5 w-5" />
+                          Learn More
+                          </Link>
+                      </Button>
+                      </div>
+                  </div>
+              </div>
             </CarouselItem>
           )}
         </CarouselContent>
