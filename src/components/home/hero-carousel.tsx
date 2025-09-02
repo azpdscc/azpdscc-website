@@ -1,6 +1,7 @@
+
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -16,17 +17,21 @@ interface HeroCarouselProps {
 
 export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
   const plugin = useRef(
-    Autoplay({ playOnInit: true, delay: 5000, stopOnInteraction: false, stopOnMouseEnter: true })
+    Autoplay({ playOnInit: true, delay: 5000, stopOnInteraction: true, stopOnMouseEnter: true })
   );
 
   const [emblaRef] = useEmblaCarousel({ loop: true }, [plugin.current]);
 
   return (
-    <section ref={emblaRef} className="relative w-full h-[60vh] min-h-[400px] overflow-hidden">
+    <section className="relative w-full h-[60vh] min-h-[400px]">
       <Carousel
+        ref={emblaRef}
         className="h-full"
         onMouseEnter={plugin.current.stop}
         onMouseLeave={plugin.current.play}
+        opts={{
+          loop: true,
+        }}
       >
         <CarouselContent className="min-h-[400px] h-full">
           <CarouselItem className="min-h-[400px]">
@@ -86,8 +91,10 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
                   <div className="mt-8 flex flex-wrap gap-4 justify-center">
                     <Button asChild size="lg">
                       <Link href={`/events/${nextEvent.slug}`}>
-                        <Ticket className="mr-2 h-5 w-5" />
-                        Learn More
+                        <span className="flex items-center">
+                            <Ticket className="mr-2 h-5 w-5" />
+                            Learn More
+                        </span>
                       </Link>
                     </Button>
                   </div>
@@ -96,8 +103,12 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
             </CarouselItem>
           )}
         </CarouselContent>
-        <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12" />
-        <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12" />
+        {nextEvent && (
+          <>
+            <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12" />
+            <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12" />
+          </>
+        )}
       </Carousel>
     </section>
   );
