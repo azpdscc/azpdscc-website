@@ -23,7 +23,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
   const [emblaRef] = useEmblaCarousel({ loop: true }, [plugin.current]);
 
   return (
-    <section className="relative w-full h-[60vh] min-h-[400px]">
+    <section className="relative w-full h-[60vh]">
       <Carousel
         ref={emblaRef}
         className="h-full"
@@ -33,16 +33,15 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
           loop: true,
         }}
       >
-        <CarouselContent className="min-h-[400px] h-full">
-          <CarouselItem className="min-h-[400px]">
-            <div className="relative h-full min-h-[400px] w-full">
+        <CarouselContent className="h-full">
+          <CarouselItem>
+            <div className="relative h-full w-full">
               <Image
                 src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/Home+Page/IMG_3370.jpeg"
                 alt="Vaisakhi festival celebration"
                 data-ai-hint="festival celebration"
                 fill
                 sizes="100vw"
-                priority
                 className="z-0 object-cover object-[center_40%]"
               />
               <div className="absolute inset-0 bg-black/30" />
@@ -65,15 +64,14 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
             </div>
           </CarouselItem>
           {nextEvent && (
-            <CarouselItem className="min-h-[400px]">
-              <div className="relative h-full min-h-[400px] w-full">
+            <CarouselItem>
+              <div className="relative h-full w-full">
                 <Image
                   src={nextEvent.image}
                   alt={nextEvent.name}
                   data-ai-hint="upcoming event"
                   fill
                   sizes="100vw"
-                  priority
                   className="z-0 object-cover object-[center_40%]"
                 />
                 <div className="absolute inset-0 bg-black/30" />
@@ -91,10 +89,8 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
                   <div className="mt-8 flex flex-wrap gap-4 justify-center">
                     <Button asChild size="lg">
                       <Link href={`/events/${nextEvent.slug}`}>
-                        <span className="flex items-center">
-                            <Ticket className="mr-2 h-5 w-5" />
-                            Learn More
-                        </span>
+                        <Ticket className="mr-2 h-5 w-5" />
+                        Learn More
                       </Link>
                     </Button>
                   </div>
