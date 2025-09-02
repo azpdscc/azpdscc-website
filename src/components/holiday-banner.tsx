@@ -57,7 +57,7 @@ export function HolidayBanner() {
             style={{ transform: 'translateZ(0)' }}
           >
              <Card
-                className="p-0 text-primary-foreground shadow-2xl relative overflow-hidden bg-primary rounded-lg"
+                className="p-0 text-primary-foreground shadow-2xl relative overflow-hidden bg-gradient-to-r from-primary to-[hsl(var(--primary-darker))] rounded-lg"
              >
                 <CardContent className="p-4 flex items-center justify-center gap-4 text-center">
                     <currentHoliday.icon className="h-8 w-8 text-primary-foreground flex-shrink-0" strokeWidth={1.5} />
