@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
@@ -15,21 +16,30 @@ interface HeroCarouselProps {
 }
 
 export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
-      Autoplay({ playOnInit: true, delay: 5000, stopOnInteraction: false, stopOnMouseEnter: true })
-  ]);
+  const plugin = useRef(
+    Autoplay({ playOnInit: true, delay: 5000, stopOnInteraction: true, stopOnMouseEnter: true })
+  );
+  
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [plugin.current]);
   const [api, setApi] = useState<CarouselApi>()
  
   useEffect(() => {
     if (!api) {
       return
     }
-  }, [api])
+    setApi(emblaApi);
+  }, [api, emblaApi])
 
   
   return (
     <section className="relative w-full h-[60vh] min-h-[400px]">
-      <Carousel setApi={setApi} ref={emblaRef} className="h-full">
+      <Carousel 
+        ref={emblaRef} 
+        setApi={setApi}
+        className="h-full"
+        onMouseEnter={plugin.current.stop}
+        onMouseLeave={plugin.current.play}
+      >
         <CarouselContent className="min-h-[400px] h-full">
           <CarouselItem className="min-h-[400px]">
             <div className="relative h-full min-h-[400px] w-full">
