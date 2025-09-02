@@ -28,7 +28,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
 
   
   return (
-    <section className="relative w-full h-[60vh] min-h-[400px]">
+    <section className="relative w-full h-screen">
       <Carousel
         setApi={setApi}
         plugins={[plugin.current]}
@@ -36,12 +36,12 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
         onMouseEnter={plugin.current.stop}
         onMouseLeave={plugin.current.play}
         opts={{
-          loop: true,
+          loop: !!nextEvent,
         }}
       >
-        <CarouselContent className="min-h-[400px] h-full">
-          <CarouselItem className="min-h-[400px]">
-            <div className="relative h-full min-h-[400px] w-full">
+        <CarouselContent className="h-full">
+          <CarouselItem className="h-full">
+            <div className="relative h-full w-full">
               <Image
                 src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/Home+Page/IMG_3370.jpeg"
                 alt="Vaisakhi festival celebration"
@@ -71,8 +71,8 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
             </div>
           </CarouselItem>
           {nextEvent && (
-            <CarouselItem className="min-h-[400px]">
-              <div className="relative h-full min-h-[400px] w-full">
+            <CarouselItem className="h-full">
+              <div className="relative h-full w-full">
                 <Image
                   src={nextEvent.image}
                   alt={nextEvent.name}
