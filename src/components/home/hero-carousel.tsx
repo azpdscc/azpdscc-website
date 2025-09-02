@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -22,12 +22,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
 
   const shouldLoop = !!nextEvent;
 
-  const [emblaRef] = useEmblaCarousel(
-    {
-      loop: shouldLoop,
-    },
-    [plugin.current]
-  );
+  const [emblaRef] = useEmblaCarousel({ loop: shouldLoop }, [plugin.current]);
 
   return (
     <section className="relative w-full h-[60vh] min-h-[400px]">
