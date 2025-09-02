@@ -18,10 +18,18 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
       Autoplay({ playOnInit: true, delay: 5000, stopOnInteraction: false, stopOnMouseEnter: true })
   ]);
+  const [api, setApi] = useState<CarouselApi>()
+ 
+  useEffect(() => {
+    if (!api) {
+      return
+    }
+  }, [api])
+
   
   return (
     <section className="relative w-full h-[60vh] min-h-[400px]" ref={emblaRef}>
-      <Carousel setApi={emblaApi}>
+      <Carousel setApi={setApi}>
         <CarouselContent>
           <CarouselItem>
             <div className="relative h-full min-h-[400px] w-full">
