@@ -50,7 +50,7 @@ export function HolidayBanner() {
           className="container mx-auto px-4 -mt-12 mb-12 z-20 relative"
         >
           <Card
-            className="p-[2px] text-primary-foreground shadow-2xl relative overflow-hidden bg-primary/20"
+            className="p-[4px] text-primary-foreground shadow-2xl relative overflow-hidden bg-primary/20"
           >
              {/* Orbiting Glow Effect */}
              <motion.div
@@ -73,7 +73,7 @@ export function HolidayBanner() {
                 />
              </motion.div>
 
-             <div className="bg-primary rounded-[calc(var(--radius)-2px)] relative z-10">
+             <div className="bg-primary rounded-[calc(var(--radius)-4px)] relative z-10">
                 <CardContent className="p-4 flex items-center justify-center gap-4 text-center">
                 <currentHoliday.icon className="h-8 w-8 text-primary-foreground flex-shrink-0" strokeWidth={1.5} />
                 <p className="text-xl md:text-2xl font-bold">
