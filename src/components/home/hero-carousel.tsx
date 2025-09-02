@@ -31,7 +31,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
       <Carousel
         setApi={setApi}
         plugins={[plugin.current]}
-        className="w-full"
+        className="w-full h-full"
         onMouseEnter={plugin.current.stop}
         onMouseLeave={plugin.current.play}
         opts={{
