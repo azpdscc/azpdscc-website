@@ -125,7 +125,7 @@ export default function AboutPage() {
               <Link href="/events">Explore Events</Link>
             </Button>
             <Button asChild size="lg" variant="secondary">
-              <Link href="/donate">Donate or Volunteer</Link>
+              <Link href="/donate">Donate & Get Involved</Link>
             </Button>
           </div>
         </div>

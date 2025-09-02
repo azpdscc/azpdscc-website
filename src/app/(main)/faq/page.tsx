@@ -56,7 +56,7 @@ const faqData = [
     questions: [
       {
         question: 'How can I apply to perform at a PDSCC event?',
-        answer: 'We are always looking for talented individuals and groups! You can apply on our <Link href="/perform/register">Performers page</Link>. Applications for our major events, like Vaisakhi and Teeyan, typically open about 90 days before the event date.',
+        answer: 'We are always looking for talented individuals and groups! You can apply on our <Link href="/perform">Performers page</Link>. Applications for our major events, like Vaisakhi and Teeyan, typically open about 90 days before the event date.',
       },
       {
         question: 'What happens after I submit my performance application?',

@@ -70,8 +70,12 @@ export default function Home() {
     <div className="flex flex-col">
       <HeroCarousel nextEvent={nextEvent} />
       
-      <HolidayBanner />
-      <PastEventBanner />
+      <div className='-mt-4'>
+        <HolidayBanner />
+      </div>
+      <div className='-mt-8'>
+        <PastEventBanner />
+      </div>
 
       <section id="about" className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4">
@@ -157,7 +161,7 @@ export default function Home() {
             <div>
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">Our Impact in the Phoenix Punjabi Indian Community</h2>
               <p className="mt-4 text-muted-foreground">
-                We are proud of the Phoenix Punjabi Indian community we've built and the positive impact we've made. Our events bring the AZ Punjabi India community together, support local artisans, and create lasting memories.
+                We are proud of the Phoenix Punjabi Indian community we've built and the positive impact we've made. Our <Link href="/events" className="text-primary hover:underline">events</Link> bring the AZ Punjabi India community together, support local artisans, and create lasting memories.
               </p>
               <div className="mt-6">
                 <Button asChild>
