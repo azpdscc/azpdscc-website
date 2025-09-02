@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle2, Diamond, Medal, Award, Shield } from 'lucide-react';
 import { SponsorshipForm } from '@/components/sponsorship/sponsorship-form';
 import { getSponsors } from '@/services/sponsors';
+import { getOptimizedSponsorLogo } from '@/services/images';
 import type { Sponsor } from '@/lib/types';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -153,7 +154,7 @@ export default function SponsorshipPage() {
                   <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-6">
                     {sponsorsForLevel.map((sponsor) => (
                       <Link key={sponsor.id} href={sponsor.website || '#'} target="_blank" rel="noopener noreferrer" title={sponsor.name}>
-                          <Image src={sponsor.logo} alt={`${sponsor.name} logo`} width={150} height={75} data-ai-hint="company logo" className="h-[75px] w-auto object-contain grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all" />
+                          <Image src={getOptimizedSponsorLogo(sponsor.logo, { width: 300 })} alt={`${sponsor.name} logo`} width={150} height={75} data-ai-hint="company logo" className="h-[75px] w-auto object-contain grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all" />
                       </Link>
                     ))}
                   </div>

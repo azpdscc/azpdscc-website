@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -6,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import type { Sponsor } from '@/lib/types';
 import { ArrowRight, Diamond, Medal, Award, Shield, Handshake } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getOptimizedSponsorLogo } from '@/services/images';
 
 interface SponsorsDisplayProps {
   sponsors: Sponsor[];
@@ -57,7 +59,7 @@ export function SponsorsDisplay({ sponsors }: SponsorsDisplayProps) {
                         className="group flex flex-col items-center gap-2 text-center"
                     >
                         <Image 
-                            src={sponsor.logo} 
+                            src={getOptimizedSponsorLogo(sponsor.logo, { width: 300 })}
                             alt={`${sponsor.name} logo`} 
                             width={150} 
                             height={75} 
