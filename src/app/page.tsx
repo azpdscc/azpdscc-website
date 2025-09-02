@@ -70,12 +70,8 @@ export default function Home() {
     <div className="flex flex-col">
       <HeroCarousel nextEvent={nextEvent} />
       
-      <div className='-mt-4'>
-        <HolidayBanner />
-      </div>
-      <div className='-mt-8'>
-        <PastEventBanner />
-      </div>
+      <HolidayBanner />
+      <PastEventBanner />
 
       <section id="about" className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4">
