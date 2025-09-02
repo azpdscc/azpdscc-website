@@ -68,7 +68,7 @@ export function HolidayBanner() {
                     className="absolute inset-0"
                     style={{
                         backgroundImage: `conic-gradient(from 90deg at 50% 50%, hsl(var(--primary)) 0%, hsl(var(--chart-1)) 20%, hsl(var(--chart-2)) 40%, hsl(var(--chart-4)) 60%, hsl(var(--primary)) 100%)`,
-                        filter: 'blur(30px) saturate(1.5)',
+                        filter: 'blur(60px) saturate(2)',
                     }}
                 />
              </motion.div>
