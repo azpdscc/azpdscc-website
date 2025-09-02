@@ -70,6 +70,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
                   data-ai-hint="upcoming event"
                   fill
                   sizes="100vw"
+                  priority
                   className="z-0 object-cover object-[center_40%]"
                 />
                 <div className="absolute inset-0 bg-black/30" />
