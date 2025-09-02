@@ -15,10 +15,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/vendors`, lastModified: new Date(), priority: 0.8, changeFrequency: 'monthly' as const },
     { url: `${baseUrl}/vendors/apply`, lastModified: new Date(), priority: 0.7, changeFrequency: 'yearly' as const },
     { url: `${baseUrl}/vendors/join`, lastModified: new Date(), priority: 0.7, changeFrequency: 'yearly' as const },
+    { url: `${baseUrl}/perform`, lastModified: new Date(), priority: 0.7, changeFrequency: 'monthly' as const },
+    { url: `${baseUrl}/perform/register`, lastModified: new Date(), priority: 0.6, changeFrequency: 'yearly' as const },
     { url: `${baseUrl}/sponsorship`, lastModified: new Date(), priority: 0.8, changeFrequency: 'monthly' as const },
     { url: `${baseUrl}/donate`, lastModified: new Date(), priority: 0.7, changeFrequency: 'yearly' as const },
     { url: `${baseUrl}/volunteer`, lastModified: new Date(), priority: 0.7, changeFrequency: 'yearly' as const },
     { url: `${baseUrl}/contact`, lastModified: new Date(), priority: 0.7, changeFrequency: 'yearly' as const },
+    { url: `${baseUrl}/faq`, lastModified: new Date(), priority: 0.7, changeFrequency: 'monthly' as const },
     { url: `${baseUrl}/privacy-policy`, lastModified: new Date(), priority: 0.3, changeFrequency: 'yearly' as const },
     { url: `${baseUrl}/terms-of-service`, lastModified: new Date(), priority: 0.3, changeFrequency: 'yearly' as const },
     { url: `${baseUrl}/sms-policy`, lastModified: new Date(), priority: 0.3, changeFrequency: 'yearly' as const },
@@ -33,13 +36,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: 'yearly' as const,
   }));
 
-  // Dynamic blog post routes
+  // Dynamic blog post routes from Firestore, only including published posts
   const blogPosts = await getBlogPosts();
-  const blogRoutes = blogPosts.map(post => ({
-    url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: new Date(),
-    priority: 0.8,
-    changeFrequency: 'monthly' as const,
+  const blogRoutes = blogPosts
+    .filter(post => post.status === 'Published')
+    .map(post => ({
+        url: `${baseUrl}/blog/${post.slug}`,
+        lastModified: new Date(), // Ideally, you'd use a post's updated_at field here
+        priority: 0.8,
+        changeFrequency: 'monthly' as const,
   }));
 
   return [
