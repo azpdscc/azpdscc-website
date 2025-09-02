@@ -2,7 +2,7 @@
 import type { MetadataRoute } from 'next';
  
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = 'https://www.azpdscc.org';
+  const baseUrl = 'https://pdscc.org';
 
   return {
     rules: {

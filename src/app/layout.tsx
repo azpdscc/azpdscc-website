@@ -22,7 +22,7 @@ const openSans = Open_Sans({
 
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.azpdscc.org'),
+  metadataBase: new URL('https://pdscc.org'),
   title: {
     template: '%s | PDSCC Hub',
     default: 'PDSCC | Arizona Punjabi Indian Community & Festivals Hub',
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
       title: 'PDSCC | Arizona Punjabi Indian Community & Festivals Hub',
       description: "Your hub for Arizona Punjabi Indian festivals, community events, and culture.",
-      url: 'https://www.azpdscc.org',
+      url: 'https://pdscc.org',
       siteName: 'PDSCC Hub',
       images: [
         {
@@ -62,7 +62,7 @@ export default function RootLayout({
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'PDSCC',
-    url: 'https://www.azpdscc.org',
+    url: 'https://pdscc.org',
     logo: 'https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/Home+Page/SIte++Logo.svg',
     address: {
       '@type': 'PostalAddress',
