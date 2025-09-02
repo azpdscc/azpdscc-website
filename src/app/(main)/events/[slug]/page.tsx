@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { notFound, useParams } from 'next/navigation';
 import { getEventBySlug } from '@/services/events';
 import { EventDetailPageClient } from '@/components/events/event-detail-page';
