@@ -16,45 +16,45 @@ import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 
-// type Props = {
-//   params: { slug: string }
-// }
+type Props = {
+  params: { slug: string }
+}
 
-// export async function generateMetadata(
-//   { params }: Props,
-//   parent: ResolvingMetadata
-// ): Promise<Metadata> {
-//   const slug = params.slug;
-//   const event = await getEventBySlug(slug);
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = params.slug;
+  const event = await getEventBySlug(slug);
  
-//   if (!event) {
-//     return {
-//         title: 'Event Not Found | PDSCC Hub',
-//         description: 'The event you are looking for could not be found. Please check our main events page for upcoming Arizona Punjabi Indian festivals.',
-//     }
-//   }
+  if (!event) {
+    return {
+        title: 'Event Not Found | PDSCC Hub',
+        description: 'The event you are looking for could not be found. Please check our main events page for upcoming Arizona Punjabi Indian festivals.',
+    }
+  }
 
-//   const previousImages = (await parent).openGraph?.images || [];
+  const previousImages = (await parent).openGraph?.images || [];
 
-//   return {
-//     title: `${event.name} | PDSCC Phoenix Punjabi Indian Community`,
-//     description: `Get details for ${event.name}, a premier event for the AZ Punjabi India community. Find date, time, location, and RSVP info for this top Arizona Punjabi Indian festival.`,
-//     openGraph: {
-//       title: event.name,
-//       description: event.description,
-//       images: [event.image, ...previousImages],
-//       type: 'article',
-//     },
-//   }
-// }
+  return {
+    title: `${event.name} | PDSCC Phoenix Punjabi Indian Community`,
+    description: `Get details for ${event.name}, a premier event for the AZ Punjabi India community. Find date, time, location, and RSVP info for this top Arizona Punjabi Indian festival.`,
+    openGraph: {
+      title: event.name,
+      description: event.description,
+      images: [event.image, ...previousImages],
+      type: 'article',
+    },
+  }
+}
 
 
-// export async function generateStaticParams() {
-//   const events = await getEvents();
-//   return events.map((event) => ({
-//     slug: event.slug,
-//   }));
-// }
+export async function generateStaticParams() {
+  const events = await getEvents();
+  return events.map((event) => ({
+    slug: event.slug,
+  }));
+}
 
 const createEventSchema = (event: Event) => {
   const eventDate = parse(event.date, 'MMMM dd, yyyy', new Date());

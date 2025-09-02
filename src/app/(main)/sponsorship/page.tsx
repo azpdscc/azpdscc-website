@@ -12,10 +12,10 @@ import type { Sponsor } from '@/lib/types';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-// export const metadata: Metadata = {
-//   title: 'Sponsor PDSCC | Partner with the Phoenix Punjabi Indian Community',
-//   description: 'Become a sponsor of PDSCC and connect with the vibrant AZ Punjabi India community. Explore our sponsorship packages and benefits for supporting Arizona Punjabi Indian festivals.',
-// };
+export const metadata: Metadata = {
+  title: 'Sponsor PDSCC | Partner with the Phoenix Punjabi Indian Community',
+  description: 'Become a sponsor of PDSCC and connect with the vibrant AZ Punjabi India community. Explore our sponsorship packages and benefits for supporting Arizona Punjabi Indian festivals.',
+};
 
 const sponsorshipTiers = [
   {

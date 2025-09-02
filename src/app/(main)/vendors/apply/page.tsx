@@ -13,10 +13,10 @@ import { Loader2, CalendarClock, Info, CalendarPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
-// export const metadata: Metadata = {
-//   title: 'Apply for Vendor Booths at Arizona Punjabi Indian Festivals',
-//   description: 'Apply for a vendor booth at upcoming Arizona Punjabi Indian festivals. Showcase your products to the Phoenix Punjabi Indian community by completing our simple application.',
-// };
+export const metadata: Metadata = {
+  title: 'Apply for Vendor Booths at Arizona Punjabi Indian Festivals',
+  description: 'Apply for a vendor booth at upcoming Arizona Punjabi Indian festivals. Showcase your products to the Phoenix Punjabi Indian community by completing our simple application.',
+};
 
 export default function VendorApplyPage() {
   const [isLoading, setIsLoading] = useState(true);

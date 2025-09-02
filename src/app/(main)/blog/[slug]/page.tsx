@@ -12,43 +12,47 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useEffect, useState } from 'react';
 import type { BlogPost, Event } from '@/lib/types';
 
-// export async function generateMetadata(
-//   { params }: Props,
-//   parent: ResolvingMetadata
-// ): Promise<Metadata> {
-//   const slug = params.slug;
-//   const post = await getBlogPostBySlug(slug);
+type Props = {
+  params: { slug: string }
+}
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = params.slug;
+  const post = await getBlogPostBySlug(slug);
  
-//   if (!post) {
-//     return {
-//         title: 'Post Not Found | PDSCC Blog',
-//         description: 'The blog post you are looking for could not be found.',
-//     }
-//   }
+  if (!post) {
+    return {
+        title: 'Post Not Found | PDSCC Blog',
+        description: 'The blog post you are looking for could not be found.',
+    }
+  }
 
-//   // Fallback to parent metadata for OpenGraph images if post image doesn't exist
-//   const previousImages = (await parent).openGraph?.images || [];
+  // Fallback to parent metadata for OpenGraph images if post image doesn't exist
+  const previousImages = (await parent).openGraph?.images || [];
 
-//   return {
-//     title: `${post.title} | PDSCC Blog`,
-//     description: post.excerpt,
-//     openGraph: {
-//       title: post.title,
-//       description: post.excerpt,
-//       images: [post.image, ...previousImages],
-//     },
-//   }
-// }
+  return {
+    title: `${post.title} | PDSCC Blog`,
+    description: post.excerpt,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      images: [post.image, ...previousImages],
+    },
+  }
+}
 
-// export async function generateStaticParams() {
-//   const posts = await getBlogPosts();
-//   // Only generate static pages for published posts
-//   return posts
-//     .filter(p => p.status === 'Published')
-//     .map((post) => ({
-//       slug: post.slug,
-//   }));
-// }
+export async function generateStaticParams() {
+  const posts = await getBlogPosts();
+  // Only generate static pages for published posts
+  return posts
+    .filter(p => p.status === 'Published')
+    .map((post) => ({
+      slug: post.slug,
+  }));
+}
 
 export default function BlogPostPage() {
   const params = useParams();

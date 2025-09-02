@@ -12,10 +12,10 @@ import type { Event } from '@/lib/types';
 import { differenceInDays, format, subDays } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-// export const metadata: Metadata = {
-//   title: 'Vendor Opportunities for AZ Punjabi India Events',
-//   description: 'Become a vendor at Arizona Punjabi Indian festivals. Find information on event-specific booths and join our vendor network for the Phoenix Punjabi Indian community.',
-// };
+export const metadata: Metadata = {
+  title: 'Vendor Opportunities for AZ Punjabi India Events',
+  description: 'Become a vendor at Arizona Punjabi Indian festivals. Find information on event-specific booths and join our vendor network for the Phoenix Punjabi Indian community.',
+};
 
 export default function VendorsPage() {
   const [isLoading, setIsLoading] = useState(true);

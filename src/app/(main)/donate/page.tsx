@@ -13,10 +13,10 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 
-// export const metadata: Metadata = {
-//   title: 'Donate or Volunteer | Support the Phoenix Punjabi Indian Community',
-//   description: 'Support PDSCC by making a donation or volunteering your time. Your contribution helps us host Arizona Punjabi Indian festivals and support the AZ Punjabi Indian community.',
-// };
+export const metadata: Metadata = {
+  title: 'Donate or Volunteer | Support the Phoenix Punjabi Indian Community',
+  description: 'Support PDSCC by making a donation or volunteering your time. Your contribution helps us host Arizona Punjabi Indian festivals and support the AZ Punjabi Indian community.',
+};
 
 export default function DonatePage() {
   const [zellePaymentConfirmed, setZellePaymentConfirmed] = useState(false);
