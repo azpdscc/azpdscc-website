@@ -1,48 +1,44 @@
 
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '@/components/ui/carousel';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Calendar, Ticket } from 'lucide-react';
 import type { Event } from '@/lib/types';
 import Autoplay from 'embla-carousel-autoplay';
+import useEmblaCarousel from 'embla-carousel-react';
 
 interface HeroCarouselProps {
   nextEvent: Event | null;
 }
 
 export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
-  const [api, setApi] = useState<CarouselApi>()
   const plugin = useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true, stopOnMouseEnter: true })
   );
- 
-  useEffect(() => {
-    if (!api) {
-      return
-    }
-  }, [api])
 
   const shouldLoop = !!nextEvent;
+
+  const [emblaRef] = useEmblaCarousel(
+    {
+      loop: shouldLoop,
+    },
+    [plugin.current]
+  );
 
   return (
     <section className="relative w-full h-[60vh] min-h-[400px]">
       <Carousel
-        setApi={setApi}
-        plugins={[plugin.current]}
-        opts={{
-          align: 'start',
-          loop: shouldLoop,
-        }}
-        className="h-full"
+        ref={emblaRef}
+        className="w-full h-full"
         onMouseEnter={plugin.current.stop}
         onMouseLeave={plugin.current.play}
       >
-        <CarouselContent className="h-full -ml-0">
-          <CarouselItem className="h-full pl-0">
+        <CarouselContent className="-ml-0 h-full">
+          <CarouselItem className="pl-0 h-full">
             <div className="relative h-full w-full">
               <Image
                 src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/Home+Page/IMG_3370.jpeg"
@@ -63,17 +59,21 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
                 </p>
                 <div className="mt-8 flex flex-wrap gap-4 justify-center">
                   <Button asChild size="lg">
-                    <Link href="/events">Explore Events</Link>
+                      <Link href="/events">
+                        <span>Explore Events</span>
+                      </Link>
                   </Button>
                   <Button asChild size="lg" variant="secondary">
-                    <Link href="/vendors">Become a Vendor</Link>
+                      <Link href="/vendors">
+                        <span>Become a Vendor</span>
+                      </Link>
                   </Button>
                 </div>
               </div>
             </div>
           </CarouselItem>
           {nextEvent && (
-            <CarouselItem className="h-full pl-0">
+            <CarouselItem className="pl-0 h-full">
               <div className="relative h-full w-full">
                 <Image
                   src={nextEvent.image}
@@ -98,8 +98,10 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
                   <div className="mt-8 flex flex-wrap gap-4 justify-center">
                     <Button asChild size="lg">
                       <Link href={`/events/${nextEvent.slug}`}>
-                        <Ticket className="mr-2 h-5 w-5" />
-                        Learn More
+                        <span className="flex items-center">
+                          <Ticket className="mr-2 h-5 w-5" />
+                          Learn More
+                        </span>
                       </Link>
                     </Button>
                   </div>
