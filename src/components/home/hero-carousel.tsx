@@ -28,7 +28,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
 
   
   return (
-    <section className="relative w-full h-screen">
+    <section className="relative w-full">
       <Carousel
         setApi={setApi}
         plugins={[plugin.current]}
@@ -41,17 +41,17 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
       >
         <CarouselContent className="h-full">
           <CarouselItem className="relative h-full w-full">
-            <Image
+             <Image
               src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/Home+Page/IMG_3370.jpeg"
               alt="Vaisakhi festival celebration"
               data-ai-hint="festival celebration"
-              fill
-              sizes="100vw"
+              width={1600}
+              height={600}
               priority
-              className="z-0 object-cover object-[center_40%]"
+              className="z-0 object-cover w-full h-[600px]"
             />
             <div className="absolute inset-0 bg-black/30" />
-            <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4">
+            <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4 -mt-[600px]">
               <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold !text-primary-foreground drop-shadow-lg">
                 Connecting the Arizona Punjabi Indian Community &amp; AZ Desis
               </h1>
@@ -70,17 +70,17 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
           </CarouselItem>
           {nextEvent && (
             <CarouselItem className="relative h-full w-full">
-              <Image
+               <Image
                 src={nextEvent.image}
                 alt={nextEvent.name}
                 data-ai-hint="upcoming event"
-                fill
-                sizes="100vw"
+                width={1600}
+                height={600}
                 priority
-                className="z-0 object-cover object-[center_40%]"
+                className="z-0 object-cover w-full h-[600px]"
               />
               <div className="absolute inset-0 bg-black/30" />
-              <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4">
+              <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4 -mt-[600px]">
                 <p className="font-bold uppercase tracking-widest !text-primary-foreground drop-shadow-md">Coming Soon</p>
                 <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold !text-primary-foreground drop-shadow-lg">
                   {nextEvent.name}
