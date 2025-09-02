@@ -37,14 +37,12 @@ export function HolidayBanner() {
     <AnimatePresence>
       {currentHoliday && (
         <motion.div
-          initial={{ opacity: 0, y: -20, scale: 1 }}
+          initial={{ opacity: 0 }}
           animate={{ 
-            opacity: 1, 
-            y: 0, 
-            scale: [1, 1.02, 1], // Keyframes for size pulse
+            opacity: 1,
             borderColor: ["hsl(var(--primary))", "hsl(var(--primary-foreground))", "hsl(var(--primary))"] // Keyframes for color pulse
           }}
-          exit={{ opacity: 0, y: -20, scale: 1 }}
+          exit={{ opacity: 0 }}
           transition={{ 
             duration: 2.5, // Total duration for one pulse cycle
             repeat: Infinity, // Repeat the animation forever
