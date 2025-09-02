@@ -23,6 +23,10 @@ export function EventsCarousel({ events }: EventsCarouselProps) {
     }
   }, [api])
 
+  // This check prevents the component from crashing if the events array is empty on initial render.
+  if (!events || events.length === 0) {
+    return null; // Or a loading/skeleton component
+  }
 
   return (
     <Carousel
