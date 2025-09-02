@@ -55,6 +55,7 @@ export function HolidayBanner() {
                 repeatType: 'loop',
             }}
             style={{ transform: 'translateZ(0)' }}
+            className="max-w-2xl mx-auto"
           >
              <Card
                 className="p-0 text-primary-foreground shadow-2xl relative overflow-hidden bg-gradient-to-r from-primary to-[hsl(var(--primary-darker))] rounded-lg"
