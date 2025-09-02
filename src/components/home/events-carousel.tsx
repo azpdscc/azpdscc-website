@@ -1,8 +1,8 @@
 
 'use client';
 
-import { useRef } from 'react';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { useState, useEffect, useRef } from 'react';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '@/components/ui/carousel';
 import { EventCard } from '@/components/events/event-card';
 import type { Event } from '@/lib/types';
 import Autoplay from 'embla-carousel-autoplay';
@@ -13,11 +13,20 @@ interface EventsCarouselProps {
 
 export function EventsCarousel({ events }: EventsCarouselProps) {
   const plugin = useRef(
-    Autoplay({ delay: 3000, stopOnInteraction: true })
+    Autoplay({ delay: 4000, stopOnInteraction: true, stopOnMouseEnter: true })
   );
+  const [api, setApi] = useState<CarouselApi>()
+ 
+  useEffect(() => {
+    if (!api) {
+      return
+    }
+  }, [api])
+
 
   return (
     <Carousel
+      setApi={setApi}
       plugins={[plugin.current]}
       opts={{
         align: 'start',
@@ -25,7 +34,7 @@ export function EventsCarousel({ events }: EventsCarouselProps) {
       }}
       className="w-full"
       onMouseEnter={plugin.current.stop}
-      onMouseLeave={plugin.current.reset}
+      onMouseLeave={plugin.current.play}
     >
       <CarouselContent className="-ml-4 items-stretch">
         {events.map((event) => (
