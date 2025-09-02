@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
@@ -29,9 +28,9 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
 
   
   return (
-    <section className="relative w-full h-[60vh] min-h-[400px]" ref={emblaRef}>
-      <Carousel setApi={setApi}>
-        <CarouselContent className="min-h-[400px]">
+    <section className="relative w-full h-[60vh] min-h-[400px]">
+      <Carousel setApi={setApi} ref={emblaRef} className="h-full">
+        <CarouselContent className="min-h-[400px] h-full">
           <CarouselItem className="min-h-[400px]">
             <div className="relative h-full min-h-[400px] w-full">
               <Image
