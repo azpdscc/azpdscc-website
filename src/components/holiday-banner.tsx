@@ -54,6 +54,7 @@ export function HolidayBanner() {
                 repeat: Infinity,
                 repeatType: 'loop',
             }}
+            style={{ transform: 'translateZ(0)' }}
           >
              <Card
                 className="p-0 text-primary-foreground shadow-2xl relative overflow-hidden bg-primary rounded-lg"
