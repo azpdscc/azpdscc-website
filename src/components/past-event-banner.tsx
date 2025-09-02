@@ -60,10 +60,10 @@ export function PastEventBanner() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.5 }}
-          className="container mx-auto px-4 -mt-4 mb-12 z-20 relative"
+          className="container mx-auto px-4 -mt-8 mb-12 z-20 relative"
         >
           <div className="max-w-2xl mx-auto">
-             <Card className="bg-gradient-to-r from-primary to-accent text-primary-foreground border-2 border-yellow-500/50 shadow-2xl">
+             <Card className="bg-gradient-to-r from-primary to-[hsl(var(--primary-darker))] text-primary-foreground shadow-2xl">
                 <CardContent className="p-4 flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
                   <Youtube className="h-8 w-8 text-primary-foreground flex-shrink-0" strokeWidth={1.5} />
                    <div className="flex-grow">
