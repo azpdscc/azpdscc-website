@@ -37,17 +37,22 @@ export function HolidayBanner() {
     <AnimatePresence>
       {currentHoliday && (
         <motion.div
-          initial={{ opacity: 0 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={{ 
             opacity: 1,
-            borderColor: ["hsl(var(--primary))", "hsl(var(--primary-foreground))", "hsl(var(--primary))"] // Keyframes for color pulse
+            y: [0, -5, 0], // Creates the wobble effect
           }}
           exit={{ opacity: 0 }}
           transition={{ 
-            duration: 2.5, // Total duration for one pulse cycle
-            repeat: Infinity, // Repeat the animation forever
-            repeatType: "loop",
-            ease: "easeInOut"
+            y: {
+                duration: 4, // A longer duration makes it more subtle
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut"
+            },
+            opacity: {
+              duration: 0.5
+            }
           }}
           className="container mx-auto px-4 -mt-12 mb-12 z-20 relative"
         >
