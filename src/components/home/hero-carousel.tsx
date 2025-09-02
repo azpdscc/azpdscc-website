@@ -1,47 +1,57 @@
+
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '@/components/ui/carousel';
 import { Calendar, Ticket } from 'lucide-react';
 import type { Event } from '@/lib/types';
 import Autoplay from 'embla-carousel-autoplay';
-import useEmblaCarousel from 'embla-carousel-react';
 
 interface HeroCarouselProps {
   nextEvent: Event | null;
 }
 
 export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
+  const [api, setApi] = useState<CarouselApi>()
   const plugin = useRef(
-    Autoplay({ playOnInit: true, delay: 5000, stopOnInteraction: true, stopOnMouseEnter: true })
+    Autoplay({ delay: 5000, stopOnInteraction: true, stopOnMouseEnter: true })
   );
+ 
+  useEffect(() => {
+    if (!api) {
+      return
+    }
+  }, [api])
 
-  const [emblaRef] = useEmblaCarousel({ loop: true }, [plugin.current]);
+  const shouldLoop = !!nextEvent;
 
   return (
-    <section className="relative w-full h-[60vh]">
+    <section className="relative w-full h-[60vh] min-h-[400px]">
       <Carousel
-        ref={emblaRef}
+        setApi={setApi}
+        plugins={[plugin.current]}
+        opts={{
+          align: 'start',
+          loop: shouldLoop,
+        }}
         className="h-full"
         onMouseEnter={plugin.current.stop}
         onMouseLeave={plugin.current.play}
-        opts={{
-          loop: true,
-        }}
       >
-        <CarouselContent className="h-full">
-          <CarouselItem>
+        <CarouselContent className="h-full -ml-0">
+          <CarouselItem className="h-full pl-0">
             <div className="relative h-full w-full">
               <Image
                 src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/Home+Page/IMG_3370.jpeg"
                 alt="Vaisakhi festival celebration"
                 data-ai-hint="festival celebration"
                 fill
+                priority
                 sizes="100vw"
-                className="z-0 object-cover object-[center_40%]"
+                className="z-0 object-cover object-center"
               />
               <div className="absolute inset-0 bg-black/30" />
               <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4">
@@ -63,7 +73,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
             </div>
           </CarouselItem>
           {nextEvent && (
-            <CarouselItem>
+            <CarouselItem className="h-full pl-0">
               <div className="relative h-full w-full">
                 <Image
                   src={nextEvent.image}
@@ -71,7 +81,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
                   data-ai-hint="upcoming event"
                   fill
                   sizes="100vw"
-                  className="z-0 object-cover object-[center_40%]"
+                  className="z-0 object-cover object-center"
                 />
                 <div className="absolute inset-0 bg-black/30" />
                 <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4">
@@ -98,7 +108,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
             </CarouselItem>
           )}
         </CarouselContent>
-        {nextEvent && (
+        {shouldLoop && (
           <>
             <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12" />
             <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12" />
