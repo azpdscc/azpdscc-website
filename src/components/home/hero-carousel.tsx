@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
@@ -9,6 +8,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { Calendar, Ticket } from 'lucide-react';
 import type { Event } from '@/lib/types';
 import Autoplay from 'embla-carousel-autoplay';
+import useEmblaCarousel from 'embla-carousel-react';
 
 interface HeroCarouselProps {
   nextEvent: Event | null;
@@ -20,11 +20,11 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
   ]);
   
   return (
-    <section className="relative w-full" ref={emblaRef}>
+    <section className="relative w-full h-[60vh] min-h-[400px]" ref={emblaRef}>
       <Carousel setApi={emblaApi}>
         <CarouselContent>
           <CarouselItem>
-            <div className="relative h-[60vh] min-h-[400px] w-full">
+            <div className="relative h-full min-h-[400px] w-full">
               <Image
                 src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/Home+Page/IMG_3370.jpeg"
                 alt="Vaisakhi festival celebration"
@@ -55,7 +55,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
           </CarouselItem>
           {nextEvent && (
             <CarouselItem>
-              <div className="relative h-[60vh] min-h-[400px] w-full">
+              <div className="relative h-full min-h-[400px] w-full">
                 <Image
                   src={nextEvent.image}
                   alt={nextEvent.name}
