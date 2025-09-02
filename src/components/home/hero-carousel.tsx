@@ -19,6 +19,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
     Autoplay({ delay: 5000, stopOnInteraction: true, stopOnMouseEnter: true })
   );
 
+  // The carousel should only loop if there is more than one slide.
   const shouldLoop = !!nextEvent;
 
   return (
@@ -32,8 +33,9 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
         onMouseEnter={plugin.current.stop}
         onMouseLeave={plugin.current.play}
       >
-        <CarouselContent className="-ml-0 h-full">
-          <CarouselItem className="pl-0 h-full">
+        <CarouselContent className="h-full">
+          {/* Slide 1: Main Welcome Message */}
+          <CarouselItem className="h-full">
             <div className="relative h-full w-full">
               <Image
                 src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/Home+Page/IMG_3370.jpeg"
@@ -67,8 +69,10 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
               </div>
             </div>
           </CarouselItem>
+          
+          {/* Slide 2: Upcoming Event (Conditional) */}
           {nextEvent && (
-            <CarouselItem className="pl-0 h-full">
+            <CarouselItem className="h-full">
               <div className="relative h-full w-full">
                 <Image
                   src={nextEvent.image}
