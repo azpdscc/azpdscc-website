@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -41,7 +42,7 @@ export function HolidayBanner() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="container mx-auto px-4 -mt-12 mb-12 z-20 relative"
+          className="container mx-auto px-4 -mt-8 mb-12 z-20 relative"
         >
           <motion.div
             animate={{
