@@ -77,10 +77,10 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="text-center">
             <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">
-              Welcome to the Hub for AZ Punjabi Indians
+              Welcome to the Hub for the Indian Community in Arizona
             </h2>
             <p className="mt-4 max-w-3xl mx-auto text-lg text-muted-foreground">
-              We are a <Link href="/about" className="text-primary hover:underline">non-profit organization</Link> dedicated to preserving and promoting Punjabi Indian culture for the Phoenix Punjabi Indian community. We bring AZ Punjabi Indians together through vibrant festivals and events across Arizona.
+              The <Link href="/about" className="text-primary hover:underline">Phoenix Desi Sports and Cultural Club</Link> is a non-profit organization dedicated to promoting Indian culture in Arizona. We bring the Desi community in Arizona together through vibrant festivals, Desi events in Phoenix, and community services for all AZ Indians.
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">

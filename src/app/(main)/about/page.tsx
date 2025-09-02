@@ -40,12 +40,12 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">Our Story: A Home for AZ Desis</h2>
+              <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">Our Story: A Home for the Desi Community in Arizona</h2>
               <p className="mt-4 text-lg text-muted-foreground">
-                The Phoenix Desi Sports and Cultural Club (PDSCC) was founded in 2010 by a group of passionate individuals who wanted to create a home away from home for the Phoenix Punjabi Indian community and AZ Desis.
+                The Phoenix Desi Sports and Cultural Club (PDSCC) was founded in 2010 by a group of passionate individuals who wanted to create a home away from home for the growing Indian community in Arizona.
               </p>
               <p className="mt-4 text-lg text-muted-foreground">
-                What started as small gatherings has grown into a vibrant non-profit organization that hosts some of the largest <Link href="/events" className="text-primary hover:underline">Arizona Punjabi Indian festivals</Link> in the state.
+                What started as small gatherings has grown into a vibrant non-profit organization that hosts some of the largest <Link href="/events" className="text-primary hover:underline">Punjabi festivals in Phoenix</Link>, celebrating Punjabi culture in Arizona for all to enjoy.
               </p>
             </div>
             <div className="w-full h-full">
@@ -95,7 +95,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <h2 className="text-center font-headline text-3xl md:text-4xl font-bold">Meet Our Team</h2>
           <p className="text-center mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
-            We are a group of dedicated volunteers committed to serving the AZ Punjabi Indian community.
+            We are a group of dedicated volunteers committed to providing community services for the AZ Indian community.
           </p>
           <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
             {teamMembers.map((member) => (

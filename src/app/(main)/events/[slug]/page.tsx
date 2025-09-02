@@ -30,7 +30,7 @@ export async function generateMetadata(
   if (!event) {
     return {
         title: 'Event Not Found | PDSCC Hub',
-        description: 'The event you are looking for could not be found. Please check our main events page for upcoming Arizona Punjabi Indian festivals.',
+        description: 'The event you are looking for could not be found. Please check our main events page for upcoming Desi events in Phoenix.',
     }
   }
 
