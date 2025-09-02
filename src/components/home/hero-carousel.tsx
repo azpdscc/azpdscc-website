@@ -46,7 +46,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
                         data-ai-hint="festival celebration"
                         fill
                         priority
-                        className="z-0 object-cover"
+                        className="z-0 object-cover object-top"
                     />
                     <div className="absolute inset-0 bg-black/30" />
                     <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center text-primary-foreground p-4">
@@ -76,7 +76,7 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
                         data-ai-hint="upcoming event"
                         fill
                         priority
-                        className="z-0 object-cover"
+                        className="z-0 object-cover object-top"
                     />
                     <div className="absolute inset-0 bg-black/30" />
                     <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center text-primary-foreground p-4">
