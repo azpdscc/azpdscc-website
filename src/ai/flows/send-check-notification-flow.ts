@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { Resend } from 'resend';
+import { sendEmail } from '@/services/email';
 
 // Input schema for the check notification flow
 const CheckNotificationInputSchema = z.object({
@@ -44,13 +44,6 @@ const sendCheckNotificationFlow = ai.defineFlow(
     outputSchema: CheckNotificationOutputSchema,
   },
   async (input) => {
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-      console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in the server environment.");
-      return { success: false, message: 'The email service is not configured correctly. Please contact support.' };
-    }
-    const resend = new Resend(resendApiKey);
-
     try {
       // Prepare and send the notification email to the admin
       const adminEmailText = `
@@ -67,7 +60,7 @@ const sendCheckNotificationFlow = ai.defineFlow(
         Action Required: Once the check is received, please deposit it and send a formal receipt to the donor's email address.
       `;
 
-      await resend.emails.send({
+      await sendEmail({
         from: 'Donation Bot <noreply@azpdscc.org>',
         to: 'admin@azpdscc.org', // Your admin email address
         subject: `Incoming Check Donation from ${input.donorName}`,

@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { Resend } from 'resend';
+import { sendEmail } from '@/services/email';
 
 // Input schema for the general registration flow
 const GeneralRegistrationInputSchema = z.object({
@@ -70,13 +70,6 @@ const sendGeneralRegistrationFlow = ai.defineFlow(
     outputSchema: GeneralRegistrationOutputSchema,
   },
   async (input) => {
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in the server environment.");
-        return { success: false, message: 'The email service is not configured correctly. Please contact support.' };
-    }
-    const resend = new Resend(resendApiKey);
-
     try {
       // 1. Generate the vendor confirmation email
       const { output: vendorEmailBody } = await registrationEmailPrompt({
@@ -84,7 +77,7 @@ const sendGeneralRegistrationFlow = ai.defineFlow(
           contactName: input.contactName
       });
       if (!vendorEmailBody) {
-        return { success: false, message: 'Failed to generate confirmation email.' };
+        throw new Error('Failed to generate confirmation email.');
       }
       
       const vendorEmailHtml = vendorEmailBody.replace(/\n/g, '<br>');
@@ -107,7 +100,7 @@ const sendGeneralRegistrationFlow = ai.defineFlow(
 
       // 3. Send the emails
       // Send to vendor
-      await resend.emails.send({
+      await sendEmail({
         from: 'PDSCC Vendors <vendors@azpdscc.org>',
         to: input.email,
         subject: 'Welcome to the PDSCC Vendor Network!',
@@ -115,7 +108,7 @@ const sendGeneralRegistrationFlow = ai.defineFlow(
       });
 
       // Send to admin
-      await resend.emails.send({
+      await sendEmail({
         from: 'Vendor Bot <noreply@azpdscc.org>',
         to: 'admin@azpdscc.org',
         subject: 'New General Vendor Registration',

@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { Resend } from 'resend';
+import { sendEmail } from '@/services/email';
 
 // Input schema for the donation receipt flow
 const DonationReceiptInputSchema = z.object({
@@ -72,23 +72,16 @@ const sendDonationReceiptFlow = ai.defineFlow(
     outputSchema: DonationReceiptOutputSchema,
   },
   async (input) => {
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in the server environment.");
-        return { success: false, message: 'The email service is not configured correctly. Please contact support.' };
-    }
-    const resend = new Resend(resendApiKey);
-
     try {
       // 1. Generate the email content for the donor
       const { output: emailBody } = await receiptEmailPrompt(input);
 
       if (!emailBody) {
-        return { success: false, message: 'Failed to generate email content.' };
+        throw new Error('Failed to generate email content.');
       }
 
       // 2. Send the receipt email to the donor
-      await resend.emails.send({
+      await sendEmail({
         from: 'PDSCC Donations <receipts@azpdscc.org>',
         to: input.donorEmail,
         subject: 'Thank You for Your Donation to PDSCC!',
@@ -112,7 +105,7 @@ const sendDonationReceiptFlow = ai.defineFlow(
         - Action Required: Please verify this payment in your Zelle account and update records.
       `;
 
-      await resend.emails.send({
+      await sendEmail({
         from: 'Donation Bot <noreply@azpdscc.org>',
         to: 'admin@azpdscc.org',
         subject: `New Zelle Donation from ${input.donorName}`,
@@ -123,7 +116,6 @@ const sendDonationReceiptFlow = ai.defineFlow(
 
     } catch (error) {
       console.error('Donation flow failed:', error);
-      // It's helpful to see the actual error in the server logs
       const errorMessage = error instanceof Error ? error.message : String(error);
       return { success: false, message: `Failed to process donation. Error: ${errorMessage}` };
     }

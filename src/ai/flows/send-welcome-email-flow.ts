@@ -8,7 +8,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { Resend } from 'resend';
+import { sendEmail } from '@/services/email';
 import { addSubscriber, isSubscribed } from '@/services/subscribers';
 
 // Input schema for the welcome email flow, now including an optional name and phone fields.
@@ -70,13 +70,6 @@ const sendWelcomeEmailFlow = ai.defineFlow(
     outputSchema: WelcomeEmailOutputSchema,
   },
   async (input) => {
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in the server environment.");
-        return { success: false, message: 'The email service is not configured correctly. Please contact support.' };
-    }
-    const resend = new Resend(resendApiKey);
-
     try {
       // 1. Check if the email is already subscribed
       const alreadySubscribed = await isSubscribed(input.email);
@@ -95,7 +88,7 @@ const sendWelcomeEmailFlow = ai.defineFlow(
       const welcomeEmailHtml = (welcomeEmailBody).replace(/\n/g, '<br>');
 
       // 4. Send the welcome email to the user
-      await resend.emails.send({
+      await sendEmail({
         from: 'PDSCC Info <info@azpdscc.org>',
         to: input.email,
         subject: '🎉 Welcome to the PDSCC Community!',
@@ -108,7 +101,7 @@ const sendWelcomeEmailFlow = ai.defineFlow(
         adminEmailText += `\n\nThis user also opted-in for SMS raffle tickets:\nPhone: ${input.phone}`;
       }
       
-      await resend.emails.send({
+      await sendEmail({
         from: 'Newsletter Bot <noreply@azpdscc.org>',
         to: 'admin@azpdscc.org',
         subject: 'New Newsletter Subscriber',

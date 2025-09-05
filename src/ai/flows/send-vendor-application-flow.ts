@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { Resend } from 'resend';
+import { sendEmail } from '@/services/email';
 
 // This is the most complete schema, including the optional QR code and required eventName.
 // It is used for generating the final ticket email.
@@ -100,21 +100,14 @@ const sendVendorTicketFlow = ai.defineFlow(
     outputSchema: VendorApplicationOutputSchema,
   },
   async (input) => {
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in the server environment.");
-        return { success: false, message: 'The email service is not configured correctly. Please contact support.' };
-    }
-    const resend = new Resend(resendApiKey);
-
     try {
       const { output: vendorEmailHtml } = await vendorTicketEmailPrompt(input);
 
       if (!vendorEmailHtml) {
-        return { success: false, message: 'Failed to generate vendor ticket.' };
+        throw new Error('Failed to generate vendor ticket.');
       }
 
-      await resend.emails.send({
+      await sendEmail({
         from: 'PDSCC Vendors <vendors@azpdscc.org>',
         to: input.email,
         subject: `Your Vendor Booth Confirmation for ${input.eventName}`,
@@ -124,8 +117,8 @@ const sendVendorTicketFlow = ai.defineFlow(
       return { success: true, message: "Ticket sent to vendor." };
     } catch (error) {
       console.error('Vendor ticket flow failed:', error);
-       const errorMessage = error instanceof Error ? error.message : String(error);
-      return { success: false, message: 'An error occurred while sending the ticket.' };
+       const errorMessage = error instanceof Error ? error.message : 'An error occurred while sending the ticket.';
+      return { success: false, message: errorMessage };
     }
   }
 );
@@ -159,13 +152,6 @@ const sendVendorReceiptFlow = ai.defineFlow(
     outputSchema: VendorApplicationOutputSchema,
   },
   async (input) => {
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in the server environment.");
-        return { success: false, message: 'The email service is not configured correctly. Please contact support.' };
-    }
-    const resend = new Resend(resendApiKey);
-
     try {
         const eventName = input.eventName || "our upcoming event";
 
@@ -183,7 +169,7 @@ const sendVendorReceiptFlow = ai.defineFlow(
         const { output: vendorEmailHtml } = await vendorReceiptEmailPrompt(promptInput);
         
         if (!vendorEmailHtml) {
-            return { success: false, message: 'Failed to generate receipt email.' };
+            throw new Error('Failed to generate receipt email.');
         }
 
         const adminEmailText = `
@@ -210,14 +196,14 @@ Payment Information:
 Action Required: Please verify the Zelle payment and then approve this application in the admin vendor dashboard to send their ticket.
       `;
 
-      await resend.emails.send({
+      await sendEmail({
         from: 'PDSCC Vendors <vendors@azpdscc.org>',
         to: input.email,
         subject: `We've Received Your Vendor Application for ${eventName}`,
         html: vendorEmailHtml,
       });
 
-      await resend.emails.send({
+      await sendEmail({
         from: 'Vendor Bot <noreply@azpdscc.org>',
         to: 'admin@azpdscc.org',
         subject: `New VENDOR APP for ${eventName} - PENDING VERIFICATION`,
@@ -227,8 +213,8 @@ Action Required: Please verify the Zelle payment and then approve this applicati
       return { success: true, message: "Application submitted! A confirmation receipt has been sent to your email. You will receive your official ticket once payment is verified." };
     } catch (error) {
         console.error('Vendor receipt flow failed:', error);
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        return { success: false, message: 'An error occurred while sending your application receipt.' };
+        const errorMessage = error instanceof Error ? error.message : 'An error occurred while sending your application receipt.';
+        return { success: false, message: errorMessage };
     }
   }
 );

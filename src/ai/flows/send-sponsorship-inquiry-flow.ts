@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { Resend } from 'resend';
+import { sendEmail } from '@/services/email';
 
 // Input schema for the sponsorship inquiry flow
 const SponsorshipInquiryInputSchema = z.object({
@@ -70,13 +70,6 @@ const sendSponsorshipInquiryFlow = ai.defineFlow(
     outputSchema: SponsorshipInquiryOutputSchema,
   },
   async (input) => {
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-        console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in the server environment.");
-        return { success: false, message: 'The email service is not configured correctly. Please contact support.' };
-    }
-    const resend = new Resend(resendApiKey);
-
     try {
       // 1. Generate the confirmation email for the potential sponsor
       const { output: sponsorEmailBody } = await confirmationEmailPrompt({
@@ -84,7 +77,7 @@ const sendSponsorshipInquiryFlow = ai.defineFlow(
           sponsorshipLevel: input.sponsorshipLevel,
       });
       if (!sponsorEmailBody) {
-        return { success: false, message: 'Failed to generate confirmation email.' };
+        throw new Error('Failed to generate confirmation email.');
       }
       const sponsorEmailHtml = sponsorEmailBody.replace(/\n/g, '<br>');
 
@@ -108,7 +101,7 @@ const sendSponsorshipInquiryFlow = ai.defineFlow(
 
       // 3. Send the emails
       // Send to potential sponsor
-      await resend.emails.send({
+      await sendEmail({
         from: 'PDSCC Partnerships <info@azpdscc.org>',
         to: input.email,
         subject: 'Thank You for Your Interest in Sponsoring PDSCC!',
@@ -116,7 +109,7 @@ const sendSponsorshipInquiryFlow = ai.defineFlow(
       });
 
       // Send to admin
-      await resend.emails.send({
+      await sendEmail({
         from: 'Sponsorship Bot <noreply@azpdscc.org>',
         to: 'admin@azpdscc.org', // Admin's email for sponsorship leads
         subject: `New Sponsorship Inquiry: ${input.companyName} (${input.sponsorshipLevel})`,
@@ -126,8 +119,8 @@ const sendSponsorshipInquiryFlow = ai.defineFlow(
       return { success: true, message: "Thank you for your interest! A confirmation has been sent to your email." };
     } catch (error) {
       console.error('Sponsorship inquiry flow failed:', error);
-       const errorMessage = error instanceof Error ? error.message : String(error);
-      return { success: false, message: 'An error occurred during your inquiry.' };
+       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred during your inquiry.';
+      return { success: false, message: errorMessage };
     }
   }
 );
