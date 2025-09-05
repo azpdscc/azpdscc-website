@@ -118,7 +118,7 @@ const sendSponsorshipInquiryFlow = ai.defineFlow(
       // Send to admin
       await resend.emails.send({
         from: 'Sponsorship Bot <noreply@azpdscc.org>',
-        to: 'admin@azpdscc.org', // Admin's email for sponsorship leads
+        to: 'kulraaj@gmail.com', // Admin's email for sponsorship leads
         subject: `New Sponsorship Inquiry: ${input.companyName} (${input.sponsorshipLevel})`,
         text: adminEmailText,
       });

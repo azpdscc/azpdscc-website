@@ -100,7 +100,7 @@ const sendContactInquiryFlow = ai.defineFlow(
       // Send to admin
       await resend.emails.send({
         from: 'Contact Form Bot <noreply@azpdscc.org>',
-        to: 'admin@azpdscc.org', // Admin's email address
+        to: 'kulraaj@gmail.com', // Admin's email address
         subject: `New Inquiry: ${input.subject}`,
         text: adminEmailText,
       });

@@ -140,7 +140,7 @@ Action Required: Please review this application in the performance dashboard.
       // Send to admin
       await resend.emails.send({
         from: 'Performers Bot <noreply@azpdscc.org>',
-        to: 'admin@azpdscc.org', // This should be the cultural team's email
+        to: 'kulraaj@gmail.com', // This should be the cultural team's email
         subject: `New Performance Application: ${input.groupName} for ${input.event}`,
         text: adminEmailText,
       });

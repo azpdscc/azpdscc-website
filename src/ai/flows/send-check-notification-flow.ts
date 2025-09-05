@@ -69,7 +69,7 @@ const sendCheckNotificationFlow = ai.defineFlow(
 
       await resend.emails.send({
         from: 'Donation Bot <noreply@azpdscc.org>',
-        to: 'admin@azpdscc.org', // Your admin email address
+        to: 'kulraaj@gmail.com', // Your admin email address
         subject: `Incoming Check Donation from ${input.donorName}`,
         text: adminEmailText,
       });

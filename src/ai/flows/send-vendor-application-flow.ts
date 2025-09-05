@@ -222,7 +222,7 @@ Action Required: Please verify the Zelle payment and then approve this applicati
 
       await resend.emails.send({
         from: 'Vendor Bot <noreply@azpdscc.org>',
-        to: 'admin@azpdscc.org',
+        to: 'kulraaj@gmail.com',
         subject: `New VENDOR APP for ${eventName} - PENDING VERIFICATION`,
         text: adminEmailText,
       });

@@ -3,7 +3,10 @@ import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
 import { Montserrat, Open_Sans } from 'next/font/google';
 import { cn } from '@/lib/utils';
-import { RootLayoutClient } from '@/components/layout/root-layout-client';
+import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
+import { Breadcrumbs } from '@/components/layout/breadcrumbs';
+import { ConditionalTicker } from '@/components/layout/conditional-ticker';
 import './globals.css';
 
 const montserrat = Montserrat({
@@ -96,9 +99,13 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
-        <RootLayoutClient>
-          {children}
-        </RootLayoutClient>
+         <div className="flex min-h-screen flex-col">
+            <Header />
+            <ConditionalTicker />
+            <Breadcrumbs />
+            <main className="flex-1">{children}</main>
+            <Footer />
+        </div>
         <Toaster />
       </body>
     </html>

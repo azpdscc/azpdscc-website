@@ -114,7 +114,7 @@ const sendDonationReceiptFlow = ai.defineFlow(
 
       await resend.emails.send({
         from: 'Donation Bot <noreply@azpdscc.org>',
-        to: 'admin@azpdscc.org',
+        to: 'kulraaj@gmail.com',
         subject: `New Zelle Donation from ${input.donorName}`,
         text: adminEmailText,
       });

@@ -1,7 +1,4 @@
 
-'use client';
-
-import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -15,27 +12,11 @@ import { HeroCarousel } from '@/components/home/hero-carousel';
 import { EventsCarousel } from '@/components/home/events-carousel';
 import { SponsorsDisplay } from '@/components/home/sponsors-display';
 import type { Event, Sponsor } from '@/lib/types';
-import { Skeleton } from '@/components/ui/skeleton';
 
 
-export default function Home() {
-  const [allEvents, setAllEvents] = useState<Event[]>([]);
-  const [sponsors, setSponsors] = useState<Sponsor[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      const [eventsData, sponsorsData] = await Promise.all([
-        getEvents(),
-        getSponsors()
-      ]);
-      setAllEvents(eventsData);
-      setSponsors(sponsorsData);
-      setIsLoading(false);
-    };
-    fetchData();
-  }, []);
+export default async function Home() {
+  const allEvents: Event[] = await getEvents();
+  const sponsors: Sponsor[] = await getSponsors();
 
   const now = new Date();
   now.setHours(0, 0, 0, 0);
@@ -52,19 +33,6 @@ export default function Home() {
   // Combine lists and take the first 4 for the homepage display
   const homePageEvents = [...upcomingEvents, ...pastEvents].slice(0, 4);
   const nextEvent = upcomingEvents.length > 0 ? upcomingEvents[0] : null;
-
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-12">
-        <Skeleton className="h-[60vh] w-full mb-8" />
-        <div className="grid md:grid-cols-3 gap-8">
-          <Skeleton className="h-48 w-full" />
-          <Skeleton className="h-48 w-full" />
-          <Skeleton className="h-48 w-full" />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex flex-col">

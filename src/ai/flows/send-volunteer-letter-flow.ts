@@ -105,7 +105,7 @@ const sendVolunteerLetterFlow = ai.defineFlow(
       // 3. Send a copy to the admin for record-keeping
       await resend.emails.send({
         from: 'Volunteer Bot <noreply@azpdscc.org>',
-        to: 'admin@azpdscc.org',
+        to: 'kulraaj@gmail.com',
         subject: `Copy of Volunteer Letter for ${input.volunteerName}`,
         html: `A volunteer confirmation letter was sent to ${input.volunteerName} (${input.volunteerEmail}).<br><br><hr><br>${letterHtml}`,
       });

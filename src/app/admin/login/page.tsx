@@ -48,9 +48,9 @@ export default function AdminLoginPage() {
       const formData = new FormData(event.currentTarget);
       
       // We still call the server action for validation
-      const validationState = await loginAction({ success: false, errors: {} }, formData);
+      formAction(formData);
 
-      if (validationState.success) {
+      if (formState.success) {
           try {
               const email = formData.get('email') as string;
               const password = formData.get('password') as string;
@@ -63,9 +63,6 @@ export default function AdminLoginPage() {
               }
               setClientError(message);
           }
-      } else {
-         // The useActionState hook will update formState with validation errors
-         // and they will be displayed by the form fields.
       }
   };
 
@@ -79,7 +76,7 @@ export default function AdminLoginPage() {
                 <CardDescription>Enter your administrator credentials to access the dashboard.</CardDescription>
             </CardHeader>
             <CardContent>
-                <form action={formAction} onSubmit={handleFormSubmit} className="space-y-4">
+                <form onSubmit={handleFormSubmit} className="space-y-4">
                      <div>
                         <Label htmlFor="email">Email</Label>
                         <Input type="email" id="email" name="email" required />
