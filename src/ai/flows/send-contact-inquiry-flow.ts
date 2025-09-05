@@ -93,14 +93,14 @@ const sendContactInquiryFlow = ai.defineFlow(
       await resend.emails.send({
         from: 'PDSCC Info <info@azpdscc.org>',
         to: input.email,
-        subject: 'We\'ve Received Your Message | PDSCC',
+        subject: 'We\\'ve Received Your Message | PDSCC',
         html: userEmailHtml,
       });
 
       // Send to admin
       await resend.emails.send({
         from: 'Contact Form Bot <noreply@azpdscc.org>',
-        to: 'kulraaj@gmail.com', // Admin's email address
+        to: 'admin@azpdscc.org', // Admin's email address
         subject: `New Inquiry: ${input.subject}`,
         text: adminEmailText,
       });

@@ -117,7 +117,7 @@ const sendGeneralRegistrationFlow = ai.defineFlow(
       // Send to admin
       await resend.emails.send({
         from: 'Vendor Bot <noreply@azpdscc.org>',
-        to: 'kulraaj@gmail.com',
+        to: 'admin@azpdscc.org',
         subject: 'New General Vendor Registration',
         text: adminEmailText,
       });

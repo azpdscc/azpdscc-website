@@ -110,7 +110,7 @@ const sendWelcomeEmailFlow = ai.defineFlow(
       
       await resend.emails.send({
         from: 'Newsletter Bot <noreply@azpdscc.org>',
-        to: 'kulraaj@gmail.com',
+        to: 'admin@azpdscc.org',
         subject: 'New Newsletter Subscriber',
         text: adminEmailText,
       });
