@@ -30,6 +30,15 @@ const nextConfig: NextConfig = {
       }
     ],
   },
+   webpack: (config, { isServer }) => {
+    config.watchOptions = {
+      ignored: [
+        '**/.genkit/**',
+        '**/.firebase/**',
+      ],
+    }
+    return config
+  },
 };
 
 export default nextConfig;
