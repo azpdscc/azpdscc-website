@@ -81,7 +81,7 @@ const sendPerformanceApplicationFlow = ai.defineFlow(
     const resendApiKey = process.env.RESEND_API_KEY;
     if (!resendApiKey) {
         console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in the server environment.");
-        throw new Error("Server configuration error for sending emails.");
+        return { success: false, message: 'The email service is not configured correctly. Please contact support.' };
     }
     const resend = new Resend(resendApiKey);
 
@@ -149,9 +149,6 @@ Action Required: Please review this application in the performance dashboard.
     } catch (error) {
       console.error('Performance application flow failed:', error);
       const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
-      if (errorMessage.includes("Server configuration error")) {
-          throw new Error("Server configuration error for sending emails.");
-      }
       return { success: false, message: `An error occurred: ${errorMessage}` };
     }
   }

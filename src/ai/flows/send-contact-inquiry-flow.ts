@@ -66,7 +66,7 @@ const sendContactInquiryFlow = ai.defineFlow(
     const resendApiKey = process.env.RESEND_API_KEY;
     if (!resendApiKey) {
         console.error("Resend API key is not configured. Ensure RESEND_API_KEY is set in the server environment.");
-        throw new Error("Server configuration error for sending emails.");
+        return { success: false, message: 'The email service is not configured correctly. Please contact support.' };
     }
     const resend = new Resend(resendApiKey);
 
@@ -109,9 +109,6 @@ const sendContactInquiryFlow = ai.defineFlow(
     } catch (error) {
       console.error('Contact inquiry flow failed:', error);
       const errorMessage = error instanceof Error ? error.message : String(error);
-      if (errorMessage.includes("Server configuration error")) {
-          throw new Error("Server configuration error for sending emails.");
-      }
       return { success: false, message: 'An error occurred while sending your message.' };
     }
   }
