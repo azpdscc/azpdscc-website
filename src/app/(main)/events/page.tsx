@@ -66,8 +66,8 @@ export default function EventsPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20 bg-hero-pattern opacity-10" />
         <div className="relative z-10 p-4 container mx-auto">
           <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">Desi Events in Phoenix</h1>
-          <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
-            Discover vibrant Punjabi festivals in Phoenix, cultural celebrations, food fairs, and music nights for the entire Indian community in Arizona.
+          <p className="mt-4 max-w-3xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
+            PDSCC is at the forefront of celebrating Desi culture in Arizona, and our events page is your official guide to the most anticipated gatherings in the Phoenix Punjabi Indian community. We specialize in bringing traditional North Indian festivals to life, from the vibrant colors of Holi to the luminous celebrations of Diwali. Our events, including the renowned Vaisakhi Mela and Teeyan Da Mela, are more than just festivals; they are a vibrant showcase of culture, featuring authentic Punjabi food, mesmerizing music, and electrifying dance performances. Whether you're looking to connect with the AZ Desi community, experience the richness of Indian heritage, or find family-friendly activities in Phoenix, you'll find it here. Explore our upcoming events and be part of a tradition that unites and inspires.
           </p>
         </div>
       </section>

@@ -45,8 +45,8 @@ export function PerformersPageClient({ nextEvent, registrationOpen }: Performers
         <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20 bg-hero-pattern opacity-10" />
         <div className="relative z-10 p-4 container mx-auto">
           <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">Perform at Our Festivals</h1>
-          <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
-            Showcase your talent to the vibrant Phoenix Punjabi Indian community. We invite singers, dancers, and performers of all kinds to register for our events.
+          <p className="mt-4 max-w-3xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
+            The stage at a PDSCC festival is a celebrated platform, offering incredible exposure and a chance to connect with thousands of enthusiastic community members. We are committed to showcasing a diverse array of talent and preserving the artistic traditions of North India. We actively seek performers for our flagship Arizona Punjabi Indian festivals, Vaisakhi Mela and Teeyan Da Mela. If you are a Bhangra team, Gidda group, classical singer, or have a unique act that celebrates our culture, we encourage you to apply. Performing with us is more than just a show; it's an opportunity to become a central part of a cherished community celebration and share your passion with an appreciative audience.
           </p>
         </div>
       </section>

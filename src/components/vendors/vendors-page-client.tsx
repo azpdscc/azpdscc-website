@@ -45,8 +45,8 @@ export function VendorsPageClient({ nextEvent, registrationOpen }: VendorsPageCl
         <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20 bg-hero-pattern opacity-10" />
         <div className="relative z-10 p-4 container mx-auto">
           <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">Vendor Booths for Indian Festivals in Arizona</h1>
-          <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
-            Showcase your business to the large and engaged Phoenix Punjabi Indian community. We offer opportunities for event-specific vendor booths at Desi events in Phoenix and a general network for future AZ India events.
+          <p className="mt-4 max-w-3xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
+            Becoming a vendor at a PDSCC event places your business directly in front of thousands of engaged attendees from the Phoenix Punjabi Indian community and the wider AZ Desi population. Our Arizona Indian festivals are premier destinations for those seeking authentic food, traditional apparel, handcrafted jewelry, and unique services. We provide a dynamic marketplace for both established and emerging businesses to thrive. Beyond a single event, joining our vendor network gives you priority access to future opportunities, connecting you with a loyal customer base eager to support local entrepreneurs. Whether you are a food truck, a clothing boutique, or an artisan, PDSCC events offer an unparalleled platform to grow your brand and connect with the community.
           </p>
         </div>
       </section>
