@@ -83,9 +83,9 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
                   <div className="absolute inset-0 bg-black/30" />
                   <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center text-primary-foreground p-4">
                       <p className="font-bold uppercase tracking-widest !text-primary-foreground drop-shadow-md">Coming Soon</p>
-                      <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold !text-primary-foreground drop-shadow-lg">
+                      <h2 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold !text-primary-foreground drop-shadow-lg">
                       {nextEvent.name}
-                      </h1>
+                      </h2>
                       <div className="mt-4 flex items-center gap-4 text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
                       <div className="flex items-center gap-2">
                           <Calendar className="h-5 w-5" />
