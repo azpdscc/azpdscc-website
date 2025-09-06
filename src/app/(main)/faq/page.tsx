@@ -99,7 +99,7 @@ export default function FaqPage() {
                 <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit mb-4">
                   <HelpCircle className="h-10 w-10 text-primary" strokeWidth={1.5} />
                 </div>
-                <CardTitle className="font-headline text-4xl">Frequently Asked Questions</CardTitle>
+                <CardTitle className="font-headline text-4xl"><h1>Frequently Asked Questions</h1></CardTitle>
                 <CardDescription>
                   Find answers to your questions below. If you can't find what you're looking for, please don't hesitate to contact us.
                 </CardDescription>
