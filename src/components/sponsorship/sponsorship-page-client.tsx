@@ -77,15 +77,12 @@ export function SponsorshipPageClient() {
 
   return (
     <div className="bg-background">
-      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground">
-        <HeroImage src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/sponsorship.jpg" alt="A group of people shaking hands at a business meeting" aiHint="business partnership" />
+       <section className="relative h-auto min-h-[200px] w-full flex items-center justify-center text-center text-primary-foreground bg-primary py-8 md:py-12">
+        <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20 bg-hero-pattern opacity-10" />
         <div className="relative z-10 p-4 container mx-auto">
-          <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">
+          <h1 className="font-headline text-4xl md:text-5xl font-bold !text-primary-foreground drop-shadow-sm">
             Partner with PDSCC
           </h1>
-          <p className="mt-4 max-w-3xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
-            Align your brand with the heart of the Phoenix Punjabi Indian community. Your support empowers cultural celebration and community connection.
-          </p>
         </div>
       </section>
 
