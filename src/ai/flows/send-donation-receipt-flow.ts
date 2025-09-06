@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { sendEmail } from '@/services/email';
+import { Resend } from 'resend';
 
 // Input schema for the donation receipt flow
 const DonationReceiptInputSchema = z.object({
@@ -72,6 +72,13 @@ const sendDonationReceiptFlow = ai.defineFlow(
     outputSchema: DonationReceiptOutputSchema,
   },
   async (input) => {
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+        console.error("Resend API key is not configured.");
+        return { success: false, message: "The email service is not configured. Please contact the administrator." };
+    }
+    const resend = new Resend(resendApiKey);
+
     try {
       // 1. Generate the email content for the donor
       const { output: emailBody } = await receiptEmailPrompt(input);
@@ -81,7 +88,7 @@ const sendDonationReceiptFlow = ai.defineFlow(
       }
 
       // 2. Send the receipt email to the donor
-      await sendEmail({
+      await resend.emails.send({
         from: 'PDSCC Donations <receipts@azpdscc.org>',
         to: input.donorEmail,
         subject: 'Thank You for Your Donation to PDSCC!',
@@ -105,7 +112,7 @@ const sendDonationReceiptFlow = ai.defineFlow(
         - Action Required: Please verify this payment in your Zelle account and update records.
       `;
 
-      await sendEmail({
+      await resend.emails.send({
         from: 'Donation Bot <noreply@azpdscc.org>',
         to: 'admin@azpdscc.org',
         subject: `New Zelle Donation from ${input.donorName}`,

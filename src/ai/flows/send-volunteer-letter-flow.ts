@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { sendEmail } from '@/services/email';
+import { Resend } from 'resend';
 
 // Input schema for the flow
 const VolunteerLetterInputSchema = z.object({
@@ -79,6 +79,13 @@ const sendVolunteerLetterFlow = ai.defineFlow(
     outputSchema: VolunteerLetterOutputSchema,
   },
   async (input) => {
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+        console.error("Resend API key is not configured.");
+        return { success: false, message: "The email service is not configured. Please contact the administrator." };
+    }
+    const resend = new Resend(resendApiKey);
+
     try {
       // 1. Generate the HTML letter
       const { output: letterHtml } = await volunteerLetterPrompt(input);
@@ -88,7 +95,7 @@ const sendVolunteerLetterFlow = ai.defineFlow(
       }
       
       // 2. Send the letter to the volunteer
-      await sendEmail({
+      await resend.emails.send({
         from: 'PDSCC Volunteers <info@azpdscc.org>',
         to: input.volunteerEmail,
         subject: 'PDSCC Volunteer Service Confirmation',
@@ -96,7 +103,7 @@ const sendVolunteerLetterFlow = ai.defineFlow(
       });
 
       // 3. Send a copy to the admin for record-keeping
-      await sendEmail({
+      await resend.emails.send({
         from: 'Volunteer Bot <noreply@azpdscc.org>',
         to: 'admin@azpdscc.org',
         subject: `Copy of Volunteer Letter for ${input.volunteerName}`,

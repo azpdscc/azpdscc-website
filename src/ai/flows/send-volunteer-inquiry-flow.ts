@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { sendEmail } from '@/services/email';
+import { Resend } from 'resend';
 
 // Input schema for the volunteer inquiry flow
 const VolunteerInquiryInputSchema = z.object({
@@ -65,6 +65,13 @@ const sendVolunteerInquiryFlow = ai.defineFlow(
     outputSchema: VolunteerInquiryOutputSchema,
   },
   async (input) => {
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+        console.error("Resend API key is not configured.");
+        return { success: false, message: "The email service is not configured. Please contact the administrator." };
+    }
+    const resend = new Resend(resendApiKey);
+
     try {
       // 1. Generate the confirmation email for the user
       const { output: userEmailBody } = await confirmationEmailPrompt({ name: input.name });
@@ -87,7 +94,7 @@ const sendVolunteerInquiryFlow = ai.defineFlow(
 
       // 3. Send both emails
       // Send to user
-      await sendEmail({
+      await resend.emails.send({
         from: 'PDSCC Volunteers <info@azpdscc.org>',
         to: input.email,
         subject: 'Thank You for Your Interest in Volunteering! | PDSCC',
@@ -95,7 +102,7 @@ const sendVolunteerInquiryFlow = ai.defineFlow(
       });
 
       // Send to admin
-      await sendEmail({
+      await resend.emails.send({
         from: 'Volunteer Form Bot <noreply@azpdscc.org>',
         to: 'admin@azpdscc.org', // Admin's email address for volunteer notifications
         subject: `New Volunteer Sign-Up: ${input.name}`,

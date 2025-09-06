@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { sendEmail } from '@/services/email';
+import { Resend } from 'resend';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
@@ -78,6 +78,13 @@ const sendPerformanceApplicationFlow = ai.defineFlow(
     outputSchema: PerformanceApplicationOutputSchema,
   },
   async (input) => {
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+        console.error("Resend API key is not configured.");
+        return { success: false, message: "The email service is not configured. Please contact the administrator." };
+    }
+    const resend = new Resend(resendApiKey);
+
     try {
       // 1. Save the application to Firestore
       await addDoc(collection(db, 'performanceRegistrations'), {
@@ -123,7 +130,7 @@ Action Required: Please review this application in the performance dashboard.
 
       // 4. Send the emails
       // Send to performer
-      await sendEmail({
+      await resend.emails.send({
         from: 'PDSCC Cultural Team <info@azpdscc.org>',
         to: input.email,
         subject: `Your Performance Application for ${input.event} has been Received!`,
@@ -131,7 +138,7 @@ Action Required: Please review this application in the performance dashboard.
       });
 
       // Send to admin
-      await sendEmail({
+      await resend.emails.send({
         from: 'Performers Bot <noreply@azpdscc.org>',
         to: 'admin@azpdscc.org', // This should be the cultural team's email
         subject: `New Performance Application: ${input.groupName} for ${input.event}`,

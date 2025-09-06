@@ -9,7 +9,7 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { sendEmail } from '@/services/email';
+import { Resend } from 'resend';
 
 // This is the most complete schema, including the optional QR code and required eventName.
 // It is used for generating the final ticket email.
@@ -100,6 +100,13 @@ const sendVendorTicketFlow = ai.defineFlow(
     outputSchema: VendorApplicationOutputSchema,
   },
   async (input) => {
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+        console.error("Resend API key is not configured.");
+        return { success: false, message: "The email service is not configured. Please contact the administrator." };
+    }
+    const resend = new Resend(resendApiKey);
+
     try {
       const { output: vendorEmailHtml } = await vendorTicketEmailPrompt(input);
 
@@ -107,7 +114,7 @@ const sendVendorTicketFlow = ai.defineFlow(
         throw new Error('Failed to generate vendor ticket.');
       }
 
-      await sendEmail({
+      await resend.emails.send({
         from: 'PDSCC Vendors <vendors@azpdscc.org>',
         to: input.email,
         subject: `Your Vendor Booth Confirmation for ${input.eventName}`,
@@ -152,6 +159,13 @@ const sendVendorReceiptFlow = ai.defineFlow(
     outputSchema: VendorApplicationOutputSchema,
   },
   async (input) => {
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+        console.error("Resend API key is not configured.");
+        return { success: false, message: "The email service is not configured. Please contact the administrator." };
+    }
+    const resend = new Resend(resendApiKey);
+
     try {
         const eventName = input.eventName || "our upcoming event";
 
@@ -196,14 +210,14 @@ Payment Information:
 Action Required: Please verify the Zelle payment and then approve this application in the admin vendor dashboard to send their ticket.
       `;
 
-      await sendEmail({
+      await resend.emails.send({
         from: 'PDSCC Vendors <vendors@azpdscc.org>',
         to: input.email,
         subject: `We've Received Your Vendor Application for ${eventName}`,
         html: vendorEmailHtml,
       });
 
-      await sendEmail({
+      await resend.emails.send({
         from: 'Vendor Bot <noreply@azpdscc.org>',
         to: 'admin@azpdscc.org',
         subject: `New VENDOR APP for ${eventName} - PENDING VERIFICATION`,
