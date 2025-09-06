@@ -12,6 +12,12 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: [
+       {
+        protocol: 'https',
+        hostname: 'pdscc.org',
+        port: '',
+        pathname: '/**',
+      },
       {
         protocol: 'https',
         hostname: 'placehold.co',
