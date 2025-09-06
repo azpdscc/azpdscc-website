@@ -16,7 +16,7 @@ export function HeroImage({ src, alt, aiHint }: HeroImageProps) {
         fill
         priority
         sizes="100vw"
-        className="z-0 object-cover object-top"
+        className="z-0 object-cover object-[50%_25%]"
       />
       <div className="absolute inset-0 bg-black/50" />
       <div className="absolute inset-0 bg-hero-pattern opacity-10" />
