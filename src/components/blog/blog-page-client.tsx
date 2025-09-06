@@ -3,20 +3,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { getBlogPosts } from '@/services/blog';
 import { ArrowRight, User, Calendar } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import type { BlogPost } from '@/lib/types';
 
-export function BlogPageClient() {
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
-
-  useEffect(() => {
-    getBlogPosts().then(posts => {
-       const publishedPosts = posts.filter(post => post.status === 'Published');
-       setBlogPosts(publishedPosts);
-    });
-  }, []);
+export function BlogPageClient({ initialPosts }: { initialPosts: BlogPost[] }) {
 
   return (
     <div className="bg-background">
@@ -36,7 +26,7 @@ export function BlogPageClient() {
         <div className="container mx-auto px-4">
           <h2 className="sr-only">Blog Posts</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogPosts.map((post) => (
+            {initialPosts.map((post) => (
               <Card key={post.id} className="flex flex-col h-full shadow-lg overflow-hidden transition-transform transform hover:-translate-y-1">
                 <CardHeader className="p-0">
                   <Link href={`/blog/${post.slug}`} className="block relative h-56 w-full">

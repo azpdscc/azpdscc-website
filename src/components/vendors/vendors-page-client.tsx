@@ -1,42 +1,20 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, CalendarPlus, Users, Loader2, CalendarClock } from 'lucide-react';
-import { getEvents } from '@/services/events';
 import type { Event } from '@/lib/types';
-import { differenceInDays, format, subDays } from 'date-fns';
+import { format, subDays } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-export function VendorsPageClient() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [nextEvent, setNextEvent] = useState<Event | null>(null);
-  const [registrationOpen, setRegistrationOpen] = useState(false);
+interface VendorsPageClientProps {
+  nextEvent: Event | null;
+  registrationOpen: boolean;
+}
 
-  useEffect(() => {
-    const checkRegistrationWindow = async () => {
-      const allEvents = await getEvents();
-      const now = new Date();
-      now.setHours(0, 0, 0, 0);
-
-      const upcomingEvents = allEvents
-        .filter(e => new Date(e.date) >= now)
-        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-      
-      const firstUpcomingEvent = upcomingEvents.length > 0 ? upcomingEvents[0] : null;
-      setNextEvent(firstUpcomingEvent);
-
-      // Temporarily open for testing
-      setRegistrationOpen(true);
-
-      setIsLoading(false);
-    };
-
-    checkRegistrationWindow();
-  }, []);
+export function VendorsPageClient({ nextEvent, registrationOpen }: VendorsPageClientProps) {
 
   const getRegistrationOpenDate = () => {
     if (!nextEvent) return null;
@@ -90,12 +68,7 @@ export function VendorsPageClient() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-grow flex flex-col items-center justify-end w-full px-6 pb-6">
-                {isLoading ? (
-                  <Button size="lg" className="w-full" disabled>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Checking Status...
-                    </Button>
-                ) : registrationOpen ? (
+                {registrationOpen ? (
                     <Button asChild size="lg" className="w-full">
                       <Link href="/vendors/apply">View Upcoming Events & Apply <ArrowRight className="ml-2 h-4 w-4" strokeWidth={1.5} /></Link>
                     </Button>

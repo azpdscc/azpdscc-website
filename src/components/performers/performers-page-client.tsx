@@ -1,48 +1,20 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Mic, CalendarClock, Loader2, CalendarPlus } from 'lucide-react';
-import { getEvents } from '@/services/events';
+import { ArrowRight, Mic, CalendarClock, CalendarPlus } from 'lucide-react';
 import type { Event } from '@/lib/types';
-import { differenceInDays, format, subDays } from 'date-fns';
+import { format, subDays } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-export function PerformersPageClient() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [nextEvent, setNextEvent] = useState<Event | null>(null);
-  const [registrationOpen, setRegistrationOpen] = useState(false);
+interface PerformersPageClientProps {
+  nextEvent: Event | null;
+  registrationOpen: boolean;
+}
 
-   useEffect(() => {
-    const checkRegistrationWindow = async () => {
-      const allEvents = await getEvents();
-      const now = new Date();
-      now.setHours(0, 0, 0, 0);
-
-      const upcomingEvents = allEvents
-        .filter(e => new Date(e.date) >= now && (e.name.includes('Vaisakhi') || e.name.includes('Teeyan')))
-        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-      
-      const firstUpcomingEvent = upcomingEvents.length > 0 ? upcomingEvents[0] : null;
-      setNextEvent(firstUpcomingEvent);
-
-      if (firstUpcomingEvent) {
-        // const eventDate = new Date(firstUpcomingEvent.date);
-        // const days = differenceInDays(eventDate, now);
-        // if (days <= 90) {
-        //   setRegistrationOpen(true);
-        // }
-        // Temporarily open for testing
-        setRegistrationOpen(true);
-      }
-      setIsLoading(false);
-    };
-
-    checkRegistrationWindow();
-  }, []);
+export function PerformersPageClient({ nextEvent, registrationOpen }: PerformersPageClientProps) {
 
   const getRegistrationOpenDate = () => {
     if (!nextEvent) return null;
@@ -96,12 +68,7 @@ export function PerformersPageClient() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex-grow flex flex-col items-center justify-center w-full px-6 pb-6">
-                {isLoading ? (
-                   <Button size="lg" className="w-full sm:w-auto" disabled>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Checking Status...
-                    </Button>
-                ) : registrationOpen ? (
+                {registrationOpen ? (
                     <Button asChild size="lg" className="w-full sm:w-auto">
                       <Link href="/perform/register">Apply Now <ArrowRight className="ml-2 h-4 w-4" strokeWidth={1.5} /></Link>
                     </Button>
