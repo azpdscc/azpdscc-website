@@ -91,20 +91,23 @@ const FaqItem = ({ question, answer }: { question: string, answer: string }) => 
 export default function FaqPage() {
   return (
     <div className="bg-background">
-      <section className="py-16 md:py-24 bg-card">
+      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground bg-primary">
+        <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20 bg-hero-pattern opacity-10" />
+        <div className="relative z-10 p-4 container mx-auto">
+          <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">
+            Frequently Asked Questions
+          </h1>
+          <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
+            Find answers to common questions about PDSCC events, vendors, volunteering, and our mission.
+          </p>
+        </div>
+      </section>
+
+      <section className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <Card className="shadow-lg">
-              <CardHeader className="text-center">
-                <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit mb-4">
-                  <HelpCircle className="h-10 w-10 text-primary" strokeWidth={1.5} />
-                </div>
-                <CardTitle className="font-headline text-4xl"><h1>Frequently Asked Questions</h1></CardTitle>
-                <CardDescription>
-                  Find answers to your questions below. If you can't find what you're looking for, please don't hesitate to contact us.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+              <CardContent className="p-6 md:p-8">
                 {faqData.map((category) => (
                     <div key={category.category} className="mb-12">
                         <h2 className="font-headline text-2xl font-bold mb-4 pb-2 border-b">{category.category}</h2>
@@ -115,7 +118,7 @@ export default function FaqPage() {
                         </Accordion>
                     </div>
                 ))}
-                <div className="mt-12 text-center">
+                <div className="mt-12 text-center border-t pt-8">
                     <h3 className="font-headline text-xl font-bold">Still have questions?</h3>
                     <p className="text-muted-foreground mt-2 mb-4">Our team is here to help. Reach out to us directly.</p>
                     <Button asChild>
