@@ -1,11 +1,9 @@
-'use client';
 
-import React, { Suspense, useEffect, useState } from 'react';
-import { notFound, useParams } from 'next/navigation';
+import { Suspense } from 'react';
+import { notFound } from 'next/navigation';
 import { getEventBySlug } from '@/services/events';
 import { EventDetailPageClient } from '@/components/events/event-detail-page';
 import { Skeleton } from '@/components/ui/skeleton';
-import { generateEventHighlights } from '@/ai/flows/generate-event-highlights-flow';
 import type { Metadata, ResolvingMetadata } from 'next';
 import type { Event } from '@/lib/types';
 
@@ -59,52 +57,20 @@ function EventPageSkeleton() {
   )
 }
 
-export default function EventDetailPage() {
-    const params = useParams();
-    const slug = params.slug as string;
+// This is now a Server Component
+export default async function EventDetailPage({ params }: Props) {
+    const slug = params.slug;
 
-    const Fallback = () => <EventPageSkeleton />;
-    
-    const EventLoader = () => {
-        const [event, setEvent] = useState<Event | null>(null);
-        const [highlights, setHighlights] = useState<string[]>([]);
-        const [isLoading, setIsLoading] = useState(true);
-
-        useEffect(() => {
-            if (slug) {
-                setIsLoading(true);
-                getEventBySlug(slug).then(async (eventData) => {
-                    if (!eventData) {
-                        notFound();
-                    } else {
-                        setEvent(eventData);
-                        try {
-                          const highlightResult = await generateEventHighlights({
-                            eventName: eventData.name,
-                            eventDescription: eventData.fullDescription
-                          });
-                          if (highlightResult && highlightResult.highlights) {
-                            setHighlights(highlightResult.highlights);
-                          }
-                        } catch (e) {
-                          console.error("Could not generate event highlights", e);
-                        }
-                    }
-                    setIsLoading(false);
-                });
-            }
-        }, [slug]);
-
-        if (isLoading || !event) {
-            return <EventPageSkeleton />;
-        }
-
-        return <EventDetailPageClient event={event} highlights={highlights} />;
+    // Fetch initial event data on the server
+    const event = await getEventBySlug(slug);
+    if (!event) {
+        notFound();
     }
-
+    
     return (
-        <Suspense fallback={<Fallback />}>
-            <EventLoader />
-        </Suspense>
+      <Suspense fallback={<EventPageSkeleton />}>
+        {/* Pass initial server-fetched data to the client component */}
+        <EventDetailPageClient event={event} />
+      </Suspense>
     );
 }

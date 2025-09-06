@@ -1,6 +1,7 @@
+
 'use client';
 
-import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -9,6 +10,7 @@ import type { Event } from '@/lib/types';
 import { format, parse, isValid } from 'date-fns';
 import { Card } from '@/components/ui/card';
 import { HeroImage } from '@/components/layout/hero-image';
+import { generateEventHighlights } from '@/ai/flows/generate-event-highlights-flow';
 
 const createEventSchema = (event: Event) => {
   const eventDate = parse(event.date, 'MMMM dd, yyyy', new Date());
@@ -51,13 +53,35 @@ const createEventSchema = (event: Event) => {
   };
 };
 
-export function EventDetailPageClient({ event, highlights }: { event: Event; highlights: string[] }) {
+// This is now the Client Component
+export function EventDetailPageClient({ event }: { event: Event; }) {
+  const [highlights, setHighlights] = useState<string[]>([]);
   const eventDate = new Date(event.date);
   const today = new Date();
   today.setHours(0, 0, 0, 0); 
   const isPast = eventDate < today;
 
   const eventSchema = createEventSchema(event);
+
+  useEffect(() => {
+    // Fetch AI highlights on the client
+    const fetchHighlights = async () => {
+      try {
+        const highlightResult = await generateEventHighlights({
+          eventName: event.name,
+          eventDescription: event.fullDescription
+        });
+        if (highlightResult && highlightResult.highlights) {
+          setHighlights(highlightResult.highlights);
+        }
+      } catch (e) {
+        console.error("Could not generate event highlights", e);
+      }
+    };
+    fetchHighlights();
+  }, [event.name, event.fullDescription]);
+
+
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.locationAddress)}`;
 
   const createGoogleCalendarLink = (event: Event): string => {
