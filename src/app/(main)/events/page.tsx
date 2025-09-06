@@ -10,6 +10,7 @@ import type { Event, EventCategory } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PartyPopper, Utensils, Users } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 const categories: EventCategory[] = ['Cultural', 'Food', 'Music', 'Dance'];
 
@@ -109,22 +110,24 @@ export default function EventsPage() {
               <p className="md:col-span-3 text-center text-muted-foreground">No events found. Try adjusting your search or filters.</p>
             )}
           </div>
+          
+          <Separator className="my-16" />
 
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-            <Card className="flex items-start gap-4 p-6 bg-card">
-                <PartyPopper className="h-10 w-10 text-primary mt-1 shrink-0" strokeWidth={1.5}/>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <Card className="flex flex-col items-center p-6 bg-card">
+                <PartyPopper className="h-10 w-10 text-primary mb-4 shrink-0" strokeWidth={1.5}/>
                 <p className="text-base text-muted-foreground">
                     PDSCC is at the forefront of celebrating Desi culture in Arizona, and our events page is your official guide to the most anticipated gatherings in the Phoenix Punjabi Indian community.
                 </p>
             </Card>
-            <Card className="flex items-start gap-4 p-6 bg-card">
-                <Utensils className="h-10 w-10 text-primary mt-1 shrink-0" strokeWidth={1.5}/>
+            <Card className="flex flex-col items-center p-6 bg-card">
+                <Utensils className="h-10 w-10 text-primary mb-4 shrink-0" strokeWidth={1.5}/>
                 <p className="text-base text-muted-foreground">
                     We specialize in bringing traditional North Indian festivals to life, from the vibrant colors of Holi to the luminous celebrations of Diwali. Our events feature authentic Punjabi food, mesmerizing music, and electrifying dance performances.
                 </p>
             </Card>
-             <Card className="flex items-start gap-4 p-6 bg-card">
-                <Users className="h-10 w-10 text-primary mt-1 shrink-0" strokeWidth={1.5}/>
+             <Card className="flex flex-col items-center p-6 bg-card">
+                <Users className="h-10 w-10 text-primary mb-4 shrink-0" strokeWidth={1.5}/>
                 <p className="text-base text-muted-foreground">
                     Whether you're looking to connect with the AZ Desi community, experience the richness of Indian heritage, or find family-friendly activities in Phoenix, you'll find it here. Explore our upcoming events and be part of a tradition that unites and inspires.
                 </p>
