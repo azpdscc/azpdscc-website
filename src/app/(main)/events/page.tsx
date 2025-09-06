@@ -97,8 +97,20 @@ export default function EventsPage() {
               </SelectContent>
             </Select>
           </div>
-          
-          <div className="mb-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+        
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {isLoading ? (
+                Array.from({ length: 3 }).map((_, index) => <EventSkeleton key={index} />)
+            ) : filteredEvents.length > 0 ? (
+              filteredEvents.map(event => (
+                <EventCard key={event.id} event={event} />
+              ))
+            ) : (
+              <p className="md:col-span-3 text-center text-muted-foreground">No events found. Try adjusting your search or filters.</p>
+            )}
+          </div>
+
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
             <Card className="flex items-start gap-4 p-6 bg-card">
                 <PartyPopper className="h-10 w-10 text-primary mt-1 shrink-0" strokeWidth={1.5}/>
                 <p className="text-base text-muted-foreground">
@@ -117,18 +129,6 @@ export default function EventsPage() {
                     Whether you're looking to connect with the AZ Desi community, experience the richness of Indian heritage, or find family-friendly activities in Phoenix, you'll find it here. Explore our upcoming events and be part of a tradition that unites and inspires.
                 </p>
             </Card>
-          </div>
-        
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {isLoading ? (
-                Array.from({ length: 3 }).map((_, index) => <EventSkeleton key={index} />)
-            ) : filteredEvents.length > 0 ? (
-              filteredEvents.map(event => (
-                <EventCard key={event.id} event={event} />
-              ))
-            ) : (
-              <p className="md:col-span-3 text-center text-muted-foreground">No events found. Try adjusting your search or filters.</p>
-            )}
           </div>
 
         </div>
