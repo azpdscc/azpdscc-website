@@ -2,7 +2,10 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Upcoming Arizona Punjabi Indian Festivals & Events',
+  title: {
+    template: '%s | PDSCC Events',
+    default: 'Upcoming Arizona Punjabi Indian Festivals & Events | PDSCC',
+  },
   description: 'Discover and search for upcoming Arizona Punjabi Indian festivals, food fairs, and cultural events for the Phoenix Punjabi Indian community and AZ Desis.',
 };
 
