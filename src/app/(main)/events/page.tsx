@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { getEvents } from '@/services/events';
 import type { Event, EventCategory } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { HeroImage } from '@/components/layout/hero-image';
 
 const categories: EventCategory[] = ['Cultural', 'Food', 'Music', 'Dance'];
 
@@ -63,8 +62,8 @@ export default function EventsPage() {
 
   return (
     <div className="bg-background">
-      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground">
-        <HeroImage src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/events.jpg" alt="A large crowd at a cultural festival" aiHint="festival crowd" />
+      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground bg-primary">
+        <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20 bg-hero-pattern opacity-10" />
         <div className="relative z-10 p-4 container mx-auto">
           <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">Desi Events in Phoenix</h1>
           <p className="mt-4 max-w-3xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
