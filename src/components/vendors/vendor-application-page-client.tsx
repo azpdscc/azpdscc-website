@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -100,7 +101,7 @@ export function VendorApplicationPageClient() {
         ) : (
             <Card className="shadow-xl">
                 <CardHeader>
-                    <CardTitle className="font-headline text-3xl text-center">Registration is Currently Closed</CardTitle>
+                    <h1 className="font-headline text-3xl text-center">Registration is Currently Closed</h1>
                 </CardHeader>
                 <CardContent>
                     <Alert>

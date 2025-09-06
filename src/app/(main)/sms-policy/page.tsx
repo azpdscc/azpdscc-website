@@ -19,7 +19,7 @@ export default function SmsPolicyPage() {
                 <div className="mx-auto bg-primary/10 rounded-full p-4 w-fit mb-4">
                   <MessageSquareText className="h-10 w-10 text-primary" strokeWidth={1.5} />
                 </div>
-                <CardTitle className="font-headline text-4xl">SMS Messaging Policy & Terms</CardTitle>
+                <h1 className="font-headline text-4xl font-bold">SMS Messaging Policy & Terms</h1>
                 <p className="text-muted-foreground">Proof of Consent Documentation</p>
               </CardHeader>
               <CardContent className="prose prose-lg dark:prose-invert max-w-none text-muted-foreground space-y-6">
