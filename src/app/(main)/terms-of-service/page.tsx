@@ -6,9 +6,6 @@ import { FileText } from 'lucide-react';
 export const metadata: Metadata = {
   title: 'Terms of Service | PDSCC',
   description: 'Please read our Terms of Service carefully before using the PDSCC website and its services.',
-  robots: {
-    index: false,
-  }
 };
 
 export default function TermsOfServicePage() {

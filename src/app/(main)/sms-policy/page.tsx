@@ -6,9 +6,6 @@ import { MessageSquareText } from 'lucide-react';
 export const metadata: Metadata = {
   title: 'SMS Messaging Policy | PDSCC',
   description: 'Review the terms and consent for receiving SMS messages from PDSCC for event updates and raffle information.',
-  robots: {
-    index: false, // Often, these types of policy pages are not indexed in search engines
-  }
 };
 
 export default function SmsPolicyPage() {

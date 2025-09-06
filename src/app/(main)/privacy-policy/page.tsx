@@ -7,9 +7,6 @@ import { Shield } from 'lucide-react';
 export const metadata: Metadata = {
   title: 'Privacy Policy | PDSCC',
   description: 'Learn how PDSCC collects, uses, and protects your personal information when you use our website and services.',
-  robots: {
-    index: false,
-  }
 };
 
 export default function PrivacyPolicyPage() {
