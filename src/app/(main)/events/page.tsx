@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { getEvents } from '@/services/events';
 import type { Event, EventCategory } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PartyPopper, Utensils, Users } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 
@@ -76,28 +76,36 @@ export default function EventsPage() {
       
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-lg bg-card shadow-md mb-12">
-            <Input 
-              placeholder="Search for events..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="md:col-span-2"
-            />
-            <Select
-              value={selectedCategory}
-              onValueChange={(value: EventCategory | 'all') => setSelectedCategory(value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Filter by category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                {categories.map(category => (
-                  <SelectItem key={category} value={category}>{category}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <Card className="mb-12 shadow-md">
+            <CardHeader>
+                <CardTitle className="font-headline text-2xl">Filter Events</CardTitle>
+                <CardDescription>Find the perfect event for you.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Input 
+                    placeholder="Search for events..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="md:col-span-2"
+                    />
+                    <Select
+                    value={selectedCategory}
+                    onValueChange={(value: EventCategory | 'all') => setSelectedCategory(value)}
+                    >
+                    <SelectTrigger>
+                        <SelectValue placeholder="Filter by category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">All Categories</SelectItem>
+                        {categories.map(category => (
+                        <SelectItem key={category} value={category}>{category}</SelectItem>
+                        ))}
+                    </SelectContent>
+                    </Select>
+                </div>
+            </CardContent>
+          </Card>
         
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {isLoading ? (
@@ -115,19 +123,25 @@ export default function EventsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <Card className="flex flex-col items-center p-6 bg-card">
-                <PartyPopper className="h-10 w-10 text-primary mb-4 shrink-0" strokeWidth={1.5}/>
+                <div className="bg-primary/10 rounded-full p-3 mb-4">
+                    <PartyPopper className="h-10 w-10 text-primary shrink-0" strokeWidth={1.5}/>
+                </div>
                 <p className="text-base text-muted-foreground">
                     PDSCC is at the forefront of celebrating Desi culture in Arizona, and our events page is your official guide to the most anticipated gatherings in the Phoenix Punjabi Indian community.
                 </p>
             </Card>
             <Card className="flex flex-col items-center p-6 bg-card">
-                <Utensils className="h-10 w-10 text-primary mb-4 shrink-0" strokeWidth={1.5}/>
+                <div className="bg-primary/10 rounded-full p-3 mb-4">
+                    <Utensils className="h-10 w-10 text-primary shrink-0" strokeWidth={1.5}/>
+                </div>
                 <p className="text-base text-muted-foreground">
                     We specialize in bringing traditional North Indian festivals to life, from the vibrant colors of Holi to the luminous celebrations of Diwali. Our events feature authentic Punjabi food, mesmerizing music, and electrifying dance performances.
                 </p>
             </Card>
              <Card className="flex flex-col items-center p-6 bg-card">
-                <Users className="h-10 w-10 text-primary mb-4 shrink-0" strokeWidth={1.5}/>
+                 <div className="bg-primary/10 rounded-full p-3 mb-4">
+                    <Users className="h-10 w-10 text-primary shrink-0" strokeWidth={1.5}/>
+                </div>
                 <p className="text-base text-muted-foreground">
                     Whether you're looking to connect with the AZ Desi community, experience the richness of Indian heritage, or find family-friendly activities in Phoenix, you'll find it here. Explore our upcoming events and be part of a tradition that unites and inspires.
                 </p>
