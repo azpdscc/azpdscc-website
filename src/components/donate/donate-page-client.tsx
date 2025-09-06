@@ -11,6 +11,7 @@ import { CheckDonationForm } from '@/components/donate/check-donation-form';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { HeroImage } from '@/components/layout/hero-image';
 
 export function DonatePageClient() {
   const [zellePaymentConfirmed, setZellePaymentConfirmed] = useState(false);
@@ -18,8 +19,8 @@ export function DonatePageClient() {
   return (
     <div className="bg-background">
       {/* Hero Section */}
-      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground bg-primary">
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20 bg-hero-pattern opacity-10" />
+      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground">
+        <HeroImage src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/donate.jpg" alt="Hands holding a heart symbol" aiHint="charity donation" />
         <div className="relative z-10 p-4 container mx-auto">
           <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">
             Support the Phoenix Punjabi Indian Community

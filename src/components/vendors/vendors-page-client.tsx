@@ -8,6 +8,7 @@ import { ArrowRight, CalendarPlus, Users, Loader2, CalendarClock } from 'lucide-
 import type { Event } from '@/lib/types';
 import { format, subDays } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { HeroImage } from '@/components/layout/hero-image';
 
 interface VendorsPageClientProps {
   nextEvent: Event | null;
@@ -41,8 +42,8 @@ export function VendorsPageClient({ nextEvent, registrationOpen }: VendorsPageCl
 
   return (
     <div className="bg-background">
-      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground bg-primary">
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20 bg-hero-pattern opacity-10" />
+      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground">
+        <HeroImage src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/vendors.jpg" alt="A bustling market stall at a festival" aiHint="market stall" />
         <div className="relative z-10 p-4 container mx-auto">
           <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">Vendor Booths for Indian Festivals in Arizona</h1>
           <p className="mt-4 max-w-3xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
@@ -69,12 +70,12 @@ export function VendorsPageClient({ nextEvent, registrationOpen }: VendorsPageCl
               </CardHeader>
               <CardContent className="flex-grow flex flex-col items-center justify-end w-full px-6 pb-6">
                 {registrationOpen ? (
-                    <Button asChild size="lg" className="w-full">
+                    <Button asChild size="lg" className="w-full sm:w-auto">
                       <Link href="/vendors/apply">View Upcoming Events & Apply <ArrowRight className="ml-2 h-4 w-4" strokeWidth={1.5} /></Link>
                     </Button>
                 ) : (
                    <div className="w-full text-center space-y-4">
-                     <Button size="lg" className="w-full" disabled>
+                     <Button size="lg" className="w-full sm:w-auto" disabled>
                         Registration Closed
                       </Button>
                       <Alert variant="default" className="bg-secondary">

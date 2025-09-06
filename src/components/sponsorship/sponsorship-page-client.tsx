@@ -11,6 +11,7 @@ import { getOptimizedSponsorLogo } from '@/services/images';
 import type { Sponsor } from '@/lib/types';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { HeroImage } from '@/components/layout/hero-image';
 
 const sponsorshipTiers = [
   {
@@ -76,8 +77,8 @@ export function SponsorshipPageClient() {
 
   return (
     <div className="bg-background">
-      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground bg-primary">
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20 bg-hero-pattern opacity-10" />
+      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground">
+        <HeroImage src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/sponsorship.jpg" alt="A group of people shaking hands at a business meeting" aiHint="business partnership" />
         <div className="relative z-10 p-4 container mx-auto">
           <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">
             Partner with PDSCC
@@ -93,7 +94,7 @@ export function SponsorshipPageClient() {
           <div className="text-center">
             <h2 className="font-headline text-3xl md:text-4xl font-bold">Sponsorship Packages</h2>
             <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-              We offer several tiers of sponsorship, each with unique benefits to showcase your commitment to the community. Partnering with PDSCC provides extensive brand visibility to a diverse and engaged audience of thousands of attendees from across the Phoenix metro area.
+              We offer several tiers of sponsorship, each with unique benefits to showcase your commitment to the community. Partnering with PDSCC provides extensive brand visibility to a diverse and engaged audience of thousands of attendees from across the Phoenix metro area, including the vibrant AZ Desi and Punjabi Indian populations. Your contribution not only highlights your brand but also demonstrates deep community support, fostering positive sentiment and brand loyalty.
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-stretch">

@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { Calendar, User, Ticket } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { HeroImage } from '@/components/layout/hero-image';
 
 interface BlogPostPageClientProps {
   initialPost: BlogPost;
@@ -48,18 +49,9 @@ export function BlogPostPageClient({ initialPost }: BlogPostPageClientProps) {
 
   return (
     <article>
-      <header className="relative h-[50vh] min-h-[400px] w-full">
-         <Image
-          src={post.image}
-          alt={post.title}
-          data-ai-hint="blog post header"
-          fill
-          sizes="100vw"
-          priority
-          className="z-0 object-cover"
-        />
-        <div className="absolute inset-0 bg-black/60 bg-hero-pattern opacity-10" />
-        <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4 container mx-auto">
+      <header className="relative h-[50vh] min-h-[400px] w-full flex items-center justify-center text-center text-primary-foreground">
+        <HeroImage src={post.image} alt={post.title} aiHint="blog post header" />
+        <div className="relative z-10 flex h-full flex-col items-center justify-center p-4 container mx-auto">
           <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">
             {post.title}
           </h1>

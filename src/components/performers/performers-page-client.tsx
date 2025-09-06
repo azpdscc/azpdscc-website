@@ -8,6 +8,7 @@ import { ArrowRight, Mic, CalendarClock, CalendarPlus } from 'lucide-react';
 import type { Event } from '@/lib/types';
 import { format, subDays } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { HeroImage } from '@/components/layout/hero-image';
 
 interface PerformersPageClientProps {
   nextEvent: Event | null;
@@ -41,8 +42,8 @@ export function PerformersPageClient({ nextEvent, registrationOpen }: Performers
 
   return (
     <div className="bg-background">
-      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground bg-primary">
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20 bg-hero-pattern opacity-10" />
+      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground">
+        <HeroImage src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/performers.jpg" alt="A person singing on a stage with colorful lights" aiHint="stage performance" />
         <div className="relative z-10 p-4 container mx-auto">
           <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">Perform at Our Festivals</h1>
           <p className="mt-4 max-w-3xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">

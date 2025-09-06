@@ -9,6 +9,7 @@ import { Calendar, Clock, MapPin, Youtube, Facebook } from 'lucide-react';
 import type { Event } from '@/lib/types';
 import { format, parse, isValid } from 'date-fns';
 import { Card } from '@/components/ui/card';
+import { HeroImage } from '@/components/layout/hero-image';
 
 const createEventSchema = (event: Event) => {
   const eventDate = parse(event.date, 'MMMM dd, yyyy', new Date());
@@ -100,18 +101,9 @@ export function EventDetailPageClient({ event }: { event: Event }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(eventSchema) }}
       />}
-      <header className="relative h-[50vh] min-h-[300px] w-full">
-        <Image
-          src={event.image}
-          alt={event.name}
-          data-ai-hint={`${event.category.toLowerCase()} event`}
-          fill
-          sizes="100vw"
-          priority
-          className="z-0 object-cover"
-        />
-        <div className="absolute inset-0 bg-black/50 bg-hero-pattern opacity-10" />
-        <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-primary-foreground p-4">
+      <header className="relative h-[50vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground">
+        <HeroImage src={event.image} alt={event.name} aiHint={`${event.category.toLowerCase()} event`} />
+        <div className="relative z-10 flex h-full flex-col items-center justify-center p-4">
           <Badge className="mb-4 bg-accent text-accent-foreground">{event.category}</Badge>
           <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">
             {event.name}

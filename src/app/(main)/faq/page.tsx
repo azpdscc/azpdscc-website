@@ -6,10 +6,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { HelpCircle } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { HeroImage } from '@/components/layout/hero-image';
 
 export const metadata: Metadata = {
   title: 'Frequently Asked Questions | PDSCC',
@@ -91,8 +91,8 @@ const FaqItem = ({ question, answer }: { question: string, answer: string }) => 
 export default function FaqPage() {
   return (
     <div className="bg-background">
-      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground bg-primary">
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20 bg-hero-pattern opacity-10" />
+      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground">
+        <HeroImage src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/faq.jpg" alt="A person raising their hand to ask a question" aiHint="question answer" />
         <div className="relative z-10 p-4 container mx-auto">
           <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">
             Frequently Asked Questions

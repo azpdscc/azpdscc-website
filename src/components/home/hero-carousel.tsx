@@ -9,6 +9,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { Calendar, Ticket } from 'lucide-react';
 import type { Event } from '@/lib/types';
 import Autoplay from 'embla-carousel-autoplay';
+import { HeroImage } from '@/components/layout/hero-image';
 
 interface HeroCarouselProps {
   nextEvent: Event | null;
@@ -40,16 +41,11 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
         <CarouselContent className="-m-0">
           <CarouselItem className="p-0">
             <div className="relative h-[600px] w-full">
-              <Image
+              <HeroImage
                   src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/Home+Page/IMG_3370.jpeg"
                   alt="Vaisakhi festival celebration"
-                  data-ai-hint="festival celebration"
-                  fill
-                  priority
-                  className="z-0 object-cover"
-                  style={{ objectPosition: 'center 40%' }}
+                  aiHint="festival celebration"
               />
-              <div className="absolute inset-0 bg-black/30" />
               <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center text-primary-foreground p-4">
                   <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold !text-primary-foreground drop-shadow-lg">
                   Connecting the Arizona Punjabi Indian Community &amp; AZ Desis
@@ -71,16 +67,11 @@ export function HeroCarousel({ nextEvent }: HeroCarouselProps) {
           {nextEvent && (
             <CarouselItem className="p-0">
               <div className="relative h-[600px] w-full">
-                  <Image
+                  <HeroImage
                       src={nextEvent.image}
                       alt={nextEvent.name}
-                      data-ai-hint="upcoming event"
-                      fill
-                      priority
-                      className="z-0 object-cover"
-                      style={{ objectPosition: 'center 40%' }}
+                      aiHint="upcoming event"
                   />
-                  <div className="absolute inset-0 bg-black/30" />
                   <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center text-primary-foreground p-4">
                       <p className="font-bold uppercase tracking-widest !text-primary-foreground drop-shadow-md">Coming Soon</p>
                       <h2 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold !text-primary-foreground drop-shadow-lg">
