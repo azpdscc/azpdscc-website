@@ -18,7 +18,7 @@ export async function generateMetadata(
  
   if (!post) {
     return {
-        title: 'Post Not Found | PDSCC Blog',
+        title: 'Post Not Found',
         description: 'The blog post you are looking for could not be found.',
     }
   }
@@ -27,7 +27,7 @@ export async function generateMetadata(
   const previousImages = (await parent).openGraph?.images || [];
 
   return {
-    title: `${post.title} | PDSCC Blog`,
+    title: post.title,
     description: post.excerpt,
     openGraph: {
       title: post.title,
