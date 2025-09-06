@@ -93,7 +93,7 @@ const sendContactInquiryFlow = ai.defineFlow(
       await resend.emails.send({
         from: 'PDSCC Info <info@azpdscc.org>',
         to: input.email,
-        subject: 'We\\'ve Received Your Message | PDSCC',
+        subject: "We've Received Your Message | PDSCC",
         html: userEmailHtml,
       });
 

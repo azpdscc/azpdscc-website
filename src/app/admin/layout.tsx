@@ -7,14 +7,6 @@ import { Loader2 } from 'lucide-react';
 import { AdminHeader } from '@/components/layout/admin-header';
 import { Footer } from '@/components/layout/footer';
 import { AuthProvider, useAuth } from '@/hooks/use-auth.tsx';
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
 
 function AdminLayoutContent({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
