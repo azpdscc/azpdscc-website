@@ -1,8 +1,16 @@
 
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CalendarPlus, Users, Handshake, PenSquare, UserCheck, QrCode, Mic, ShoppingCart, Clock, CheckSquare, ShieldCheck, HelpCircle } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Admin Dashboard | PDSCC',
+  robots: {
+    index: false,
+  },
+};
 
 const SectionWrapper = ({ children, title }: { children: React.ReactNode, title: string }) => (
     <section className="mb-12">
