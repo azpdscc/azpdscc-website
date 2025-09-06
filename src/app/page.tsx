@@ -48,7 +48,7 @@ export default async function Home() {
               Welcome to the Hub for the Indian Community in Arizona
             </h2>
             <p className="mt-4 max-w-3xl mx-auto text-lg text-muted-foreground">
-              The <Link href="/about" className="text-primary hover:underline">Phoenix Desi Sports and Cultural Club</Link> is a non-profit organization dedicated to promoting Indian culture in Arizona. We bring the Desi community in Arizona together through vibrant festivals, Desi events in Phoenix, and community services for all AZ Indians.
+              The <Link href="/about" className="text-primary hover:underline">Phoenix Desi Sports and Cultural Club (PDSCC)</Link> is a 501(c)(3) non-profit organization at the heart of the Desi community in Arizona. We are passionately dedicated to preserving and celebrating the rich traditions of North India. Our mission is to bridge generations and connect our community by organizing vibrant festivals, sports tournaments, and cultural gatherings. From the grand Vaisakhi Mela to the joyous Teeyan Da Mela, our events serve as a gathering place for all AZ Indians and the wider Phoenix community to experience the color, music, and spirit of our heritage. We strive to create a welcoming home for everyone to connect, celebrate, and belong.
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -125,7 +125,7 @@ export default async function Home() {
             <div>
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">Our Impact in the Phoenix Punjabi Indian Community</h2>
               <p className="mt-4 text-muted-foreground">
-                We are proud of the Phoenix Punjabi Indian community we've built and the positive impact we've made. Our <Link href="/events" className="text-primary hover:underline">events</Link> bring the AZ Punjabi India community together, support local artisans, and create lasting memories.
+                For over a decade, we have been proud to serve the Phoenix Punjabi Indian community, creating a positive and lasting impact. Our large-scale Arizona Punjabi Indian festivals not only bring thousands of people together but also provide a vital platform for local vendors and artists to showcase their talents. By fostering a sense of unity and providing family-friendly entertainment, we create cherished memories and strengthen the cultural fabric of our city. Our commitment extends beyond events; we are dedicated to community outreach and supporting the needs of AZ Desis, ensuring a vibrant future for our culture in Arizona.
               </p>
               <div className="mt-6">
                 <Button asChild>
