@@ -1,11 +1,10 @@
-
 'use client';
 
 import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, Clock, MapPin, Youtube, Facebook } from 'lucide-react';
+import { Calendar, Clock, MapPin, Youtube, Facebook, Star } from 'lucide-react';
 import type { Event } from '@/lib/types';
 import { format, parse, isValid } from 'date-fns';
 import { Card } from '@/components/ui/card';
@@ -52,7 +51,7 @@ const createEventSchema = (event: Event) => {
   };
 };
 
-export function EventDetailPageClient({ event }: { event: Event }) {
+export function EventDetailPageClient({ event, highlights }: { event: Event; highlights: string[] }) {
   const eventDate = new Date(event.date);
   const today = new Date();
   today.setHours(0, 0, 0, 0); 
@@ -138,6 +137,20 @@ export function EventDetailPageClient({ event }: { event: Event }) {
           <div className="md:col-span-2">
             <h2 className="font-headline text-3xl font-bold mb-4">About the Event</h2>
             <p className="text-muted-foreground whitespace-pre-line">{event.fullDescription}</p>
+
+            {highlights.length > 0 && (
+                <>
+                <h3 className="font-headline text-2xl font-bold mt-8 mb-4">Event Highlights</h3>
+                <ul className="space-y-3">
+                    {highlights.map((highlight, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                        <Star className="h-5 w-5 text-yellow-500 mt-1 shrink-0" strokeWidth={2} />
+                        <span className="text-muted-foreground">{highlight}</span>
+                    </li>
+                    ))}
+                </ul>
+                </>
+            )}
 
              <h3 className="font-headline text-2xl font-bold mt-8 mb-4">Event Schedule</h3>
              <ul className="list-disc list-inside text-muted-foreground space-y-2">

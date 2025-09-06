@@ -1,11 +1,44 @@
-
 'use client';
 
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { notFound, useParams } from 'next/navigation';
 import { getEventBySlug } from '@/services/events';
 import { EventDetailPageClient } from '@/components/events/event-detail-page';
 import { Skeleton } from '@/components/ui/skeleton';
+import { generateEventHighlights } from '@/ai/flows/generate-event-highlights-flow';
+import type { Metadata, ResolvingMetadata } from 'next';
+import type { Event } from '@/lib/types';
+
+type Props = {
+  params: { slug: string }
+}
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = params.slug;
+  const event: Event | null = await getEventBySlug(slug);
+ 
+  if (!event) {
+    return {
+        title: 'Event Not Found | PDSCC',
+        description: 'The event you are looking for could not be found.',
+    }
+  }
+ 
+  const previousImages = (await parent).openGraph?.images || []
+ 
+  return {
+    title: `${event.name} | PDSCC Events`,
+    description: event.description, // Use the short description for the meta tag
+    openGraph: {
+      title: event.name,
+      description: event.description,
+      images: [event.image, ...previousImages],
+    },
+  }
+}
 
 function EventPageSkeleton() {
   return (
@@ -33,17 +66,29 @@ export default function EventDetailPage() {
     const Fallback = () => <EventPageSkeleton />;
     
     const EventLoader = () => {
-        const [event, setEvent] = React.useState(null);
-        const [isLoading, setIsLoading] = React.useState(true);
+        const [event, setEvent] = useState<Event | null>(null);
+        const [highlights, setHighlights] = useState<string[]>([]);
+        const [isLoading, setIsLoading] = useState(true);
 
-        React.useEffect(() => {
+        useEffect(() => {
             if (slug) {
                 setIsLoading(true);
-                getEventBySlug(slug).then(eventData => {
+                getEventBySlug(slug).then(async (eventData) => {
                     if (!eventData) {
                         notFound();
                     } else {
                         setEvent(eventData);
+                        try {
+                          const highlightResult = await generateEventHighlights({
+                            eventName: eventData.name,
+                            eventDescription: eventData.fullDescription
+                          });
+                          if (highlightResult && highlightResult.highlights) {
+                            setHighlights(highlightResult.highlights);
+                          }
+                        } catch (e) {
+                          console.error("Could not generate event highlights", e);
+                        }
                     }
                     setIsLoading(false);
                 });
@@ -54,7 +99,7 @@ export default function EventDetailPage() {
             return <EventPageSkeleton />;
         }
 
-        return <EventDetailPageClient event={event} />;
+        return <EventDetailPageClient event={event} highlights={highlights} />;
     }
 
     return (
