@@ -14,7 +14,7 @@ export default function VendorJoinPage() {
       <section className="text-center mb-12">
         <h1 className="font-headline text-4xl md:text-5xl font-bold">Join Our AZ Punjabi India Vendor Network</h1>
         <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
-          Register your business to get priority notifications for vendor booths at Arizona events. Become part of our growing community of talented vendors serving AZ Desis.
+          Register your business to get priority notifications for vendor booths at Arizona events. Become part of our growing community of talented vendors serving AZ Desis. By joining our network, you'll be the first to know when applications open for major festivals like Vaisakhi Mela and Teeyan Da Mela, giving you an advantage in securing a spot.
         </p>
       </section>
 

@@ -93,7 +93,7 @@ export function SponsorshipPageClient() {
           <div className="text-center">
             <h2 className="font-headline text-3xl md:text-4xl font-bold">Sponsorship Packages</h2>
             <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-              We offer several tiers of sponsorship, each with unique benefits to showcase your commitment to the community.
+              We offer several tiers of sponsorship, each with unique benefits to showcase your commitment to the community. Partnering with PDSCC provides extensive brand visibility to a diverse and engaged audience of thousands of attendees from across the Phoenix metro area.
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-stretch">

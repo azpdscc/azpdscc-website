@@ -22,7 +22,7 @@ export default function VolunteerPage() {
             Become a Volunteer
           </h1>
           <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
-            Lend your time and talent to a great cause. Volunteers are the backbone of our community events.
+            Lend your time and talent to a great cause. Volunteers are the backbone of our community events, and your support is essential to our success. Whether you can help for a few hours or on a regular basis, we have a role for you. Join us in making a difference for the Phoenix Punjabi Indian community.
           </p>
         </div>
       </section>
