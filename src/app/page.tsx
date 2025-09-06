@@ -47,8 +47,14 @@ export default async function Home() {
             <h2 className="font-headline text-3xl md:text-4xl font-bold text-foreground">
               Welcome to the Hub for the Indian Community in Arizona
             </h2>
+             <p className="mt-4 max-w-3xl mx-auto text-lg text-muted-foreground">
+              The <Link href="/about" className="text-primary hover:underline">Phoenix Desi Sports and Cultural Club (PDSCC)</Link> is a 501(c)(3) non-profit organization at the heart of the Desi community in Arizona. We are passionately dedicated to preserving and celebrating the rich traditions of North India.
+            </p>
             <p className="mt-4 max-w-3xl mx-auto text-lg text-muted-foreground">
-              The <Link href="/about" className="text-primary hover:underline">Phoenix Desi Sports and Cultural Club (PDSCC)</Link> is a 501(c)(3) non-profit organization at the heart of the Desi community in Arizona. We are passionately dedicated to preserving and celebrating the rich traditions of North India. Our mission is to bridge generations and connect our community by organizing vibrant festivals, sports tournaments, and cultural gatherings. From the grand Vaisakhi Mela to the joyous Teeyan Da Mela, our events serve as a gathering place for all AZ Indians and the wider Phoenix community to experience the color, music, and spirit of our heritage. We strive to create a welcoming home for everyone to connect, celebrate, and belong.
+              Our mission is to bridge generations and connect our community by organizing vibrant festivals, sports tournaments, and cultural gatherings. From the grand Vaisakhi Mela to the joyous Teeyan Da Mela, our events serve as a gathering place for all AZ Indians and the wider Phoenix community to experience the color, music, and spirit of our heritage.
+            </p>
+             <p className="mt-4 max-w-3xl mx-auto text-lg text-muted-foreground">
+              We strive to create a welcoming home for everyone to connect, celebrate, and belong.
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
