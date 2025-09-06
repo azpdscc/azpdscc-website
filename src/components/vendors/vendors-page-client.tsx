@@ -4,11 +4,12 @@
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, CalendarPlus, Users, Loader2, CalendarClock } from 'lucide-react';
+import { ArrowRight, CalendarPlus, Users, Loader2, CalendarClock, ShoppingCart, Briefcase, Handshake } from 'lucide-react';
 import type { Event } from '@/lib/types';
 import { format, subDays } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { HeroImage } from '@/components/layout/hero-image';
+import { Separator } from '../ui/separator';
 
 interface VendorsPageClientProps {
   nextEvent: Event | null;
@@ -42,13 +43,12 @@ export function VendorsPageClient({ nextEvent, registrationOpen }: VendorsPageCl
 
   return (
     <div className="bg-background">
-      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground">
-        <HeroImage src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/vendors.jpg" alt="A bustling market stall at a festival" aiHint="market stall" />
+       <section className="relative h-auto min-h-[200px] w-full flex items-center justify-center text-center text-primary-foreground bg-primary py-8 md:py-12">
+         <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20 bg-hero-pattern opacity-10" />
         <div className="relative z-10 p-4 container mx-auto">
-          <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">Vendor Booths for Indian Festivals in Arizona</h1>
-          <p className="mt-4 max-w-3xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
-            Becoming a vendor at a PDSCC event places your business directly in front of thousands of engaged attendees from the Phoenix Punjabi Indian community and the wider AZ Desi population. Our Arizona Indian festivals are premier destinations for those seeking authentic food, traditional apparel, handcrafted jewelry, and unique services. We provide a dynamic marketplace for both established and emerging businesses to thrive. Beyond a single event, joining our vendor network gives you priority access to future opportunities, connecting you with a loyal customer base eager to support local entrepreneurs. Whether you are a food truck, a clothing boutique, or an artisan, PDSCC events offer an unparalleled platform to grow your brand and connect with the community.
-          </p>
+          <h1 className="font-headline text-4xl md:text-5xl font-bold !text-primary-foreground drop-shadow-sm">
+            Vendor Opportunities
+          </h1>
         </div>
       </section>
       
@@ -122,13 +122,33 @@ export function VendorsPageClient({ nextEvent, registrationOpen }: VendorsPageCl
             </Card>
           </div>
           
-          <div className="max-w-4xl mx-auto mt-12">
-            <div className="flex items-center justify-center gap-4 p-4 rounded-lg bg-primary/10 border border-primary/20">
-                <Users className="h-10 w-10 text-primary" strokeWidth={1.5} />
-                <p className="text-lg font-semibold text-foreground text-center">
-                    Our community has over <span className="font-bold text-primary">1,000+</span> vendors who have successfully partnered with us!
+           <Separator className="my-16" />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <Card className="flex flex-col items-center p-6 bg-card">
+                <div className="bg-primary/10 rounded-full p-3 mb-4">
+                    <ShoppingCart className="h-10 w-10 text-primary shrink-0" strokeWidth={1.5}/>
+                </div>
+                <p className="text-base text-muted-foreground">
+                    Becoming a vendor at a PDSCC event places your business directly in front of thousands of engaged attendees from the Phoenix Punjabi Indian community and the wider AZ Desi population.
                 </p>
-            </div>
+            </Card>
+            <Card className="flex flex-col items-center p-6 bg-card">
+                <div className="bg-primary/10 rounded-full p-3 mb-4">
+                    <Briefcase className="h-10 w-10 text-primary shrink-0" strokeWidth={1.5}/>
+                </div>
+                <p className="text-base text-muted-foreground">
+                    Our Arizona Indian festivals are premier destinations for those seeking authentic food, traditional apparel, handcrafted jewelry, and unique services.
+                </p>
+            </Card>
+             <Card className="flex flex-col items-center p-6 bg-card">
+                 <div className="bg-primary/10 rounded-full p-3 mb-4">
+                    <Handshake className="h-10 w-10 text-primary shrink-0" strokeWidth={1.5}/>
+                </div>
+                <p className="text-base text-muted-foreground">
+                   We provide a dynamic marketplace for both established and emerging businesses to thrive. Joining our vendor network gives you priority access to future opportunities.
+                </p>
+            </Card>
           </div>
         </div>
       </main>

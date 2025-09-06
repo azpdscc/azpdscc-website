@@ -4,11 +4,12 @@
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Mic, CalendarClock, CalendarPlus } from 'lucide-react';
+import { ArrowRight, Mic, CalendarClock, CalendarPlus, Star, Users, Handshake } from 'lucide-react';
 import type { Event } from '@/lib/types';
 import { format, subDays } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { HeroImage } from '@/components/layout/hero-image';
+import { Separator } from '../ui/separator';
 
 interface PerformersPageClientProps {
   nextEvent: Event | null;
@@ -42,13 +43,12 @@ export function PerformersPageClient({ nextEvent, registrationOpen }: Performers
 
   return (
     <div className="bg-background">
-      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center text-center text-primary-foreground">
-        <HeroImage src="https://pdscc-images-website-2025.s3.us-east-1.amazonaws.com/performers.jpg" alt="A person singing on a stage with colorful lights" aiHint="stage performance" />
+      <section className="relative h-auto min-h-[200px] w-full flex items-center justify-center text-center text-primary-foreground bg-primary py-8 md:py-12">
+        <div className="absolute inset-0 bg-gradient-to-t from-primary/30 to-accent/20 bg-hero-pattern opacity-10" />
         <div className="relative z-10 p-4 container mx-auto">
-          <h1 className="font-headline text-4xl md:text-6xl font-bold !text-primary-foreground drop-shadow-lg">Perform at Our Festivals</h1>
-          <p className="mt-4 max-w-3xl mx-auto text-lg md:text-xl !text-primary-foreground/90 drop-shadow-md">
-            The stage at a PDSCC festival is a celebrated platform, offering incredible exposure and a chance to connect with thousands of enthusiastic community members. We are committed to showcasing a diverse array of talent and preserving the artistic traditions of North India. We actively seek performers for our flagship Arizona Punjabi Indian festivals, Vaisakhi Mela and Teeyan Da Mela. If you are a Bhangra team, Gidda group, classical singer, or have a unique act that celebrates our culture, we encourage you to apply. Performing with us is more than just a show; it's an opportunity to become a central part of a cherished community celebration and share your passion with an appreciative audience.
-          </p>
+          <h1 className="font-headline text-4xl md:text-5xl font-bold !text-primary-foreground drop-shadow-sm">
+            Perform at Our Festivals
+          </h1>
         </div>
       </section>
       
@@ -102,6 +102,36 @@ export function PerformersPageClient({ nextEvent, registrationOpen }: Performers
               </CardContent>
             </Card>
           </div>
+
+          <Separator className="my-16" />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <Card className="flex flex-col items-center p-6 bg-card">
+                <div className="bg-primary/10 rounded-full p-3 mb-4">
+                    <Star className="h-10 w-10 text-primary shrink-0" strokeWidth={1.5}/>
+                </div>
+                <p className="text-base text-muted-foreground">
+                    The stage at a PDSCC festival is a celebrated platform, offering incredible exposure and a chance to connect with thousands of enthusiastic community members.
+                </p>
+            </Card>
+            <Card className="flex flex-col items-center p-6 bg-card">
+                <div className="bg-primary/10 rounded-full p-3 mb-4">
+                    <Users className="h-10 w-10 text-primary shrink-0" strokeWidth={1.5}/>
+                </div>
+                <p className="text-base text-muted-foreground">
+                    We are committed to showcasing a diverse array of talent and preserving the artistic traditions of North India. We actively seek performers for our flagship Arizona Punjabi Indian festivals.
+                </p>
+            </Card>
+             <Card className="flex flex-col items-center p-6 bg-card">
+                 <div className="bg-primary/10 rounded-full p-3 mb-4">
+                    <Handshake className="h-10 w-10 text-primary shrink-0" strokeWidth={1.5}/>
+                </div>
+                <p className="text-base text-muted-foreground">
+                   If you are a Bhangra team, Gidda group, classical singer, or have a unique act that celebrates our culture, we encourage you to apply and share your passion.
+                </p>
+            </Card>
+          </div>
+
         </div>
       </main>
     </div>
